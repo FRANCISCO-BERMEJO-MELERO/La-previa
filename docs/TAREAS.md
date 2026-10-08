@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 7 en curso · última actualización 2026-10-08
+Estado: plan terminado · última actualización 2026-10-09
 
 ## Fase 0 · Preparación
 
@@ -90,7 +90,7 @@ Aceptación: `npm run test:e2e` pasa tres veces seguidas.
 - [x] 7.3 `docs/DESPLIEGUE.md`
 - [x] 7.4 GitHub Actions con `check` y `test:db`
 - [x] 7.5 Revisión final contra CONTEXTO
-- [ ] 7.6 `docs/INFORME.md`
+- [x] 7.6 `docs/INFORME.md`
 
 Aceptación: `check`, `test:db` y `test:e2e` pasan; `npm run build` sin avisos; el informe existe.
 
