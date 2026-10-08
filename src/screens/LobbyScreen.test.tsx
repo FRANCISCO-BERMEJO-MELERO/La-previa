@@ -34,6 +34,7 @@ function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {})
     onCloseQr: vi.fn(),
     kickTarget: null,
     onImpostorsChange: vi.fn(),
+    onStart: vi.fn(),
     onKickRequest: vi.fn(),
     onKickCancel: vi.fn(),
     onKickConfirm: vi.fn(),
@@ -142,6 +143,17 @@ describe('LobbyScreen (04)', () => {
     renderLobby({ snapshot: withPlayers(5), impostors: 2 });
     expect(screen.getByRole('button', { name: 'Más impostores' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Menos impostores' })).toBeEnabled();
+  });
+
+  it('el anfitrión empieza la partida', () => {
+    const props = renderLobby({ snapshot: withPlayers(4) });
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(props.onStart).toHaveBeenCalledTimes(1);
+  });
+
+  it('quien no es anfitrión no ve el botón de empezar', () => {
+    renderLobby({ snapshot: asGuest });
+    expect(screen.queryByRole('button', { name: 'Empezar partida' })).not.toBeInTheDocument();
   });
 
   it('quien no es anfitrión no puede echar ni elegir impostores, y ve a quién espera', () => {

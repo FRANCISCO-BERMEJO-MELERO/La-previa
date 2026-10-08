@@ -1,4 +1,4 @@
-type PillButtonTone = 'paper' | 'tomato';
+type PillButtonTone = 'paper' | 'tomato' | 'sky' | 'lilac';
 
 type PillButtonProps = {
   tone?: PillButtonTone;
@@ -12,6 +12,8 @@ type PillButtonProps = {
 const toneClasses: Record<PillButtonTone, string> = {
   paper: 'bg-paper',
   tomato: 'bg-tomato',
+  sky: 'bg-sky',
+  lilac: 'bg-lilac',
 };
 
 /** Píldora de cabecera pulsable. El botón mide 44 px de alto aunque la píldora se vea más baja. */

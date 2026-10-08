@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 4 terminada · última actualización 2026-10-08
+Estado: fase 5 en curso · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
@@ -64,11 +64,11 @@ Aceptación: `npm run test:db` pasa desde cero.
 
 ## Fase 5 · El impostor en la aplicación
 
-- [ ] 5.1 Pantallas 06 y 07 (reparto), y el botón "Empezar partida" de la sala de espera (ver DECISIONES 3.7)
-- [ ] 5.2 Pantallas 08 y 09 (votación y espera)
-- [ ] 5.3 Pantallas 10 y 11 (revelación y empate)
-- [ ] 5.4 Pantallas 12 (eliminado) y 05 (entrar tarde)
-- [ ] 5.5 Pantallas 13 y 14 (resultado), volver a jugar y cambiar de juego
+- [x] 5.1 Pantallas 06 y 07 (reparto), y el botón "Empezar partida" de la sala de espera (ver DECISIONES 3.7)
+- [x] 5.2 Pantallas 08 y 09 (votación y espera)
+- [x] 5.3 Pantallas 10 y 11 (revelación y empate)
+- [x] 5.4 Pantallas 12 (eliminado) y 05 (entrar tarde)
+- [x] 5.5 Pantallas 13 y 14 (resultado), volver a jugar y cambiar de juego
 - [ ] 5.6 Variantes de CONTEXTO §6 no dibujadas
 
 Aceptación: tres navegadores juegan dos partidas seguidas; nada desborda a 360 px.
@@ -100,4 +100,4 @@ Aceptación: `check`, `test:db` y `test:e2e` pasan; `npm run build` sin avisos; 
 
 ## Descubierto por el camino
 
-- [ ] D.1 (para 5.1 y 5.5) Ajustar el tamaño de la palabra y de los titulares a su longitud: a 360 px una palabra de 6 letras en `text-display-lg` ya no cabe en la tarjeta protagonista. La `Card` parte palabras para no desbordar, pero partir la palabra secreta queda mal.
+- [x] D.1 (para 5.1 y 5.5) Ajustar el tamaño de la palabra y de los titulares a su longitud: a 360 px una palabra de 6 letras en `text-display-lg` ya no cabe en la tarjeta protagonista. La `Card` parte palabras para no desbordar, pero partir la palabra secreta queda mal.

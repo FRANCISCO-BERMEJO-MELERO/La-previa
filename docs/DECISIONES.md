@@ -1,5 +1,25 @@
 # Decisiones
 
+## 2026-10-08 · 5.1–5.5 · Un solo commit para las pantallas de partida
+
+Las tareas 5.1 a 5.5 comparten el contenedor `Room` (que elige la pantalla según `viewFor`) y los controles del anfitrión, que son el mismo componente para todas las fases. Partirlas en cinco commits obligaba a escribir versiones intermedias del contenedor que nunca iban a existir, así que van juntas en un commit y la 5.6 (repaso de variantes) en otro.
+Descartado: commits intermedios con pantallas que el contenedor aún no usa, que dejarían archivos sin usar en cada uno.
+
+## 2026-10-08 · 5.x · Los controles del anfitrión no dependen de la pantalla
+
+El pie de cada pantalla de partida sale de la fase, no de la vista: el anfitrión ve el botón que avanza la fase (pasar a votación, cerrar votación, seguir, volver a jugar) también si está eliminado (12) o si es un anfitrión que llegó tarde tras un traspaso (05). Así la partida nunca se queda sin nadie que la pueda avanzar. Los demás ven la caja de espera con el nombre del anfitrión.
+Descartado: botones solo en las pantallas dibujadas, que dejaban atascada la partida si el anfitrión no participaba.
+
+## 2026-10-08 · D.1 · Tamaño de la palabra medido, no estimado
+
+La palabra secreta y los titulares con nombre eligen su tamaño según su palabra más larga. Los umbrales salen de medir en el navegador, a 360 px, el ancho real de las 200 palabras en Archivo Black: hasta 4 letras 68 px, hasta 6 48 px, hasta 8 38 px, 9 32 px, hasta 11 28 px, 12 24 px y más 20 px. Comprobado con las 200 palabras a 360, 390 y 430 px: ninguna se parte.
+Descartado: una estimación previa de 0,7 em por letra, que dejaba fuera 47 palabras.
+
+## 2026-10-08 · 5.5 · "Volver a jugar" cuando ya no vale
+
+Volver a jugar llama a `start_game` con los mismos impostores. Si falla porque se ha ido gente (`not_enough_players` o `invalid_impostor_count`), se llama a `back_to_lobby` y el anfitrión ajusta en la sala de espera, sin mensaje de error.
+Descartado: mostrar el error y dejar al anfitrión en el resultado, que no tiene forma de cambiar los impostores.
+
 ## 2026-10-08 · 3.8 · QR dibujado como SVG con `qrcode`
 
 Se instala `qrcode` (permitida) y `@types/qrcode` como dependencia de desarrollo: son solo sus tipos, necesarios con TypeScript estricto. El QR se dibuja como SVG a partir de la matriz que da `qrcode.create`, con los tokens de color (`fill-ink`, `bg-paper`); así no hay imágenes ni valores de color sueltos y se calcula sin efectos. El diálogo solo pinta su contenido abierto, para no calcular el QR si nadie lo mira.

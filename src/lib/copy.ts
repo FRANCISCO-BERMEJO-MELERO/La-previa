@@ -140,7 +140,8 @@ export const copy = {
     category: 'Categoría',
     playerHint: 'Hablad las rondas que queráis. Cuando el grupo lo decida, pasa a la votación.',
     impostorPill: 'Eres el',
-    impostorTitle: 'Impostor',
+    // Guion blando para que, si no cabe, se parta como en la referencia: IMPOS-TOR.
+    impostorTitle: 'Impos­tor',
     impostorClue: 'Tu pista: la categoría',
     impostorHint: 'No conoces la palabra. Escucha, disimula y que no te pillen.',
     connected: (count: number) => `${String(count)} conectados`,
@@ -183,6 +184,7 @@ export const copy = {
 
   tie: {
     title: 'Empate',
+    equals: '=',
     text: (names: readonly string[]) =>
       `${joinNames(names)} empatan a votos. Esta vez no se expulsa a nadie.`,
     noVotes: 'Nadie ha votado. Esta vez no se expulsa a nadie.',
@@ -202,6 +204,14 @@ export const copy = {
     groupWins: 'Gana el grupo',
     impostorWins: 'Gana el impostor',
     impostorsWin: 'Ganan los impostores',
+    winnerPill: (winner: 'group' | 'impostors', impostorCount: number) =>
+      winner === 'group'
+        ? 'Gana el grupo'
+        : impostorCount === 1
+          ? 'Gana el impostor'
+          : 'Ganan los impostores',
+    impostorsLabel: (count: number) => (count === 1 ? 'El impostor era' : 'Los impostores eran'),
+    names: (names: readonly string[]) => joinNames(names),
     won: '¡Has ganado!',
     lost: 'Has perdido',
     finished: 'Fin de la partida',

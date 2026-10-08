@@ -8,6 +8,8 @@ type AvatarProps = {
   size?: AvatarSize;
   /** Jugador desconectado: sin color de la paleta. */
   muted?: boolean;
+  /** Desconectado en una fila de avatares: borde discontinuo y fondo apagado. */
+  dashed?: boolean;
   /** Sobre fondo `ink` el borde pasa a blanco. */
   onDark?: boolean;
 };
@@ -31,10 +33,15 @@ export function Avatar({
   joinIndex,
   size = 'sm',
   muted = false,
+  dashed = false,
   onDark = false,
 }: AvatarProps) {
-  const color = muted ? 'bg-paper' : colorClasses[avatarColor(joinIndex)];
-  const border = onDark ? 'border-paper' : 'border-ink';
+  const color = dashed
+    ? 'bg-ground-soft'
+    : muted
+      ? 'bg-paper'
+      : colorClasses[avatarColor(joinIndex)];
+  const border = `${onDark ? 'border-paper' : 'border-ink'} ${dashed ? 'border-dashed' : ''}`;
   return (
     <span
       aria-hidden="true"

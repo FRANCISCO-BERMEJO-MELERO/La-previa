@@ -1,12 +1,18 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { lobbySnapshot } from '@/test/fixtures';
 import {
+  backToLobby,
+  castVote,
+  closeVoting,
+  continueGame,
   createRoom,
   getRoomState,
   joinRoom,
   kickPlayer,
   leaveRoom,
+  openVoting,
   setGame,
+  startGame,
   toActionError,
   type ActionDeps,
 } from './actions';
@@ -29,12 +35,24 @@ describe('acciones', () => {
     await getRoomState('sala', d);
     await setGame('sala', 'impostor', d);
     await kickPlayer('sala', 'u2', d);
+    await startGame('sala', 2, d);
+    await openVoting('sala', d);
+    await castVote('sala', 'u3', d);
+    await closeVoting('sala', d);
+    await continueGame('sala', d);
+    await backToLobby('sala', d);
     expect(d.rpc.mock.calls).toEqual([
       ['create_room', { name: 'Fran' }],
       ['join_room', { code: 'KTRM', name: 'Lucía' }],
       ['get_room_state', { room_id: 'sala' }],
       ['set_game', { room_id: 'sala', game: 'impostor' }],
       ['kick_player', { room_id: 'sala', user_id: 'u2' }],
+      ['start_game', { room_id: 'sala', impostor_count: 2 }],
+      ['open_voting', { room_id: 'sala' }],
+      ['cast_vote', { room_id: 'sala', target_id: 'u3' }],
+      ['close_voting', { room_id: 'sala' }],
+      ['continue_game', { room_id: 'sala' }],
+      ['back_to_lobby', { room_id: 'sala' }],
     ]);
   });
 

@@ -34,6 +34,7 @@ type LobbyScreenProps = {
   /** Jugador al que el anfitrión quiere echar; abre la confirmación. */
   kickTarget: RoomPlayer | null;
   onImpostorsChange: (count: number) => void;
+  onStart: () => void;
   onKickRequest: (userId: string) => void;
   onKickCancel: () => void;
   onKickConfirm: () => void;
@@ -54,6 +55,7 @@ export function LobbyScreen({
   onCloseQr,
   kickTarget,
   onImpostorsChange,
+  onStart,
   onKickRequest,
   onKickCancel,
   onKickConfirm,
@@ -144,11 +146,16 @@ export function LobbyScreen({
 
       <div className="mt-auto flex flex-col gap-5">
         {me.is_host ? (
-          <ImpostorStepper
-            value={impostors}
-            playerCount={players.length}
-            onChange={onImpostorsChange}
-          />
+          <>
+            <ImpostorStepper
+              value={impostors}
+              playerCount={players.length}
+              onChange={onImpostorsChange}
+            />
+            <Button fullWidth disabled={busy} onClick={onStart}>
+              {copy.lobby.start}
+            </Button>
+          </>
         ) : (
           <WaitingBox>{copy.lobby.waitingHost(hostName)}</WaitingBox>
         )}

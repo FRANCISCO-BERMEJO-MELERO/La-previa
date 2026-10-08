@@ -37,6 +37,30 @@ export function kickPlayer(roomId: string, userId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'kick_player', { room_id: roomId, user_id: userId });
 }
 
+export function startGame(roomId: string, impostorCount: number, deps = defaultDeps) {
+  return callForSnapshot(deps, 'start_game', { room_id: roomId, impostor_count: impostorCount });
+}
+
+export function openVoting(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'open_voting', { room_id: roomId });
+}
+
+export function castVote(roomId: string, targetId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'cast_vote', { room_id: roomId, target_id: targetId });
+}
+
+export function closeVoting(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'close_voting', { room_id: roomId });
+}
+
+export function continueGame(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'continue_game', { room_id: roomId });
+}
+
+export function backToLobby(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'back_to_lobby', { room_id: roomId });
+}
+
 export async function leaveRoom(roomId: string, deps = defaultDeps): Promise<ActionResult<null>> {
   const response = await call(deps, 'leave_room', { room_id: roomId });
   return response.ok ? { ok: true, data: null } : response;
