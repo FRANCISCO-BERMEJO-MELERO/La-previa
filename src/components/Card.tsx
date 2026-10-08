@@ -44,7 +44,7 @@ export function Card({
   return (
     <div
       data-testid="card"
-      className={`flex min-w-0 flex-col border-3 border-ink ${variantClasses[variant]} ${background} ${rotation} ${height}`}
+      className={`flex min-w-0 flex-col border-3 border-ink hyphens-auto wrap-break-word ${variantClasses[variant]} ${background} ${rotation} ${height}`}
     >
       {children}
     </div>

@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-08 · 1.7 · Playwright instalado antes de la fase 6
+
+Se instala `@playwright/test` (permitido en `CLAUDE.md`) para comparar `/dev/componentes` con la referencia a 360, 390 y 430 px y medir desbordes. Usa el Chrome del sistema (`channel: 'chrome'`), sin descargar navegadores. Las capturas se hacen con un guion temporal fuera del repositorio; los e2e llegan en la fase 6.
+Descartado: Chrome en modo headless por línea de comandos, porque impone un ancho mínimo de ventana de unos 500 px y las capturas de móvil salían falseadas.
+
+## 2026-10-08 · 1.7 · `/dev/componentes` se excluye con `notFound()`
+
+La página llama a `notFound()` si `NODE_ENV` es `production`, así que en producción responde 404. Comprobado con `next build` y `next start`.
+Descartado: excluirla por configuración de rutas o `pageExtensions`, más frágil y difícil de probar con un test.
+
 ## 2026-10-08 · 1.6 · Textos sin género gramatical del jugador
 
 La app no sabe el género de cada jugador, así que donde la referencia usa formas femeninas por los datos de ejemplo se usa una forma neutra: "Sin conexión" en vez de "Desconectada" y "no puedes votar por ti" en vez de "votarte a ti misma". Los textos de espera que la referencia no dibuja ("Fran cerrará la votación", "Fran decide cuándo seguir"…) siguen el patrón de "Fran decide cuándo se vota".

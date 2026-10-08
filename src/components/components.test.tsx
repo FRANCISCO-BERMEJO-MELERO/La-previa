@@ -84,6 +84,11 @@ describe('Card', () => {
     expect(screen.getByTestId('card')).toHaveClass('tilt-right', 'shadow-hard-lg', 'bg-lime');
   });
 
+  it('parte las palabras largas en vez de desbordarse', () => {
+    render(<Card>x</Card>);
+    expect(screen.getByTestId('card')).toHaveClass('wrap-break-word', 'hyphens-auto');
+  });
+
   it('la oscura es ink con sombra tomate', () => {
     render(<Card variant="dark">x</Card>);
     expect(screen.getByTestId('card')).toHaveClass('bg-ink', 'text-paper', 'shadow-hard-lg-tomato');

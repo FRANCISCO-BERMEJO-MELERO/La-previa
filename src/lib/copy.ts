@@ -203,6 +203,24 @@ export const copy = {
     playAgain: 'Volver a jugar',
     waitingHost: (host: string) => `${host} decide si se vuelve a jugar`,
   },
+
+  // Solo para la página interna de componentes, que no existe en producción.
+  dev: {
+    title: 'Componentes',
+    sections: {
+      buttons: 'Botones',
+      cards: 'Tarjetas',
+      pills: 'Píldoras',
+      avatars: 'Avatares',
+      chips: 'Fichas de jugador',
+      waiting: 'Caja de espera',
+      fields: 'Campos de texto',
+      dialog: 'Diálogo',
+    },
+    disabled: 'Desactivado',
+    openDialog: 'Abrir diálogo',
+    dialogText: 'Contenido del diálogo.',
+  },
 } as const;
 
 export function errorMessage(code: string): string {

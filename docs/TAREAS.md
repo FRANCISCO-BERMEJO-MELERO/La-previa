@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 1 en curso · última actualización 2026-10-08
+Estado: fase 1 terminada · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
@@ -19,7 +19,7 @@ Aceptación: existen los dos documentos; un commit de prueba con `Co-Authored-By
 - [x] 1.4 Tailwind v4 con tokens de Verbena (CONTEXTO §8); fuentes Archivo y Archivo Black con `next/font`; metadatos, `lang="es"`, `viewport` y color de tema
 - [x] 1.5 Componentes base: `Screen`, `Button`, `Card`, `Pill`, `Avatar`, `PlayerChip`, `WaitingBox`, `TextField`, `Dialog`
 - [x] 1.6 Módulo único de textos (`src/lib/copy.ts`)
-- [ ] 1.7 Página `/dev/componentes`, excluida en producción
+- [x] 1.7 Página `/dev/componentes`, excluida en producción
 
 Aceptación: `npm run check` pasa; `/dev/componentes` a 390 px se parece a la referencia.
 
@@ -97,3 +97,5 @@ Aceptación: `check`, `test:db` y `test:e2e` pasan; `npm run build` sin avisos; 
 - 2.1 y todo lo que necesita la base de datos local (2.x, 4.x, `test:db`, e2e) · Docker no está instalado: no existe el comando `docker`. Fran: instalar Docker Desktop, arrancarlo y comprobar que `docker version` responde.
 
 ## Descubierto por el camino
+
+- [ ] D.1 (para 5.1 y 5.5) Ajustar el tamaño de la palabra y de los titulares a su longitud: a 360 px una palabra de 6 letras en `text-display-lg` ya no cabe en la tarjeta protagonista. La `Card` parte palabras para no desbordar, pero partir la palabra secreta queda mal.
