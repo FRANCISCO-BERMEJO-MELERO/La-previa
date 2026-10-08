@@ -78,3 +78,6 @@ desktop.ini
 
 # Notas y listas personales (no se versionan)
 *.local.md
+
+# Generado por next dev
+AGENTS.md
