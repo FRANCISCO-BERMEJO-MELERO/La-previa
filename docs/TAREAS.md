@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 6 en curso · última actualización 2026-10-08
+Estado: fase 6 terminada · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
