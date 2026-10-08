@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { copy, errorCodes, errorMessage } from './copy';
+import { copy, errorCodes, errorMessage, isErrorCode } from './copy';
 
 function allStrings(value: unknown): string[] {
   if (typeof value === 'string') return [value];
@@ -49,13 +49,21 @@ describe('copy', () => {
 });
 
 describe('errorMessage', () => {
-  it.each(errorCodes)('traduce %s a un texto que no muestra el código', (code) => {
+  it.each(errorCodes)('traduce %s a un texto propio que no muestra el código', (code) => {
     const message = errorMessage(code);
     expect(message).not.toContain(code);
-    expect(message).not.toBe(errorMessage('desconocido'));
+    expect(message).not.toBe(errorMessage('unknown'));
   });
 
-  it('un código desconocido da un mensaje genérico', () => {
-    expect(errorMessage('PGRST301')).toBe(copy.errors.unknown);
+  it('tiene texto para la falta de red y para lo inesperado', () => {
+    expect(errorMessage('offline')).toBe(copy.errors.offline);
+    expect(errorMessage('unknown')).toBe(copy.errors.unknown);
+  });
+});
+
+describe('isErrorCode', () => {
+  it('reconoce los códigos de la base de datos y nada más', () => {
+    expect(isErrorCode('room_full')).toBe(true);
+    expect(isErrorCode('PGRST301')).toBe(false);
   });
 });

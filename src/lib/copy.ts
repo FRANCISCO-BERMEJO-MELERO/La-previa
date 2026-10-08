@@ -223,13 +223,16 @@ export const copy = {
   },
 } as const;
 
-export function errorMessage(code: string): string {
-  return isErrorCode(code) ? errors[code] : errors.unknown;
+/** Error de una acción: un código de la base de datos, falta de red o algo inesperado. */
+export type ActionError = ErrorCode | 'offline' | 'unknown';
+
+export function errorMessage(error: ActionError): string {
+  return errors[error];
 }
 
 const errorCodeSet: ReadonlySet<string> = new Set(errorCodes);
 
-function isErrorCode(code: string): code is ErrorCode {
+export function isErrorCode(code: string): code is ErrorCode {
   return errorCodeSet.has(code);
 }
 

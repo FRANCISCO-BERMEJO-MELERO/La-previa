@@ -40,7 +40,7 @@ Aceptación: `npm run test:db` pasa tras `supabase db reset`.
 
 - [x] 3.1 Cliente de Supabase e inicio de sesión anónimo perezoso; variables de entorno validadas
 - [x] 3.2 Tipos de la foto del estado y validación en tiempo de ejecución
-- [ ] 3.3 Capa de acciones por RPC y traducción de códigos de error
+- [x] 3.3 Capa de acciones por RPC y traducción de códigos de error
 - [ ] 3.4 Hook de sincronización (foto inicial, Realtime, sondeo 10 s, primer plano, reconexión, descarte de fotos antiguas, limpieza) con tests
 - [ ] 3.5 Función pura `viewFor(snapshot)` con tests de la tabla de CONTEXTO §6
 - [ ] 3.6 Pantallas 01 (Inicio) y 02 (Tu nombre)
