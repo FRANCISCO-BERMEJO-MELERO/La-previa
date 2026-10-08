@@ -46,7 +46,7 @@ Aceptación: `npm run test:db` pasa tras `supabase db reset`.
 - [x] 3.6 Pantallas 01 (Inicio) y 02 (Tu nombre)
 - [x] 3.7 Pantallas 03 (Elegir juego) y 04 (Sala de espera)
 - [x] 3.8 Compartir: diálogo con QR y botón de enlace
-- [ ] 3.9 Screen Wake Lock en la sala
+- [x] 3.9 Screen Wake Lock en la sala
 - [ ] 3.10 Estados de cargando, sin conexión y sala inexistente; salir con confirmación
 
 Aceptación: dos navegadores en local: crear, unirse por código y enlace, lista en directo, traspaso de anfitrión, recarga sin pedir nombre.

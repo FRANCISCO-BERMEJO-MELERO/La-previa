@@ -13,11 +13,13 @@ const mocks = vi.hoisted(() => ({
   setGame: vi.fn<(roomId: string, game: string) => Promise<ActionResult<Snapshot>>>(),
   kickPlayer: vi.fn<(roomId: string, userId: string) => Promise<ActionResult<Snapshot>>>(),
   shareRoomLink: vi.fn<(url: string, title: string) => Promise<ShareOutcome>>(),
+  wakeLock: vi.fn<(active: boolean) => void>(),
 }));
 
 vi.mock('@/lib/use-room-sync', () => ({ useRoomSync: mocks.sync }));
 vi.mock('@/lib/actions', () => ({ setGame: mocks.setGame, kickPlayer: mocks.kickPlayer }));
 vi.mock('@/lib/share', () => ({ shareRoomLink: mocks.shareRoomLink }));
+vi.mock('@/lib/use-wake-lock', () => ({ useWakeLock: mocks.wakeLock }));
 
 function ready(snapshot: Snapshot = lobbySnapshot()) {
   mocks.sync.mockReturnValue({ status: 'ready', snapshot, offline: false, apply: mocks.apply });
@@ -34,10 +36,16 @@ describe('Room', () => {
     expect(screen.getByText('Lucía')).toBeInTheDocument();
   });
 
-  it('si la sala desaparece lo explica', () => {
+  it('si la sala desaparece lo explica y deja apagarse la pantalla', () => {
     mocks.sync.mockReturnValue({ status: 'gone', snapshot: null, offline: false });
     render(<Room initial={lobbySnapshot()} fresh={false} />);
     expect(screen.getByRole('heading', { name: 'Esta sala no existe' })).toBeInTheDocument();
+    expect(mocks.wakeLock).toHaveBeenLastCalledWith(false);
+  });
+
+  it('mientras se está en la sala mantiene la pantalla encendida', () => {
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(mocks.wakeLock).toHaveBeenLastCalledWith(true);
   });
 
   it('recién creada, el anfitrión elige juego y abre la sala', async () => {

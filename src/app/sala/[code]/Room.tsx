@@ -8,6 +8,7 @@ import { roomPath } from '@/lib/room-code';
 import { shareRoomLink, type ShareOutcome } from '@/lib/share';
 import type { Snapshot } from '@/lib/snapshot';
 import { useRoomSync } from '@/lib/use-room-sync';
+import { useWakeLock } from '@/lib/use-wake-lock';
 import { viewFor } from '@/lib/view';
 import { GamePickerScreen } from '@/screens/GamePickerScreen';
 import { LobbyScreen } from '@/screens/LobbyScreen';
@@ -29,6 +30,7 @@ export function Room({ initial, fresh }: RoomProps) {
   const [kickTargetId, setKickTargetId] = useState<string | null>(null);
   const [qrOpen, setQrOpen] = useState(false);
   const [shareOutcome, setShareOutcome] = useState<ShareOutcome | null>(null);
+  useWakeLock(sync.status !== 'gone');
 
   if (sync.status === 'gone') return <RoomGoneScreen />;
 
