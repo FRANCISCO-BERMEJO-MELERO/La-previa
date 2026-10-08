@@ -56,6 +56,13 @@
   --font-display: var(--font-archivo-black), var(--font-archivo), ui-sans-serif, sans-serif;
 }
 
+@layer base {
+  :focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+}
+
 /* Giro de las tarjetas protagonistas (±1,5°) y de píldoras y sellos (3°–4°). */
 @utility tilt-left {
   rotate: -1.5deg;
