@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-08 · 3.4 · Reintentos y fotos con la misma versión
+
+Tras un fallo de red la foto se vuelve a pedir a los 1, 2, 4 y 8 s, y después cada 10 s como siempre: en una fiesta los cortes suelen ser breves y así se recupera antes. Cada respuesta programa la siguiente petición, para no solapar peticiones con la red lenta. Con la misma `version` se acepta la foto con `server_time` más reciente, porque la conexión de los jugadores cambia sin subir la versión.
+Descartado: un intervalo fijo de 10 s también tras fallar, que deja al jugador hasta 10 s con el aviso de "sin conexión" después de recuperarla.
+
+## 2026-10-08 · 3.4 · `room_not_found` y `not_member` cierran la sincronización
+
+Si la sala desaparece o te han echado, el hook deja de pedir la foto y la vista muestra "sala inexistente".
+Descartado: seguir sondeando, que solo repetiría el mismo error.
+
 ## 2026-10-08 · 2.5 · Expulsar a media partida antes de que exista la partida
 
 `kick_player` ya aplica la regla de CONTEXTO (en partida, solo a un desconectado) y quita al miembro, pero todavía no marca la eliminación en la partida: eso es la tarea 4.4, cuando existan `start_game` y las fases.
