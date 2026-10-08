@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-09 · 7.4 · CI con dos trabajos y solo Postgres para pgTAP
+
+El flujo `.github/workflows/ci.yml` corre en cada push y pull request: un trabajo con `npm run check` y otro con `npx supabase db start` (solo Postgres, sin el resto de servicios) y `npm run test:db`. No hay remoto `origin`, así que no se ha ejecutado en GitHub; sus pasos de base de datos se han reproducido en local partiendo de un Postgres vacío (`supabase stop --no-backup`) y pasan las 291 pruebas.
+Descartado: `supabase start` completo en CI, que tarda más y levanta servicios que pgTAP no usa. Los e2e tampoco van al CI porque el plan no lo pide y necesitan el entorno completo.
+
 ## 2026-10-08 · 6.1 · Cómo corren los e2e
 
 Playwright arranca `next dev` en el puerto 3123 (o reutiliza uno abierto) contra el Supabase local, con el Chrome del sistema (`channel: 'chrome'`), vista de móvil de 390 × 844 y un contexto por jugador, que es una sesión anónima distinta como un móvil distinto. Un solo trabajador y sin reintentos: un fallo intermitente tiene que verse, no taparse.
