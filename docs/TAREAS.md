@@ -86,7 +86,7 @@ Aceptación: `npm run test:e2e` pasa tres veces seguidas.
 ## Fase 7 · Cierre
 
 - [x] 7.1 Accesibilidad
-- [ ] 7.2 `README.md`
+- [x] 7.2 `README.md`
 - [ ] 7.3 `docs/DESPLIEGUE.md`
 - [ ] 7.4 GitHub Actions con `check` y `test:db`
 - [ ] 7.5 Revisión final contra CONTEXTO
