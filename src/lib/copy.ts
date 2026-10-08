@@ -97,6 +97,7 @@ export const copy = {
       players: 'De 3 a 16 jugadores',
     },
     upcoming: ['¿Quién lo dijo?', 'Palabras prohibidas', 'La bomba', '¿Qué prefieres?'],
+    covers: { quote: '¿?', banned: 'Palabra', optionA: 'A', optionB: 'B' },
   },
 
   lobby: {
@@ -111,9 +112,14 @@ export const copy = {
     host: 'Anfitrión',
     disconnected: 'Sin conexión',
     kick: (name: string) => `Echar a ${name}`,
+    kickTitle: (name: string) => `¿Echar a ${name}?`,
+    kickText: 'Podrá volver a entrar con el código si quiere.',
+    kickConfirm: 'Echar',
     impostors: 'Impostores',
     fewerImpostors: 'Menos impostores',
     moreImpostors: 'Más impostores',
+    minus: '−',
+    plus: '+',
     start: 'Empezar partida',
     waitingHost: (host: string) => `${host} empezará la partida`,
   },

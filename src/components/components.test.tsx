@@ -145,11 +145,6 @@ describe('PlayerChip', () => {
     expect(screen.getByTestId('player-chip')).toHaveClass('border-dashed', 'bg-ground-soft');
     expect(screen.queryByTestId('avatar')).not.toBeInTheDocument();
   });
-
-  it('admite una acción al final', () => {
-    render(<PlayerChip name="Dani" joinIndex={4} action={<button type="button">Echar</button>} />);
-    expect(screen.getByRole('button', { name: 'Echar' })).toBeInTheDocument();
-  });
 });
 
 describe('WaitingBox', () => {

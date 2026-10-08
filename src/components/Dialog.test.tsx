@@ -1,40 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Dialog } from './Dialog';
-
-// jsdom no implementa showModal ni close; se reproduce su efecto sobre el atributo `open`.
-const proto = HTMLDialogElement.prototype;
-const original = {
-  showModal: Object.getOwnPropertyDescriptor(proto, 'showModal'),
-  close: Object.getOwnPropertyDescriptor(proto, 'close'),
-};
-
-function restore(name: keyof typeof original) {
-  const descriptor = original[name];
-  if (descriptor) Object.defineProperty(proto, name, descriptor);
-  else Reflect.deleteProperty(proto, name);
-}
-
-beforeAll(() => {
-  Object.defineProperty(proto, 'showModal', {
-    configurable: true,
-    value(this: HTMLDialogElement) {
-      this.setAttribute('open', '');
-    },
-  });
-  Object.defineProperty(proto, 'close', {
-    configurable: true,
-    value(this: HTMLDialogElement) {
-      this.removeAttribute('open');
-      this.dispatchEvent(new Event('close'));
-    },
-  });
-});
-
-afterAll(() => {
-  restore('showModal');
-  restore('close');
-});
 
 function renderDialog(open: boolean, onClose = vi.fn()) {
   return render(

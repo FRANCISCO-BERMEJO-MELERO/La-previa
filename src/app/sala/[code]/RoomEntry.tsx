@@ -20,13 +20,15 @@ type Entry =
 
 type RoomEntryProps = {
   code: string;
+  /** Viene de crear la sala. */
+  fresh: boolean;
 };
 
 /**
  * Entrada a /sala/[code]. join_room devuelve el estado si ya eras miembro (reconexión)
  * y pide nombre si no lo eras, así que se llama primero sin nombre.
  */
-export function RoomEntry({ code }: RoomEntryProps) {
+export function RoomEntry({ code, fresh }: RoomEntryProps) {
   const [entry, setEntry] = useState<Entry>({ kind: 'checking' });
   const [attempt, setAttempt] = useState(0);
   const [name, setName] = useState('');
@@ -97,6 +99,6 @@ export function RoomEntry({ code }: RoomEntryProps) {
         />
       );
     case 'member':
-      return <Room initial={entry.snapshot} />;
+      return <Room initial={entry.snapshot} fresh={fresh} />;
   }
 }

@@ -44,7 +44,7 @@ Aceptación: `npm run test:db` pasa tras `supabase db reset`.
 - [x] 3.4 Hook de sincronización (foto inicial, Realtime, sondeo 10 s, primer plano, reconexión, descarte de fotos antiguas, limpieza) con tests
 - [x] 3.5 Función pura `viewFor(snapshot)` con tests de la tabla de CONTEXTO §6
 - [x] 3.6 Pantallas 01 (Inicio) y 02 (Tu nombre)
-- [ ] 3.7 Pantallas 03 (Elegir juego) y 04 (Sala de espera)
+- [x] 3.7 Pantallas 03 (Elegir juego) y 04 (Sala de espera)
 - [ ] 3.8 Compartir: diálogo con QR y botón de enlace
 - [ ] 3.9 Screen Wake Lock en la sala
 - [ ] 3.10 Estados de cargando, sin conexión y sala inexistente; salir con confirmación
@@ -64,7 +64,7 @@ Aceptación: `npm run test:db` pasa desde cero.
 
 ## Fase 5 · El impostor en la aplicación
 
-- [ ] 5.1 Pantallas 06 y 07 (reparto)
+- [ ] 5.1 Pantallas 06 y 07 (reparto), y el botón "Empezar partida" de la sala de espera (ver DECISIONES 3.7)
 - [ ] 5.2 Pantallas 08 y 09 (votación y espera)
 - [ ] 5.3 Pantallas 10 y 11 (revelación y empate)
 - [ ] 5.4 Pantallas 12 (eliminado) y 05 (entrar tarde)

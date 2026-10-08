@@ -3,17 +3,26 @@ import { describe, expect, it, vi } from 'vitest';
 import RoomPage from './page';
 
 vi.mock('./RoomEntry', () => ({
-  RoomEntry: ({ code }: { code: string }) => <p>{`entrando en ${code}`}</p>,
+  RoomEntry: ({ code, fresh }: { code: string; fresh: boolean }) => (
+    <p>{`entrando en ${code}${fresh ? ' recién creada' : ''}`}</p>
+  ),
 }));
 
-async function renderPage(code: string) {
-  render(await RoomPage({ params: Promise.resolve({ code }) }));
+async function renderPage(code: string, search: Record<string, string> = {}) {
+  render(
+    await RoomPage({ params: Promise.resolve({ code }), searchParams: Promise.resolve(search) }),
+  );
 }
 
 describe('/sala/[code]', () => {
   it('entra con un código válido, aunque venga en minúsculas', async () => {
     await renderPage('ktrm');
     expect(screen.getByText('entrando en KTRM')).toBeInTheDocument();
+  });
+
+  it('sabe si la sala viene de crearse', async () => {
+    await renderPage('KTRM', { nueva: '1' });
+    expect(screen.getByText('entrando en KTRM recién creada')).toBeInTheDocument();
   });
 
   it.each(['KTRL', 'KT', 'KTRMA', '%E2'])(

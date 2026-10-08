@@ -21,20 +21,20 @@ beforeEach(() => {
 describe('RoomEntry', () => {
   it('mientras comprueba muestra que carga', () => {
     mocks.joinRoom.mockReturnValue(new Promise(() => undefined));
-    render(<RoomEntry code="KTRM" />);
+    render(<RoomEntry code="KTRM" fresh={false} />);
     expect(screen.getByRole('heading', { name: 'Cargando la sala…' })).toBeInTheDocument();
   });
 
   it('si ya era miembro entra directamente, sin pedir nombre', async () => {
     mocks.joinRoom.mockResolvedValue({ ok: true, data: lobbySnapshot() });
-    render(<RoomEntry code="KTRM" />);
+    render(<RoomEntry code="KTRM" fresh={false} />);
     expect(await screen.findByText('dentro como Fran')).toBeInTheDocument();
     expect(mocks.joinRoom).toHaveBeenCalledWith('KTRM', '');
   });
 
   it('si no era miembro pide el nombre y se une con él', async () => {
     mocks.joinRoom.mockResolvedValueOnce({ ok: false, error: 'name_invalid' });
-    render(<RoomEntry code="KTRM" />);
+    render(<RoomEntry code="KTRM" fresh={false} />);
     fireEvent.change(await screen.findByLabelText('Tu nombre'), { target: { value: 'Lucía' } });
     mocks.joinRoom.mockResolvedValueOnce({
       ok: true,
@@ -50,7 +50,7 @@ describe('RoomEntry', () => {
 
   it('con nombre repetido lo dice en línea, nombrando al jugador', async () => {
     mocks.joinRoom.mockResolvedValueOnce({ ok: false, error: 'name_invalid' });
-    render(<RoomEntry code="KTRM" />);
+    render(<RoomEntry code="KTRM" fresh={false} />);
     fireEvent.change(await screen.findByLabelText('Tu nombre'), { target: { value: 'Álvaro ' } });
     mocks.joinRoom.mockResolvedValueOnce({ ok: false, error: 'name_taken' });
     fireEvent.click(screen.getByRole('button', { name: 'Entrar' }));
@@ -63,7 +63,7 @@ describe('RoomEntry', () => {
 
   it('con la sala llena lo dice en línea', async () => {
     mocks.joinRoom.mockResolvedValueOnce({ ok: false, error: 'name_invalid' });
-    render(<RoomEntry code="KTRM" />);
+    render(<RoomEntry code="KTRM" fresh={false} />);
     fireEvent.change(await screen.findByLabelText('Tu nombre'), { target: { value: 'Sergio' } });
     mocks.joinRoom.mockResolvedValueOnce({ ok: false, error: 'room_full' });
     fireEvent.click(screen.getByRole('button', { name: 'Entrar' }));
@@ -72,13 +72,13 @@ describe('RoomEntry', () => {
 
   it('si la sala no existe lo explica', async () => {
     mocks.joinRoom.mockResolvedValue({ ok: false, error: 'room_not_found' });
-    render(<RoomEntry code="ZZZZ" />);
+    render(<RoomEntry code="ZZZZ" fresh={false} />);
     expect(await screen.findByRole('heading', { name: 'Esta sala no existe' })).toBeInTheDocument();
   });
 
   it('si falla la red deja reintentar', async () => {
     mocks.joinRoom.mockResolvedValueOnce({ ok: false, error: 'offline' });
-    render(<RoomEntry code="KTRM" />);
+    render(<RoomEntry code="KTRM" fresh={false} />);
     expect(await screen.findByText(/Sin conexión/)).toBeInTheDocument();
     mocks.joinRoom.mockResolvedValueOnce({ ok: true, data: lobbySnapshot() });
     fireEvent.click(screen.getByRole('button', { name: 'Reintentar' }));

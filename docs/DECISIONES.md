@@ -1,5 +1,25 @@
 # Decisiones
 
+## 2026-10-08 · 3.7 · Echar tocando la ficha, con confirmación
+
+La referencia no dibuja cómo se echa. Un botón con aspa dentro de cada ficha dejaba los nombres en "L…" a 360 px, así que el anfitrión toca la ficha del jugador (botón con `aria-label` "Echar a Lucía") y un diálogo le pide confirmar. Además evita echar a alguien sin querer.
+Descartado: el aspa en la ficha, por falta de sitio; echar sin confirmar, por los toques accidentales.
+
+## 2026-10-08 · 3.7 · "Empezar partida" llega con la fase 5
+
+`start_game` no existe hasta la 4.2, así que la sala de espera de la fase 3 muestra el selector de impostores pero todavía no el botón "Empezar partida". Se añade en la 5.1, cuando hay una RPC a la que llamar.
+Descartado: un botón que no hace nada o que siempre falla.
+
+## 2026-10-08 · 3.7 · La 03 se abre con `?nueva=1`
+
+`create_room` lleva a `/sala/CODIGO?nueva=1`; con ese parámetro el anfitrión ve primero la pantalla 03, que es una subvista local de la sala de espera. Al abrir la sala se quita el parámetro con `history.replaceState`, para que recargar no vuelva al selector. Con un solo juego disponible, la tarjeta de El impostor se muestra elegida y no es un botón.
+Descartado: guardar en el navegador que la sala es nueva, que es estado que puede quedarse viejo.
+
+## 2026-10-08 · 3.6 · Entrar en la sala llamando a `join_room` sin nombre
+
+Al abrir `/sala/CODIGO` no se sabe si el jugador ya es miembro, y las RPC de la sala piden su id. Se llama a `join_room(code, '')`: si ya era miembro devuelve la foto (reconexión); si no, falla con `name_invalid` y se pide el nombre; con `room_not_found` se muestra que no existe. No hace falta ninguna RPC nueva.
+Descartado: guardar el id de la sala en el navegador, que no sirve en otro dispositivo y es otra entrada externa que validar.
+
 ## 2026-10-08 · 3.4 · Reintentos y fotos con la misma versión
 
 Tras un fallo de red la foto se vuelve a pedir a los 1, 2, 4 y 8 s, y después cada 10 s como siempre: en una fiesta los cortes suelen ser breves y así se recupera antes. Cada respuesta programa la siguiente petición, para no solapar peticiones con la red lenta. Con la misma `version` se acepta la foto con `server_time` más reciente, porque la conexión de los jugadores cambia sin subir la versión.

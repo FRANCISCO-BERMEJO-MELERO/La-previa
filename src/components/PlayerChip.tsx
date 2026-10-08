@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { Avatar } from './Avatar';
 
 type PlayerChipProps = {
@@ -9,11 +8,9 @@ type PlayerChipProps = {
   detail?: string;
   /** Desconectado o pendiente: borde discontinuo y fondo apagado. */
   muted?: boolean;
-  /** Acción al final de la ficha, como expulsar. */
-  action?: ReactNode;
 };
 
-export function PlayerChip({ name, joinIndex, detail, muted = false, action }: PlayerChipProps) {
+export function PlayerChip({ name, joinIndex, detail, muted = false }: PlayerChipProps) {
   const look = muted ? 'border-dashed bg-ground-soft' : 'bg-paper';
   return (
     <div
@@ -25,7 +22,6 @@ export function PlayerChip({ name, joinIndex, detail, muted = false, action }: P
         <span className="truncate text-base font-bold">{name}</span>
         {detail ? <span className="text-xs font-medium">{detail}</span> : null}
       </div>
-      {action}
     </div>
   );
 }

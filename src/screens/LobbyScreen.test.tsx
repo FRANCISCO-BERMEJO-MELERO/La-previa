@@ -1,11 +1,56 @@
-import { render, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { lobbySnapshot } from '@/test/fixtures';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import type { Snapshot } from '@/lib/snapshot';
+import { ids, lobbySnapshot } from '@/test/fixtures';
 import { LobbyScreen } from './LobbyScreen';
 
+function withPlayers(count: number): Snapshot {
+  const base = lobbySnapshot();
+  const players = Array.from({ length: count }, (_, i) => ({
+    user_id: `0a1b2c3d-1111-4aaa-8bbb-${String(i + 1).padStart(12, '0')}`,
+    name: `Jugador ${String(i + 1)}`,
+    connected: true,
+    joined_at: '2026-10-08T19:00:00+00:00',
+  }));
+  return lobbySnapshot({
+    players,
+    room: { ...base.room, host_id: players[0]?.user_id ?? '' },
+    me: { ...base.me, user_id: players[0]?.user_id ?? '' },
+  });
+}
+
+function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {}) {
+  const props = {
+    snapshot: lobbySnapshot(),
+    impostors: 1,
+    busy: false,
+    kickTarget: null,
+    onImpostorsChange: vi.fn(),
+    onKickRequest: vi.fn(),
+    onKickCancel: vi.fn(),
+    onKickConfirm: vi.fn(),
+    ...overrides,
+  };
+  render(<LobbyScreen {...props} />);
+  return props;
+}
+
+const asGuest = (() => {
+  const base = lobbySnapshot();
+  return lobbySnapshot({
+    me: { user_id: ids.lucia, name: 'Lucía', is_host: false },
+    room: base.room,
+  });
+})();
+
 describe('LobbyScreen (04)', () => {
+  it('muestra el código de la sala', () => {
+    renderLobby();
+    expect(screen.getByText('KTRM')).toBeInTheDocument();
+  });
+
   it('lista a los jugadores por orden de entrada con su cuenta', () => {
-    render(<LobbyScreen snapshot={lobbySnapshot()} />);
+    renderLobby({ snapshot: asGuest });
     const items = screen.getAllByRole('listitem');
     expect(items.map((item) => item.textContent)).toEqual([
       'FFranAnfitrión',
@@ -16,8 +61,58 @@ describe('LobbyScreen (04)', () => {
   });
 
   it('marca apagado al jugador desconectado', () => {
-    render(<LobbyScreen snapshot={lobbySnapshot()} />);
+    renderLobby();
     const alvaro = screen.getAllByRole('listitem')[2];
     expect(alvaro && within(alvaro).getByTestId('player-chip')).toHaveClass('border-dashed');
+  });
+
+  it('el anfitrión toca la ficha de otro para echarlo, pero no la suya', () => {
+    const props = renderLobby();
+    expect(screen.queryByRole('button', { name: 'Echar a Fran' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Echar a Álvaro' }));
+    expect(props.onKickRequest).toHaveBeenCalledWith(ids.alvaro);
+  });
+
+  it('pide confirmación antes de echar', () => {
+    const alvaro = lobbySnapshot().players[2] ?? null;
+    const props = renderLobby({ kickTarget: alvaro });
+    const dialog = screen.getByRole('dialog', { name: '¿Echar a Álvaro?' });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Echar' }));
+    expect(props.onKickConfirm).toHaveBeenCalledTimes(1);
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancelar' }));
+    expect(props.onKickCancel).toHaveBeenCalled();
+  });
+
+  it('sin jugador elegido no hay confirmación abierta', () => {
+    renderLobby();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('el anfitrión ajusta los impostores dentro de los límites', () => {
+    const onImpostorsChange = vi.fn<(count: number) => void>();
+    renderLobby({ snapshot: withPlayers(7), impostors: 2, onImpostorsChange });
+    fireEvent.click(screen.getByRole('button', { name: 'Más impostores' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Menos impostores' }));
+    expect(onImpostorsChange.mock.calls).toEqual([[3], [1]]);
+  });
+
+  it('no deja pasar del máximo ni bajar de uno', () => {
+    renderLobby({ snapshot: withPlayers(5), impostors: 2 });
+    expect(screen.getByRole('button', { name: 'Más impostores' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Menos impostores' })).toBeEnabled();
+  });
+
+  it('quien no es anfitrión no puede echar ni elegir impostores, y ve a quién espera', () => {
+    renderLobby({ snapshot: asGuest });
+    expect(screen.queryByRole('button', { name: /Echar a/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Más impostores' })).not.toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent('Fran empezará la partida');
+  });
+
+  it('muestra el error de una acción', () => {
+    renderLobby({ error: 'Eso solo lo puede hacer quien lleva la sala.' });
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Eso solo lo puede hacer quien lleva la sala.',
+    );
   });
 });
