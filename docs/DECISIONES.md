@@ -1,11 +1,11 @@
 # Decisiones
 
 ## 2026-10-08 · 1.1 · Versiones fijadas de TypeScript y ESLint
-Se usa TypeScript 6.0 y no la 7.0 (última), porque typescript-eslint solo admite . Por lo mismo, ESLint será la 9 y no la 10: los plugins que trae eslint-config-next no declaran compatibilidad con la 10. Las versiones se instalan exactas.
-Descartado: forzar las últimas con , porque oculta incompatibilidades reales.
+Se usa TypeScript 6.0 y no la 7.0 (última), porque typescript-eslint solo admite `<6.1`. Por lo mismo, ESLint será la 9 y no la 10: los plugins que trae eslint-config-next no declaran compatibilidad con la 10. Las versiones se instalan exactas.
+Descartado: forzar las últimas con `--legacy-peer-deps`, porque oculta incompatibilidades reales.
 
 ## 2026-10-08 · 1.1 · Proyecto creado a mano, sin create-next-app
-Se escribe ,  y la app mínima a mano. Hasta que exista  (tarea 1.2), la 1.1 se verifica con .
+Se escriben `package.json`, `tsconfig.json` y la app mínima a mano. Hasta que exista `npm run check` (tarea 1.2), la 1.1 se verifica con `next build`.
 Descartado: create-next-app, que añade código de ejemplo, ESLint y Tailwind antes de sus tareas.
 
 ## 2026-10-08 · 0.3 · Finales de línea LF en el repositorio
