@@ -55,15 +55,21 @@ export function impostorOf(roles: Record<string, 'player' | 'impostor'>): string
  * Sala con estos jugadores (el primero es el anfitrión) y partida empezada con un impostor.
  * Devuelve las páginas por nombre, sus roles y el código.
  */
-export async function startedGame(browser: Browser, names: string[]) {
+export async function startedGame(
+  browser: Browser,
+  names: string[],
+  /** Se llama con cada página nada más crearla, antes de que haga ninguna petición. */
+  observe: (name: string, page: Page) => void = () => undefined,
+) {
   const [hostName, ...rest] = names;
   if (!hostName) throw new Error('Hace falta al menos un jugador');
-  const players: Players = { [hostName]: await newPlayer(browser) };
-  const host = players[hostName];
-  if (!host) throw new Error('Falta el anfitrión');
+  const host = await newPlayer(browser);
+  observe(hostName, host);
+  const players: Players = { [hostName]: host };
   const code = await createRoom(host, hostName);
   for (const name of rest) {
     const page = await newPlayer(browser);
+    observe(name, page);
     await joinByLink(page, code, name);
     await expect(page.getByText('Código de la sala')).toBeVisible();
     players[name] = page;

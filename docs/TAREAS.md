@@ -79,7 +79,7 @@ Aceptación: tres navegadores juegan dos partidas seguidas; nada desborda a 360 
 - [x] 6.2 Reconexión a media partida
 - [x] 6.3 Entrar tarde y jugar la siguiente
 - [x] 6.4 Empate y segunda votación
-- [ ] 6.5 Secreto en el cliente (red y almacenamiento)
+- [x] 6.5 Secreto en el cliente (red y almacenamiento)
 
 Aceptación: `npm run test:e2e` pasa tres veces seguidas.
 
