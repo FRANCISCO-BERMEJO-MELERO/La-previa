@@ -55,6 +55,16 @@ describe('errorMessage', () => {
     expect(message).not.toBe(errorMessage('unknown'));
   });
 
+  it.each([...errorCodes, 'offline', 'unknown'] as const)(
+    '%s dice qué ha pasado y qué puede hacer el jugador',
+    (code) => {
+      const sentences = errorMessage(code)
+        .split(/[.;]\s+/)
+        .filter((sentence) => sentence.trim() !== '');
+      expect(sentences.length).toBeGreaterThanOrEqual(2);
+    },
+  );
+
   it('tiene texto para la falta de red y para lo inesperado', () => {
     expect(errorMessage('offline')).toBe(copy.errors.offline);
     expect(errorMessage('unknown')).toBe(copy.errors.unknown);

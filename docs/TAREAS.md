@@ -89,7 +89,7 @@ Aceptación: `npm run test:e2e` pasa tres veces seguidas.
 - [x] 7.2 `README.md`
 - [x] 7.3 `docs/DESPLIEGUE.md`
 - [x] 7.4 GitHub Actions con `check` y `test:db`
-- [ ] 7.5 Revisión final contra CONTEXTO
+- [x] 7.5 Revisión final contra CONTEXTO
 - [ ] 7.6 `docs/INFORME.md`
 
 Aceptación: `check`, `test:db` y `test:e2e` pasan; `npm run build` sin avisos; el informe existe.

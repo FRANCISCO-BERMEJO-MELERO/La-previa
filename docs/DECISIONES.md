@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-09 · 7.5 · Revisión final contra CONTEXTO
+
+Repasadas las secciones 1 a 10. Se cumple todo lo que pide la primera versión, con estas salvedades ya anotadas en su tarea: `leave_room` devuelve `null` en vez de una foto (2.5), los textos son neutros en género (1.6) y el color de tema repite `#ffd23f` (1.4). Se ha arreglado un incumplimiento de §7: varios mensajes de error decían qué había pasado pero no qué podía hacer el jugador; ahora todos tienen las dos partes y un test lo comprueba. Las búsquedas de reglas de `CLAUDE.md` (sin `as` salvo `as const`, sin estilos en línea ni valores arbitrarios, sin `from()` en el cliente, sin `service_role`, sin menciones prohibidas en los commits) salen limpias.
+Descartado: nada pendiente que deba anotarse como incumplido.
+
 ## 2026-10-09 · 7.4 · CI con dos trabajos y solo Postgres para pgTAP
 
 El flujo `.github/workflows/ci.yml` corre en cada push y pull request: un trabajo con `npm run check` y otro con `npx supabase db start` (solo Postgres, sin el resto de servicios) y `npm run test:db`. No hay remoto `origin`, así que no se ha ejecutado en GitHub; sus pasos de base de datos se han reproducido en local partiendo de un Postgres vacío (`supabase stop --no-backup`) y pasan las 291 pruebas.
