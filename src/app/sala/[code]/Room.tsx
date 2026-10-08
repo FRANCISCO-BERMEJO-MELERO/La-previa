@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { kickPlayer, setGame, type ActionResult } from '@/lib/actions';
+import { useRouter } from 'next/navigation';
+import { useState, type ReactNode } from 'react';
+import { kickPlayer, leaveRoom, setGame, type ActionResult } from '@/lib/actions';
 import { copy, errorMessage, type ActionError } from '@/lib/copy';
 import { clampImpostors } from '@/lib/impostors';
 import { roomPath } from '@/lib/room-code';
@@ -11,6 +12,7 @@ import { useRoomSync } from '@/lib/use-room-sync';
 import { useWakeLock } from '@/lib/use-wake-lock';
 import { viewFor } from '@/lib/view';
 import { GamePickerScreen } from '@/screens/GamePickerScreen';
+import { LeaveDialog } from '@/screens/LeaveDialog';
 import { LobbyScreen } from '@/screens/LobbyScreen';
 import { RoomGoneScreen } from '@/screens/RoomGoneScreen';
 import { StatusScreen } from '@/screens/StatusScreen';
@@ -22,6 +24,7 @@ type RoomProps = {
 };
 
 export function Room({ initial, fresh }: RoomProps) {
+  const router = useRouter();
   const sync = useRoomSync(initial.room.id, initial);
   const [picking, setPicking] = useState(fresh);
   const [impostors, setImpostors] = useState(1);
@@ -30,6 +33,8 @@ export function Room({ initial, fresh }: RoomProps) {
   const [kickTargetId, setKickTargetId] = useState<string | null>(null);
   const [qrOpen, setQrOpen] = useState(false);
   const [shareOutcome, setShareOutcome] = useState<ShareOutcome | null>(null);
+  const [leaveOpen, setLeaveOpen] = useState(false);
+  const [leaveError, setLeaveError] = useState<ActionError | null>(null);
   useWakeLock(sync.status !== 'gone');
 
   if (sync.status === 'gone') return <RoomGoneScreen />;
@@ -50,17 +55,53 @@ export function Room({ initial, fresh }: RoomProps) {
     return true;
   };
 
+  const leave = async () => {
+    setBusy(true);
+    setLeaveError(null);
+    const result = await leaveRoom(roomId);
+    if (result.ok) {
+      router.push('/');
+      return;
+    }
+    setBusy(false);
+    setLeaveError(result.error);
+  };
+
+  const openLeave = () => {
+    setLeaveError(null);
+    setLeaveOpen(true);
+  };
+
+  const withLeaveDialog = (screen: ReactNode) => (
+    <>
+      {screen}
+      <LeaveDialog
+        open={leaveOpen}
+        busy={busy}
+        error={leaveError ? errorMessage(leaveError) : undefined}
+        onCancel={() => {
+          setLeaveOpen(false);
+        }}
+        onConfirm={() => {
+          void leave();
+        }}
+      />
+    </>
+  );
+
   if (viewFor(snapshot) !== 'lobby') {
     // Las pantallas de partida llegan con la fase 5.
     return <StatusScreen title={copy.late.pill} />;
   }
 
   if (picking && snapshot.me.is_host) {
-    return (
+    return withLeaveDialog(
       <GamePickerScreen
         roomCode={snapshot.room.code}
         busy={busy}
         error={error ? errorMessage(error) : undefined}
+        offline={sync.offline}
+        onLeaveRequest={openLeave}
         onOpen={() => {
           void run(() => setGame(roomId, 'impostor')).then((ok) => {
             if (!ok) return;
@@ -69,19 +110,21 @@ export function Room({ initial, fresh }: RoomProps) {
             window.history.replaceState(null, '', roomPath(snapshot.room.code));
           });
         }}
-      />
+      />,
     );
   }
 
   // Room solo se monta en el navegador, tras comprobar la entrada, así que window existe.
   const roomUrl = new URL(roomPath(snapshot.room.code), window.location.origin).toString();
 
-  return (
+  return withLeaveDialog(
     <LobbyScreen
       snapshot={snapshot}
       impostors={clampImpostors(impostors, snapshot.players.length)}
       busy={busy}
       error={error ? errorMessage(error) : undefined}
+      offline={sync.offline}
+      onLeaveRequest={openLeave}
       roomUrl={roomUrl}
       qrOpen={qrOpen}
       shareOutcome={shareOutcome}
@@ -107,6 +150,6 @@ export function Room({ initial, fresh }: RoomProps) {
         setKickTargetId(null);
         void run(() => kickPlayer(roomId, kickTargetId));
       }}
-    />
+    />,
   );
 }

@@ -24,6 +24,8 @@ function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {})
     snapshot: lobbySnapshot(),
     impostors: 1,
     busy: false,
+    offline: false,
+    onLeaveRequest: vi.fn(),
     roomUrl: 'https://laprevia.app/sala/KTRM',
     qrOpen: false,
     shareOutcome: null,
@@ -147,6 +149,27 @@ describe('LobbyScreen (04)', () => {
     expect(screen.queryByRole('button', { name: /Echar a/ })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Más impostores' })).not.toBeInTheDocument();
     expect(screen.getByRole('status')).toHaveTextContent('Fran empezará la partida');
+  });
+
+  it('la píldora de la cabecera sirve para salir de la sala', () => {
+    const props = renderLobby();
+    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    expect(props.onLeaveRequest).toHaveBeenCalledTimes(1);
+  });
+
+  it('sin conexión avisa y sigue mostrando la sala', () => {
+    renderLobby({ offline: true });
+    expect(
+      screen.getByText('Sin conexión. Seguimos intentándolo; no cierres la página.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Lucía')).toBeInTheDocument();
+  });
+
+  it('con conexión no hay aviso', () => {
+    renderLobby();
+    expect(
+      screen.queryByText('Sin conexión. Seguimos intentándolo; no cierres la página.'),
+    ).not.toBeInTheDocument();
   });
 
   it('muestra el error de una acción', () => {

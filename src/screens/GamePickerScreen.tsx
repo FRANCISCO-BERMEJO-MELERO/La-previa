@@ -1,5 +1,6 @@
 import { Button } from '@/components/Button';
-import { Pill } from '@/components/Pill';
+import { OfflineNotice } from '@/components/OfflineNotice';
+import { PillButton } from '@/components/PillButton';
 import { Screen } from '@/components/Screen';
 import { copy } from '@/lib/copy';
 
@@ -7,12 +8,31 @@ type GamePickerScreenProps = {
   roomCode: string;
   busy: boolean;
   error?: string;
+  offline: boolean;
   onOpen: () => void;
+  onLeaveRequest: () => void;
 };
 
-export function GamePickerScreen({ roomCode, busy, error, onOpen }: GamePickerScreenProps) {
+export function GamePickerScreen({
+  roomCode,
+  busy,
+  error,
+  offline,
+  onOpen,
+  onLeaveRequest,
+}: GamePickerScreenProps) {
   return (
-    <Screen brand={copy.brand} aside={<Pill>{copy.room.pill(roomCode)}</Pill>}>
+    <Screen
+      brand={copy.brand}
+      aside={
+        <PillButton
+          label={copy.room.pill(roomCode)}
+          hint={copy.room.leave}
+          onClick={onLeaveRequest}
+        />
+      }
+      notice={offline ? <OfflineNotice>{copy.errors.offline}</OfflineNotice> : null}
+    >
       <h1 className="font-display text-4xl uppercase">{copy.games.title}</h1>
       {/* Con un solo juego disponible no hay nada que elegir: la tarjeta lo muestra elegido. */}
       <div className="flex flex-col overflow-hidden rounded-card border-3 border-ink bg-paper shadow-hard">

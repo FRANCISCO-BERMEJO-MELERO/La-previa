@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 3 en curso · última actualización 2026-10-08
+Estado: fase 3 terminada · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
@@ -47,7 +47,7 @@ Aceptación: `npm run test:db` pasa tras `supabase db reset`.
 - [x] 3.7 Pantallas 03 (Elegir juego) y 04 (Sala de espera)
 - [x] 3.8 Compartir: diálogo con QR y botón de enlace
 - [x] 3.9 Screen Wake Lock en la sala
-- [ ] 3.10 Estados de cargando, sin conexión y sala inexistente; salir con confirmación
+- [x] 3.10 Estados de cargando, sin conexión y sala inexistente; salir con confirmación
 
 Aceptación: dos navegadores en local: crear, unirse por código y enlace, lista en directo, traspaso de anfitrión, recarga sin pedir nombre.
 

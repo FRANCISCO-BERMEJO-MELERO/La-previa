@@ -4,12 +4,14 @@ type ScreenProps = {
   brand: string;
   /** Lo que va a la derecha de la cabecera, normalmente una `Pill`. */
   aside?: ReactNode;
+  /** Aviso bajo la cabecera, como el de conexión perdida. */
+  notice?: ReactNode;
   /** Pantallas sin cabecera, como la de inicio. */
   bare?: boolean;
   children: ReactNode;
 };
 
-export function Screen({ brand, aside, bare = false, children }: ScreenProps) {
+export function Screen({ brand, aside, notice, bare = false, children }: ScreenProps) {
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-5 px-6 pt-7 pb-6">
       {bare ? null : (
@@ -18,6 +20,7 @@ export function Screen({ brand, aside, bare = false, children }: ScreenProps) {
           {aside}
         </header>
       )}
+      {notice}
       <main className="flex flex-1 flex-col gap-5">{children}</main>
     </div>
   );

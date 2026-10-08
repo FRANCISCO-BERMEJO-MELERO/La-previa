@@ -14,10 +14,17 @@ const mocks = vi.hoisted(() => ({
   kickPlayer: vi.fn<(roomId: string, userId: string) => Promise<ActionResult<Snapshot>>>(),
   shareRoomLink: vi.fn<(url: string, title: string) => Promise<ShareOutcome>>(),
   wakeLock: vi.fn<(active: boolean) => void>(),
+  leaveRoom: vi.fn<(roomId: string) => Promise<ActionResult<null>>>(),
+  push: vi.fn(),
 }));
 
 vi.mock('@/lib/use-room-sync', () => ({ useRoomSync: mocks.sync }));
-vi.mock('@/lib/actions', () => ({ setGame: mocks.setGame, kickPlayer: mocks.kickPlayer }));
+vi.mock('@/lib/actions', () => ({
+  setGame: mocks.setGame,
+  kickPlayer: mocks.kickPlayer,
+  leaveRoom: mocks.leaveRoom,
+}));
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push: mocks.push }) }));
 vi.mock('@/lib/share', () => ({ shareRoomLink: mocks.shareRoomLink }));
 vi.mock('@/lib/use-wake-lock', () => ({ useWakeLock: mocks.wakeLock }));
 
@@ -106,6 +113,49 @@ describe('Room', () => {
     expect(screen.getByRole('dialog', { name: 'Escanea para entrar' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Cerrar' }));
     expect(screen.queryByRole('dialog', { name: 'Escanea para entrar' })).not.toBeInTheDocument();
+  });
+
+  it('salir pide confirmación, sale y vuelve al inicio', async () => {
+    mocks.leaveRoom.mockResolvedValue({ ok: true, data: null });
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    expect(mocks.leaveRoom).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Salir' }));
+    expect(mocks.leaveRoom).toHaveBeenCalledWith(ids.room);
+    await waitFor(() => {
+      expect(mocks.push).toHaveBeenCalledWith('/');
+    });
+  });
+
+  it('cancelar la salida no hace nada', () => {
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(mocks.leaveRoom).not.toHaveBeenCalled();
+  });
+
+  it('si no se puede salir, lo dice dentro del diálogo', async () => {
+    mocks.leaveRoom.mockResolvedValue({ ok: false, error: 'offline' });
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent(/Sin conexión/);
+    expect(mocks.push).not.toHaveBeenCalled();
+  });
+
+  it('sin conexión avisa y sigue mostrando la última foto', () => {
+    mocks.sync.mockReturnValue({
+      status: 'ready',
+      snapshot: lobbySnapshot(),
+      offline: true,
+      apply: mocks.apply,
+    });
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(
+      screen.getByText('Sin conexión. Seguimos intentándolo; no cierres la página.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Lucía')).toBeInTheDocument();
   });
 
   it('el selector de impostores no pasa de su máximo con la gente que hay', () => {

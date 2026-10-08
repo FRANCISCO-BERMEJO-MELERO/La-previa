@@ -2,7 +2,8 @@ import type { ReactNode } from 'react';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Dialog } from '@/components/Dialog';
-import { Pill } from '@/components/Pill';
+import { OfflineNotice } from '@/components/OfflineNotice';
+import { PillButton } from '@/components/PillButton';
 import { PlayerChip } from '@/components/PlayerChip';
 import { QrCode } from '@/components/QrCode';
 import { Screen } from '@/components/Screen';
@@ -19,6 +20,9 @@ type LobbyScreenProps = {
   impostors: number;
   busy: boolean;
   error?: string;
+  /** Sin conexión: se avisa y se sigue mostrando la última foto. */
+  offline: boolean;
+  onLeaveRequest: () => void;
   /** Enlace completo a la sala, para el QR y para compartir. */
   roomUrl: string;
   qrOpen: boolean;
@@ -40,6 +44,8 @@ export function LobbyScreen({
   impostors,
   busy,
   error,
+  offline,
+  onLeaveRequest,
   roomUrl,
   qrOpen,
   shareOutcome,
@@ -59,10 +65,15 @@ export function LobbyScreen({
     <Screen
       brand={copy.brand}
       aside={
-        <Pill tone="tomato" tilted>
-          {copy.games.impostor.name}
-        </Pill>
+        <PillButton
+          tone="tomato"
+          tilted
+          label={copy.games.impostor.name}
+          hint={copy.room.leave}
+          onClick={onLeaveRequest}
+        />
       }
+      notice={offline ? <OfflineNotice>{copy.errors.offline}</OfflineNotice> : null}
     >
       <Card>
         <p className="text-label font-bold uppercase tracking-label">{copy.lobby.codeLabel}</p>
