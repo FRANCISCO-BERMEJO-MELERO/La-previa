@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 2 bloqueada (falta Docker) · última actualización 2026-10-08
+Estado: fase 2 en curso · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
@@ -25,9 +25,9 @@ Aceptación: `npm run check` pasa; `/dev/componentes` a 390 px se parece a la re
 
 ## Fase 2 · Base de datos: salas
 
-- [ ] 2.1 `supabase init`, inicio de sesión anónimo en `config.toml`, `supabase start` funciona
+- [x] 2.1 `supabase init`, inicio de sesión anónimo en `config.toml`, `supabase start` funciona
   - [x] 2.1a `supabase init` y `enable_anonymous_sign_ins = true` en `supabase/config.toml`
-  - [!] 2.1b Comprobar que `supabase start` levanta el entorno local (bloqueada: ver Bloqueos)
+  - [x] 2.1b Comprobar que `supabase start` levanta el entorno local
 - [ ] 2.2 Migración del esquema: `rooms`, `room_players`, `games`, `game_players`, `game_roles`, `votes`, `words` (CONTEXTO §4)
 - [ ] 2.3 Migración de seguridad: RLS, esquema `private`, `private.is_room_member`, política de lectura de `rooms`, Realtime, `revoke`/`grant`
 - [ ] 2.4 Funciones auxiliares en `private`: código libre, subir versión, miembro y anfitrión, errores con código, foto del estado, traspasar anfitrión
@@ -96,7 +96,7 @@ Aceptación: `check`, `test:db` y `test:e2e` pasan; `npm run build` sin avisos; 
 
 ## Bloqueos
 
-- 2.1 y todo lo que necesita la base de datos local (2.x, 4.x, `test:db`, e2e) · Docker no está instalado: no existe el comando `docker`. Fran: instalar Docker Desktop, arrancarlo y comprobar que `docker version` responde.
+- Ninguno. (Resuelto: Docker Desktop instalado; su `docker.exe` está en `AppDataocalprogramsdockerdesktopesourcesbin` y no en el path de git bash, pero la cli de supabase lo encuentra.)
 
 ## Descubierto por el camino
 
