@@ -1,5 +1,25 @@
 # Decisiones
 
+## 2026-10-08 · 2.5 · Expulsar a media partida antes de que exista la partida
+
+`kick_player` ya aplica la regla de CONTEXTO (en partida, solo a un desconectado) y quita al miembro, pero todavía no marca la eliminación en la partida: eso es la tarea 4.4, cuando existan `start_game` y las fases.
+Descartado: escribir ahora la lógica de abandono sin las funciones de partida que la prueban.
+
+## 2026-10-08 · 2.5 · `leave_room` devuelve `null`
+
+CONTEXTO dice que las acciones devuelven la foto para quien llama, pero quien sale deja de ser miembro y no tiene foto. `leave_room` devuelve `null` y el cliente vuelve al inicio.
+Descartado: devolver una foto sin `me`, que obligaría al cliente a tratar un estado que no existe.
+
+## 2026-10-08 · 2.5 · Orden de las comprobaciones de `join_room`
+
+Primero se busca y bloquea la sala por código (`room_not_found`); si quien llama ya es miembro, se devuelve el estado sin validar el nombre (reconexión). Después: nombre válido, sala llena y nombre repetido. Los códigos se aceptan en minúsculas y con espacios alrededor.
+Descartado: validar el nombre antes que la sala, porque a quien reconecta le daría un error de nombre que no ha escrito.
+
+## 2026-10-08 · 2.2 · `joined_at` con `clock_timestamp()`
+
+`joined_at` usa `clock_timestamp()` y no `now()`, para que dos entradas en la misma transacción tengan orden distinto: decide el traspaso de anfitrión y el color del avatar.
+Descartado: `now()`, que empata dentro de una transacción.
+
 ## 2026-10-08 · 1.7 · Playwright instalado antes de la fase 6
 
 Se instala `@playwright/test` (permitido en `CLAUDE.md`) para comparar `/dev/componentes` con la referencia a 360, 390 y 430 px y medir desbordes. Usa el Chrome del sistema (`channel: 'chrome'`), sin descargar navegadores. Las capturas se hacen con un guion temporal fuera del repositorio; los e2e llegan en la fase 6.

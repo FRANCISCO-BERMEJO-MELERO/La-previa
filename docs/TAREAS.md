@@ -31,7 +31,7 @@ Aceptación: `npm run check` pasa; `/dev/componentes` a 390 px se parece a la re
 - [x] 2.2 Migración del esquema: `rooms`, `room_players`, `games`, `game_players`, `game_roles`, `votes`, `words` (CONTEXTO §4)
 - [x] 2.3 Migración de seguridad: RLS, esquema `private`, `private.is_room_member`, política de lectura de `rooms`, Realtime, `revoke`/`grant`
 - [x] 2.4 Funciones auxiliares en `private`: código libre, subir versión, miembro y anfitrión, errores con código, foto del estado, traspasar anfitrión
-- [ ] 2.5 RPC de sala: `create_room`, `join_room`, `get_room_state`, `set_game`, `kick_player`, `leave_room`
+- [x] 2.5 RPC de sala: `create_room`, `join_room`, `get_room_state`, `set_game`, `kick_player`, `leave_room`
 - [ ] 2.6 Pruebas pgTAP de todo lo anterior (accesos directos, salas ajenas, códigos, `join_room`, permisos de anfitrión, `leave_room`, traspaso automático, versión estable)
 
 Aceptación: `npm run test:db` pasa tras `supabase db reset`.
@@ -96,7 +96,7 @@ Aceptación: `check`, `test:db` y `test:e2e` pasan; `npm run build` sin avisos; 
 
 ## Bloqueos
 
-- Ninguno. (Resuelto: Docker Desktop instalado; su `docker.exe` está en `AppDataocalprogramsdockerdesktopesourcesbin` y no en el path de git bash, pero la cli de supabase lo encuentra.)
+- Ninguno. (Resuelto: Docker Desktop instalado. Su `docker.exe` está en `AppData\Local\Programs\DockerDesktop\resources\bin` y no en el PATH de Git Bash, pero la CLI de Supabase lo encuentra.)
 
 ## Descubierto por el camino
 
