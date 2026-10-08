@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 2 terminada · última actualización 2026-10-08
+Estado: fase 3 en curso · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
@@ -38,7 +38,7 @@ Aceptación: `npm run test:db` pasa tras `supabase db reset`.
 
 ## Fase 3 · La sala en la aplicación
 
-- [ ] 3.1 Cliente de Supabase e inicio de sesión anónimo perezoso; variables de entorno validadas
+- [x] 3.1 Cliente de Supabase e inicio de sesión anónimo perezoso; variables de entorno validadas
 - [ ] 3.2 Tipos de la foto del estado y validación en tiempo de ejecución
 - [ ] 3.3 Capa de acciones por RPC y traducción de códigos de error
 - [ ] 3.4 Hook de sincronización (foto inicial, Realtime, sondeo 10 s, primer plano, reconexión, descarte de fotos antiguas, limpieza) con tests
