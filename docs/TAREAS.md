@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 0 terminada · última actualización 2026-10-08
+Estado: fase 1 en curso · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 - [x] 0.1 Crear `docs/TAREAS.md` y `docs/DECISIONES.md`
@@ -11,7 +11,7 @@ Estado: fase 0 terminada · última actualización 2026-10-08
 Aceptación: existen los dos documentos; un commit de prueba con `Co-Authored-By` es rechazado.
 
 ## Fase 1 · Esqueleto de la aplicación
-- [ ] 1.1 App de Next (App Router, TypeScript, `src/`, sin código de ejemplo); `tsconfig` con `strict`, `noUncheckedIndexedAccess` y `noImplicitOverride`
+- [x] 1.1 App de Next (App Router, TypeScript, `src/`, sin código de ejemplo); `tsconfig` con `strict`, `noUncheckedIndexedAccess` y `noImplicitOverride`
 - [ ] 1.2 ESLint estricto y Prettier; scripts `lint`, `typecheck`, `test`, `test:db`, `test:e2e`, `format` y `check`
 - [ ] 1.3 Vitest con un test de humo
 - [ ] 1.4 Tailwind v4 con tokens de Verbena (CONTEXTO §8); fuentes Archivo y Archivo Black con `next/font`; metadatos, `lang="es"`, `viewport` y color de tema
