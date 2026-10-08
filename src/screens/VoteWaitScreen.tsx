@@ -39,7 +39,7 @@ export function VoteWaitScreen({
       }
     >
       <Card>
-        <p className="text-label font-bold uppercase tracking-label">{copy.vote.received}</p>
+        <h1 className="text-label font-bold uppercase tracking-label">{copy.vote.received}</h1>
         <p className="font-display text-7xl">{copy.vote.count(voted, voters.length)}</p>
         <div className="flex gap-1.5" aria-hidden="true">
           {voters.map((voter, index) => (

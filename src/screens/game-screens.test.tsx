@@ -98,6 +98,39 @@ describe('DealScreen (06 y 07)', () => {
   });
 });
 
+describe('encabezados', () => {
+  it('el reparto tiene como encabezado la palabra o que eres el impostor', () => {
+    const { unmount } = render(
+      <DealScreen
+        {...chrome}
+        role="player"
+        word="Paella"
+        category="Comida"
+        players={avatars}
+        connected={1}
+      />,
+    );
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Paella');
+    unmount();
+    render(
+      <DealScreen
+        {...chrome}
+        role="impostor"
+        word={null}
+        category="Comida"
+        players={avatars}
+        connected={1}
+      />,
+    );
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Impos.?tor/);
+  });
+
+  it('la espera de votos tiene encabezado', () => {
+    render(<VoteWaitScreen {...chrome} voters={[p('Fran')]} myVote={null} busy={false} />);
+    expect(screen.getByRole('heading', { level: 1, name: 'Votos recibidos' })).toBeInTheDocument();
+  });
+});
+
 describe('LateScreen (05)', () => {
   it('saluda a quien llega tarde y cuenta quién juega', () => {
     render(<LateScreen {...chrome} myName="Sergio" playing={avatars} />);

@@ -30,9 +30,9 @@ export function DealScreen({
           <Pill tone="tomato" caps onDark>
             {copy.deal.impostorPill}
           </Pill>
-          <p className="flex flex-1 items-center font-display text-display-md text-ground uppercase">
+          <h1 className="flex flex-1 items-center font-display text-display-md text-ground uppercase">
             {copy.deal.impostorTitle}
-          </p>
+          </h1>
           <CategoryRow label={copy.deal.impostorClue} category={category} onDark />
         </Card>
       ) : (
@@ -40,11 +40,11 @@ export function DealScreen({
           <Pill tone="sky" caps>
             {copy.deal.wordPill}
           </Pill>
-          <p
+          <h1
             className={`flex flex-1 items-center font-display uppercase ${fitDisplay(word ?? '')}`}
           >
             {word}
-          </p>
+          </h1>
           <CategoryRow label={copy.deal.category} category={category} />
         </Card>
       )}

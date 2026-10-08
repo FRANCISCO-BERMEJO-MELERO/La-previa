@@ -40,3 +40,30 @@ describe('tokens de Verbena', () => {
     expect(css).toMatch(/prefers-reduced-motion: reduce\)\s*\{\s*transition: none;/);
   });
 });
+
+// Contraste WCAG 2.1: luminancia relativa de un color sRGB en hexadecimal.
+function luminance(hex: string): number {
+  const channels = [1, 3, 5].map((start) => parseInt(hex.slice(start, start + 2), 16) / 255);
+  const [r = 0, g = 0, b = 0] = channels.map((c) =>
+    c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4,
+  );
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function contrast(a: string, b: string): number {
+  const [la, lb] = [luminance(a), luminance(b)];
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
+describe('contraste de la paleta (AA, 4,5:1)', () => {
+  const backgrounds = Object.entries(verbena).filter(([name]) => name !== 'ink');
+
+  it.each(backgrounds)('el texto ink se lee sobre %s', (_, background) => {
+    expect(contrast(verbena.ink, background)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('el texto blanco y el titular ground se leen sobre ink', () => {
+    expect(contrast(verbena.paper, verbena.ink)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(verbena.ground, verbena.ink)).toBeGreaterThanOrEqual(4.5);
+  });
+});

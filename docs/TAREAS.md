@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 6 terminada · última actualización 2026-10-08
+Estado: fase 7 en curso · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
@@ -85,7 +85,7 @@ Aceptación: `npm run test:e2e` pasa tres veces seguidas.
 
 ## Fase 7 · Cierre
 
-- [ ] 7.1 Accesibilidad
+- [x] 7.1 Accesibilidad
 - [ ] 7.2 `README.md`
 - [ ] 7.3 `docs/DESPLIEGUE.md`
 - [ ] 7.4 GitHub Actions con `check` y `test:db`

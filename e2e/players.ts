@@ -89,7 +89,7 @@ export function pageOf(players: Players, name: string): Page {
 /** La palabra tal cual está en el DOM (la pantalla la muestra en mayúsculas por CSS). */
 export async function secretWord(page: Page): Promise<string> {
   await expect(page.getByText('Tu palabra')).toBeVisible();
-  const word = await page.locator('main p.font-display').first().textContent();
+  const word = await page.getByRole('heading', { level: 1 }).textContent();
   if (!word) throw new Error('No se ve la palabra');
   return word;
 }
