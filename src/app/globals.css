@@ -1,0 +1,89 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Solo existe la paleta de Verbena: se anulan los colores, sombras y radios de Tailwind. */
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-ground: #ffd23f;
+  --color-ink: #111111;
+  --color-paper: #ffffff;
+  --color-tomato: #ff6b5e;
+  --color-sky: #7fd8ff;
+  --color-lime: #b8f28a;
+  --color-lilac: #d9b8ff;
+  --color-orange: #ffb36b;
+  --color-ground-soft: #ffe98f;
+  --color-field: #fff6d6;
+  --color-field-error: #ffe1de;
+
+  --shadow-*: initial;
+  --shadow-hard: 6px 6px 0 var(--color-ink);
+  --shadow-hard-lg: 8px 8px 0 var(--color-ink);
+  --shadow-hard-tomato: 6px 6px 0 var(--color-tomato);
+  --shadow-hard-lg-tomato: 8px 8px 0 var(--color-tomato);
+
+  --radius-*: initial;
+  --radius-control: 12px;
+  --radius-chip: 14px;
+  --radius-button: 16px;
+  --radius-card: 20px;
+  --radius-hero: 24px;
+
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.2;
+  --text-md: 0.9375rem;
+  --text-md--line-height: 1.35;
+  --text-lead: 1.0625rem;
+  --text-lead--line-height: 1.4;
+  --text-title: 1.375rem;
+  --text-title--line-height: 1.1;
+  --text-display-sm: 2.375rem;
+  --text-display-sm--line-height: 0.95;
+  --text-display-md: 3rem;
+  --text-display-md--line-height: 0.95;
+  --text-display-lg: 4.25rem;
+  --text-display-lg--line-height: 0.95;
+  --text-display-xl: 5.25rem;
+  --text-display-xl--line-height: 0.88;
+
+  --tracking-label: 0.08em;
+  --tracking-code: 0.3em;
+}
+
+@theme inline {
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo-black), var(--font-archivo), ui-sans-serif, sans-serif;
+}
+
+/* Giro de las tarjetas protagonistas (±1,5°) y de píldoras y sellos (3°–4°). */
+@utility tilt-left {
+  rotate: -1.5deg;
+}
+
+@utility tilt-right {
+  rotate: 1.5deg;
+}
+
+@utility tilt-pill-left {
+  rotate: -3deg;
+}
+
+@utility tilt-pill-right {
+  rotate: 4deg;
+}
+
+@utility press {
+  transition:
+    translate 80ms ease-out,
+    box-shadow 80ms ease-out;
+
+  &:active:not(:disabled) {
+    translate: 6px 6px;
+    box-shadow: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
