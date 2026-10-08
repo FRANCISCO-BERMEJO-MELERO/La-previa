@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-08 · 6.1 · Cómo corren los e2e
+
+Playwright arranca `next dev` en el puerto 3123 (o reutiliza uno abierto) contra el Supabase local, con el Chrome del sistema (`channel: 'chrome'`), vista de móvil de 390 × 844 y un contexto por jugador, que es una sesión anónima distinta como un móvil distinto. Un solo trabajador y sin reintentos: un fallo intermitente tiene que verse, no taparse.
+Descartado: reintentos automáticos, que esconderían justo los fallos de sincronización que estas pruebas buscan.
+
+## 2026-10-08 · 6.1 · Límite local de inicios anónimos
+
+En `supabase/config.toml` se sube `auth.rate_limit.anonymous_users` de 30 a 1000 por hora: cada pasada de e2e crea una docena de jugadores anónimos y el criterio de aceptación pide tres pasadas seguidas. Solo afecta al entorno local; en producción el límite se ajusta en el panel de Supabase (anotado para `docs/DESPLIEGUE.md`).
+Descartado: esperar una hora entre pasadas.
+
 ## 2026-10-08 · 5.6 · Echar a un desconectado durante la partida
 
 CONTEXTO §2 permite al anfitrión echar durante una partida a un jugador desconectado, pero ninguna pantalla lo dibuja. Se resuelve con los componentes existentes en la espera de votos (09), que es donde un desconectado bloquea: el anfitrión toca su ficha y confirma con el mismo diálogo que en la sala de espera. El diálogo pasa a pintarlo el contenedor para servir a las dos pantallas.

@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 5 terminada · última actualización 2026-10-08
+Estado: fase 6 en curso · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
@@ -75,7 +75,7 @@ Aceptación: tres navegadores juegan dos partidas seguidas; nada desborda a 360 
 
 ## Fase 6 · Pruebas de extremo a extremo
 
-- [ ] 6.1 Partida feliz con 3 jugadores
+- [x] 6.1 Partida feliz con 3 jugadores
 - [ ] 6.2 Reconexión a media partida
 - [ ] 6.3 Entrar tarde y jugar la siguiente
 - [ ] 6.4 Empate y segunda votación
