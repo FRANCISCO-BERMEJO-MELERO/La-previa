@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 4 en curso · última actualización 2026-10-08
+Estado: fase 4 terminada · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
@@ -58,7 +58,7 @@ Aceptación: dos navegadores en local: crear, unirse por código y enlace, lista
 - [x] 4.3 `open_voting`, `cast_vote`, `close_voting`, `continue_game`, `back_to_lobby`
 - [x] 4.4 Abandono y expulsión a media partida en las cuatro fases
 - [x] 4.5 Foto del estado con `game`
-- [ ] 4.6 Pruebas pgTAP (secreto, `start_game`, reparto, `cast_vote`, `close_voting`, victorias, dos impostores, abandonos, palabras sin repetir, entrar tarde)
+- [x] 4.6 Pruebas pgTAP (secreto, `start_game`, reparto, `cast_vote`, `close_voting`, victorias, dos impostores, abandonos, palabras sin repetir, entrar tarde)
 
 Aceptación: `npm run test:db` pasa desde cero.
 
