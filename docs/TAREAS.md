@@ -30,7 +30,7 @@ Aceptación: `npm run check` pasa; `/dev/componentes` a 390 px se parece a la re
   - [x] 2.1b Comprobar que `supabase start` levanta el entorno local
 - [x] 2.2 Migración del esquema: `rooms`, `room_players`, `games`, `game_players`, `game_roles`, `votes`, `words` (CONTEXTO §4)
 - [x] 2.3 Migración de seguridad: RLS, esquema `private`, `private.is_room_member`, política de lectura de `rooms`, Realtime, `revoke`/`grant`
-- [ ] 2.4 Funciones auxiliares en `private`: código libre, subir versión, miembro y anfitrión, errores con código, foto del estado, traspasar anfitrión
+- [x] 2.4 Funciones auxiliares en `private`: código libre, subir versión, miembro y anfitrión, errores con código, foto del estado, traspasar anfitrión
 - [ ] 2.5 RPC de sala: `create_room`, `join_room`, `get_room_state`, `set_game`, `kick_player`, `leave_room`
 - [ ] 2.6 Pruebas pgTAP de todo lo anterior (accesos directos, salas ajenas, códigos, `join_room`, permisos de anfitrión, `leave_room`, traspaso automático, versión estable)
 
