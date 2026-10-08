@@ -75,3 +75,6 @@ desktop.ini
 
 # Configuración local de Claude Code
 .claude/settings.local.json
+
+# Notas y listas personales (no se versionan)
+*.local.md
