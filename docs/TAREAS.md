@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 5 en curso · última actualización 2026-10-08
+Estado: fase 5 terminada · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
@@ -69,7 +69,7 @@ Aceptación: `npm run test:db` pasa desde cero.
 - [x] 5.3 Pantallas 10 y 11 (revelación y empate)
 - [x] 5.4 Pantallas 12 (eliminado) y 05 (entrar tarde)
 - [x] 5.5 Pantallas 13 y 14 (resultado), volver a jugar y cambiar de juego
-- [ ] 5.6 Variantes de CONTEXTO §6 no dibujadas
+- [x] 5.6 Variantes de CONTEXTO §6 no dibujadas
 
 Aceptación: tres navegadores juegan dos partidas seguidas; nada desborda a 360 px.
 

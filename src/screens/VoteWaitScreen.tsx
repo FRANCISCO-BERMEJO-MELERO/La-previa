@@ -3,6 +3,7 @@ import { PlayerChip } from '@/components/PlayerChip';
 import { copy } from '@/lib/copy';
 import type { ParticipantView } from '@/lib/game-view';
 import { GameScreen, type GameScreenProps } from './GameScreen';
+import { KickableChip } from './KickableChip';
 
 type VoteWaitScreenProps = GameScreenProps & {
   /** Vivos que votan; solo se sabe si han votado, nunca a quién. */
@@ -11,10 +12,21 @@ type VoteWaitScreenProps = GameScreenProps & {
   myVote: string | null;
   /** Texto para el anfitrión encima del botón de cerrar. */
   hint?: string;
+  busy: boolean;
+  /** Solo para el anfitrión: echar a un desconectado a media partida. */
+  onKickRequest?: (userId: string) => void;
 };
 
 /** 09: esperando votos. Se ve quién ha votado, nunca a quién ni el recuento. */
-export function VoteWaitScreen({ voters, myVote, hint, footer, ...chrome }: VoteWaitScreenProps) {
+export function VoteWaitScreen({
+  voters,
+  myVote,
+  hint,
+  busy,
+  onKickRequest,
+  footer,
+  ...chrome
+}: VoteWaitScreenProps) {
   const voted = voters.filter((voter) => voter.hasVoted).length;
   return (
     <GameScreen
@@ -40,8 +52,8 @@ export function VoteWaitScreen({ voters, myVote, hint, footer, ...chrome }: Vote
       </Card>
       {myVote ? <p className="text-base font-bold">{copy.vote.mine(myVote)}</p> : null}
       <ul className="grid grid-cols-2 gap-3">
-        {voters.map((voter) => (
-          <li key={voter.userId} className="min-w-0">
+        {voters.map((voter) => {
+          const chip = (
             <PlayerChip
               name={voter.name}
               muted={!voter.hasVoted}
@@ -53,8 +65,25 @@ export function VoteWaitScreen({ voters, myVote, hint, footer, ...chrome }: Vote
                     : copy.lobby.disconnected
               }
             />
-          </li>
-        ))}
+          );
+          return (
+            <li key={voter.userId} className="min-w-0">
+              {onKickRequest && !voter.connected ? (
+                <KickableChip
+                  name={voter.name}
+                  disabled={busy}
+                  onKickRequest={() => {
+                    onKickRequest(voter.userId);
+                  }}
+                >
+                  {chip}
+                </KickableChip>
+              ) : (
+                chip
+              )}
+            </li>
+          );
+        })}
       </ul>
     </GameScreen>
   );

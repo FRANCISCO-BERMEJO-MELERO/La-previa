@@ -160,7 +160,7 @@ describe('VoteWaitScreen (09)', () => {
   ];
 
   it('cuenta los votos sin decir a quién y marca quién falta', () => {
-    render(<VoteWaitScreen {...chrome} voters={voters} myVote="Marta" />);
+    render(<VoteWaitScreen {...chrome} voters={voters} myVote="Marta" busy={false} />);
     expect(screen.getByText('2 de 4')).toBeInTheDocument();
     expect(screen.getByText('Tu voto: Marta')).toBeInTheDocument();
     expect(screen.getAllByText('Ha votado')).toHaveLength(2);
@@ -174,6 +174,7 @@ describe('VoteWaitScreen (09)', () => {
         {...chrome}
         voters={voters}
         myVote={null}
+        busy={false}
         hint="Puedes cerrar la votación con los votos que haya."
       />,
     );
@@ -181,6 +182,31 @@ describe('VoteWaitScreen (09)', () => {
       screen.getByText('Puedes cerrar la votación con los votos que haya.'),
     ).toBeInTheDocument();
     expect(screen.queryByText(/Tu voto/)).not.toBeInTheDocument();
+  });
+});
+
+describe('VoteWaitScreen (09): echar a desconectados', () => {
+  const voters = [p('Fran', { hasVoted: true }), p('Paula', { connected: false })];
+
+  it('el anfitrión puede tocar la ficha de un desconectado para echarlo', () => {
+    const onKickRequest = vi.fn();
+    render(
+      <VoteWaitScreen
+        {...chrome}
+        voters={voters}
+        myVote={null}
+        busy={false}
+        onKickRequest={onKickRequest}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: 'Echar a Fran' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Echar a Paula' }));
+    expect(onKickRequest).toHaveBeenCalledWith('id-Paula');
+  });
+
+  it('quien no es anfitrión no puede echar a nadie', () => {
+    render(<VoteWaitScreen {...chrome} voters={voters} myVote={null} busy={false} />);
+    expect(screen.queryByRole('button', { name: /Echar a/ })).not.toBeInTheDocument();
   });
 });
 

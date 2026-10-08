@@ -32,12 +32,9 @@ function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {})
     onShare: vi.fn(),
     onShowQr: vi.fn(),
     onCloseQr: vi.fn(),
-    kickTarget: null,
     onImpostorsChange: vi.fn(),
     onStart: vi.fn(),
     onKickRequest: vi.fn(),
-    onKickCancel: vi.fn(),
-    onKickConfirm: vi.fn(),
     ...overrides,
   };
   render(<LobbyScreen {...props} />);
@@ -114,21 +111,6 @@ describe('LobbyScreen (04)', () => {
     expect(screen.queryByRole('button', { name: 'Echar a Fran' })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Echar a Álvaro' }));
     expect(props.onKickRequest).toHaveBeenCalledWith(ids.alvaro);
-  });
-
-  it('pide confirmación antes de echar', () => {
-    const alvaro = lobbySnapshot().players[2] ?? null;
-    const props = renderLobby({ kickTarget: alvaro });
-    const dialog = screen.getByRole('dialog', { name: '¿Echar a Álvaro?' });
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Echar' }));
-    expect(props.onKickConfirm).toHaveBeenCalledTimes(1);
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancelar' }));
-    expect(props.onKickCancel).toHaveBeenCalled();
-  });
-
-  it('sin jugador elegido no hay confirmación abierta', () => {
-    renderLobby();
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it('el anfitrión ajusta los impostores dentro de los límites', () => {

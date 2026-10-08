@@ -290,6 +290,19 @@ describe('Room', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
+  it('en plena votación, el anfitrión echa a un desconectado con confirmación', async () => {
+    mocks.kickPlayer.mockResolvedValue({ ok: true, data: inGame({ phase: 'reveal' }) });
+    ready(inGame({ phase: 'voting', my: { ...gameState().my, voted_for: ids.lucia } }));
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Echar a Álvaro' }));
+    expect(screen.getByRole('dialog', { name: '¿Echar a Álvaro?' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Echar' }));
+    expect(mocks.kickPlayer).toHaveBeenCalledWith(ids.room, ids.alvaro);
+    await waitFor(() => {
+      expect(mocks.apply).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it('cambiar de juego vuelve a la sala y abre el selector', async () => {
     mocks.backToLobby.mockResolvedValue({ ok: true, data: lobbySnapshot() });
     ready(finished());

@@ -37,6 +37,7 @@ import { viewFor } from '@/lib/view';
 import { DealScreen } from '@/screens/DealScreen';
 import { GamePickerScreen } from '@/screens/GamePickerScreen';
 import { HostControls } from '@/screens/HostControls';
+import { KickDialog } from '@/screens/KickDialog';
 import { LateScreen } from '@/screens/LateScreen';
 import { LeaveDialog } from '@/screens/LeaveDialog';
 import { LobbyScreen } from '@/screens/LobbyScreen';
@@ -118,9 +119,23 @@ export function Room({ initial, fresh }: RoomProps) {
 
   const notice = sync.offline ? <OfflineNotice>{copy.errors.offline}</OfflineNotice> : null;
 
+  const kickTarget = snapshot.players.find((player) => player.user_id === kickTargetId);
+
   const withLeaveDialog = (screen: ReactNode) => (
     <>
       {screen}
+      <KickDialog
+        name={kickTarget?.name ?? null}
+        busy={busy}
+        onCancel={() => {
+          setKickTargetId(null);
+        }}
+        onConfirm={() => {
+          if (!kickTarget) return;
+          setKickTargetId(null);
+          void run(() => kickPlayer(roomId, kickTarget.user_id));
+        }}
+      />
       <LeaveDialog
         open={leaveOpen}
         busy={busy}
@@ -152,6 +167,7 @@ export function Room({ initial, fresh }: RoomProps) {
         error={errorText}
         voteTarget={voteTarget}
         onSelectTarget={setVoteTarget}
+        onKickRequest={setKickTargetId}
         onVote={() => {
           if (!voteTarget) return;
           void run(() => castVote(roomId, voteTarget)).then((ok) => {
@@ -230,20 +246,11 @@ export function Room({ initial, fresh }: RoomProps) {
       onCloseQr={() => {
         setQrOpen(false);
       }}
-      kickTarget={snapshot.players.find((player) => player.user_id === kickTargetId) ?? null}
       onImpostorsChange={setImpostors}
       onStart={() => {
         void run(() => startGame(roomId, impostorCount));
       }}
       onKickRequest={setKickTargetId}
-      onKickCancel={() => {
-        setKickTargetId(null);
-      }}
-      onKickConfirm={() => {
-        if (!kickTargetId) return;
-        setKickTargetId(null);
-        void run(() => kickPlayer(roomId, kickTargetId));
-      }}
     />,
   );
 }
@@ -260,6 +267,7 @@ type GameViewProps = {
   error?: string;
   voteTarget: string | null;
   onSelectTarget: (userId: string) => void;
+  onKickRequest: (userId: string) => void;
   onVote: () => void;
   onOpenVoting: () => void;
   onCloseVoting: () => void;
@@ -281,6 +289,7 @@ function GameView({
   error,
   voteTarget,
   onSelectTarget,
+  onKickRequest,
   onVote,
   ...handlers
 }: GameViewProps) {
@@ -353,6 +362,8 @@ function GameView({
           voters={all.filter((p) => p.alive)}
           myVote={myVote?.name ?? null}
           hint={isHost ? copy.vote.closeHint : undefined}
+          busy={busy}
+          onKickRequest={isHost ? onKickRequest : undefined}
         />
       );
     }

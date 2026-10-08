@@ -1,5 +1,14 @@
 # Decisiones
 
+## 2026-10-08 · 5.6 · Echar a un desconectado durante la partida
+
+CONTEXTO §2 permite al anfitrión echar durante una partida a un jugador desconectado, pero ninguna pantalla lo dibuja. Se resuelve con los componentes existentes en la espera de votos (09), que es donde un desconectado bloquea: el anfitrión toca su ficha y confirma con el mismo diálogo que en la sala de espera. El diálogo pasa a pintarlo el contenedor para servir a las dos pantallas.
+Descartado: añadirlo también al reparto, donde un desconectado no impide nada porque el anfitrión decide cuándo se vota.
+
+## 2026-10-08 · 5.6 · Repaso de variantes de CONTEXTO §6
+
+Revisadas una a una: caja de espera para quien no es anfitrión, anfitrión que aún no ha votado (08) y cierra en la 09, anfitrión eliminado con el botón de la fase (12), sellos y título "Se ha ido" de la revelación, empate sin votos, resultado neutro para quien llegó tarde, varios impostores en el resultado, salir desde la píldora con confirmación, QR y enlace, y estados de cargando, sin conexión y sala inexistente. Todas tienen test.
+
 ## 2026-10-08 · 5.1–5.5 · Un solo commit para las pantallas de partida
 
 Las tareas 5.1 a 5.5 comparten el contenedor `Room` (que elige la pantalla según `viewFor`) y los controles del anfitrión, que son el mismo componente para todas las fases. Partirlas en cinco commits obligaba a escribir versiones intermedias del contenedor que nunca iban a existir, así que van juntas en un commit y la 5.6 (repaso de variantes) en otro.

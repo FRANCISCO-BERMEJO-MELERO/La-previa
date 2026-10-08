@@ -12,6 +12,7 @@ import { copy } from '@/lib/copy';
 import { impostorLimits } from '@/lib/impostors';
 import type { ShareOutcome } from '@/lib/share';
 import type { RoomPlayer, Snapshot } from '@/lib/snapshot';
+import { KickableChip } from './KickableChip';
 
 export const MAX_PLAYERS = 16;
 
@@ -31,13 +32,9 @@ type LobbyScreenProps = {
   onShare: () => void;
   onShowQr: () => void;
   onCloseQr: () => void;
-  /** Jugador al que el anfitrión quiere echar; abre la confirmación. */
-  kickTarget: RoomPlayer | null;
   onImpostorsChange: (count: number) => void;
   onStart: () => void;
   onKickRequest: (userId: string) => void;
-  onKickCancel: () => void;
-  onKickConfirm: () => void;
 };
 
 export function LobbyScreen({
@@ -53,12 +50,9 @@ export function LobbyScreen({
   onShare,
   onShowQr,
   onCloseQr,
-  kickTarget,
   onImpostorsChange,
   onStart,
   onKickRequest,
-  onKickCancel,
-  onKickConfirm,
 }: LobbyScreenProps) {
   const { players, room, me } = snapshot;
   const hostName = players.find((player) => player.user_id === room.host_id)?.name ?? '';
@@ -117,19 +111,15 @@ export function LobbyScreen({
           return (
             <li key={player.user_id} className="min-w-0">
               {kickable ? (
-                // El anfitrión toca la ficha para echar: un botón aparte no cabe a 360 px.
-                <button
-                  type="button"
-                  aria-label={copy.lobby.kick(player.name)}
-                  aria-haspopup="dialog"
+                <KickableChip
+                  name={player.name}
                   disabled={busy}
-                  onClick={() => {
+                  onKickRequest={() => {
                     onKickRequest(player.user_id);
                   }}
-                  className="block w-full rounded-chip text-left"
                 >
                   {chip}
-                </button>
+                </KickableChip>
               ) : (
                 chip
               )}
@@ -169,18 +159,6 @@ export function LobbyScreen({
       >
         <QrCode value={roomUrl} label={copy.lobby.qrLabel(room.code)} />
         <p className="text-center font-display text-5xl tracking-wide">{room.code}</p>
-      </Dialog>
-
-      <Dialog
-        open={kickTarget !== null}
-        title={kickTarget ? copy.lobby.kickTitle(kickTarget.name) : ''}
-        closeLabel={copy.room.cancel}
-        onClose={onKickCancel}
-      >
-        <p className="text-base">{copy.lobby.kickText}</p>
-        <Button fullWidth disabled={busy} onClick={onKickConfirm}>
-          {copy.lobby.kickConfirm}
-        </Button>
       </Dialog>
     </Screen>
   );
