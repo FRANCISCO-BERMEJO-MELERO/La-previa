@@ -15,7 +15,7 @@ Aceptación: existen los dos documentos; un commit de prueba con `Co-Authored-By
 
 - [x] 1.1 App de Next (App Router, TypeScript, `src/`, sin código de ejemplo); `tsconfig` con `strict`, `noUncheckedIndexedAccess` y `noImplicitOverride`
 - [x] 1.2 ESLint estricto y Prettier; scripts `lint`, `typecheck`, `test`, `test:db`, `test:e2e`, `format` y `check`
-- [ ] 1.3 Vitest con un test de humo
+- [x] 1.3 Vitest con un test de humo
 - [ ] 1.4 Tailwind v4 con tokens de Verbena (CONTEXTO §8); fuentes Archivo y Archivo Black con `next/font`; metadatos, `lang="es"`, `viewport` y color de tema
 - [ ] 1.5 Componentes base: `Screen`, `Button`, `Card`, `Pill`, `Avatar`, `PlayerChip`, `WaitingBox`, `TextField`, `Dialog`
 - [ ] 1.6 Módulo único de textos (`src/lib/copy.ts`)
