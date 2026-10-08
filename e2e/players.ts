@@ -51,6 +51,35 @@ export function impostorOf(roles: Record<string, 'player' | 'impostor'>): string
   return name;
 }
 
+/**
+ * Sala con estos jugadores (el primero es el anfitrión) y partida empezada con un impostor.
+ * Devuelve las páginas por nombre, sus roles y el código.
+ */
+export async function startedGame(browser: Browser, names: string[]) {
+  const [hostName, ...rest] = names;
+  if (!hostName) throw new Error('Hace falta al menos un jugador');
+  const players: Players = { [hostName]: await newPlayer(browser) };
+  const host = players[hostName];
+  if (!host) throw new Error('Falta el anfitrión');
+  const code = await createRoom(host, hostName);
+  for (const name of rest) {
+    const page = await newPlayer(browser);
+    await joinByLink(page, code, name);
+    await expect(page.getByText('Código de la sala')).toBeVisible();
+    players[name] = page;
+  }
+  await expect(host.getByText(`${String(names.length)} de 16`)).toBeVisible();
+  await host.getByRole('button', { name: 'Empezar partida' }).click();
+  const roles = await rolesOf(players);
+  return { players, host, code, roles, impostor: impostorOf(roles) };
+}
+
+export function pageOf(players: Players, name: string): Page {
+  const page = players[name];
+  if (!page) throw new Error(`No existe el jugador ${name}`);
+  return page;
+}
+
 /** La palabra tal cual está en el DOM (la pantalla la muestra en mayúsculas por CSS). */
 export async function secretWord(page: Page): Promise<string> {
   await expect(page.getByText('Tu palabra')).toBeVisible();
