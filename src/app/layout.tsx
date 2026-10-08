@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import { copy } from '@/lib/copy';
 import { archivo, archivoBlack } from './fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'La Previa',
-  description: 'Juegos de fiesta para jugar en persona, cada uno con su móvil. Sin registro.',
+  title: copy.meta.title,
+  description: copy.meta.description,
 };
 
 // Debe coincidir con --color-ground de globals.css.

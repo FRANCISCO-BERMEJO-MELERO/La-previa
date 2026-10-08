@@ -18,7 +18,7 @@ Aceptación: existen los dos documentos; un commit de prueba con `Co-Authored-By
 - [x] 1.3 Vitest con un test de humo
 - [x] 1.4 Tailwind v4 con tokens de Verbena (CONTEXTO §8); fuentes Archivo y Archivo Black con `next/font`; metadatos, `lang="es"`, `viewport` y color de tema
 - [x] 1.5 Componentes base: `Screen`, `Button`, `Card`, `Pill`, `Avatar`, `PlayerChip`, `WaitingBox`, `TextField`, `Dialog`
-- [ ] 1.6 Módulo único de textos (`src/lib/copy.ts`)
+- [x] 1.6 Módulo único de textos (`src/lib/copy.ts`)
 - [ ] 1.7 Página `/dev/componentes`, excluida en producción
 
 Aceptación: `npm run check` pasa; `/dev/componentes` a 390 px se parece a la referencia.
