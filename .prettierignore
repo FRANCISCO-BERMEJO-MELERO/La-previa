@@ -1,0 +1,10 @@
+.next
+out
+coverage
+node_modules
+package-lock.json
+next-env.d.ts
+docs/referencia-pantallas.html
+CLAUDE.md
+docs/CONTEXTO.md
+docs/PLAN.md
