@@ -24,6 +24,12 @@ function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {})
     snapshot: lobbySnapshot(),
     impostors: 1,
     busy: false,
+    roomUrl: 'https://laprevia.app/sala/KTRM',
+    qrOpen: false,
+    shareOutcome: null,
+    onShare: vi.fn(),
+    onShowQr: vi.fn(),
+    onCloseQr: vi.fn(),
     kickTarget: null,
     onImpostorsChange: vi.fn(),
     onKickRequest: vi.fn(),
@@ -47,6 +53,40 @@ describe('LobbyScreen (04)', () => {
   it('muestra el código de la sala', () => {
     renderLobby();
     expect(screen.getByText('KTRM')).toBeInTheDocument();
+  });
+
+  it('deja compartir el enlace y avisa cuando se ha copiado', () => {
+    const props = renderLobby();
+    fireEvent.click(screen.getByRole('button', { name: 'Copiar enlace' }));
+    expect(props.onShare).toHaveBeenCalledTimes(1);
+  });
+
+  it('cuando el enlace se ha copiado lo dice en el botón', () => {
+    renderLobby({ shareOutcome: 'copied' });
+    expect(screen.getByRole('button', { name: 'Enlace copiado' })).toBeInTheDocument();
+  });
+
+  it('si no se pudo copiar, da el código como salida', () => {
+    renderLobby({ shareOutcome: 'failed' });
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'No se ha podido copiar el enlace. Diles el código: KTRM.',
+    );
+  });
+
+  it('muestra el QR de la sala en un diálogo', () => {
+    const props = renderLobby();
+    fireEvent.click(screen.getByRole('button', { name: 'Mostrar QR' }));
+    expect(props.onShowQr).toHaveBeenCalledTimes(1);
+  });
+
+  it('con el QR abierto se ve el código QR y se puede cerrar', () => {
+    const props = renderLobby({ qrOpen: true });
+    const dialog = screen.getByRole('dialog', { name: 'Escanea para entrar' });
+    expect(
+      within(dialog).getByRole('img', { name: 'Código QR para entrar en la sala KTRM' }),
+    ).toBeInTheDocument();
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cerrar' }));
+    expect(props.onCloseQr).toHaveBeenCalled();
   });
 
   it('lista a los jugadores por orden de entrada con su cuenta', () => {

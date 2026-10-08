@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-08 · 3.8 · QR dibujado como SVG con `qrcode`
+
+Se instala `qrcode` (permitida) y `@types/qrcode` como dependencia de desarrollo: son solo sus tipos, necesarios con TypeScript estricto. El QR se dibuja como SVG a partir de la matriz que da `qrcode.create`, con los tokens de color (`fill-ink`, `bg-paper`); así no hay imágenes ni valores de color sueltos y se calcula sin efectos. El diálogo solo pinta su contenido abierto, para no calcular el QR si nadie lo mira.
+Descartado: `toDataURL` en una imagen, que es asíncrono y obliga a pasarle colores en hexadecimal.
+
+## 2026-10-08 · 3.8 · Compartir: hoja del sistema, portapapeles y salida
+
+"Copiar enlace" abre la hoja de compartir del sistema si existe; si el jugador la cierra no se hace nada más. Si no existe o falla, copia el enlace y el botón pasa a decir "Enlace copiado". Si tampoco se puede copiar, se muestra el código para dictarlo.
+Descartado: copiar siempre, que en el móvil es peor que la hoja de compartir.
+
 ## 2026-10-08 · 3.7 · Echar tocando la ficha, con confirmación
 
 La referencia no dibuja cómo se echa. Un botón con aspa dentro de cada ficha dejaba los nombres en "L…" a 360 px, así que el anfitrión toca la ficha del jugador (botón con `aria-label` "Echar a Lucía") y un diálogo le pide confirmar. Además evita echar a alguien sin querer.

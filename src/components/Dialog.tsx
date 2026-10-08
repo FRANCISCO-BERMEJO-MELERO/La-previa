@@ -41,7 +41,8 @@ export function Dialog({ open, title, closeLabel, onClose, children }: DialogPro
         <h2 id={titleId} className="font-display text-title uppercase">
           {title}
         </h2>
-        {children}
+        {/* Cerrado no se pinta el contenido: ni ocupa el DOM ni se calcula (el QR, por ejemplo). */}
+        {open ? children : null}
         <button
           type="button"
           onClick={onClose}

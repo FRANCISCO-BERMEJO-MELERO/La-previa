@@ -4,10 +4,12 @@ import { Card } from '@/components/Card';
 import { Dialog } from '@/components/Dialog';
 import { Pill } from '@/components/Pill';
 import { PlayerChip } from '@/components/PlayerChip';
+import { QrCode } from '@/components/QrCode';
 import { Screen } from '@/components/Screen';
 import { WaitingBox } from '@/components/WaitingBox';
 import { copy } from '@/lib/copy';
 import { impostorLimits } from '@/lib/impostors';
+import type { ShareOutcome } from '@/lib/share';
 import type { RoomPlayer, Snapshot } from '@/lib/snapshot';
 
 export const MAX_PLAYERS = 16;
@@ -17,6 +19,14 @@ type LobbyScreenProps = {
   impostors: number;
   busy: boolean;
   error?: string;
+  /** Enlace completo a la sala, para el QR y para compartir. */
+  roomUrl: string;
+  qrOpen: boolean;
+  /** Resultado del último intento de compartir el enlace. */
+  shareOutcome: ShareOutcome | null;
+  onShare: () => void;
+  onShowQr: () => void;
+  onCloseQr: () => void;
   /** Jugador al que el anfitrión quiere echar; abre la confirmación. */
   kickTarget: RoomPlayer | null;
   onImpostorsChange: (count: number) => void;
@@ -30,6 +40,12 @@ export function LobbyScreen({
   impostors,
   busy,
   error,
+  roomUrl,
+  qrOpen,
+  shareOutcome,
+  onShare,
+  onShowQr,
+  onCloseQr,
   kickTarget,
   onImpostorsChange,
   onKickRequest,
@@ -51,6 +67,23 @@ export function LobbyScreen({
       <Card>
         <p className="text-label font-bold uppercase tracking-label">{copy.lobby.codeLabel}</p>
         <p className="font-display text-7xl tracking-wide">{room.code}</p>
+        <div className="flex gap-3">
+          <div className="flex flex-1">
+            <Button variant="secondary" fullWidth onClick={onShare}>
+              {shareOutcome === 'copied' ? copy.lobby.linkCopied : copy.lobby.copyLink}
+            </Button>
+          </div>
+          <div className="flex flex-1">
+            <Button variant="secondary" fullWidth aria-haspopup="dialog" onClick={onShowQr}>
+              {copy.lobby.showQr}
+            </Button>
+          </div>
+        </div>
+        {shareOutcome === 'failed' ? (
+          <p role="alert" className="text-md font-bold">
+            {copy.lobby.copyFailed(room.code)}
+          </p>
+        ) : null}
       </Card>
 
       <div className="flex items-baseline justify-between">
@@ -109,6 +142,16 @@ export function LobbyScreen({
           <WaitingBox>{copy.lobby.waitingHost(hostName)}</WaitingBox>
         )}
       </div>
+
+      <Dialog
+        open={qrOpen}
+        title={copy.lobby.qrTitle}
+        closeLabel={copy.lobby.close}
+        onClose={onCloseQr}
+      >
+        <QrCode value={roomUrl} label={copy.lobby.qrLabel(room.code)} />
+        <p className="text-center font-display text-5xl tracking-wide">{room.code}</p>
+      </Dialog>
 
       <Dialog
         open={kickTarget !== null}

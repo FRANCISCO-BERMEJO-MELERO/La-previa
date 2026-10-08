@@ -5,6 +5,7 @@ import { kickPlayer, setGame, type ActionResult } from '@/lib/actions';
 import { copy, errorMessage, type ActionError } from '@/lib/copy';
 import { clampImpostors } from '@/lib/impostors';
 import { roomPath } from '@/lib/room-code';
+import { shareRoomLink, type ShareOutcome } from '@/lib/share';
 import type { Snapshot } from '@/lib/snapshot';
 import { useRoomSync } from '@/lib/use-room-sync';
 import { viewFor } from '@/lib/view';
@@ -26,6 +27,8 @@ export function Room({ initial, fresh }: RoomProps) {
   const [error, setError] = useState<ActionError | null>(null);
   const [busy, setBusy] = useState(false);
   const [kickTargetId, setKickTargetId] = useState<string | null>(null);
+  const [qrOpen, setQrOpen] = useState(false);
+  const [shareOutcome, setShareOutcome] = useState<ShareOutcome | null>(null);
 
   if (sync.status === 'gone') return <RoomGoneScreen />;
 
@@ -68,12 +71,29 @@ export function Room({ initial, fresh }: RoomProps) {
     );
   }
 
+  // Room solo se monta en el navegador, tras comprobar la entrada, así que window existe.
+  const roomUrl = new URL(roomPath(snapshot.room.code), window.location.origin).toString();
+
   return (
     <LobbyScreen
       snapshot={snapshot}
       impostors={clampImpostors(impostors, snapshot.players.length)}
       busy={busy}
       error={error ? errorMessage(error) : undefined}
+      roomUrl={roomUrl}
+      qrOpen={qrOpen}
+      shareOutcome={shareOutcome}
+      onShare={() => {
+        void shareRoomLink(roomUrl, copy.lobby.shareTitle(snapshot.room.code)).then(
+          setShareOutcome,
+        );
+      }}
+      onShowQr={() => {
+        setQrOpen(true);
+      }}
+      onCloseQr={() => {
+        setQrOpen(false);
+      }}
       kickTarget={snapshot.players.find((player) => player.user_id === kickTargetId) ?? null}
       onImpostorsChange={setImpostors}
       onKickRequest={setKickTargetId}

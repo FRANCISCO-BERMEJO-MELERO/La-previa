@@ -11,9 +11,10 @@ function renderDialog(open: boolean, onClose = vi.fn()) {
 }
 
 describe('Dialog', () => {
-  it('cerrado no se muestra', () => {
+  it('cerrado no se muestra ni pinta su contenido', () => {
     renderDialog(false);
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.queryByText('contenido')).not.toBeInTheDocument();
   });
 
   it('abierto se muestra con su título como nombre accesible', () => {

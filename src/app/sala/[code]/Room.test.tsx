@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ActionResult } from '@/lib/actions';
+import type { ShareOutcome } from '@/lib/share';
 import type { Snapshot } from '@/lib/snapshot';
 import type { RoomSync } from '@/lib/use-room-sync';
 import { ids, lobbySnapshot } from '@/test/fixtures';
@@ -11,10 +12,12 @@ const mocks = vi.hoisted(() => ({
   apply: vi.fn(),
   setGame: vi.fn<(roomId: string, game: string) => Promise<ActionResult<Snapshot>>>(),
   kickPlayer: vi.fn<(roomId: string, userId: string) => Promise<ActionResult<Snapshot>>>(),
+  shareRoomLink: vi.fn<(url: string, title: string) => Promise<ShareOutcome>>(),
 }));
 
 vi.mock('@/lib/use-room-sync', () => ({ useRoomSync: mocks.sync }));
 vi.mock('@/lib/actions', () => ({ setGame: mocks.setGame, kickPlayer: mocks.kickPlayer }));
+vi.mock('@/lib/share', () => ({ shareRoomLink: mocks.shareRoomLink }));
 
 function ready(snapshot: Snapshot = lobbySnapshot()) {
   mocks.sync.mockReturnValue({ status: 'ready', snapshot, offline: false, apply: mocks.apply });
@@ -76,6 +79,25 @@ describe('Room', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Eso solo lo puede hacer quien lleva la sala.',
     );
+  });
+
+  it('comparte el enlace completo de la sala y muestra que se ha copiado', async () => {
+    mocks.shareRoomLink.mockResolvedValue('copied');
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Copiar enlace' }));
+    expect(mocks.shareRoomLink).toHaveBeenCalledWith(
+      `${window.location.origin}/sala/KTRM`,
+      'Únete a la sala KTRM en La Previa',
+    );
+    expect(await screen.findByRole('button', { name: 'Enlace copiado' })).toBeInTheDocument();
+  });
+
+  it('abre y cierra el QR', () => {
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Mostrar QR' }));
+    expect(screen.getByRole('dialog', { name: 'Escanea para entrar' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Cerrar' }));
+    expect(screen.queryByRole('dialog', { name: 'Escanea para entrar' })).not.toBeInTheDocument();
   });
 
   it('el selector de impostores no pasa de su máximo con la gente que hay', () => {
