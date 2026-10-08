@@ -5,7 +5,7 @@ Estado: fase 0 en curso · última actualización 2026-10-08
 ## Fase 0 · Preparación
 - [x] 0.1 Crear `docs/TAREAS.md` y `docs/DECISIONES.md`
 - [x] 0.2 Comprobar requisitos: versión de Node, que Docker responde y que `npx supabase --version` funciona (Node v24.20.0, npm 11.19.0, Supabase CLI 2.120.0; Docker no instalado)
-- [ ] 0.3 Gancho `.githooks/commit-msg` que rechace `Co-Authored-By`, `Generated with`, `Claude` o `Anthropic`; activarlo con `git config core.hooksPath .githooks` y documentarlo en el README
+- [x] 0.3 Gancho `.githooks/commit-msg` que rechace `Co-Authored-By`, `Generated with`, `Claude` o `Anthropic`; activarlo con `git config core.hooksPath .githooks` y documentarlo en el README
 - [ ] 0.4 `.gitignore` y `.env.example` con `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 Aceptación: existen los dos documentos; un commit de prueba con `Co-Authored-By` es rechazado.

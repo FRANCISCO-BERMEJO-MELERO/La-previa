@@ -1,0 +1,11 @@
+#!/bin/sh
+# Rechaza mensajes de commit que atribuyan la autoría a una IA.
+# Se ignoran las líneas de comentario porque la plantilla del editor
+# puede listar archivos como CLAUDE.md.
+
+forbidden='co-authored-by|generated with|claude|anthropic'
+
+if grep -v '^#' "$1" | grep -Eiq "$forbidden"; then
+  echo "commit-msg: el mensaje contiene una mención prohibida (Co-Authored-By, Generated with, Claude o Anthropic)." >&2
+  exit 1
+fi

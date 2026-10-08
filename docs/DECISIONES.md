@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-08 · 0.3 · Finales de línea LF en el repositorio
+Se añade `.gitattributes` con `* text=auto eol=lf`. Con `core.autocrlf=true` en Windows, el gancho `commit-msg` saldría con CRLF en otros clones y `sh` fallaría; además Prettier espera LF.
+Descartado: cambiar `core.autocrlf` en local, porque no viaja con el repositorio.
+
 ## 2026-10-08 · 0.1 · Definición de hecho en la fase 0
 En la fase 0 todavía no existe proyecto de npm, así que `npm run check` no se puede ejecutar. Las tareas de esta fase se dan por hechas con su propia comprobación (la indicada en la aceptación de la fase).
 Descartado: adelantar la creación de `package.json` desde la fase 1, porque rompería el orden del plan.
