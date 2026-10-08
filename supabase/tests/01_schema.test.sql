@@ -65,9 +65,8 @@ select throws_ok(
   '23514', null, 'el nombre se guarda sin espacios alrededor'
 );
 
-insert into public.words (id, category, word) overriding system value values (1, 'Comida', 'Paella');
 insert into public.games (id, room_id, impostor_count, word_id)
-values ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 1, 1);
+values ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 1, (select min(id) from public.words));
 insert into public.game_players (game_id, user_id, name) values
   ('20000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'Álvaro'),
   ('20000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002', 'Lucía');

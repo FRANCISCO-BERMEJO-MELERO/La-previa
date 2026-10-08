@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 3 terminada · última actualización 2026-10-08
+Estado: fase 4 en curso · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 
@@ -53,7 +53,7 @@ Aceptación: dos navegadores en local: crear, unirse por código y enlace, lista
 
 ## Fase 4 · Base de datos: El impostor
 
-- [ ] 4.1 Migración de palabras (CONTEXTO §9) y `docs/PALABRAS.md`
+- [x] 4.1 Migración de palabras (CONTEXTO §9) y `docs/PALABRAS.md`
 - [ ] 4.2 `start_game`: validaciones, palabra sin repetir, reparto de roles
 - [ ] 4.3 `open_voting`, `cast_vote`, `close_voting`, `continue_game`, `back_to_lobby`
 - [ ] 4.4 Abandono y expulsión a media partida en las cuatro fases

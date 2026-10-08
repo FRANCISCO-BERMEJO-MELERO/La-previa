@@ -177,8 +177,7 @@ select is(
 
 -- Con partida en curso: solo a desconectados, y set_game no vale.
 select pg_temp.as_admin();
-insert into public.words (id, category, word) overriding system value values (1, 'Comida', 'Paella');
-insert into public.games (id, room_id, impostor_count, word_id) values ('20000000-0000-0000-0000-000000000001', pg_temp.room_id(), 1, 1);
+insert into public.games (id, room_id, impostor_count, word_id) values ('20000000-0000-0000-0000-000000000001', pg_temp.room_id(), 1, (select min(id) from public.words));
 update public.rooms set current_game_id = '20000000-0000-0000-0000-000000000001' where id = pg_temp.room_id();
 update public.room_players set last_seen_at = now() where room_id = pg_temp.room_id() and user_id = pg_temp.u(4);
 update public.room_players set last_seen_at = now() - interval '1 minute' where room_id = pg_temp.room_id() and user_id = pg_temp.u(5);

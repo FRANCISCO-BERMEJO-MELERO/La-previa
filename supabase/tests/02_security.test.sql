@@ -13,9 +13,8 @@ insert into public.rooms (id, code, host_id) values
 insert into public.room_players (room_id, user_id, name) values
   ('10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'Fran'),
   ('10000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', 'Lucía');
-insert into public.words (id, category, word) overriding system value values (1, 'Comida', 'Paella');
 insert into public.games (id, room_id, impostor_count, word_id)
-values ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 1, 1);
+values ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 1, (select min(id) from public.words));
 insert into public.game_players (game_id, user_id, name)
 values ('20000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'Fran');
 insert into public.game_roles (game_id, user_id, role)
