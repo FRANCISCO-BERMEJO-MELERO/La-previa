@@ -43,7 +43,7 @@ Aceptación: `npm run test:db` pasa tras `supabase db reset`.
 - [x] 3.3 Capa de acciones por RPC y traducción de códigos de error
 - [x] 3.4 Hook de sincronización (foto inicial, Realtime, sondeo 10 s, primer plano, reconexión, descarte de fotos antiguas, limpieza) con tests
 - [x] 3.5 Función pura `viewFor(snapshot)` con tests de la tabla de CONTEXTO §6
-- [ ] 3.6 Pantallas 01 (Inicio) y 02 (Tu nombre)
+- [x] 3.6 Pantallas 01 (Inicio) y 02 (Tu nombre)
 - [ ] 3.7 Pantallas 03 (Elegir juego) y 04 (Sala de espera)
 - [ ] 3.8 Compartir: diálogo con QR y botón de enlace
 - [ ] 3.9 Screen Wake Lock en la sala

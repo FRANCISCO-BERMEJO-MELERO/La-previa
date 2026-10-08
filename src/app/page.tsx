@@ -1,3 +1,5 @@
+import { HomeFlow } from './HomeFlow';
+
 export default function HomePage() {
-  return <main />;
+  return <HomeFlow />;
 }

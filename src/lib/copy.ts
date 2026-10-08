@@ -79,6 +79,8 @@ export const copy = {
     leaveConfirm: 'Salir',
     cancel: 'Cancelar',
     loading: 'Cargando la sala…',
+    failedTitle: 'No hemos podido entrar',
+    retry: 'Reintentar',
     notFoundTitle: 'Esta sala no existe',
     notFoundText: 'Puede que el código esté mal o que la sala se haya cerrado.',
     backHome: 'Volver al inicio',

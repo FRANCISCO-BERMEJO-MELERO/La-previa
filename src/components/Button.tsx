@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes } from 'react';
+import Link from 'next/link';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'accent';
 
@@ -13,18 +14,37 @@ const variantClasses: Record<ButtonVariant, string> = {
   accent: 'h-14 rounded-control bg-sky px-5 font-display text-lg uppercase',
 };
 
+function buttonClasses(variant: ButtonVariant, fullWidth: boolean): string {
+  const width = fullWidth ? 'w-full' : '';
+  return `inline-flex min-w-0 items-center justify-center gap-2 border-3 border-ink text-center text-ink disabled:cursor-not-allowed disabled:border-dashed disabled:bg-ground-soft disabled:shadow-none ${variantClasses[variant]} ${width}`;
+}
+
 export function Button({
   variant = 'primary',
   fullWidth = false,
   type = 'button',
   ...rest
 }: ButtonProps) {
-  const width = fullWidth ? 'w-full' : '';
+  return <button type={type} className={buttonClasses(variant, fullWidth)} {...rest} />;
+}
+
+type LinkButtonProps = {
+  href: string;
+  variant?: ButtonVariant;
+  fullWidth?: boolean;
+  children: ReactNode;
+};
+
+/** Enlace con aspecto de botón, para navegar. */
+export function LinkButton({
+  href,
+  variant = 'primary',
+  fullWidth = false,
+  children,
+}: LinkButtonProps) {
   return (
-    <button
-      type={type}
-      className={`inline-flex min-w-0 items-center justify-center gap-2 border-3 border-ink text-center text-ink disabled:cursor-not-allowed disabled:border-dashed disabled:bg-ground-soft disabled:shadow-none ${variantClasses[variant]} ${width}`}
-      {...rest}
-    />
+    <Link href={href} className={buttonClasses(variant, fullWidth)}>
+      {children}
+    </Link>
   );
 }
