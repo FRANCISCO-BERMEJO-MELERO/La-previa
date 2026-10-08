@@ -4,7 +4,7 @@ Estado: fase 0 en curso · última actualización 2026-10-08
 
 ## Fase 0 · Preparación
 - [x] 0.1 Crear `docs/TAREAS.md` y `docs/DECISIONES.md`
-- [ ] 0.2 Comprobar requisitos: versión de Node, que Docker responde y que `npx supabase --version` funciona
+- [x] 0.2 Comprobar requisitos: versión de Node, que Docker responde y que `npx supabase --version` funciona (Node v24.20.0, npm 11.19.0, Supabase CLI 2.120.0; Docker no instalado)
 - [ ] 0.3 Gancho `.githooks/commit-msg` que rechace `Co-Authored-By`, `Generated with`, `Claude` o `Anthropic`; activarlo con `git config core.hooksPath .githooks` y documentarlo en el README
 - [ ] 0.4 `.gitignore` y `.env.example` con `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
@@ -22,7 +22,7 @@ Aceptación: existen los dos documentos; un commit de prueba con `Co-Authored-By
 Aceptación: `npm run check` pasa; `/dev/componentes` a 390 px se parece a la referencia.
 
 ## Fase 2 · Base de datos: salas
-- [ ] 2.1 `supabase init`, inicio de sesión anónimo en `config.toml`, `supabase start` funciona
+- [!] 2.1 `supabase init`, inicio de sesión anónimo en `config.toml`, `supabase start` funciona (bloqueada: ver Bloqueos)
 - [ ] 2.2 Migración del esquema: `rooms`, `room_players`, `games`, `game_players`, `game_roles`, `votes`, `words` (CONTEXTO §4)
 - [ ] 2.3 Migración de seguridad: RLS, esquema `private`, `private.is_room_member`, política de lectura de `rooms`, Realtime, `revoke`/`grant`
 - [ ] 2.4 Funciones auxiliares en `private`: código libre, subir versión, miembro y anfitrión, errores con código, foto del estado, traspasar anfitrión
@@ -85,5 +85,6 @@ Aceptación: `npm run test:e2e` pasa tres veces seguidas.
 Aceptación: `check`, `test:db` y `test:e2e` pasan; `npm run build` sin avisos; el informe existe.
 
 ## Bloqueos
+- 2.1 y todo lo que necesita la base de datos local (2.x, 4.x, `test:db`, e2e) · Docker no está instalado: no existe el comando `docker`. Fran: instalar Docker Desktop, arrancarlo y comprobar que `docker version` responde.
 
 ## Descubierto por el camino
