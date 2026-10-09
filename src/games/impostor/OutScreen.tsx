@@ -1,8 +1,8 @@
 import { PlayerChip } from '@/components/PlayerChip';
 import { copy } from '@/lib/copy';
 import { fitDisplay } from '@/lib/fit-text';
-import type { ParticipantView } from '@/lib/game-view';
-import { GameScreen, type GameScreenProps } from './GameScreen';
+import type { ParticipantView } from './game-view';
+import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 
 type OutScreenProps = GameScreenProps & {
   myName: string;

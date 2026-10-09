@@ -4,50 +4,27 @@ import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 import { OfflineNotice } from '@/components/OfflineNotice';
 import { PillButton } from '@/components/PillButton';
-import { WaitingBox } from '@/components/WaitingBox';
+import { ImpostorGame } from '@/games/impostor/ImpostorGame';
+import { clampImpostors } from '@/games/impostor/impostors';
 import {
   backToLobby,
-  castVote,
-  closeVoting,
-  continueGame,
   kickPlayer,
   leaveRoom,
-  openVoting,
   setGame,
   startGame,
   type ActionResult,
 } from '@/lib/actions';
 import { copy, errorMessage, type ActionError } from '@/lib/copy';
-import {
-  aliveCount,
-  connectedCount,
-  hostName,
-  namesOf,
-  participant,
-  participants,
-  voteCandidates,
-} from '@/lib/game-view';
-import { clampImpostors } from '@/lib/impostors';
 import { roomPath } from '@/lib/room-code';
 import { shareRoomLink, type ShareOutcome } from '@/lib/share';
-import type { GameState, Snapshot } from '@/lib/snapshot';
+import type { Snapshot } from '@/lib/snapshot';
 import { useRoomSync } from '@/lib/use-room-sync';
 import { useWakeLock } from '@/lib/use-wake-lock';
-import { viewFor } from '@/lib/view';
-import { DealScreen } from '@/screens/DealScreen';
 import { GamePickerScreen } from '@/screens/GamePickerScreen';
-import { HostControls } from '@/screens/HostControls';
 import { KickDialog } from '@/screens/KickDialog';
-import { LateScreen } from '@/screens/LateScreen';
 import { LeaveDialog } from '@/screens/LeaveDialog';
 import { LobbyScreen } from '@/screens/LobbyScreen';
-import { OutScreen } from '@/screens/OutScreen';
-import { ResultScreen } from '@/screens/ResultScreen';
-import { RevealScreen } from '@/screens/RevealScreen';
 import { RoomGoneScreen } from '@/screens/RoomGoneScreen';
-import { TieScreen } from '@/screens/TieScreen';
-import { VoteScreen } from '@/screens/VoteScreen';
-import { VoteWaitScreen } from '@/screens/VoteWaitScreen';
 
 type RoomProps = {
   initial: Snapshot;
@@ -67,7 +44,6 @@ export function Room({ initial, fresh }: RoomProps) {
   const [shareOutcome, setShareOutcome] = useState<ShareOutcome | null>(null);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [leaveError, setLeaveError] = useState<ActionError | null>(null);
-  const [voteTarget, setVoteTarget] = useState<string | null>(null);
   useWakeLock(sync.status !== 'gone');
 
   if (sync.status === 'gone') return <RoomGoneScreen />;
@@ -150,49 +126,19 @@ export function Room({ initial, fresh }: RoomProps) {
     </>
   );
 
-  const view = viewFor(snapshot);
   const { game } = snapshot;
 
-  if (view !== 'lobby' && game) {
+  if (game) {
     return withLeaveDialog(
-      <GameView
+      <ImpostorGame
         snapshot={snapshot}
         game={game}
-        view={view}
-        roomPill={pill(copy.room.pill(code))}
-        votePill={pill(copy.vote.pill, 'sky')}
-        outPill={pill(copy.out.pill, 'lilac')}
+        pill={pill}
         notice={notice}
         busy={busy}
         error={errorText}
-        voteTarget={voteTarget}
-        onSelectTarget={setVoteTarget}
+        run={run}
         onKickRequest={setKickTargetId}
-        onVote={() => {
-          if (!voteTarget) return;
-          void run(() => castVote(roomId, voteTarget)).then((ok) => {
-            if (ok) setVoteTarget(null);
-          });
-        }}
-        onOpenVoting={() => {
-          void run(() => openVoting(roomId));
-        }}
-        onCloseVoting={() => {
-          void run(() => closeVoting(roomId));
-        }}
-        onContinue={() => {
-          void run(() => continueGame(roomId));
-        }}
-        onPlayAgain={() => {
-          void run(async () => {
-            const again = await startGame(roomId, game.impostor_count);
-            // Si ya no vale (se ha ido gente), se vuelve a la sala de espera para ajustarlo.
-            const noLongerValid =
-              !again.ok &&
-              (again.error === 'not_enough_players' || again.error === 'invalid_impostor_count');
-            return noLongerValid ? backToLobby(roomId) : again;
-          });
-        }}
         onChangeGame={() => {
           void run(() => backToLobby(roomId)).then((ok) => {
             if (ok) setPicking(true);
@@ -253,186 +199,4 @@ export function Room({ initial, fresh }: RoomProps) {
       onKickRequest={setKickTargetId}
     />,
   );
-}
-
-type GameViewProps = {
-  snapshot: Snapshot;
-  game: GameState;
-  view: Exclude<ReturnType<typeof viewFor>, 'lobby'>;
-  roomPill: ReactNode;
-  votePill: ReactNode;
-  outPill: ReactNode;
-  notice: ReactNode;
-  busy: boolean;
-  error?: string;
-  voteTarget: string | null;
-  onSelectTarget: (userId: string) => void;
-  onKickRequest: (userId: string) => void;
-  onVote: () => void;
-  onOpenVoting: () => void;
-  onCloseVoting: () => void;
-  onContinue: () => void;
-  onPlayAgain: () => void;
-  onChangeGame: () => void;
-};
-
-/** Elige la pantalla de partida que toca según la vista deducida de la foto. */
-function GameView({
-  snapshot,
-  game,
-  view,
-  roomPill,
-  votePill,
-  outPill,
-  notice,
-  busy,
-  error,
-  voteTarget,
-  onSelectTarget,
-  onKickRequest,
-  onVote,
-  ...handlers
-}: GameViewProps) {
-  const isHost = snapshot.me.is_host;
-  const all = participants(snapshot, game);
-  const controls = (
-    <HostControls
-      phase={game.phase}
-      isHost={isHost}
-      hostName={hostName(snapshot)}
-      gameOver={game.game_over}
-      busy={busy}
-      error={error}
-      {...handlers}
-    />
-  );
-  const roomAvatars = snapshot.players.map((player, index) => ({
-    userId: player.user_id,
-    name: player.name,
-    joinIndex: index,
-    muted: !player.connected,
-  }));
-
-  switch (view) {
-    case 'late':
-      return (
-        <LateScreen
-          aside={roomPill}
-          notice={notice}
-          footer={isHost ? controls : <WaitingBox>{copy.late.waiting}</WaitingBox>}
-          myName={snapshot.me.name}
-          playing={all.filter((p) => p.alive).map((p) => ({ ...p, muted: !p.connected }))}
-        />
-      );
-    case 'deal_player':
-    case 'deal_impostor':
-      return (
-        <DealScreen
-          aside={roomPill}
-          notice={notice}
-          footer={controls}
-          role={view === 'deal_impostor' ? 'impostor' : 'player'}
-          word={game.my.word}
-          category={game.category}
-          players={roomAvatars}
-          connected={connectedCount(snapshot)}
-        />
-      );
-    case 'vote':
-      return (
-        <VoteScreen
-          aside={votePill}
-          notice={notice}
-          myName={snapshot.me.name}
-          candidates={voteCandidates(snapshot, game)}
-          selected={voteTarget}
-          busy={busy}
-          error={error}
-          onSelect={onSelectTarget}
-          onVote={onVote}
-        />
-      );
-    case 'vote_wait': {
-      const myVote = game.my.voted_for ? participant(snapshot, game, game.my.voted_for) : undefined;
-      return (
-        <VoteWaitScreen
-          aside={votePill}
-          notice={notice}
-          footer={controls}
-          voters={all.filter((p) => p.alive)}
-          myVote={myVote?.name ?? null}
-          hint={isHost ? copy.vote.closeHint : undefined}
-          busy={busy}
-          onKickRequest={isHost ? onKickRequest : undefined}
-        />
-      );
-    }
-    case 'reveal': {
-      const outcome = game.outcome;
-      if (!outcome || outcome.type === 'tie') return null;
-      const who = participant(snapshot, game, outcome.user_id);
-      return (
-        <RevealScreen
-          aside={roomPill}
-          notice={notice}
-          footer={controls}
-          kind={outcome.type}
-          name={outcome.name}
-          joinIndex={who?.joinIndex ?? 0}
-          wasImpostor={outcome.was_impostor}
-          summary={
-            game.game_over
-              ? copy.reveal.gameOver
-              : copy.reveal.continues(aliveCount(game), game.impostors_left)
-          }
-        />
-      );
-    }
-    case 'tie': {
-      const tiedIds = game.outcome?.type === 'tie' ? game.outcome.user_ids : [];
-      return (
-        <TieScreen
-          aside={roomPill}
-          notice={notice}
-          footer={controls}
-          tied={all.filter((p) => tiedIds.includes(p.userId))}
-        />
-      );
-    }
-    case 'out':
-      return (
-        <OutScreen
-          aside={outPill}
-          notice={notice}
-          footer={
-            isHost ? (
-              controls
-            ) : (
-              <WaitingBox>
-                {game.phase === 'voting' ? copy.out.voting : copy.out.talking}
-              </WaitingBox>
-            )
-          }
-          myName={snapshot.me.name}
-          stillPlaying={all.filter((p) => p.alive)}
-        />
-      );
-    case 'won':
-    case 'lost':
-    case 'result_spectator': {
-      const result = game.result;
-      if (!result) return null;
-      return (
-        <ResultScreen
-          aside={roomPill}
-          notice={notice}
-          footer={controls}
-          outcome={view === 'won' ? 'won' : view === 'lost' ? 'lost' : 'spectator'}
-          winner={result.winner}
-          impostorNames={namesOf(snapshot, game, result.impostor_ids)}
-          word={result.word}
-        />
-      );
-    }
-  }
 }

@@ -3,7 +3,7 @@ import { Card } from '@/components/Card';
 import { Pill } from '@/components/Pill';
 import { copy } from '@/lib/copy';
 import { fitDisplay } from '@/lib/fit-text';
-import { GameScreen, type GameScreenProps } from './GameScreen';
+import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 
 type DealScreenProps = GameScreenProps & {
   role: 'player' | 'impostor';

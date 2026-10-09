@@ -1,7 +1,7 @@
 import { Card } from '@/components/Card';
 import { Pill } from '@/components/Pill';
 import { copy } from '@/lib/copy';
-import { GameScreen, type GameScreenProps } from './GameScreen';
+import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 
 type ResultScreenProps = GameScreenProps & {
   /** Has ganado, has perdido o no jugabas (llegaste tarde). */

@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-09 · 8.5 · Qué va a la carpeta de El impostor
+
+`src/games/impostor/` recibe su `viewFor`, los datos derivados de la foto (`game-view.ts`), el selector de impostores, sus pantallas (05–14 y `HostControls`) y `ImpostorGame`, que guarda el voto elegido y llama a sus acciones. `Room` se queda con lo de la sala (sincronización, salir, echar, selector y sala de espera) y le pasa la partida. Las llamadas RPC siguen todas en `src/lib/actions.ts`, que es la capa de acceso a la base de datos y la que sustituyen las pruebas de `Room`; el marco `GameScreen` y `KickableChip` se quedan en `src/screens` porque los usa también la plataforma. La pantalla de entrar tarde va con El impostor hasta que otro juego la use.
+Descartado: repartir las RPC por juegos, que obligaba a reescribir las pruebas existentes sin ganar nada.
+
 ## 2026-10-09 · 8.3 · `votes` y votarse a sí mismo
 
 `votes` tiene `check (voter_id <> target_id)` y `01_schema` comprueba que una inserción así falla con `23514`, pero en `probable` uno puede votarse a sí mismo y `docs/JUEGOS.md` dice que `votes` se reutiliza tal cual. Se resuelve en la 9.1 con una migración que cambia el `check` por un disparador que lanza la misma violación (`check_violation`) solo si la partida es de El impostor. La prueba existente sigue pasando sin tocarla y El impostor conserva la garantía en la propia tabla.

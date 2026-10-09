@@ -9,7 +9,7 @@ import { QrCode } from '@/components/QrCode';
 import { Screen } from '@/components/Screen';
 import { WaitingBox } from '@/components/WaitingBox';
 import { copy } from '@/lib/copy';
-import { impostorLimits } from '@/lib/impostors';
+import { impostorLimits } from '@/games/impostor/impostors';
 import type { ShareOutcome } from '@/lib/share';
 import type { RoomPlayer, Snapshot } from '@/lib/snapshot';
 import { KickableChip } from './KickableChip';

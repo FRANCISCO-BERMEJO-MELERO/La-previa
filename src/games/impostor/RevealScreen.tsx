@@ -2,7 +2,7 @@ import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
 import { copy } from '@/lib/copy';
 import { fitDisplay } from '@/lib/fit-text';
-import { GameScreen, type GameScreenProps } from './GameScreen';
+import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 
 type RevealScreenProps = GameScreenProps & {
   /** Expulsado por votación o se ha ido de la sala. */

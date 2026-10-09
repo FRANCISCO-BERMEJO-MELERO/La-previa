@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { ParticipantView } from '@/lib/game-view';
+import type { ParticipantView } from './game-view';
 import { DealScreen } from './DealScreen';
 import { LateScreen } from './LateScreen';
 import { OutScreen } from './OutScreen';

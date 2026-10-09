@@ -2,8 +2,8 @@ import { Fragment } from 'react';
 import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
 import { copy } from '@/lib/copy';
-import type { ParticipantView } from '@/lib/game-view';
-import { GameScreen, type GameScreenProps } from './GameScreen';
+import type { ParticipantView } from './game-view';
+import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 
 type TieScreenProps = GameScreenProps & {
   /** Empatados en cabeza; vacío si nadie votó. */

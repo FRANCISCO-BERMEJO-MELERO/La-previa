@@ -59,14 +59,15 @@ Abre `http://localhost:3000`. Para jugar en local con varios "móviles", usa ven
 
 ```
 src/
-  app/             Rutas de Next: / (inicio) y /sala/[code]; Room elige la pantalla según la foto
-  screens/         Pantallas 01–14 y diálogos: solo presentación, reciben todo por props
+  app/             Rutas de Next: / (inicio) y /sala/[code]; Room pasa la partida a su juego
+  games/impostor/  El impostor: qué pantalla toca según la foto (view.ts, función pura),
+                     datos derivados y sus pantallas (05–14)
+  screens/         Pantallas de la plataforma (01–04) y diálogos: solo presentación
   components/      Componentes base de Verbena (botón, tarjeta, píldora, avatar…)
   lib/             Lógica del cliente sin interfaz:
                      snapshot.ts   contrato de la foto del estado, validado con zod
                      actions.ts    una función por RPC y traducción de errores
                      sync.ts, use-room-sync.ts   sincronización (Realtime, sondeo, reintentos)
-                     view.ts       qué pantalla toca según la foto (función pura)
                      copy.ts       todos los textos de la interfaz
   test/            Datos de ejemplo para los tests
 supabase/

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { gameState, ids, inGame, lobbySnapshot } from '@/test/fixtures';
-import type { GameState } from './snapshot';
+import type { GameState } from '@/lib/snapshot';
 import { viewFor } from './view';
 
 const me = gameState().my;

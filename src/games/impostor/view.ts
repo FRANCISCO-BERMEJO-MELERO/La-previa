@@ -1,4 +1,4 @@
-import type { Snapshot } from './snapshot';
+import type { Snapshot } from '@/lib/snapshot';
 
 /** Pantallas de la sala según docs/CONTEXTO.md §6. La 01 y la 02 viven fuera de la sala. */
 export type RoomView =

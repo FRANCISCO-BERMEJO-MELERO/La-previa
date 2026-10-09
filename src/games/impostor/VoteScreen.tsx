@@ -1,8 +1,8 @@
 import { Avatar } from '@/components/Avatar';
 import { Button } from '@/components/Button';
 import { copy } from '@/lib/copy';
-import type { ParticipantView } from '@/lib/game-view';
-import { GameScreen, type GameScreenProps } from './GameScreen';
+import type { ParticipantView } from './game-view';
+import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 
 type VoteScreenProps = Omit<GameScreenProps, 'footer'> & {
   myName: string;

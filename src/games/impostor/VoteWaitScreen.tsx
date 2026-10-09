@@ -1,9 +1,9 @@
 import { Card } from '@/components/Card';
 import { PlayerChip } from '@/components/PlayerChip';
 import { copy } from '@/lib/copy';
-import type { ParticipantView } from '@/lib/game-view';
-import { GameScreen, type GameScreenProps } from './GameScreen';
-import { KickableChip } from './KickableChip';
+import type { ParticipantView } from './game-view';
+import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
+import { KickableChip } from '@/screens/KickableChip';
 
 type VoteWaitScreenProps = GameScreenProps & {
   /** Vivos que votan; solo se sabe si han votado, nunca a quién. */

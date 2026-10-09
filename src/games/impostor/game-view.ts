@@ -1,4 +1,4 @@
-import type { GameState, Snapshot } from './snapshot';
+import type { GameState, Snapshot } from '@/lib/snapshot';
 
 /** Datos que pintan las pantallas de partida, deducidos de la foto sin estado propio. */
 
