@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-09 · 10.7 · Lo común de los juegos por rondas en el cliente
+
+`src/games/rounds/` no es un juego: guarda lo que comparten los juegos por rondas y que ya usan dos. Contiene los datos derivados (jugadores, clasificación con puestos compartidos, ganadores, última ronda), la espera de respuestas (`WaitScreen`, con el contador y, si se puede decir, las fichas de quién falta), la lista para votar, el resultado con la clasificación, los controles del anfitrión (`RoundControls`, que reciben el texto del botón y el de espera) y "volver a jugar o, si faltan jugadores, volver a la sala". La píldora "Ronda 3 de 10" sale de `copy.rounds.pill`. `probable` se queda con lo suyo (pregunta, recuento) y sus pruebas de lo común pasan a `src/games/rounds`. Un juego no importa nada de la carpeta de otro.
+Descartado: meter El impostor en estas piezas, que no va por rondas y ya funciona.
+
 ## 2026-10-09 · 10.5 · En la votación de ¿Quién lo dijo? no se dice quién falta
 
 `docs/JUEGOS.md` §9 pide las fichas de quién falta también en la espera de votos, pero en `quien_lo_dijo` el autor no vota: el último en votar vería que solo faltan él y otro, y sabría quién es el autor. Como la duda toca el secreto, se elige lo más restrictivo: en esa fase `has_responded` es `false` para todos y la foto lleva solo `vote_progress` (`{voted, total}`) para el contador. En la escritura sí se ve quién ha respondido. La foto añade también `annulled` en la revelación, para decir que la ronda se anuló sin depender de que falte el autor.

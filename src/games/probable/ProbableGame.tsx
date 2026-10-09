@@ -3,7 +3,18 @@
 import { useState, type ReactNode } from 'react';
 import { WaitingBox } from '@/components/WaitingBox';
 import {
-  backToLobby,
+  activePlayers,
+  hostName,
+  isLastRound,
+  leaders,
+  playerName,
+  rankingRows,
+} from '@/games/rounds/game-view';
+import { restartOrLobby } from '@/games/rounds/restart';
+import { ResultScreen } from '@/games/rounds/ResultScreen';
+import { RoundControls } from '@/games/rounds/RoundControls';
+import { WaitScreen } from '@/games/rounds/WaitScreen';
+import {
   probableClose,
   probableNext,
   probableStart,
@@ -13,20 +24,10 @@ import {
 import { copy } from '@/lib/copy';
 import type { ProbableGameState, Snapshot } from '@/lib/snapshot';
 import { LateScreen } from '@/screens/LateScreen';
-import {
-  activePlayers,
-  isLastRound,
-  leaders,
-  playerName,
-  rankingRows,
-  tallyRows,
-} from './game-view';
-import { HostControls } from './HostControls';
-import { ResultScreen } from './ResultScreen';
+import { tallyRows } from './game-view';
 import { RevealScreen } from './RevealScreen';
 import { viewFor } from './view';
 import { VoteScreen } from './VoteScreen';
-import { VoteWaitScreen } from './VoteWaitScreen';
 
 type PillTone = 'paper' | 'tomato' | 'sky' | 'lilac';
 
@@ -59,30 +60,34 @@ export function ProbableGame({
   const [voteTarget, setVoteTarget] = useState<string | null>(null);
   const roomId = snapshot.room.id;
   const isHost = snapshot.me.is_host;
+  const host = hostName(snapshot);
   const active = activePlayers(snapshot, game);
   const roundPill = pill(copy.rounds.pill(game.round, game.total_rounds), 'sky');
   const controls = (
-    <HostControls
-      phase={game.phase}
+    <RoundControls
       isHost={isHost}
-      hostName={
-        snapshot.players.find((player) => player.user_id === snapshot.room.host_id)?.name ?? ''
+      waiting={
+        game.phase === 'voting'
+          ? copy.vote.waitingClose(host)
+          : game.phase === 'reveal'
+            ? copy.reveal.waitingHost(host)
+            : copy.result.waitingHost(host)
       }
-      lastRound={isLastRound(game)}
+      finished={game.phase === 'finished'}
+      advanceLabel={
+        game.phase === 'voting'
+          ? copy.vote.close
+          : isLastRound(game)
+            ? copy.reveal.seeResult
+            : copy.probable.next
+      }
       busy={busy}
       error={error}
-      onClose={() => {
-        void run(() => probableClose(roomId));
-      }}
-      onNext={() => {
-        void run(() => probableNext(roomId));
+      onAdvance={() => {
+        void run(() => (game.phase === 'voting' ? probableClose(roomId) : probableNext(roomId)));
       }}
       onPlayAgain={() => {
-        void run(async () => {
-          const again = await probableStart(roomId, game.total_rounds);
-          // Si se ha ido gente y ya no hay bastantes, se vuelve a la sala de espera.
-          return !again.ok && again.error === 'not_enough_players' ? backToLobby(roomId) : again;
-        });
+        void run(() => restartOrLobby(roomId, () => probableStart(roomId, game.total_rounds)));
       }}
       onChangeGame={onChangeGame}
     />
@@ -121,17 +126,26 @@ export function ProbableGame({
       );
     case 'vote_wait':
       return (
-        <VoteWaitScreen
+        <WaitScreen
           aside={roundPill}
           notice={notice}
           footer={controls}
-          prompt={game.prompt}
-          voters={active}
-          myVote={game.my.voted_for ? playerName(snapshot, game, game.my.voted_for) : null}
+          label={copy.probable.voted}
+          done={active.filter((player) => player.hasResponded).length}
+          total={active.length}
+          responders={active}
+          doneDetail={copy.vote.voted}
           hint={isHost ? copy.vote.closeHint : undefined}
           busy={busy}
           onKickRequest={isHost ? onKickRequest : undefined}
-        />
+        >
+          <p className="text-md font-medium">{copy.probable.prompt(game.prompt)}</p>
+          {game.my.voted_for ? (
+            <p className="text-base font-bold">
+              {copy.vote.mine(playerName(snapshot, game, game.my.voted_for))}
+            </p>
+          ) : null}
+        </WaitScreen>
       );
     case 'reveal':
       return (
@@ -150,6 +164,8 @@ export function ProbableGame({
           aside={pill(copy.room.pill(snapshot.room.code))}
           notice={notice}
           footer={controls}
+          pill={copy.probable.resultPill}
+          accent="sky"
           leaders={leaders(ranking)}
           ranking={ranking}
         />

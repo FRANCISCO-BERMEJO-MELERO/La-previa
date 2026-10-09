@@ -50,13 +50,11 @@ const impostorGameSchema = z.object({
     .nullable(),
 });
 
-const probableGameSchema = z.object({
-  type: z.literal('probable'),
+/** Lo común de la foto de los juegos por rondas (docs/JUEGOS.md §8). */
+const roundGameShape = {
   id,
-  phase: z.enum(['voting', 'reveal', 'finished']),
   round: z.int().positive(),
   total_rounds: z.int().positive(),
-  prompt: z.string(),
   participants: z.array(
     z.object({
       user_id: id,
@@ -66,14 +64,21 @@ const probableGameSchema = z.object({
       has_responded: z.boolean(),
     }),
   ),
+  ranking: z
+    .array(z.object({ user_id: id, name: z.string(), score: z.int().nonnegative() }))
+    .nullable(),
+};
+
+const probableGameSchema = z.object({
+  ...roundGameShape,
+  type: z.literal('probable'),
+  phase: z.enum(['voting', 'reveal', 'finished']),
+  prompt: z.string(),
   my: z.object({ is_participant: z.boolean(), alive: z.boolean(), voted_for: id.nullable() }),
   tally: z
     .array(z.object({ user_id: id, votes: z.int().positive(), voter_ids: z.array(id) }))
     .nullable(),
   round_winner_ids: z.array(id).nullable(),
-  ranking: z
-    .array(z.object({ user_id: id, name: z.string(), score: z.int().nonnegative() }))
-    .nullable(),
 });
 
 /** La partida en curso, con la forma propia de cada juego (docs/JUEGOS.md §8). */
@@ -103,6 +108,8 @@ export type GameState = z.infer<typeof gameSchema>;
 export type GameId = (typeof gameIds)[number];
 export type ImpostorGameState = z.infer<typeof impostorGameSchema>;
 export type ProbableGameState = z.infer<typeof probableGameSchema>;
+/** Lo que comparten las partidas de los juegos por rondas. */
+export type RoundGameState = z.infer<z.ZodObject<typeof roundGameShape>>;
 export type Phase = ImpostorGameState['phase'];
 export type Outcome = z.infer<typeof outcomeSchema>;
 

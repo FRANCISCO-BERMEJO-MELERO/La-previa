@@ -250,6 +250,8 @@ export const copy = {
     points: (points: number) => (points === 1 ? '1 punto' : `${String(points)} puntos`),
     ranking: 'Clasificación',
     position: (position: number) => `${String(position)}.º`,
+    noWinner: 'Nadie ha sumado puntos',
+    names: (names: readonly string[]) => joinNames(names),
   },
 
   probable: {
@@ -265,8 +267,6 @@ export const copy = {
     point: '+1',
     next: 'Siguiente ronda',
     resultPill: 'El más probable de la noche',
-    noWinner: 'Nadie ha sumado puntos',
-    names: (names: readonly string[]) => joinNames(names),
   },
 
   // Solo para la página interna de componentes, que no existe en producción.

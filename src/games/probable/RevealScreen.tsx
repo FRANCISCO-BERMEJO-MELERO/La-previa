@@ -15,7 +15,7 @@ type RevealScreenProps = GameScreenProps & {
 /** Recuento público de la ronda: quién se lleva el punto y quién votó a quién. */
 export function RevealScreen({ prompt, tally, ...chrome }: RevealScreenProps) {
   const winners = tally.filter((row) => row.winner).map((row) => row.player.name);
-  const title = winners.length > 0 ? copy.probable.names(winners) : copy.probable.noVotes;
+  const title = winners.length > 0 ? copy.rounds.names(winners) : copy.probable.noVotes;
   return (
     <GameScreen {...chrome}>
       <Card variant="hero" tilt="right" tone={winners.length > 0 ? 'lime' : 'paper'}>

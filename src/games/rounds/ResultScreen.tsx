@@ -7,21 +7,24 @@ import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 import type { Player, RankingRow } from './game-view';
 
 type ResultScreenProps = GameScreenProps & {
+  /** Píldora de la tarjeta, con el color de acento del juego. */
+  pill: string;
+  accent: 'sky' | 'lilac' | 'lime';
   /** Los de más puntos; vacío si nadie ha puntuado. */
   leaders: Player[];
   ranking: RankingRow[];
 };
 
-/** Final: el más probable de la noche y la clasificación por puntos. */
-export function ResultScreen({ leaders, ranking, ...chrome }: ResultScreenProps) {
+/** Final de un juego por rondas: quién ha ganado y la clasificación por puntos. */
+export function ResultScreen({ pill, accent, leaders, ranking, ...chrome }: ResultScreenProps) {
   const title =
     leaders.length > 0
-      ? copy.probable.names(leaders.map((leader) => leader.name))
-      : copy.probable.noWinner;
+      ? copy.rounds.names(leaders.map((leader) => leader.name))
+      : copy.rounds.noWinner;
   return (
     <GameScreen {...chrome}>
       <Card variant="hero" tilt="left" tone={leaders.length > 0 ? 'lime' : 'paper'}>
-        <Pill tone="sky">{copy.probable.resultPill}</Pill>
+        <Pill tone={accent}>{pill}</Pill>
         <h1 className={`font-display uppercase ${fitDisplay(title, 'text-display-sm')}`}>
           {title}
         </h1>
