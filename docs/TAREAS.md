@@ -126,7 +126,7 @@ Aceptación: las tres baterías pasan; en una sala se juega a El impostor, se ca
 - [x] 10.3 Extraer lo común de `probable` a auxiliares en `private`; `probable` pasa a usarlas sin tocar sus pruebas
 - [x] 10.4 `quien_lo_dijo_start`, `_answer`, `_close_writing`, `_vote`, `_close_voting`, `_next`
 - [x] 10.5 Variante `quien_lo_dijo` en `get_room_state`
-- [ ] 10.6 Pruebas pgTAP de `quien_lo_dijo`
+- [x] 10.6 Pruebas pgTAP de `quien_lo_dijo`
 - [ ] 10.7 Componentes comunes de juegos por rondas en el cliente; `probable` pasa a usarlos
 - [ ] 10.8 Pantallas de `quien_lo_dijo` y su `viewFor`, con tests unitarios
 - [ ] 10.9 Prueba e2e: 5 rondas con 4 jugadores, sin autor en la red antes de la revelación
