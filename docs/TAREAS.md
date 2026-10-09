@@ -111,7 +111,7 @@ Aceptación: todas las pruebas existentes pasan sin cambiar ninguna aserción; l
 - [x] 9.2 Migración de datos con las preguntas de `probable` y primera versión de `docs/PREGUNTAS.md`
 - [x] 9.3 `set_game` acepta `probable`; `probable_start`, `probable_vote`, `probable_close`, `probable_next`
 - [x] 9.4 Reglas por rondas: avance automático, incorporación de tardíos al abrir ronda, abandono y expulsión, final anticipado con menos de 3 activos
-- [ ] 9.5 Variante `probable` en `get_room_state`
+- [x] 9.5 Variante `probable` en `get_room_state`
 - [ ] 9.6 Pruebas pgTAP de `probable`
 - [ ] 9.7 Sala de espera con selector de rondas; selector de juegos con `probable` elegible y su portada
 - [ ] 9.8 Pantallas de `probable` y su `viewFor`, con tests unitarios
