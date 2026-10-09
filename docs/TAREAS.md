@@ -138,7 +138,7 @@ Aceptación: las tres baterías pasan; no queda lógica duplicada entre los dos 
 - [x] 11.1 Migración: `rooms.game` y `games.phase` admiten `una_pista`; normalización de texto con sus pruebas
 - [x] 11.2 `una_pista_start`, `_clue`, `_close_writing`, `_toggle_clue`, `_show_clues`, `_mark`, `_next`; adivino por turno y árbitro
 - [x] 11.3 Variante `una_pista` en `get_room_state`
-- [ ] 11.4 Pruebas pgTAP de `una_pista`
+- [x] 11.4 Pruebas pgTAP de `una_pista`
 - [ ] 11.5 Pantallas de `una_pista` y su `viewFor`, con tests unitarios
 - [ ] 11.6 Prueba e2e: 5 rondas con 4 jugadores, pista duplicada y anulada a mano, sin palabra en la red del adivino
 
