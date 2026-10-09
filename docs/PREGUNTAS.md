@@ -172,3 +172,102 @@ Migración: `supabase/migrations/20261009110100_probable_prompts.sql`. Cada text
 - se aprenda un idioma inventado
 - protagonice una película sobre su vida
 - salve el mundo sin que nadie se entere
+
+## ¿Quién lo dijo? (80)
+
+Migración: `supabase/migrations/20261009130100_quien_lo_dijo_prompts.sql`. Preguntas abiertas que se contestan en una línea (hasta 80 caracteres).
+
+### Gustos (16)
+
+- ¿Qué canción pondrías para empezar una fiesta?
+- ¿Cuál es tu comida favorita para un domingo?
+- ¿Qué serie verías otra vez desde el principio?
+- ¿Qué película has visto más veces?
+- ¿Cuál es tu plan perfecto para un sábado?
+- ¿Qué emoji usas más?
+- ¿Qué olor te recuerda a tu infancia?
+- ¿Cuál es tu palabra favorita?
+- ¿Qué canción te sabes entera sin querer?
+- ¿Qué juego de mesa nunca te cansa?
+- ¿Cuál es tu sitio favorito de tu ciudad?
+- ¿Qué estación del año prefieres y por qué?
+- ¿Qué desayuno te alegra el día?
+- ¿Qué te pides siempre en una cafetería?
+- ¿Qué asignatura del cole te gustaba más?
+- ¿Qué personaje de dibujos animados te caía mejor?
+
+### Imagina (16)
+
+- ¿Qué harías con un día entero sin móvil?
+- ¿A qué época viajarías si pudieras?
+- ¿Qué superpoder elegirías?
+- ¿Qué animal te gustaría ser durante un día?
+- ¿Con qué personaje de ficción te irías de vacaciones?
+- ¿Qué inventarías para no volver a hacer una tarea de casa?
+- ¿Qué te llevarías a una isla desierta?
+- ¿A qué te dedicarías en otra vida?
+- ¿Qué nombre le pondrías a un barco?
+- ¿Qué harías si nadie pudiera verte durante una tarde?
+- ¿Qué título tendría la película de tu vida?
+- ¿Qué plato cocinarías para impresionar a alguien?
+- ¿A qué famoso invitarías a cenar?
+- ¿Qué idioma te gustaría hablar sin estudiarlo?
+- ¿Qué norma pondrías si mandaras en el mundo por un día?
+- ¿Qué harías mañana si te dieran el día libre por sorpresa?
+
+### Confesiones suaves (16)
+
+- ¿Cuál es tu manía más rara?
+- ¿Qué es lo más raro que has buscado en internet?
+- ¿Qué canción te da vergüenza que te guste?
+- ¿Cuál es la peor excusa que has puesto?
+- ¿Qué es lo último que te ha hecho reír a carcajadas?
+- ¿Qué palabra decías mal cuando eras peque?
+- ¿Qué mentira piadosa dices a menudo?
+- ¿Qué tarea de casa evitas siempre?
+- ¿Qué es lo más inútil que sabes hacer?
+- ¿Qué travesura hiciste de peque que nadie descubrió?
+- ¿Cuál es tu placer culpable en la tele?
+- ¿Qué app abres nada más despertarte?
+- ¿Qué es lo más raro que has comido?
+- ¿Qué frase dices demasiado?
+- ¿Cuál ha sido el peor regalo que te han hecho?
+- ¿Qué haces cuando nadie te ve en casa?
+
+### Recuerdos (16)
+
+- ¿Cuál es tu mejor recuerdo de un verano?
+- ¿Cuál fue tu primer concierto?
+- ¿Cuál es el mejor disfraz que has llevado?
+- ¿Cuál fue tu primer móvil?
+- ¿Qué es lo más bonito que te han dicho?
+- ¿Cuál es el mejor viaje que has hecho?
+- ¿Qué juguete no soltabas de peque?
+- ¿Cuál ha sido tu mejor cumpleaños?
+- ¿Qué es lo más valiente que has hecho?
+- ¿Cuál es la anécdota que más cuentas?
+- ¿Qué profe te marcó en el cole?
+- ¿Cuál fue tu primer trabajo?
+- ¿Qué es lo más espontáneo que has hecho?
+- ¿Qué canción te recuerda a tus amigos?
+- ¿Cuál es el mejor consejo que te han dado?
+- ¿Qué querías ser de mayor cuando eras peque?
+
+### Este grupo (16)
+
+- ¿Qué plan propondrías para la próxima quedada?
+- ¿Qué canción sería el himno de este grupo?
+- ¿Qué nombre le pondrías a este grupo?
+- ¿Qué recuerdo de este grupo no olvidarás nunca?
+- ¿Qué tradición inventarías para este grupo?
+- ¿Qué viaje haríais todos juntos?
+- ¿Qué serie de televisión sería este grupo?
+- ¿Qué plato llevarías a una cena del grupo?
+- ¿A qué jugaríais en una noche sin luz?
+- ¿Qué foto del grupo enmarcarías?
+- ¿Qué le regalarías al grupo entero?
+- ¿Qué norma pondrías en las quedadas?
+- ¿Qué superpoder tendría este grupo?
+- ¿Qué película veríais todos juntos?
+- ¿Qué palabra describe mejor a este grupo?
+- ¿Qué canción no puede faltar en una fiesta del grupo?
