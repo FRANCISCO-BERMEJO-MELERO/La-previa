@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-09 · 10.5 · En la votación de ¿Quién lo dijo? no se dice quién falta
+
+`docs/JUEGOS.md` §9 pide las fichas de quién falta también en la espera de votos, pero en `quien_lo_dijo` el autor no vota: el último en votar vería que solo faltan él y otro, y sabría quién es el autor. Como la duda toca el secreto, se elige lo más restrictivo: en esa fase `has_responded` es `false` para todos y la foto lleva solo `vote_progress` (`{voted, total}`) para el contador. En la escritura sí se ve quién ha respondido. La foto añade también `annulled` en la revelación, para decir que la ronda se anuló sin depender de que falte el autor.
+Descartado: enseñar las fichas como en las otras esperas, que filtra al autor.
+
 ## 2026-10-09 · 10.4 · Detalles de ¿Quién lo dijo?
 
 - Una ronda sin respuestas se salta: cuenta como jugada (la partida sigue teniendo las rondas elegidas) y se abre directamente la siguiente, o se termina si era la última. Queda marcada con `{"skipped": true}`.
