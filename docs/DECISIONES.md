@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-09 · 10.3 · Lo común de los juegos por rondas en SQL
+
+Lo compartido vive en `private`: `start_round_game` (validaciones y creación), `open_round` (incorporación y pregunta sin repetir), `next_round`, `all_responded`, `round_departure` (abandono y final anticipado con menos de 3) y `round_state` (parte común de la foto, con la clasificación al terminar; cada juego añade lo suyo y `with_my` mete sus campos en `my`). Lo que cambia de un juego a otro se reparte en tres funciones pequeñas que cada juego amplía con un `case`: `first_phase`, `has_responded` (qué cuenta como haber respondido en cada fase) y `close_if_done` (qué cierre toca cuando ya no falta nadie). `probable` pasa a usarlas y sus pruebas siguen pasando sin tocarlas; sus funciones sustituidas se borran.
+Descartado: tablas de configuración por juego o SQL dinámico, que son el "motor de juegos" que `docs/JUEGOS.md` deja fuera.
+
 ## 2026-10-09 · 9.8 · Pantallas de ¿Quién es más probable que…?
 
 Sin maqueta, se montan con los componentes de El impostor: píldora "Ronda 3 de 10" en `sky` (sirve para salir, como la de la sala), tarjeta protagonista girada con la pregunta ("…se pierda en un museo?", con la píldora "¿Quién es más probable que…" encima), lista de votar igual que la 08 pero incluyéndose uno mismo, espera de votos igual que la 09 ("Han votado 2 de 4"), y recuento con la tarjeta en `lime` para el más votado y una fila por jugador votado con "3 votos de …" y un "+1" para quien puntúa. El resultado nombra a "el más probable de la noche" (todos los empatados; "Nadie ha sumado puntos" si nadie puntuó) y debajo la clasificación con puestos compartidos en los empates. La pantalla de entrar tarde pasa a `src/screens` con el texto por prop, porque ya la usan dos juegos; quien se fue y ha vuelto a media ronda también la ve. Las píldoras largas van sin mayúsculas para no partirse a 360 px.
