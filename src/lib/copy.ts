@@ -20,6 +20,7 @@ export const errorCodes = [
   'invalid_target',
   'cannot_kick',
   'invalid_game',
+  'invalid_rounds',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -44,6 +45,7 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
   cannot_kick:
     'Durante la partida solo puedes echar a alguien que se haya desconectado. Espera a que termine.',
   invalid_game: 'Ese juego todavía no está disponible. De momento, jugad a El impostor.',
+  invalid_rounds: 'Las partidas son de 5, 10 o 15 rondas. Elige una de esas opciones.',
   unknown: 'Algo ha fallado. Vuelve a intentarlo en un momento.',
   offline: 'Sin conexión. Seguimos intentándolo; no cierres la página.',
 };

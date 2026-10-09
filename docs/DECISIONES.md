@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-09 · 9.3 · Cada acción comprueba el juego de la partida
+
+`private.require_phase`, que usan todas las acciones de El impostor, pasa a exigir además que la partida sea de El impostor (con la auxiliar nueva `private.require_game(sala, juego, fase)`). Sin eso, el anfitrión podía llamar a `close_voting` sobre una votación de `probable` y eliminar a alguien. `back_to_lobby` deja de usarla y comprueba `finished` para cualquier juego. `probable_start` exige que la sala tenga elegido `probable` (`invalid_game`); `start_game` no se toca para no cambiar El impostor.
+Descartado: confiar en que el cliente solo llama a las acciones del juego en curso.
+
+## 2026-10-09 · 9.3 · El recuento se guarda al cerrar la ronda
+
+Al cerrar, `game_rounds.result` guarda `{tally: [{user_id, votes, voter_ids}], winner_ids}`, ordenado de más a menos votos, y se suman los puntos en ese momento. La revelación enseña lo guardado, así que lo que pase después (alguien que se va) no cambia lo que ya se ha visto. El recuento solo lista a quien ha recibido algún voto; los nombres los pone el cliente con la lista de participantes, donde siguen quienes se han ido.
+Descartado: recalcular el recuento en cada foto a partir de `votes`.
+
 ## 2026-10-09 · 8.6 · La prueba de secreto ignora la clave `type`
 
 Cuatro aserciones de `10_impostor_rules` comprobaban que el valor `"impostor"` no aparece en ningún punto de `game` en la foto de un jugador normal (y que aparece una sola vez en la del impostor). Con `type: "impostor"`, que exige `docs/JUEGOS.md` §8, ese valor está siempre. Se analiza `game` sin la clave `type` (`(... -> 'game') - 'type'`); el resto del objeto se recorre igual y las aserciones no cambian. Que `type` está y vale `impostor` lo prueba `11_game_type`. La prueba e2e de secreto ya buscaba `"role": "impostor"` y no se toca. Única prueba existente modificada en la fase 8.
