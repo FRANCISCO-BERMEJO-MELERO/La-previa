@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 8 terminada, fase 9 pendiente · última actualización 2026-10-09
+Estado: fase 9 en curso · última actualización 2026-10-09
 
 ## Fase 0 · Preparación
 
@@ -107,7 +107,7 @@ Aceptación: todas las pruebas existentes pasan sin cambiar ninguna aserción; l
 
 ## Fase 9 · ¿Quién es más probable que…?
 
-- [ ] 9.1 Migración de esquema: `rooms.game` y `games.phase` admiten el juego, `games.total_rounds`, `game_players.score`, tablas `prompts` y `game_rounds`, con RLS y sin políticas
+- [x] 9.1 Migración de esquema: `rooms.game` y `games.phase` admiten el juego, `games.total_rounds`, `game_players.score`, tablas `prompts` y `game_rounds`, con RLS y sin políticas
 - [ ] 9.2 Migración de datos con las preguntas de `probable` y primera versión de `docs/PREGUNTAS.md`
 - [ ] 9.3 `set_game` acepta `probable`; `probable_start`, `probable_vote`, `probable_close`, `probable_next`
 - [ ] 9.4 Reglas por rondas: avance automático, incorporación de tardíos al abrir ronda, abandono y expulsión, final anticipado con menos de 3 activos
