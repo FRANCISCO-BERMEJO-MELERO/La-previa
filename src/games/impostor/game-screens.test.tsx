@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { copy } from '@/lib/copy';
 import type { ParticipantView } from './game-view';
 import { DealScreen } from './DealScreen';
-import { LateScreen } from './LateScreen';
+import { LateScreen } from '@/screens/LateScreen';
 import { OutScreen } from './OutScreen';
 import { ResultScreen } from './ResultScreen';
 import { RevealScreen } from './RevealScreen';
@@ -133,7 +134,7 @@ describe('encabezados', () => {
 
 describe('LateScreen (05)', () => {
   it('saluda a quien llega tarde y cuenta quién juega', () => {
-    render(<LateScreen {...chrome} myName="Sergio" playing={avatars} />);
+    render(<LateScreen {...chrome} myName="Sergio" playing={avatars} text={copy.late.text} />);
     expect(screen.getByRole('heading', { name: 'Llegas tarde, Sergio' })).toBeInTheDocument();
     expect(screen.getByText('Partida en curso')).toBeInTheDocument();
     expect(screen.getByText('2 jugando')).toBeInTheDocument();

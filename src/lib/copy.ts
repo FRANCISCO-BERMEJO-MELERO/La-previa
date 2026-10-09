@@ -143,6 +143,8 @@ export const copy = {
     pill: 'Partida en curso',
     title: (name: string) => `Llegas tarde, ${name}`,
     text: 'Ya estás en la sala. Juegas en la siguiente partida, en cuanto termine esta.',
+    textRound: 'Ya estás en la sala. Juegas desde la siguiente ronda, en cuanto empiece.',
+    waitingRound: 'Esperando a la siguiente ronda',
     playing: (count: number) => `${String(count)} jugando`,
     waiting: 'Esperando a que termine la partida',
   },
@@ -235,6 +237,30 @@ export const copy = {
     changeGame: 'Cambiar de juego',
     playAgain: 'Volver a jugar',
     waitingHost: (host: string) => `${host} decide si se vuelve a jugar`,
+  },
+
+  rounds: {
+    pill: (round: number, total: number) => `Ronda ${String(round)} de ${String(total)}`,
+    points: (points: number) => (points === 1 ? '1 punto' : `${String(points)} puntos`),
+    ranking: 'Clasificación',
+    position: (position: number) => `${String(position)}.º`,
+  },
+
+  probable: {
+    question: '¿Quién es más probable que…',
+    prompt: (text: string) => `…${text}?`,
+    voteHint: 'Puedes votarte a ti. Nadie ve tu voto hasta el recuento.',
+    voted: 'Han votado',
+    roundWinner: (count: number) => (count === 1 ? 'El más votado' : 'Empate en cabeza'),
+    noVotes: 'Nadie ha votado',
+    noVotesText: 'Esta ronda nadie se lleva el punto.',
+    votesFrom: (votes: number, names: readonly string[]) =>
+      `${votes === 1 ? '1 voto' : `${String(votes)} votos`} de ${joinNames(names)}`,
+    point: '+1',
+    next: 'Siguiente ronda',
+    resultPill: 'El más probable de la noche',
+    noWinner: 'Nadie ha sumado puntos',
+    names: (names: readonly string[]) => joinNames(names),
   },
 
   // Solo para la página interna de componentes, que no existe en producción.

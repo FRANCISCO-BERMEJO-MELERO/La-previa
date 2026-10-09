@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-09 · 9.8 · Pantallas de ¿Quién es más probable que…?
+
+Sin maqueta, se montan con los componentes de El impostor: píldora "Ronda 3 de 10" en `sky` (sirve para salir, como la de la sala), tarjeta protagonista girada con la pregunta ("…se pierda en un museo?", con la píldora "¿Quién es más probable que…" encima), lista de votar igual que la 08 pero incluyéndose uno mismo, espera de votos igual que la 09 ("Han votado 2 de 4"), y recuento con la tarjeta en `lime` para el más votado y una fila por jugador votado con "3 votos de …" y un "+1" para quien puntúa. El resultado nombra a "el más probable de la noche" (todos los empatados; "Nadie ha sumado puntos" si nadie puntuó) y debajo la clasificación con puestos compartidos en los empates. La pantalla de entrar tarde pasa a `src/screens` con el texto por prop, porque ya la usan dos juegos; quien se fue y ha vuelto a media ronda también la ve. Las píldoras largas van sin mayúsculas para no partirse a 360 px.
+Descartado: enseñar en el recuento a quien no ha recibido votos, que con muchos jugadores alarga la pantalla sin decir nada.
+
 ## 2026-10-09 · 9.7 · El selector de juegos con más de un juego
 
 Cada juego elegible es una tarjeta-botón con `aria-pressed`, su portada, descripción y jugadores; la elegida lleva la pegatina "Elegido" y la sombra dura, las demás no. Se elige primero el juego que ya tiene la sala, y "Abrir la sala" llama a `set_game` con el elegido. La portada de `probable` son tres caras en `sky` con la del centro en `lime` y un "+1". La prueba existente "muestra El impostor elegido…" daba por hecho un solo juego (exigía que los únicos botones fueran la píldora y "Abrir la sala", y un único "De 3 a 16 jugadores"), así que se reescribe para el selector con varios juegos; las demás pruebas del selector solo cambian cómo se monta.

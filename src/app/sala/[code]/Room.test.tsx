@@ -4,7 +4,7 @@ import type { ActionResult } from '@/lib/actions';
 import type { ShareOutcome } from '@/lib/share';
 import type { Snapshot } from '@/lib/snapshot';
 import type { RoomSync } from '@/lib/use-room-sync';
-import { gameState, ids, inGame, lobbySnapshot } from '@/test/fixtures';
+import { gameState, ids, inGame, inProbable, lobbySnapshot } from '@/test/fixtures';
 import { Room } from './Room';
 
 const mocks = vi.hoisted(() => ({
@@ -17,6 +17,9 @@ const mocks = vi.hoisted(() => ({
   leaveRoom: vi.fn<(roomId: string) => Promise<ActionResult<null>>>(),
   startGame: vi.fn<(roomId: string, count: number) => Promise<ActionResult<Snapshot>>>(),
   probableStart: vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
+  probableVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
+  probableClose: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  probableNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   openVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   castVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   closeVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -32,6 +35,9 @@ vi.mock('@/lib/actions', () => ({
   leaveRoom: mocks.leaveRoom,
   startGame: mocks.startGame,
   probableStart: mocks.probableStart,
+  probableVote: mocks.probableVote,
+  probableClose: mocks.probableClose,
+  probableNext: mocks.probableNext,
   openVoting: mocks.openVoting,
   castVote: mocks.castVote,
   closeVoting: mocks.closeVoting,
@@ -340,5 +346,100 @@ describe('Room', () => {
     ready(lobbySnapshot());
     rerender(<Room initial={lobbySnapshot()} fresh={false} />);
     expect(screen.getByRole('button', { name: 'Abrir la sala' })).toBeInTheDocument();
+  });
+
+  describe('probable', () => {
+    it('vota con la pregunta delante y aplica la foto', async () => {
+      ready(inProbable());
+      mocks.probableVote.mockResolvedValue({
+        ok: true,
+        data: inProbable({ my: { is_participant: true, alive: true, voted_for: ids.lucia } }),
+      });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(
+        screen.getByRole('button', { name: 'Ronda 3 de 10. Salir de la sala' }),
+      ).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: /Lucía/ }));
+      fireEvent.click(screen.getByRole('button', { name: 'Votar a Lucía' }));
+      expect(mocks.probableVote).toHaveBeenCalledWith(ids.room, ids.lucia);
+      await waitFor(() => {
+        expect(mocks.apply).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('tras votar, el anfitrión puede cerrar con los votos que haya', () => {
+      ready(inProbable({ my: { is_participant: true, alive: true, voted_for: ids.fran } }));
+      mocks.probableClose.mockResolvedValue({ ok: true, data: inProbable({ phase: 'reveal' }) });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Tu voto: Fran')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Cerrar votación' }));
+      expect(mocks.probableClose).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('en el recuento el anfitrión pasa a la siguiente ronda', () => {
+      ready(
+        inProbable({
+          phase: 'reveal',
+          tally: [{ user_id: ids.lucia, votes: 2, voter_ids: [ids.fran, ids.alvaro] }],
+          round_winner_ids: [ids.lucia],
+        }),
+      );
+      mocks.probableNext.mockResolvedValue({ ok: true, data: inProbable() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('heading', { name: 'Lucía' })).toBeInTheDocument();
+      expect(screen.getByText('2 votos de Fran y Álvaro')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Siguiente ronda' }));
+      expect(mocks.probableNext).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('quien llega a media ronda espera a la siguiente; el anfitrión sigue llevándola', () => {
+      const lateGuest = inProbable(
+        { my: { is_participant: false, alive: false, voted_for: null } },
+        { me: { user_id: ids.marta, name: 'Marta', is_host: false } },
+      );
+      ready(lateGuest);
+      const { unmount } = render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('heading', { name: 'Llegas tarde, Marta' })).toBeInTheDocument();
+      expect(screen.getByText(/desde la siguiente ronda/)).toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent('Esperando a la siguiente ronda');
+      unmount();
+      ready(inProbable({ my: { is_participant: false, alive: false, voted_for: null } }));
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('button', { name: 'Cerrar votación' })).toBeInTheDocument();
+    });
+
+    it('al final enseña la clasificación y vuelve a jugar con las mismas rondas', async () => {
+      ready(
+        inProbable({
+          phase: 'finished',
+          ranking: [
+            { user_id: ids.lucia, name: 'Lucía', score: 3 },
+            { user_id: ids.fran, name: 'Fran', score: 1 },
+          ],
+        }),
+      );
+      mocks.probableStart.mockResolvedValue({ ok: true, data: inProbable() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('El más probable de la noche')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Lucía' })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
+      expect(mocks.probableStart).toHaveBeenCalledWith(ids.room, 10);
+      await waitFor(() => {
+        expect(mocks.apply).toHaveBeenCalledTimes(1);
+      });
+      expect(mocks.backToLobby).not.toHaveBeenCalled();
+    });
+
+    it('si ya no hay gente suficiente, volver a jugar lleva a la sala de espera', async () => {
+      ready(inProbable({ phase: 'finished', ranking: [] }));
+      mocks.probableStart.mockResolvedValue({ ok: false, error: 'not_enough_players' });
+      mocks.backToLobby.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
+      await waitFor(() => {
+        expect(mocks.backToLobby).toHaveBeenCalledWith(ids.room);
+      });
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
   });
 });

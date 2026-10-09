@@ -24,7 +24,7 @@ import {
   voteCandidates,
 } from './game-view';
 import { HostControls } from './HostControls';
-import { LateScreen } from './LateScreen';
+import { LateScreen } from '@/screens/LateScreen';
 import { OutScreen } from './OutScreen';
 import { ResultScreen } from './ResultScreen';
 import { RevealScreen } from './RevealScreen';
@@ -169,6 +169,7 @@ function GameView({
           aside={roomPill}
           notice={notice}
           footer={isHost ? controls : <WaitingBox>{copy.late.waiting}</WaitingBox>}
+          text={copy.late.text}
           myName={snapshot.me.name}
           playing={all.filter((p) => p.alive).map((p) => ({ ...p, muted: !p.connected }))}
         />

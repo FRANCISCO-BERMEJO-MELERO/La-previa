@@ -45,6 +45,18 @@ export function probableStart(roomId: string, rounds: number, deps = defaultDeps
   return callForSnapshot(deps, 'probable_start', { room_id: roomId, rounds });
 }
 
+export function probableVote(roomId: string, targetId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'probable_vote', { room_id: roomId, target_id: targetId });
+}
+
+export function probableClose(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'probable_close', { room_id: roomId });
+}
+
+export function probableNext(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'probable_next', { room_id: roomId });
+}
+
 export function openVoting(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'open_voting', { room_id: roomId });
 }

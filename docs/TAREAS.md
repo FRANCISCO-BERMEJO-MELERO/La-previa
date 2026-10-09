@@ -114,7 +114,7 @@ Aceptación: todas las pruebas existentes pasan sin cambiar ninguna aserción; l
 - [x] 9.5 Variante `probable` en `get_room_state`
 - [x] 9.6 Pruebas pgTAP de `probable`
 - [x] 9.7 Sala de espera con selector de rondas; selector de juegos con `probable` elegible y su portada
-- [ ] 9.8 Pantallas de `probable` y su `viewFor`, con tests unitarios
+- [x] 9.8 Pantallas de `probable` y su `viewFor`, con tests unitarios
 - [ ] 9.9 Prueba e2e: 5 rondas con 3 jugadores, con cambio desde El impostor en la misma sala
 
 Aceptación: las tres baterías pasan; en una sala se juega a El impostor, se cambia a `probable`, se juega y se vuelve.

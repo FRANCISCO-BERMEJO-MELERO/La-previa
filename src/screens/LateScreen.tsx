@@ -6,12 +6,14 @@ import { fitDisplay } from '@/lib/fit-text';
 import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 
 type LateScreenProps = GameScreenProps & {
+  /** Cuándo empieza a jugar: en la siguiente partida o en la siguiente ronda. */
+  text: string;
   myName: string;
   playing: AvatarRowItem[];
 };
 
-/** 05: hay partida y no participas; juegas en la siguiente. */
-export function LateScreen({ myName, playing, ...chrome }: LateScreenProps) {
+/** 05: hay partida y no participas todavía. */
+export function LateScreen({ myName, playing, text, ...chrome }: LateScreenProps) {
   const title = copy.late.title(myName);
   return (
     <GameScreen {...chrome}>
@@ -23,7 +25,7 @@ export function LateScreen({ myName, playing, ...chrome }: LateScreenProps) {
           <h1 className={`font-display uppercase ${fitDisplay(title, 'text-display-md')}`}>
             {title}
           </h1>
-          <p className="text-lead font-medium">{copy.late.text}</p>
+          <p className="text-lead font-medium">{text}</p>
         </div>
       </Card>
       <AvatarRow players={playing} summary={copy.late.playing(playing.length)} />

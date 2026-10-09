@@ -6,6 +6,7 @@ import { OfflineNotice } from '@/components/OfflineNotice';
 import { PillButton } from '@/components/PillButton';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
 import { clampImpostors } from '@/games/impostor/impostors';
+import { ProbableGame } from '@/games/probable/ProbableGame';
 import {
   backToLobby,
   kickPlayer,
@@ -132,24 +133,27 @@ export function Room({ initial, fresh }: RoomProps) {
 
   const { game } = snapshot;
 
-  if (game?.type === 'impostor') {
-    return withLeaveDialog(
-      <ImpostorGame
-        snapshot={snapshot}
-        game={game}
-        pill={pill}
-        notice={notice}
-        busy={busy}
-        error={errorText}
-        run={run}
-        onKickRequest={setKickTargetId}
-        onChangeGame={() => {
-          void run(() => backToLobby(roomId)).then((ok) => {
-            if (ok) setPicking(true);
-          });
-        }}
-      />,
-    );
+  if (game) {
+    const shared = {
+      snapshot,
+      pill,
+      notice,
+      busy,
+      error: errorText,
+      run,
+      onKickRequest: setKickTargetId,
+      onChangeGame: () => {
+        void run(() => backToLobby(roomId)).then((ok) => {
+          if (ok) setPicking(true);
+        });
+      },
+    };
+    switch (game.type) {
+      case 'impostor':
+        return withLeaveDialog(<ImpostorGame {...shared} game={game} />);
+      case 'probable':
+        return withLeaveDialog(<ProbableGame {...shared} game={game} />);
+    }
   }
 
   if (picking && snapshot.me.is_host) {

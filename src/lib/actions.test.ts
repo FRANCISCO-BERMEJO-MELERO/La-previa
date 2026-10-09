@@ -11,7 +11,10 @@ import {
   kickPlayer,
   leaveRoom,
   openVoting,
+  probableClose,
+  probableNext,
   probableStart,
+  probableVote,
   setGame,
   startGame,
   toActionError,
@@ -38,6 +41,9 @@ describe('acciones', () => {
     await kickPlayer('sala', 'u2', d);
     await startGame('sala', 2, d);
     await probableStart('sala', 10, d);
+    await probableVote('sala', 'u2', d);
+    await probableClose('sala', d);
+    await probableNext('sala', d);
     await openVoting('sala', d);
     await castVote('sala', 'u3', d);
     await closeVoting('sala', d);
@@ -51,6 +57,9 @@ describe('acciones', () => {
       ['kick_player', { room_id: 'sala', user_id: 'u2' }],
       ['start_game', { room_id: 'sala', impostor_count: 2 }],
       ['probable_start', { room_id: 'sala', rounds: 10 }],
+      ['probable_vote', { room_id: 'sala', target_id: 'u2' }],
+      ['probable_close', { room_id: 'sala' }],
+      ['probable_next', { room_id: 'sala' }],
       ['open_voting', { room_id: 'sala' }],
       ['cast_vote', { room_id: 'sala', target_id: 'u3' }],
       ['close_voting', { room_id: 'sala' }],
