@@ -1,5 +1,6 @@
 'use client';
 
+import type { PillButtonTone } from '@/components/PillButton';
 import { useState, type ReactNode } from 'react';
 import { WaitingBox } from '@/components/WaitingBox';
 import {
@@ -33,13 +34,11 @@ import { viewFor } from './view';
 import { VoteScreen } from './VoteScreen';
 import { WriteScreen } from './WriteScreen';
 
-type PillTone = 'paper' | 'tomato' | 'sky' | 'lilac';
-
 type QuienLoDijoGameProps = {
   snapshot: Snapshot;
   game: QuienLoDijoGameState;
   /** Píldora de la cabecera que abre el diálogo de salir. */
-  pill: (label: string, tone?: PillTone) => ReactNode;
+  pill: (label: string, tone?: PillButtonTone) => ReactNode;
   notice: ReactNode;
   busy: boolean;
   error?: string;
@@ -73,7 +72,7 @@ export function QuienLoDijoGame({
 
   const controls = (
     <RoundControls
-      isHost={isHost}
+      inCharge={isHost}
       waiting={
         game.phase === 'writing'
           ? copy.quienLoDijo.waitingWriting(host)

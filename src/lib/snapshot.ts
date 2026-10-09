@@ -104,14 +104,34 @@ const quienLoDijoGameSchema = z.object({
   answers: z.array(z.object({ user_id: id, text: z.string() })).nullable(),
 });
 
+const unaPistaGameSchema = z.object({
+  ...roundGameShape,
+  type: z.literal('una_pista'),
+  phase: z.enum(['writing', 'review', 'guessing', 'reveal', 'finished']),
+  my: z.object({ is_participant: z.boolean(), alive: z.boolean(), clue: z.string().nullable() }),
+  guesser_id: id,
+  arbiter_id: id.nullable(),
+  team_score: z.int().nonnegative(),
+  category: z.string().nullable(),
+  word: z.string().nullable(),
+  // El adivino recibe solo el texto de las vivas; los demás, también autor y si está anulada.
+  clues: z
+    .array(
+      z.object({ text: z.string(), user_id: id.optional(), cancelled: z.boolean().optional() }),
+    )
+    .nullable(),
+  result: z.enum(['correct', 'wrong', 'pass']).nullable(),
+});
+
 /** La partida en curso, con la forma propia de cada juego (docs/JUEGOS.md §8). */
 const gameSchema = z.discriminatedUnion('type', [
   impostorGameSchema,
   probableGameSchema,
   quienLoDijoGameSchema,
+  unaPistaGameSchema,
 ]);
 
-export const gameIds = ['impostor', 'probable', 'quien_lo_dijo'] as const;
+export const gameIds = ['impostor', 'probable', 'quien_lo_dijo', 'una_pista'] as const;
 
 export const snapshotSchema = z.object({
   server_time: timestamp,
@@ -136,6 +156,7 @@ export type GameId = (typeof gameIds)[number];
 export type ImpostorGameState = z.infer<typeof impostorGameSchema>;
 export type ProbableGameState = z.infer<typeof probableGameSchema>;
 export type QuienLoDijoGameState = z.infer<typeof quienLoDijoGameSchema>;
+export type UnaPistaGameState = z.infer<typeof unaPistaGameSchema>;
 /** Lo que comparten las partidas de los juegos por rondas. */
 export type RoundGameState = z.infer<z.ZodObject<typeof roundGameShape>>;
 export type Phase = ImpostorGameState['phase'];

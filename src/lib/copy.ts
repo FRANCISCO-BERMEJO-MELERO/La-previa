@@ -124,8 +124,20 @@ export const copy = {
       description: 'Todos escribís una respuesta y adivináis de quién es la que sale.',
       players: 'De 3 a 16 jugadores',
     },
+    una_pista: {
+      name: 'Una sola pista',
+      description: 'Uno adivina la palabra con una pista de cada uno. Las repetidas no valen.',
+      players: 'De 3 a 16 jugadores',
+    },
     upcoming: ['Palabras prohibidas', 'La bomba', '¿Qué prefieres?'],
-    covers: { quote: '¿?', banned: 'Palabra', optionA: 'A', optionB: 'B', point: '+1' },
+    covers: {
+      quote: '¿?',
+      banned: 'Palabra',
+      optionA: 'A',
+      optionB: 'B',
+      point: '+1',
+      clue: 'Pista',
+    },
   },
 
   lobby: {
@@ -306,6 +318,55 @@ export const copy = {
     answers: 'Las respuestas',
     quoted: (text: string) => `«${text}»`,
     resultPill: 'Gana la partida',
+  },
+
+  unaPista: {
+    guesserPill: (name: string) => `Adivina ${name}`,
+    guesserTitle: 'Te toca adivinar',
+    guesserText:
+      'No mires los móviles de los demás. Cuando se enseñen las pistas, dirás tu respuesta en voz alta.',
+    guesserReview: 'Los demás están revisando las pistas.',
+    wordPill: 'La palabra',
+    category: (category: string) => `Categoría: ${category}`,
+    clueLabel: 'Tu pista',
+    clueHint: 'Una sola palabra, hasta 20 letras. Si coincide con la de otro, se anulan las dos.',
+    send: 'Enviar pista',
+    mine: (text: string) => `Tu pista: ${text}`,
+    cluesGiven: 'Han dado pista',
+    clueGivenDetail: 'Ha dado pista',
+    closeWriting: 'Cerrar pistas',
+    closeWritingHint: 'Puedes cerrar con las pistas que haya.',
+    waitingWriting: (arbiter: string) => `${arbiter} cerrará las pistas`,
+    reviewTitle: 'Revisad las pistas',
+    reviewHint:
+      'Las repetidas ya están anuladas. Toca una para anularla o recuperarla si se parece demasiado a otra.',
+    cancelled: 'Anulada',
+    cancel: (name: string, text: string) => `Anular la pista de ${name}: ${text}`,
+    restore: (name: string, text: string) => `Recuperar la pista de ${name}: ${text}`,
+    showClues: 'Enseñar pistas',
+    waitingShow: (arbiter: string) => `${arbiter} enseñará las pistas`,
+    guessTitle: 'Tus pistas',
+    guessHint: 'Di tu respuesta en voz alta.',
+    noClues: 'Todas las pistas se han anulado. Toca adivinar sin ayuda.',
+    waitingMark: (arbiter: string) => `${arbiter} dirá si has acertado`,
+    markHint: 'Cuando diga su respuesta en voz alta, marca cómo ha ido.',
+    correct: 'Acertada',
+    wrong: 'Fallada',
+    pass: 'Pasa',
+    waitingGuess: (arbiter: string) => `${arbiter} marcará la respuesta`,
+    waitingNext: (arbiter: string) => `${arbiter} decide cuándo seguir`,
+    outcome: { correct: '¡Acertada!', wrong: 'Fallada', pass: 'Ha pasado' },
+    wordWas: 'La palabra era',
+    clues: 'Las pistas',
+    scorePill: 'Marcador del equipo',
+    score: (score: number, total: number) => `${String(score)} de ${String(total)}`,
+    verdict: (score: number, total: number) => {
+      const ratio = total === 0 ? 0 : score / total;
+      if (ratio >= 1) return '¡Pleno! No se os escapa ni una.';
+      if (ratio > 0.7) return 'Muy bien. Os entendéis casi sin hablar.';
+      if (ratio > 0.4) return 'No está mal. Hay química, pero se puede afinar.';
+      return 'Hay que practicar más. La próxima sale mejor.';
+    },
   },
 
   // Solo para la página interna de componentes, que no existe en producción.

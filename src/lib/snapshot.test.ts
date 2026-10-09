@@ -3,9 +3,11 @@ import {
   gameState,
   ids,
   inGame,
+  inPista,
   inProbable,
   inQuien,
   lobbySnapshot,
+  pistaState,
   probableState,
   quienState,
 } from '@/test/fixtures';
@@ -108,6 +110,28 @@ describe('parseSnapshot', () => {
       parseSnapshot({ ...inQuien(), game: { ...quienState(), my: probableState().my } }),
     ).toBeNull();
     expect(parseSnapshot({ ...inQuien(), game: { ...quienState(), phase: 'talking' } })).toBeNull();
+  });
+
+  it('acepta la partida de una_pista, también con las pistas sin autor del adivino', () => {
+    const review = inPista({
+      phase: 'review',
+      clues: [{ user_id: ids.fran, text: 'frío', cancelled: true }],
+    });
+    expect(parseSnapshot(review)).toEqual(review);
+    const guessing = inPista({
+      phase: 'guessing',
+      word: null,
+      category: null,
+      clues: [{ text: 'hielo' }],
+    });
+    expect(parseSnapshot(guessing)).toEqual(guessing);
+    const reveal = inPista({ phase: 'reveal', result: 'pass', clues: [] });
+    expect(parseSnapshot(reveal)).toEqual(reveal);
+  });
+
+  it('descarta una partida de una_pista con un resultado que no existe', () => {
+    expect(parseSnapshot({ ...inPista(), game: { ...pistaState(), result: 'casi' } })).toBeNull();
+    expect(parseSnapshot({ ...inPista(), game: { ...pistaState(), guesser_id: null } })).toBeNull();
   });
 
   it('acepta las fechas tal como las devuelve Postgres', () => {

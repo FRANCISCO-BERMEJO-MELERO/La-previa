@@ -4,7 +4,15 @@ import type { ActionResult } from '@/lib/actions';
 import type { ShareOutcome } from '@/lib/share';
 import type { Snapshot } from '@/lib/snapshot';
 import type { RoomSync } from '@/lib/use-room-sync';
-import { gameState, ids, inGame, inProbable, inQuien, lobbySnapshot } from '@/test/fixtures';
+import {
+  gameState,
+  ids,
+  inGame,
+  inPista,
+  inProbable,
+  inQuien,
+  lobbySnapshot,
+} from '@/test/fixtures';
 import { Room } from './Room';
 
 const mocks = vi.hoisted(() => ({
@@ -26,6 +34,13 @@ const mocks = vi.hoisted(() => ({
   quienLoDijoVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   quienLoDijoCloseVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   quienLoDijoNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  unaPistaStart: vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
+  unaPistaClue: vi.fn<(roomId: string, text: string) => Promise<ActionResult<Snapshot>>>(),
+  unaPistaCloseWriting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  unaPistaToggleClue: vi.fn<(roomId: string, userId: string) => Promise<ActionResult<Snapshot>>>(),
+  unaPistaShowClues: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  unaPistaMark: vi.fn<(roomId: string, result: string) => Promise<ActionResult<Snapshot>>>(),
+  unaPistaNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   openVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   castVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   closeVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -50,6 +65,13 @@ vi.mock('@/lib/actions', () => ({
   quienLoDijoVote: mocks.quienLoDijoVote,
   quienLoDijoCloseVoting: mocks.quienLoDijoCloseVoting,
   quienLoDijoNext: mocks.quienLoDijoNext,
+  unaPistaStart: mocks.unaPistaStart,
+  unaPistaClue: mocks.unaPistaClue,
+  unaPistaCloseWriting: mocks.unaPistaCloseWriting,
+  unaPistaToggleClue: mocks.unaPistaToggleClue,
+  unaPistaShowClues: mocks.unaPistaShowClues,
+  unaPistaMark: mocks.unaPistaMark,
+  unaPistaNext: mocks.unaPistaNext,
   openVoting: mocks.openVoting,
   castVote: mocks.castVote,
   closeVoting: mocks.closeVoting,
@@ -570,6 +592,112 @@ describe('Room', () => {
       expect(screen.getByText('Gana la partida')).toBeInTheDocument();
       fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
       expect(mocks.quienLoDijoStart).toHaveBeenCalledWith(ids.room, 5);
+    });
+  });
+
+  describe('una_pista', () => {
+    const asLucia = { me: { user_id: ids.lucia, name: 'Lucía', is_host: false } };
+
+    it('quien da pista la escribe y la envía', async () => {
+      ready(inPista());
+      mocks.unaPistaClue.mockResolvedValue({
+        ok: true,
+        data: inPista({ my: { is_participant: true, alive: true, clue: 'frío' } }),
+      });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Pingüino')).toBeInTheDocument();
+      fireEvent.change(screen.getByLabelText('Tu pista'), { target: { value: 'frío' } });
+      fireEvent.click(screen.getByRole('button', { name: 'Enviar pista' }));
+      expect(mocks.unaPistaClue).toHaveBeenCalledWith(ids.room, 'frío');
+      await waitFor(() => {
+        expect(mocks.apply).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('el adivino no ve la palabra y espera a quien arbitra', () => {
+      ready(inPista({ word: null, category: null }, asLucia));
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('heading', { name: 'Te toca adivinar' })).toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent('Fran cerrará las pistas');
+    });
+
+    it('el árbitro cierra las pistas tras dar la suya', () => {
+      ready(inPista({ my: { is_participant: true, alive: true, clue: 'frío' } }));
+      mocks.unaPistaCloseWriting.mockResolvedValue({
+        ok: true,
+        data: inPista({ phase: 'review' }),
+      });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Tu pista: frío')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Cerrar pistas' }));
+      expect(mocks.unaPistaCloseWriting).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('en la revisión se anula una pista y el árbitro las enseña', async () => {
+      ready(
+        inPista({
+          phase: 'review',
+          my: { is_participant: true, alive: true, clue: 'frío' },
+          clues: [
+            { user_id: ids.fran, text: 'frío', cancelled: false },
+            { user_id: ids.alvaro, text: 'fria', cancelled: false },
+          ],
+        }),
+      );
+      mocks.unaPistaToggleClue.mockResolvedValue({ ok: true, data: inPista({ phase: 'review' }) });
+      mocks.unaPistaShowClues.mockResolvedValue({ ok: true, data: inPista({ phase: 'guessing' }) });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      fireEvent.click(screen.getByRole('button', { name: 'Anular la pista de Álvaro: fria' }));
+      expect(mocks.unaPistaToggleClue).toHaveBeenCalledWith(ids.room, ids.alvaro);
+      await waitFor(() => {
+        expect(mocks.apply).toHaveBeenCalledTimes(1);
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Enseñar pistas' }));
+      expect(mocks.unaPistaShowClues).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('el adivino ve sus pistas y el árbitro marca', () => {
+      ready(
+        inPista(
+          { phase: 'guessing', word: null, category: null, clues: [{ text: 'hielo' }] },
+          asLucia,
+        ),
+      );
+      const { unmount } = render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('hielo')).toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent('Fran dirá si has acertado');
+      unmount();
+      ready(
+        inPista({
+          phase: 'guessing',
+          clues: [{ user_id: ids.alvaro, text: 'hielo', cancelled: false }],
+        }),
+      );
+      mocks.unaPistaMark.mockResolvedValue({
+        ok: true,
+        data: inPista({ phase: 'reveal', result: 'correct' }),
+      });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      fireEvent.click(screen.getByRole('button', { name: 'Acertada' }));
+      expect(mocks.unaPistaMark).toHaveBeenCalledWith(ids.room, 'correct');
+    });
+
+    it('en la revelación el árbitro pasa de ronda', () => {
+      ready(inPista({ phase: 'reveal', result: 'wrong', clues: [] }));
+      mocks.unaPistaNext.mockResolvedValue({ ok: true, data: inPista() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Fallada')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Siguiente ronda' }));
+      expect(mocks.unaPistaNext).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('al final el anfitrión vuelve a jugar con las mismas rondas', () => {
+      ready(inPista({ phase: 'finished', team_score: 7 }));
+      mocks.unaPistaStart.mockResolvedValue({ ok: true, data: inPista() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('heading', { name: '7 de 10' })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
+      expect(mocks.unaPistaStart).toHaveBeenCalledWith(ids.room, 10);
     });
   });
 });

@@ -3,7 +3,8 @@ import { WaitingBox } from '@/components/WaitingBox';
 import { copy } from '@/lib/copy';
 
 type RoundControlsProps = {
-  isHost: boolean;
+  /** Quien lleva esta fase: el anfitrión, o el árbitro en Una sola pista. */
+  inCharge: boolean;
   /** Para los demás: a quién o qué esperan. */
   waiting: string;
   /** Al terminar: volver a jugar o cambiar de juego. Si no, el botón que avanza la fase. */
@@ -18,7 +19,7 @@ type RoundControlsProps = {
 
 /** Pie de las pantallas de un juego por rondas: el botón del anfitrión o la caja de espera. */
 export function RoundControls({
-  isHost,
+  inCharge,
   waiting,
   finished,
   advanceLabel,
@@ -28,7 +29,7 @@ export function RoundControls({
   onPlayAgain,
   onChangeGame,
 }: RoundControlsProps) {
-  if (!isHost) return <WaitingBox>{waiting}</WaitingBox>;
+  if (!inCharge) return <WaitingBox>{waiting}</WaitingBox>;
 
   const alert = error ? (
     <p role="alert" className="text-md font-bold">

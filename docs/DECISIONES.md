@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-09 · 11.5 · Pantallas de Una sola pista
+
+Con los componentes existentes y acento `lime`, que se añade como tono de la píldora pulsable (el token ya existía). El adivino ve "Te toca adivinar" mientras se escriben y revisan las pistas, y después solo las vivas, grandes; quien da pista ve la palabra y su categoría y un campo de 20 caracteres; la revisión lista las pistas con su autor, las anuladas tachadas, y cada una es un botón (con `aria-pressed`) para quien ha dado pista; el árbitro ve "Cerrar pistas", "Enseñar pistas" y los botones "Acertada", "Fallada" y "Pasa"; la revelación enseña la palabra, cómo ha ido y todas las pistas; el final, "7 de 10" con la frase de su tramo. `RoundControls` pasa a recibir `inCharge` en vez de `isHost`, porque en este juego lleva la ronda el árbitro y la partida el anfitrión. Las pistas de más de 12 letras se pintan más pequeñas y sin mayúsculas en la pantalla del adivino: en mayúsculas no cabían a 360 px.
+Descartado: mantener el tamaño y dejar que la pista se parta, que a 360 px cortaba "SUPERCALIFRAGILISTI" en dos líneas.
+
 ## 2026-10-09 · 11.2 · Adivino, árbitro y ronda anulada en Una sola pista
 
 - **Adivino:** al abrir cada ronda, el participante activo que menos veces ha adivinado y, entre ellos, el primero por orden de entrada. Así rota por orden de entrada, salta a quien se ha ido y quien llega tarde se pone a la cola sin colarse. Se guarda en `game_rounds.subject_id`.

@@ -2,6 +2,7 @@ import type {
   ImpostorGameState,
   ProbableGameState,
   QuienLoDijoGameState,
+  UnaPistaGameState,
   Snapshot,
 } from '@/lib/snapshot';
 
@@ -139,6 +140,44 @@ export function inQuien(
   return lobbySnapshot({
     room: { ...base.room, game: 'quien_lo_dijo' },
     game: quienState(game),
+    ...rest,
+  });
+}
+
+export function pistaState(overrides: Partial<UnaPistaGameState> = {}): UnaPistaGameState {
+  return {
+    type: 'una_pista',
+    id: ids.game,
+    phase: 'writing',
+    round: 2,
+    total_rounds: 10,
+    participants: [
+      { user_id: ids.fran, name: 'Fran', alive: true, score: 0, has_responded: false },
+      { user_id: ids.lucia, name: 'Lucía', alive: true, score: 0, has_responded: true },
+      { user_id: ids.alvaro, name: 'Álvaro', alive: true, score: 0, has_responded: false },
+    ],
+    my: { is_participant: true, alive: true, clue: null },
+    guesser_id: ids.lucia,
+    arbiter_id: ids.fran,
+    team_score: 1,
+    category: 'Animales',
+    word: 'Pingüino',
+    clues: null,
+    result: null,
+    ranking: null,
+    ...overrides,
+  };
+}
+
+/** Sala con `una_pista` elegido y la partida dada. */
+export function inPista(
+  game: Partial<UnaPistaGameState> = {},
+  rest: Partial<Snapshot> = {},
+): Snapshot {
+  const base = lobbySnapshot();
+  return lobbySnapshot({
+    room: { ...base.room, game: 'una_pista' },
+    game: pistaState(game),
     ...rest,
   });
 }

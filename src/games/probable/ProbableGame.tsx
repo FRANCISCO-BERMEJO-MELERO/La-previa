@@ -1,5 +1,6 @@
 'use client';
 
+import type { PillButtonTone } from '@/components/PillButton';
 import { useState, type ReactNode } from 'react';
 import { WaitingBox } from '@/components/WaitingBox';
 import {
@@ -29,13 +30,11 @@ import { RevealScreen } from './RevealScreen';
 import { viewFor } from './view';
 import { VoteScreen } from './VoteScreen';
 
-type PillTone = 'paper' | 'tomato' | 'sky' | 'lilac';
-
 type ProbableGameProps = {
   snapshot: Snapshot;
   game: ProbableGameState;
   /** Píldora de la cabecera que abre el diálogo de salir. */
-  pill: (label: string, tone?: PillTone) => ReactNode;
+  pill: (label: string, tone?: PillButtonTone) => ReactNode;
   notice: ReactNode;
   busy: boolean;
   error?: string;
@@ -65,7 +64,7 @@ export function ProbableGame({
   const roundPill = pill(copy.rounds.pill(game.round, game.total_rounds), 'sky');
   const controls = (
     <RoundControls
-      isHost={isHost}
+      inCharge={isHost}
       waiting={
         game.phase === 'voting'
           ? copy.vote.waitingClose(host)

@@ -108,6 +108,7 @@ const coverBackgrounds: Record<GameId, string> = {
   impostor: 'bg-tomato',
   probable: 'bg-sky',
   quien_lo_dijo: 'bg-lilac',
+  una_pista: 'bg-lime',
 };
 
 function ImpostorFaces() {
@@ -152,10 +153,25 @@ function QuienLoDijoBubble() {
   );
 }
 
+/** Dos pistas iguales: la repetida se anula. */
+function RepeatedClues() {
+  return (
+    <>
+      <span className="-rotate-4 rounded-control border-3 border-ink bg-paper px-3 py-1 font-display text-2xl uppercase">
+        {copy.games.covers.clue}
+      </span>
+      <span className="rotate-3 rounded-control border-3 border-dashed border-ink bg-ground-soft px-3 py-1 font-display text-2xl uppercase line-through decoration-4">
+        {copy.games.covers.clue}
+      </span>
+    </>
+  );
+}
+
 const covers: Record<GameId, ReactNode> = {
   impostor: <ImpostorFaces />,
   probable: <ProbableFaces />,
   quien_lo_dijo: <QuienLoDijoBubble />,
+  una_pista: <RepeatedClues />,
 };
 
 function Face() {

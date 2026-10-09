@@ -33,7 +33,11 @@ describe('GamePickerScreen (03)', () => {
       'aria-pressed',
       'false',
     );
-    expect(screen.getAllByText('De 3 a 16 jugadores')).toHaveLength(3);
+    expect(screen.getByRole('button', { name: /Una sola pista/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(screen.getAllByText('De 3 a 16 jugadores')).toHaveLength(4);
     expect(screen.getAllByText('Elegido')).toHaveLength(1);
     for (const title of ['Palabras prohibidas', 'La bomba', '¿Qué prefieres?']) {
       expect(screen.getByText(title)).toBeInTheDocument();

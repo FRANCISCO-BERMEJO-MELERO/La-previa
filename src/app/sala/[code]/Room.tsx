@@ -3,17 +3,19 @@
 import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 import { OfflineNotice } from '@/components/OfflineNotice';
-import { PillButton } from '@/components/PillButton';
+import { PillButton, type PillButtonTone } from '@/components/PillButton';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
 import { clampImpostors } from '@/games/impostor/impostors';
 import { ProbableGame } from '@/games/probable/ProbableGame';
 import { QuienLoDijoGame } from '@/games/quien-lo-dijo/QuienLoDijoGame';
+import { UnaPistaGame } from '@/games/una-pista/UnaPistaGame';
 import {
   backToLobby,
   kickPlayer,
   leaveRoom,
   probableStart,
   quienLoDijoStart,
+  unaPistaStart,
   setGame,
   startGame,
   type ActionResult,
@@ -90,7 +92,7 @@ export function Room({ initial, fresh }: RoomProps) {
     setLeaveOpen(true);
   };
 
-  const pill = (label: string, tone: 'paper' | 'tomato' | 'sky' | 'lilac' = 'paper') => (
+  const pill = (label: string, tone: PillButtonTone = 'paper') => (
     <PillButton
       tone={tone}
       tilted={tone !== 'paper'}
@@ -157,6 +159,8 @@ export function Room({ initial, fresh }: RoomProps) {
         return withLeaveDialog(<ProbableGame {...shared} game={game} />);
       case 'quien_lo_dijo':
         return withLeaveDialog(<QuienLoDijoGame {...shared} game={game} />);
+      case 'una_pista':
+        return withLeaveDialog(<UnaPistaGame {...shared} game={game} />);
     }
   }
 
@@ -219,6 +223,8 @@ export function Room({ initial, fresh }: RoomProps) {
               return probableStart(roomId, rounds);
             case 'quien_lo_dijo':
               return quienLoDijoStart(roomId, rounds);
+            case 'una_pista':
+              return unaPistaStart(roomId, rounds);
           }
         });
       }}

@@ -81,6 +81,38 @@ export function quienLoDijoNext(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'quien_lo_dijo_next', { room_id: roomId });
 }
 
+export function unaPistaStart(roomId: string, rounds: number, deps = defaultDeps) {
+  return callForSnapshot(deps, 'una_pista_start', { room_id: roomId, rounds });
+}
+
+export function unaPistaClue(roomId: string, text: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'una_pista_clue', { room_id: roomId, text });
+}
+
+export function unaPistaCloseWriting(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'una_pista_close_writing', { room_id: roomId });
+}
+
+export function unaPistaToggleClue(roomId: string, userId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'una_pista_toggle_clue', { room_id: roomId, user_id: userId });
+}
+
+export function unaPistaShowClues(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'una_pista_show_clues', { room_id: roomId });
+}
+
+export function unaPistaMark(
+  roomId: string,
+  result: 'correct' | 'wrong' | 'pass',
+  deps = defaultDeps,
+) {
+  return callForSnapshot(deps, 'una_pista_mark', { room_id: roomId, result });
+}
+
+export function unaPistaNext(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'una_pista_next', { room_id: roomId });
+}
+
 export function openVoting(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'open_voting', { room_id: roomId });
 }

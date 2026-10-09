@@ -154,7 +154,7 @@ describe('ResultScreen', () => {
 describe('RoundControls', () => {
   function renderControls(overrides: Partial<Parameters<typeof RoundControls>[0]> = {}) {
     const props = {
-      isHost: true,
+      inCharge: true,
       waiting: 'Fran cerrará la votación',
       finished: false,
       advanceLabel: 'Cerrar votación',
@@ -184,7 +184,7 @@ describe('RoundControls', () => {
   });
 
   it('los demás ven a quién esperan y ningún botón', () => {
-    renderControls({ isHost: false });
+    renderControls({ inCharge: false });
     expect(screen.getByRole('status')).toHaveTextContent('Fran cerrará la votación');
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
