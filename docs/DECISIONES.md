@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-09 · 11.1 · La normalización conserva la ñ
+
+`private.normalize_clue` pasa a minúsculas, quita tildes (á, à, â) y diéresis (ü) y quita los espacios, como pide `docs/JUEGOS.md` §5. La ñ no es una tilde de acento sino otra letra, así que "año" y "ano" no se anulan entre sí. Se hace con `translate` y sin la extensión `unaccent`, que habría que instalar y que también convertiría la ñ en n.
+Descartado: `unaccent`, por la ñ y por ser una dependencia más de la base de datos.
+
 ## 2026-10-09 · 10.8 · Pantallas de ¿Quién lo dijo?
 
 Con los componentes existentes y acento `lilac`: tarjeta protagonista con la pregunta y campo "Tu respuesta" (80 caracteres, se envía también con la tecla de enviar); espera de respuestas con las fichas de quién falta; votación con la respuesta elegida entre comillas « » y la lista de todos menos uno mismo; el autor ve "Es la tuya" con su respuesta y el contador de votos; la espera de votos enseña solo el contador (ver 10.5); la revelación nombra al autor, dice quién acertó y quién falló y lista el resto de respuestas con su autor; una ronda anulada lo explica y lista todas. El resultado usa la pantalla común con "Gana la partida". En el selector, "¿Quién lo dijo?" pasa de "Próximamente" a elegible con el bocadillo "¿?" como portada; el test del selector se actualiza para tres juegos.

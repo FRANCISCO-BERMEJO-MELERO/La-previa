@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 10 terminada, fase 11 pendiente · última actualización 2026-10-09
+Estado: fase 11 en curso · última actualización 2026-10-09
 
 ## Fase 0 · Preparación
 
@@ -135,7 +135,7 @@ Aceptación: las tres baterías pasan; no queda lógica duplicada entre los dos 
 
 ## Fase 11 · Una sola pista
 
-- [ ] 11.1 Migración: `rooms.game` y `games.phase` admiten `una_pista`; normalización de texto con sus pruebas
+- [x] 11.1 Migración: `rooms.game` y `games.phase` admiten `una_pista`; normalización de texto con sus pruebas
 - [ ] 11.2 `una_pista_start`, `_clue`, `_close_writing`, `_toggle_clue`, `_show_clues`, `_mark`, `_next`; adivino por turno y árbitro
 - [ ] 11.3 Variante `una_pista` en `get_room_state`
 - [ ] 11.4 Pruebas pgTAP de `una_pista`
