@@ -2,23 +2,24 @@
 
 Web de juegos de fiesta para móvil. Next.js + Supabase + Vercel.
 
-- **Qué se construye y por qué:** `docs/CONTEXTO.md`. Es la fuente de verdad.
-- **En qué orden:** `docs/PLAN.md`. Estado en `docs/TAREAS.md`.
+- **Qué se construye y por qué:** `docs/CONTEXTO.md` (plataforma y El impostor) y `docs/JUEGOS.md` (los otros tres juegos). Son la fuente de verdad; si se contradicen, manda `docs/JUEGOS.md`.
+- **En qué orden:** `docs/PLAN.md` (fases 0–7, terminadas) y `docs/PLAN-2.md` (fases 8–13). Estado en `docs/TAREAS.md`.
 - **Referencia visual:** `docs/referencia-pantallas.html`.
 
-Lee `docs/CONTEXTO.md` y `docs/TAREAS.md` al empezar cada sesión. Estas reglas son obligatorias; no hay excepciones "por esta vez".
+Lee `docs/CONTEXTO.md`, `docs/JUEGOS.md` y `docs/TAREAS.md` al empezar cada sesión. Estas reglas son obligatorias; no hay excepciones "por esta vez".
 
 ## Autonomía
 
 - Trabajas sin supervisión. **No hagas preguntas ni esperes confirmación.**
 - Ante una duda, elige la opción más simple coherente con `docs/CONTEXTO.md`, anótala en `docs/DECISIONES.md` y sigue.
 - Ante un bloqueo real, sigue el procedimiento de `docs/PLAN.md`. Nunca simules que algo funciona.
-- No modifiques `CLAUDE.md`, `docs/CONTEXTO.md` ni `docs/PLAN.md`. Si crees que están mal, anótalo en `docs/DECISIONES.md`.
+- No modifiques `CLAUDE.md`, `docs/CONTEXTO.md`, `docs/JUEGOS.md`, `docs/PLAN.md` ni `docs/PLAN-2.md`. Si crees que están mal, anótalo en `docs/DECISIONES.md`.
 
 ## Alcance
 
-- Construye solo lo que pide el plan. Nada de la lista "Fuera de la primera versión" de `docs/CONTEXTO.md`.
-- Sin abstracciones para un futuro hipotético. No hay "motor de juegos": hay un juego.
+- Construye solo lo que pide el plan. Nada de las listas "Fuera de alcance" de `docs/CONTEXTO.md` y `docs/JUEGOS.md`.
+- Sin abstracciones para un futuro hipotético. No hay "motor de juegos": hay cuatro juegos que comparten solo lo que `docs/JUEGOS.md` enumera. Lo común se extrae cuando lo usan dos juegos reales, nunca antes.
+- **No se rompe lo que ya funciona.** Las pruebas existentes de la plataforma y de El impostor siguen pasando sin tocarlas; si un cambio obliga a modificar una, se justifica en `docs/DECISIONES.md`.
 - Sin dependencias nuevas fuera de la lista permitida. Si una es imprescindible, justifícala en `docs/DECISIONES.md` antes de instalarla.
 
 Dependencias permitidas: `next`, `react`, `react-dom`, `@supabase/supabase-js`, `tailwindcss` y su integración, `zod`, una librería de QR (`qrcode` o equivalente). De desarrollo: `typescript`, `eslint` y sus configuraciones, `prettier`, `vitest`, `@testing-library/*`, `jsdom`, `@playwright/test`, `supabase` (CLI).
@@ -76,7 +77,7 @@ Prohibido para "hacer pasar" la verificación: borrar o saltar tests (`skip`, `o
 - El cliente no hace `from(...).select/insert/update/delete`. Solo `rpc(...)` y la suscripción a `rooms`.
 - Toda función expuesta: `security definer`, `set search_path = ''`, nombres totalmente cualificados, comprobación de `auth.uid()` en la primera línea útil, bloqueo de la fila de la sala antes de leer estado, y `execute` revocado a `public`/`anon`.
 - Las funciones auxiliares van en el esquema `private`.
-- Los errores se lanzan con los códigos del contexto. No se inventan códigos sin añadirlos también al cliente.
+- Los errores se lanzan con los códigos de `docs/CONTEXTO.md` y `docs/JUEGOS.md`. No se inventan códigos sin añadirlos también al cliente.
 - **Nada secreto en `rooms`** ni en ninguna respuesta antes de `finished`: ni rol ajeno, ni palabra para el impostor, ni votos ajenos, ni recuentos.
 - La clave `service_role` no se usa ni se escribe en ningún sitio.
 - Cada función nueva llega con sus pruebas pgTAP, incluidos los casos de rechazo.

@@ -1,6 +1,8 @@
 # La Previa: contexto del proyecto
 
-Este documento es la fuente de verdad del producto y de la arquitectura. Si algo del código lo contradice, el código está mal. Las reglas de cómo programar están en `CLAUDE.md` y el orden de trabajo en `docs/PLAN.md`.
+Este documento es la fuente de verdad del producto y de la arquitectura. Si algo del código lo contradice, el código está mal. Las reglas de cómo programar están en `CLAUDE.md` y el orden de trabajo en `docs/PLAN.md` (primera versión) y `docs/PLAN-2.md` (segunda tanda de juegos).
+
+Este documento describe la plataforma y El impostor. Los otros tres juegos y los cambios de plataforma que traen están en `docs/JUEGOS.md`, que manda sobre este documento allí donde se contradigan.
 
 ## 1. Qué es
 
@@ -11,7 +13,7 @@ Tiene dos fines: portfolio de Fran y uso real con su grupo de amigos. De ahí sa
 1. **Que no se rompa en una fiesta.** Móviles que se bloquean, cambian de wifi a datos o abren WhatsApp a media ronda son el caso normal, no el raro.
 2. **Que nadie pueda hacer trampas mirando las herramientas del navegador.** El impostor no puede averiguarse desde el cliente.
 
-La primera versión contiene la plataforma (salas) y un solo juego: **El impostor**.
+La primera versión contiene la plataforma (salas) y un solo juego: **El impostor**. La segunda tanda añade tres: **¿Quién es más probable que…?**, **¿Quién lo dijo?** y **Una sola pista**.
 
 ## 2. Decisiones de producto
 
@@ -32,18 +34,18 @@ La primera versión contiene la plataforma (salas) y un solo juego: **El imposto
 | Expulsar | Solo el anfitrión. En la sala de espera, a cualquiera; durante una partida, solo a un desconectado |
 | Idioma | Español de España en toda la interfaz. Se usa "vosotros", nunca "ustedes" |
 
-### Fuera de la primera versión
+### Fuera de alcance
 
 No se construye nada de esta lista. Si una tarea parece necesitarlo, se resuelve sin ello.
 
-- Más juegos que El impostor. En el selector aparecen como "Próximamente" y no son pulsables.
-- Motor genérico de juegos. No se abstrae nada común hasta que exista un segundo juego.
+- Más juegos que los cuatro descritos. "¿Qué prefieres?" y "Palabras prohibidas" aparecen en el selector como "Próximamente" y no son pulsables. "La bomba" se retira del selector.
+- Motor genérico de juegos. Se comparte solo lo que `docs/JUEGOS.md` dice que se comparte.
 - Pantalla compartida (tele o portátil como marcador).
 - Avatares con imagen. Se usa la inicial del nombre sobre un color.
 - Portadas definitivas de los juegos. Se usan las ilustraciones hechas con formas de la referencia.
 - Tema oscuro.
 - Limpieza automática de salas abandonadas (ver sección 10).
-- Cuentas, historial, estadísticas, puntuaciones entre partidas.
+- Cuentas, historial, estadísticas y puntuaciones que sobrevivan a una partida.
 - La última oportunidad del impostor de adivinar la palabra.
 - Pistas propias por palabra: la pista es la categoría.
 - Temporizadores, sonidos, vibración, notificaciones, PWA instalable.
