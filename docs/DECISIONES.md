@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-09 · 8.6 · La prueba de secreto ignora la clave `type`
+
+Cuatro aserciones de `10_impostor_rules` comprobaban que el valor `"impostor"` no aparece en ningún punto de `game` en la foto de un jugador normal (y que aparece una sola vez en la del impostor). Con `type: "impostor"`, que exige `docs/JUEGOS.md` §8, ese valor está siempre. Se analiza `game` sin la clave `type` (`(... -> 'game') - 'type'`); el resto del objeto se recorre igual y las aserciones no cambian. Que `type` está y vale `impostor` lo prueba `11_game_type`. La prueba e2e de secreto ya buscaba `"role": "impostor"` y no se toca. Única prueba existente modificada en la fase 8.
+Descartado: sacar el tipo de `game` o deducirlo de `rooms.game`, que contradice el contrato de `docs/JUEGOS.md`.
+
+## 2026-10-09 · 8.6 · El cliente elige el juego por `game.type`
+
+`game` se valida con `z.discriminatedUnion('type', …)`, de momento con la variante de El impostor (`ImpostorGameState`), que es la que usa todo `src/games/impostor`. `Room` pasa la partida a `ImpostorGame` solo si `game.type` es `impostor`. `viewFor` de El impostor sigue recibiendo la foto entera para no tocar sus pruebas.
+Descartado: un registro de juegos o un componente genérico de partida, que sería generalizar antes de tener el segundo juego.
+
 ## 2026-10-09 · 8.5 · Qué va a la carpeta de El impostor
 
 `src/games/impostor/` recibe su `viewFor`, los datos derivados de la foto (`game-view.ts`), el selector de impostores, sus pantallas (05–14 y `HostControls`) y `ImpostorGame`, que guarda el voto elegido y llama a sus acciones. `Room` se queda con lo de la sala (sincronización, salir, echar, selector y sala de espera) y le pasa la partida. Las llamadas RPC siguen todas en `src/lib/actions.ts`, que es la capa de acceso a la base de datos y la que sustituyen las pruebas de `Room`; el marco `GameScreen` y `KickableChip` se quedan en `src/screens` porque los usa también la plataforma. La pantalla de entrar tarde va con El impostor hasta que otro juego la use.

@@ -12,7 +12,7 @@ import {
   type ActionResult,
 } from '@/lib/actions';
 import { copy } from '@/lib/copy';
-import type { GameState, Snapshot } from '@/lib/snapshot';
+import type { ImpostorGameState, Snapshot } from '@/lib/snapshot';
 import { DealScreen } from './DealScreen';
 import {
   aliveCount,
@@ -37,7 +37,7 @@ type PillTone = 'paper' | 'tomato' | 'sky' | 'lilac';
 
 type ImpostorGameProps = {
   snapshot: Snapshot;
-  game: GameState;
+  game: ImpostorGameState;
   /** Píldora de la cabecera que abre el diálogo de salir. */
   pill: (label: string, tone?: PillTone) => ReactNode;
   notice: ReactNode;
@@ -106,7 +106,7 @@ export function ImpostorGame({
 
 type GameViewProps = {
   snapshot: Snapshot;
-  game: GameState;
+  game: ImpostorGameState;
   view: Exclude<ReturnType<typeof viewFor>, 'lobby'>;
   roomPill: ReactNode;
   votePill: ReactNode;

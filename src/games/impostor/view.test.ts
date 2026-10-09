@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { gameState, ids, inGame, lobbySnapshot } from '@/test/fixtures';
-import type { GameState } from '@/lib/snapshot';
+import type { ImpostorGameState } from '@/lib/snapshot';
 import { viewFor } from './view';
 
 const me = gameState().my;
 
-function my(overrides: Partial<GameState['my']>): GameState['my'] {
+function my(overrides: Partial<ImpostorGameState['my']>): ImpostorGameState['my'] {
   return { ...me, ...overrides };
 }
 

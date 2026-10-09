@@ -37,6 +37,14 @@ describe('parseSnapshot', () => {
     expect(parseSnapshot(lobbySnapshot({ game }))).not.toBeNull();
   });
 
+  it('la partida dice de qué juego es', () => {
+    expect(parseSnapshot(inGame())?.game?.type).toBe('impostor');
+    const untyped: Record<string, unknown> = { ...gameState() };
+    delete untyped.type;
+    expect(parseSnapshot({ ...inGame(), game: untyped })).toBeNull();
+    expect(parseSnapshot({ ...inGame(), game: { ...gameState(), type: 'parchis' } })).toBeNull();
+  });
+
   it('acepta las fechas tal como las devuelve Postgres', () => {
     expect(
       parseSnapshot(lobbySnapshot({ server_time: '2026-10-08T19:30:00.123456+00:00' })),

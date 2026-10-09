@@ -107,16 +107,16 @@ $$;
 
 select pg_temp.setup(5, 2);
 
-select is(pg_temp.contains(pg_temp.state_of(2) -> 'game', 'impostor'), false, 'hablando: la foto de un jugador normal no tiene ningún rol de impostor');
+select is(pg_temp.contains((pg_temp.state_of(2) -> 'game') - 'type'::text, 'impostor'), false, 'hablando: la foto de un jugador normal no tiene ningún rol de impostor');
 select is(
   (select count(*) from jsonb_path_query(pg_temp.state_of(2), 'strict $.**.role')),
   1::bigint,
   'hablando: solo hay un rol en la foto, el propio'
 );
 select is(pg_temp.contains(pg_temp.state_of(4), pg_temp.word()), false, 'hablando: la foto del impostor no contiene la palabra');
-select is(pg_temp.contains(pg_temp.state_of(4) -> 'game', 'impostor'), true, 'el impostor sí sabe que lo es');
+select is(pg_temp.contains((pg_temp.state_of(4) -> 'game') - 'type'::text, 'impostor'), true, 'el impostor sí sabe que lo es');
 select is(
-  (select count(*) from jsonb_path_query(pg_temp.state_of(4) -> 'game', 'strict $.** ? (@ == "impostor")')),
+  (select count(*) from jsonb_path_query((pg_temp.state_of(4) -> 'game') - 'type'::text, 'strict $.** ? (@ == "impostor")')),
   1::bigint,
   'hablando: el impostor no sabe quién es el otro impostor'
 );
@@ -133,7 +133,7 @@ select is(
 );
 select is(pg_temp.has_key(pg_temp.state_of(3), 'target_id'), false, 'votando: la foto no tiene destinos de votos');
 select is(pg_temp.has_key(pg_temp.state_of(3), 'votes'), false, 'votando: ni recuentos');
-select is(pg_temp.contains(pg_temp.state_of(2) -> 'game', 'impostor'), false, 'votando: sigue sin roles ajenos');
+select is(pg_temp.contains((pg_temp.state_of(2) -> 'game') - 'type'::text, 'impostor'), false, 'votando: sigue sin roles ajenos');
 select is(pg_temp.contains(pg_temp.state_of(5), pg_temp.word()), false, 'votando: el impostor sigue sin la palabra');
 
 -- Empate: la revelación no dice quién es impostor ni cuántos votos hubo.
@@ -141,7 +141,7 @@ select pg_temp.vote(4, 2);
 select pg_temp.vote(5, 2);
 select pg_temp.host('close_voting');
 select is(pg_temp.state_of(2) -> 'game' -> 'outcome' ->> 'type', 'tie', 'revelación con empate');
-select is(pg_temp.contains(pg_temp.state_of(2) -> 'game', 'impostor'), false, 'revelación: sin roles ajenos');
+select is(pg_temp.contains((pg_temp.state_of(2) -> 'game') - 'type'::text, 'impostor'), false, 'revelación: sin roles ajenos');
 select is(pg_temp.has_key(pg_temp.state_of(2), 'votes'), false, 'revelación: sin recuentos');
 select is(pg_temp.contains(pg_temp.state_of(4), pg_temp.word()), false, 'revelación: el impostor sigue sin la palabra');
 select is(pg_temp.state_of(2) -> 'game' -> 'result', 'null'::jsonb, 'revelación: aún sin resultado');

@@ -21,7 +21,8 @@ const outcomeSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('tie'), user_ids: z.array(id) }),
 ]);
 
-const gameSchema = z.object({
+const impostorGameSchema = z.object({
+  type: z.literal('impostor'),
   id,
   phase: z.enum(['talking', 'voting', 'reveal', 'finished']),
   round: z.int().positive(),
@@ -49,6 +50,9 @@ const gameSchema = z.object({
     .nullable(),
 });
 
+/** La partida en curso, con la forma propia de cada juego (docs/JUEGOS.md §8). */
+const gameSchema = z.discriminatedUnion('type', [impostorGameSchema]);
+
 export const snapshotSchema = z.object({
   server_time: timestamp,
   room: z.object({
@@ -68,7 +72,8 @@ export const snapshotSchema = z.object({
 export type Snapshot = z.infer<typeof snapshotSchema>;
 export type RoomPlayer = Snapshot['players'][number];
 export type GameState = z.infer<typeof gameSchema>;
-export type Phase = GameState['phase'];
+export type ImpostorGameState = z.infer<typeof impostorGameSchema>;
+export type Phase = ImpostorGameState['phase'];
 export type Outcome = z.infer<typeof outcomeSchema>;
 
 export function parseSnapshot(raw: unknown): Snapshot | null {

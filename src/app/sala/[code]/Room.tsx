@@ -128,7 +128,7 @@ export function Room({ initial, fresh }: RoomProps) {
 
   const { game } = snapshot;
 
-  if (game) {
+  if (game?.type === 'impostor') {
     return withLeaveDialog(
       <ImpostorGame
         snapshot={snapshot}

@@ -1,4 +1,4 @@
-import type { GameState, Snapshot } from '@/lib/snapshot';
+import type { ImpostorGameState, Snapshot } from '@/lib/snapshot';
 
 /** Datos que pintan las pantallas de partida, deducidos de la foto sin estado propio. */
 
@@ -22,7 +22,7 @@ function joinIndexOf(snapshot: Snapshot, userId: string, fallback: number): numb
   return index === -1 ? fallback : index;
 }
 
-export function participants(snapshot: Snapshot, game: GameState): ParticipantView[] {
+export function participants(snapshot: Snapshot, game: ImpostorGameState): ParticipantView[] {
   return game.participants.map((participant, index) => ({
     userId: participant.user_id,
     name: participant.name,
@@ -36,27 +36,31 @@ export function participants(snapshot: Snapshot, game: GameState): ParticipantVi
 
 export function participant(
   snapshot: Snapshot,
-  game: GameState,
+  game: ImpostorGameState,
   userId: string,
 ): ParticipantView | undefined {
   return participants(snapshot, game).find((p) => p.userId === userId);
 }
 
 /** Vivos que pueden votar a quien llama: todos menos él mismo. */
-export function voteCandidates(snapshot: Snapshot, game: GameState): ParticipantView[] {
+export function voteCandidates(snapshot: Snapshot, game: ImpostorGameState): ParticipantView[] {
   return participants(snapshot, game).filter((p) => p.alive && p.userId !== snapshot.me.user_id);
 }
 
-export function voteProgress(game: GameState): { voted: number; total: number } {
+export function voteProgress(game: ImpostorGameState): { voted: number; total: number } {
   const alive = game.participants.filter((p) => p.alive);
   return { voted: alive.filter((p) => p.has_voted).length, total: alive.length };
 }
 
-export function aliveCount(game: GameState): number {
+export function aliveCount(game: ImpostorGameState): number {
   return game.participants.filter((p) => p.alive).length;
 }
 
-export function namesOf(snapshot: Snapshot, game: GameState, userIds: readonly string[]): string[] {
+export function namesOf(
+  snapshot: Snapshot,
+  game: ImpostorGameState,
+  userIds: readonly string[],
+): string[] {
   return userIds.map((id) => participant(snapshot, game, id)?.name ?? '').filter((name) => name);
 }
 

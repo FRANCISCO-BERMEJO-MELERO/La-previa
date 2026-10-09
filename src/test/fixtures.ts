@@ -1,4 +1,4 @@
-import type { GameState, Snapshot } from '@/lib/snapshot';
+import type { ImpostorGameState, Snapshot } from '@/lib/snapshot';
 
 // Fotos de ejemplo para los tests, con los datos de la referencia.
 
@@ -36,8 +36,9 @@ export function lobbySnapshot(overrides: Partial<Snapshot> = {}): Snapshot {
   };
 }
 
-export function gameState(overrides: Partial<GameState> = {}): GameState {
+export function gameState(overrides: Partial<ImpostorGameState> = {}): ImpostorGameState {
   return {
+    type: 'impostor',
     id: ids.game,
     phase: 'talking',
     round: 1,
@@ -57,6 +58,9 @@ export function gameState(overrides: Partial<GameState> = {}): GameState {
   };
 }
 
-export function inGame(game: Partial<GameState> = {}, rest: Partial<Snapshot> = {}): Snapshot {
+export function inGame(
+  game: Partial<ImpostorGameState> = {},
+  rest: Partial<Snapshot> = {},
+): Snapshot {
   return lobbySnapshot({ game: gameState(game), ...rest });
 }

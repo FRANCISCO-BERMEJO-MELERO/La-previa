@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 8 en curso · última actualización 2026-10-09
+Estado: fase 8 terminada, fase 9 pendiente · última actualización 2026-10-09
 
 ## Fase 0 · Preparación
 
@@ -101,7 +101,7 @@ Aceptación: `check`, `test:db` y `test:e2e` pasan; `npm run build` sin avisos; 
 - [x] 8.3 Anotar en `docs/DECISIONES.md` las diferencias entre `docs/JUEGOS.md` y el código, y cómo se resuelven
 - [x] 8.4 Añadir las fases 8–13 a `docs/TAREAS.md`
 - [x] 8.5 El impostor en su propia carpeta de juego; la sala elige el juego por `game.type`, sin cambios de comportamiento
-- [ ] 8.6 `type` en la foto de El impostor y esquema de `game` como unión discriminada de una variante
+- [x] 8.6 `type` en la foto de El impostor y esquema de `game` como unión discriminada de una variante
 
 Aceptación: todas las pruebas existentes pasan sin cambiar ninguna aserción; la app se comporta igual.
 
