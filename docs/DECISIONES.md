@@ -1,5 +1,35 @@
 # Decisiones
 
+## 2026-10-09 · 8.3 · `votes` y votarse a sí mismo
+
+`votes` tiene `check (voter_id <> target_id)` y `01_schema` comprueba que una inserción así falla con `23514`, pero en `probable` uno puede votarse a sí mismo y `docs/JUEGOS.md` dice que `votes` se reutiliza tal cual. Se resuelve en la 9.1 con una migración que cambia el `check` por un disparador que lanza la misma violación (`check_violation`) solo si la partida es de El impostor. La prueba existente sigue pasando sin tocarla y El impostor conserva la garantía en la propia tabla.
+Descartado: quitar la restricción y cambiar la prueba, que pierde una defensa de El impostor; una tabla de votos aparte para `probable`, que contradice `docs/JUEGOS.md`.
+
+## 2026-10-09 · 8.3 · Columnas de `games` propias de El impostor
+
+`games.word_id` e `impostor_count` son obligatorias y el `check` de `winner` exige ganador en toda partida terminada, pero los juegos por rondas no tienen palabra de partida, impostores ni bando ganador (el ganador sale de `game_players.score`). En la 9.1 pasan a admitir nulos y los `check` se condicionan a `game_type = 'impostor'`; para los demás juegos, `winner` es siempre nulo. Las partidas de El impostor quedan exactamente igual de restringidas.
+Descartado: rellenar esas columnas con valores de mentira en los juegos nuevos.
+
+## 2026-10-09 · 8.3 · `has_responded` se calcula, no se guarda
+
+La foto de los juegos nuevos lleva `has_responded` por participante. En vez de otra columna que haya que reiniciar en cada fase (como `has_voted` en El impostor), se deduce de si existe su voto o su respuesta en la ronda y fase en curso. `has_voted` se queda solo para El impostor, sin cambios.
+Descartado: reutilizar `has_voted` con otro significado según el juego.
+
+## 2026-10-09 · 8.3 · Participar en un juego por rondas
+
+En El impostor participa quien está en `game_players` desde `start_game`. En los juegos por rondas se mantiene el mismo criterio y la incorporación tardía se hace insertando en `game_players` al abrir cada ronda a los miembros de la sala que aún no estén; `my.is_participant` sigue siendo "tiene fila en `game_players`". Quien se va conserva su fila con `alive = false`, como en El impostor, para que su nombre y sus puntos sigan saliendo.
+Descartado: una columna aparte de "se incorpora en la ronda N".
+
+## 2026-10-09 · 8.3 · Nombres y piezas que cambian más adelante
+
+Lo que `docs/JUEGOS.md` nombra coincide con el código (`games.game_type`, `rooms.game`, `game_players.alive`, prefijo por juego en las funciones nuevas). Quedan anotadas para su tarea: el texto de `invalid_game` dice "jugad a El impostor" (se cambia en la 9.7); el selector lista "¿Quién lo dijo?" y "La bomba" como próximos (9.7 y 12.1); `private.pick_word` solo mira `games.word_id` y en la 11.2 tiene que mirar también `game_rounds.word_id`. Los votos repetidos de los juegos nuevos usan el código existente `already_voted`.
+Descartado: adelantar esos cambios a la fase 8, que no debe cambiar el comportamiento.
+
+## 2026-10-09 · 8.4 · Tareas de preparación sin producto propio
+
+La 8.1 (leer) y la 8.2 (pasar las pruebas) no cambian ningún archivo, y la lista de tareas de la fase 8 no existía hasta la 8.4. Se marcan en el mismo commit que la 8.4, que se hace antes que la 8.3 para que esta pueda marcarse en su propio commit.
+Descartado: commits vacíos para las tareas de lectura.
+
 ## 2026-10-09 · 7.5 · Revisión final contra CONTEXTO
 
 Repasadas las secciones 1 a 10. Se cumple todo lo que pide la primera versión, con estas salvedades ya anotadas en su tarea: `leave_room` devuelve `null` en vez de una foto (2.5), los textos son neutros en género (1.6) y el color de tema repite `#ffd23f` (1.4). Se ha arreglado un incumplimiento de §7: varios mensajes de error decían qué había pasado pero no qué podía hacer el jugador; ahora todos tienen las dos partes y un test lo comprueba. Las búsquedas de reglas de `CLAUDE.md` (sin `as` salvo `as const`, sin estilos en línea ni valores arbitrarios, sin `from()` en el cliente, sin `service_role`, sin menciones prohibidas en los commits) salen limpias.
