@@ -17,7 +17,7 @@ export type RoomView =
 
 export function viewFor(snapshot: Snapshot): RoomView {
   const { game } = snapshot;
-  if (!game) return 'lobby';
+  if (game?.type !== 'impostor') return 'lobby';
 
   const { my } = game;
   if (!my.is_participant) return game.phase === 'finished' ? 'result_spectator' : 'late';

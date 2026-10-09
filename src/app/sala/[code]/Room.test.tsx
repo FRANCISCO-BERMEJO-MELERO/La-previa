@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   wakeLock: vi.fn<(active: boolean) => void>(),
   leaveRoom: vi.fn<(roomId: string) => Promise<ActionResult<null>>>(),
   startGame: vi.fn<(roomId: string, count: number) => Promise<ActionResult<Snapshot>>>(),
+  probableStart: vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
   openVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   castVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   closeVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -30,6 +31,7 @@ vi.mock('@/lib/actions', () => ({
   kickPlayer: mocks.kickPlayer,
   leaveRoom: mocks.leaveRoom,
   startGame: mocks.startGame,
+  probableStart: mocks.probableStart,
   openVoting: mocks.openVoting,
   castVote: mocks.castVote,
   closeVoting: mocks.closeVoting,
@@ -77,6 +79,30 @@ describe('Room', () => {
     expect(screen.queryByRole('button', { name: 'Abrir la sala' })).not.toBeInTheDocument();
     expect(mocks.apply).toHaveBeenCalledTimes(1);
     expect(replaceState).toHaveBeenCalledWith(null, '', '/sala/KTRM');
+  });
+
+  it('el anfitrión puede elegir otro juego antes de abrir la sala', async () => {
+    mocks.setGame.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+    render(<Room initial={lobbySnapshot()} fresh />);
+    fireEvent.click(screen.getByRole('button', { name: /¿Quién es más probable que…\?/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir la sala' }));
+    expect(mocks.setGame).toHaveBeenCalledWith(ids.room, 'probable');
+    expect(await screen.findByText('KTRM')).toBeInTheDocument();
+  });
+
+  it('en un juego por rondas, el anfitrión empieza con las rondas elegidas', async () => {
+    const base = lobbySnapshot();
+    const probableLobby = lobbySnapshot({ room: { ...base.room, game: 'probable' } });
+    ready(probableLobby);
+    mocks.probableStart.mockResolvedValue({ ok: true, data: probableLobby });
+    render(<Room initial={probableLobby} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: '15 rondas' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(mocks.probableStart).toHaveBeenCalledWith(ids.room, 15);
+    expect(mocks.startGame).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mocks.apply).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('quien no es anfitrión nunca ve el selector de juego', () => {

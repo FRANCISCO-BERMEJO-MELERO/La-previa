@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-09 · 9.7 · El selector de juegos con más de un juego
+
+Cada juego elegible es una tarjeta-botón con `aria-pressed`, su portada, descripción y jugadores; la elegida lleva la pegatina "Elegido" y la sombra dura, las demás no. Se elige primero el juego que ya tiene la sala, y "Abrir la sala" llama a `set_game` con el elegido. La portada de `probable` son tres caras en `sky` con la del centro en `lime` y un "+1". La prueba existente "muestra El impostor elegido…" daba por hecho un solo juego (exigía que los únicos botones fueran la píldora y "Abrir la sala", y un único "De 3 a 16 jugadores"), así que se reescribe para el selector con varios juegos; las demás pruebas del selector solo cambian cómo se monta.
+Descartado: mantener la tarjeta grande solo para el elegido y fichas pequeñas para el resto, que cambia el tamaño de todo al elegir.
+
+## 2026-10-09 · 9.7 · Selector de rondas
+
+En la sala de espera de un juego por rondas, el anfitrión ve "Rondas" con tres botones (5, 10, 15; `aria-pressed`), en el mismo marco que el selector de impostores. Las rondas elegidas viven en el estado de `Room`, como los impostores, y empiezan en 10. La píldora de la cabecera dice el nombre del juego elegido. El texto de `invalid_game` deja de decir "jugad a El impostor".
+Descartado: un campo numérico, que deja escribir valores que no valen.
+
 ## 2026-10-09 · 9.4 · Irse a media votación en un juego por rondas
 
 Se borran el voto de quien se va y también los votos que había recibido en esa ronda: quien le votó vuelve a la pantalla de votar. Así nadie se lleva un punto estando fuera y ningún voto se pierde en un jugador que ya no está. Después, con menos de 3 activos la partida termina; si no, se comprueba si ya han votado todos. En la revelación solo se marca como fuera: el recuento ya enseñado no cambia, como en El impostor.

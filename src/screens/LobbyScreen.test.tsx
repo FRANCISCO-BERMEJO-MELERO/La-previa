@@ -33,6 +33,8 @@ function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {})
     onShowQr: vi.fn(),
     onCloseQr: vi.fn(),
     onImpostorsChange: vi.fn(),
+    rounds: 10,
+    onRoundsChange: vi.fn(),
     onStart: vi.fn(),
     onKickRequest: vi.fn(),
     ...overrides,
@@ -125,6 +127,41 @@ describe('LobbyScreen (04)', () => {
     renderLobby({ snapshot: withPlayers(5), impostors: 2 });
     expect(screen.getByRole('button', { name: 'Más impostores' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Menos impostores' })).toBeEnabled();
+  });
+
+  it('con El impostor no hay selector de rondas', () => {
+    renderLobby();
+    expect(screen.queryByRole('group', { name: 'Rondas' })).not.toBeInTheDocument();
+  });
+
+  it('en un juego por rondas, el anfitrión elige 5, 10 o 15 rondas en vez de impostores', () => {
+    const base = lobbySnapshot();
+    const onRoundsChange = vi.fn<(rounds: number) => void>();
+    renderLobby({
+      snapshot: lobbySnapshot({ room: { ...base.room, game: 'probable' } }),
+      onRoundsChange,
+    });
+    expect(screen.queryByRole('button', { name: 'Más impostores' })).not.toBeInTheDocument();
+    const group = screen.getByRole('group', { name: 'Rondas' });
+    expect(
+      within(group)
+        .getAllByRole('button')
+        .map((b) => [b.getAttribute('aria-label'), b.getAttribute('aria-pressed')]),
+    ).toEqual([
+      ['5 rondas', 'false'],
+      ['10 rondas', 'true'],
+      ['15 rondas', 'false'],
+    ]);
+    fireEvent.click(screen.getByRole('button', { name: '15 rondas' }));
+    expect(onRoundsChange).toHaveBeenCalledWith(15);
+    expect(
+      screen.getByRole('button', { name: '¿Quién es más probable que…?. Salir de la sala' }),
+    ).toBeInTheDocument();
+  });
+
+  it('quien no es anfitrión no elige rondas', () => {
+    renderLobby({ snapshot: { ...asGuest, room: { ...asGuest.room, game: 'probable' } } });
+    expect(screen.queryByRole('group', { name: 'Rondas' })).not.toBeInTheDocument();
   });
 
   it('el anfitrión empieza la partida', () => {

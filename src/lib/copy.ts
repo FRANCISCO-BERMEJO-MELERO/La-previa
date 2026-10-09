@@ -44,7 +44,7 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
   invalid_target: 'No puedes votar a esa persona. Elige a otra.',
   cannot_kick:
     'Durante la partida solo puedes echar a alguien que se haya desconectado. Espera a que termine.',
-  invalid_game: 'Ese juego todavía no está disponible. De momento, jugad a El impostor.',
+  invalid_game: 'Ese juego no está disponible. Elige otro en el selector de juegos.',
   invalid_rounds: 'Las partidas son de 5, 10 o 15 rondas. Elige una de esas opciones.',
   unknown: 'Algo ha fallado. Vuelve a intentarlo en un momento.',
   offline: 'Sin conexión. Seguimos intentándolo; no cierres la página.',
@@ -101,8 +101,13 @@ export const copy = {
       description: 'Todos conocen la palabra menos uno. Descubrid quién disimula.',
       players: 'De 3 a 16 jugadores',
     },
+    probable: {
+      name: '¿Quién es más probable que…?',
+      description: 'Sale una pregunta y todos señaláis a alguien a la vez.',
+      players: 'De 3 a 16 jugadores',
+    },
     upcoming: ['¿Quién lo dijo?', 'Palabras prohibidas', 'La bomba', '¿Qué prefieres?'],
-    covers: { quote: '¿?', banned: 'Palabra', optionA: 'A', optionB: 'B' },
+    covers: { quote: '¿?', banned: 'Palabra', optionA: 'A', optionB: 'B', point: '+1' },
   },
 
   lobby: {
@@ -128,6 +133,8 @@ export const copy = {
     moreImpostors: 'Más impostores',
     minus: '−',
     plus: '+',
+    rounds: 'Rondas',
+    roundsOption: (rounds: number) => `${String(rounds)} rondas`,
     start: 'Empezar partida',
     waitingHost: (host: string) => `${host} empezará la partida`,
   },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { gameState, ids, inGame, lobbySnapshot } from '@/test/fixtures';
+import { gameState, ids, inGame, inProbable, lobbySnapshot, probableState } from '@/test/fixtures';
 import { parseSnapshot, roomCodeSchema } from './snapshot';
 
 describe('parseSnapshot', () => {
@@ -43,6 +43,34 @@ describe('parseSnapshot', () => {
     delete untyped.type;
     expect(parseSnapshot({ ...inGame(), game: untyped })).toBeNull();
     expect(parseSnapshot({ ...inGame(), game: { ...gameState(), type: 'parchis' } })).toBeNull();
+  });
+
+  it('acepta la partida de probable en todas sus fases', () => {
+    const voting = inProbable();
+    expect(parseSnapshot(voting)).toEqual(voting);
+    const reveal = inProbable({
+      phase: 'reveal',
+      tally: [{ user_id: ids.lucia, votes: 2, voter_ids: [ids.fran, ids.lucia] }],
+      round_winner_ids: [ids.lucia],
+    });
+    expect(parseSnapshot(reveal)).toEqual(reveal);
+    const finished = inProbable({
+      phase: 'finished',
+      ranking: [{ user_id: ids.fran, name: 'Fran', score: 2 }],
+    });
+    expect(parseSnapshot(finished)).toEqual(finished);
+  });
+
+  it('descarta una partida de probable con forma de otro juego', () => {
+    expect(
+      parseSnapshot({ ...inProbable(), game: { ...probableState(), phase: 'talking' } }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({ ...inProbable(), game: { ...probableState(), total_rounds: null } }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({ ...inProbable(), game: { ...gameState(), type: 'probable' } }),
+    ).toBeNull();
   });
 
   it('acepta las fechas tal como las devuelve Postgres', () => {

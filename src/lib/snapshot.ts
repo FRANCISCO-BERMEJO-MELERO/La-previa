@@ -50,15 +50,43 @@ const impostorGameSchema = z.object({
     .nullable(),
 });
 
+const probableGameSchema = z.object({
+  type: z.literal('probable'),
+  id,
+  phase: z.enum(['voting', 'reveal', 'finished']),
+  round: z.int().positive(),
+  total_rounds: z.int().positive(),
+  prompt: z.string(),
+  participants: z.array(
+    z.object({
+      user_id: id,
+      name: z.string(),
+      alive: z.boolean(),
+      score: z.int().nonnegative(),
+      has_responded: z.boolean(),
+    }),
+  ),
+  my: z.object({ is_participant: z.boolean(), alive: z.boolean(), voted_for: id.nullable() }),
+  tally: z
+    .array(z.object({ user_id: id, votes: z.int().positive(), voter_ids: z.array(id) }))
+    .nullable(),
+  round_winner_ids: z.array(id).nullable(),
+  ranking: z
+    .array(z.object({ user_id: id, name: z.string(), score: z.int().nonnegative() }))
+    .nullable(),
+});
+
 /** La partida en curso, con la forma propia de cada juego (docs/JUEGOS.md §8). */
-const gameSchema = z.discriminatedUnion('type', [impostorGameSchema]);
+const gameSchema = z.discriminatedUnion('type', [impostorGameSchema, probableGameSchema]);
+
+export const gameIds = ['impostor', 'probable'] as const;
 
 export const snapshotSchema = z.object({
   server_time: timestamp,
   room: z.object({
     id,
     code: roomCodeSchema,
-    game: z.enum(['impostor']),
+    game: z.enum(gameIds),
     host_id: id,
     version: z.int().positive(),
   }),
@@ -72,7 +100,9 @@ export const snapshotSchema = z.object({
 export type Snapshot = z.infer<typeof snapshotSchema>;
 export type RoomPlayer = Snapshot['players'][number];
 export type GameState = z.infer<typeof gameSchema>;
+export type GameId = (typeof gameIds)[number];
 export type ImpostorGameState = z.infer<typeof impostorGameSchema>;
+export type ProbableGameState = z.infer<typeof probableGameSchema>;
 export type Phase = ImpostorGameState['phase'];
 export type Outcome = z.infer<typeof outcomeSchema>;
 

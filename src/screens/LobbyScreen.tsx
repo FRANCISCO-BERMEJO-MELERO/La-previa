@@ -10,6 +10,7 @@ import { Screen } from '@/components/Screen';
 import { WaitingBox } from '@/components/WaitingBox';
 import { copy } from '@/lib/copy';
 import { impostorLimits } from '@/games/impostor/impostors';
+import { isRoundGame, ROUND_OPTIONS } from '@/lib/rounds';
 import type { ShareOutcome } from '@/lib/share';
 import type { RoomPlayer, Snapshot } from '@/lib/snapshot';
 import { KickableChip } from './KickableChip';
@@ -33,6 +34,8 @@ type LobbyScreenProps = {
   onShowQr: () => void;
   onCloseQr: () => void;
   onImpostorsChange: (count: number) => void;
+  rounds: number;
+  onRoundsChange: (rounds: number) => void;
   onStart: () => void;
   onKickRequest: (userId: string) => void;
 };
@@ -51,6 +54,8 @@ export function LobbyScreen({
   onShowQr,
   onCloseQr,
   onImpostorsChange,
+  rounds,
+  onRoundsChange,
   onStart,
   onKickRequest,
 }: LobbyScreenProps) {
@@ -64,7 +69,7 @@ export function LobbyScreen({
         <PillButton
           tone="tomato"
           tilted
-          label={copy.games.impostor.name}
+          label={copy.games[room.game].name}
           hint={copy.room.leave}
           onClick={onLeaveRequest}
         />
@@ -137,11 +142,15 @@ export function LobbyScreen({
       <div className="mt-auto flex flex-col gap-5">
         {me.is_host ? (
           <>
-            <ImpostorStepper
-              value={impostors}
-              playerCount={players.length}
-              onChange={onImpostorsChange}
-            />
+            {isRoundGame(room.game) ? (
+              <RoundsPicker value={rounds} onChange={onRoundsChange} />
+            ) : (
+              <ImpostorStepper
+                value={impostors}
+                playerCount={players.length}
+                onChange={onImpostorsChange}
+              />
+            )}
             <Button fullWidth disabled={busy} onClick={onStart}>
               {copy.lobby.start}
             </Button>
@@ -206,6 +215,34 @@ function ImpostorStepper({
         >
           {copy.lobby.plus}
         </StepButton>
+      </div>
+    </div>
+  );
+}
+
+function RoundsPicker({ value, onChange }: { value: number; onChange: (rounds: number) => void }) {
+  return (
+    <div className="flex items-center justify-between rounded-chip border-3 border-ink bg-paper px-3.5 py-2">
+      <p className="text-base font-bold" id="rounds-label">
+        {copy.lobby.rounds}
+      </p>
+      <div role="group" aria-labelledby="rounds-label" className="flex items-center gap-2">
+        {ROUND_OPTIONS.map((option) => (
+          <button
+            key={option}
+            type="button"
+            aria-label={copy.lobby.roundsOption(option)}
+            aria-pressed={option === value}
+            onClick={() => {
+              onChange(option);
+            }}
+            className={`flex h-11 min-w-11 items-center justify-center rounded-control border-3 border-ink px-2 font-display text-lg ${
+              option === value ? 'bg-ink text-paper' : 'bg-paper'
+            }`}
+          >
+            {option}
+          </button>
+        ))}
       </div>
     </div>
   );

@@ -2,68 +2,68 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { GamePickerScreen } from './GamePickerScreen';
 
+function renderPicker(overrides: Partial<Parameters<typeof GamePickerScreen>[0]> = {}) {
+  const props = {
+    roomCode: 'KTRM',
+    selected: 'impostor' as const,
+    busy: false,
+    offline: false,
+    onLeaveRequest: vi.fn(),
+    onSelect: vi.fn(),
+    onOpen: vi.fn(),
+    ...overrides,
+  };
+  render(<GamePickerScreen {...props} />);
+  return props;
+}
+
 describe('GamePickerScreen (03)', () => {
-  it('muestra El impostor elegido y los próximos juegos sin poder pulsarlos', () => {
-    render(
-      <GamePickerScreen
-        roomCode="KTRM"
-        busy={false}
-        offline={false}
-        onLeaveRequest={vi.fn()}
-        onOpen={vi.fn()}
-      />,
-    );
+  it('muestra los juegos elegibles con el elegido marcado y los próximos sin poder pulsarlos', () => {
+    renderPicker();
     expect(screen.getByRole('heading', { name: '¿A qué jugamos?' })).toBeInTheDocument();
-    expect(screen.getByText('El impostor')).toBeInTheDocument();
-    expect(screen.getByText('De 3 a 16 jugadores')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /El impostor/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: /¿Quién es más probable que…\?/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(screen.getAllByText('De 3 a 16 jugadores')).toHaveLength(2);
+    expect(screen.getAllByText('Elegido')).toHaveLength(1);
     for (const title of ['¿Quién lo dijo?', 'Palabras prohibidas', 'La bomba', '¿Qué prefieres?']) {
       expect(screen.getByText(title)).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: title })).not.toBeInTheDocument();
     }
-    expect(
-      screen.getAllByRole('button').map((b) => b.getAttribute('aria-label') ?? b.textContent),
-    ).toEqual(['Sala KTRM. Salir de la sala', 'Abrir la sala']);
+  });
+
+  it('elegir otro juego avisa de cuál', () => {
+    const { onSelect } = renderPicker();
+    fireEvent.click(screen.getByRole('button', { name: /¿Quién es más probable que…\?/ }));
+    expect(onSelect).toHaveBeenCalledWith('probable');
+  });
+
+  it('marca el juego que llega elegido', () => {
+    renderPicker({ selected: 'probable' });
+    expect(screen.getByRole('button', { name: /¿Quién es más probable que…\?/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
   });
 
   it('abrir la sala avisa', () => {
-    const onOpen = vi.fn();
-    render(
-      <GamePickerScreen
-        roomCode="KTRM"
-        busy={false}
-        offline={false}
-        onLeaveRequest={vi.fn()}
-        onOpen={onOpen}
-      />,
-    );
+    const { onOpen } = renderPicker();
     fireEvent.click(screen.getByRole('button', { name: 'Abrir la sala' }));
     expect(onOpen).toHaveBeenCalledTimes(1);
   });
 
   it('muestra el error si no se pudo abrir', () => {
-    render(
-      <GamePickerScreen
-        roomCode="KTRM"
-        busy={false}
-        offline={false}
-        onLeaveRequest={vi.fn()}
-        error="Sin conexión."
-        onOpen={vi.fn()}
-      />,
-    );
+    renderPicker({ error: 'Sin conexión.' });
     expect(screen.getByRole('alert')).toHaveTextContent('Sin conexión.');
   });
 
   it('la píldora de la sala sirve para salir y avisa sin conexión', () => {
-    const onLeaveRequest = vi.fn();
-    render(
-      <GamePickerScreen
-        roomCode="KTRM"
-        busy={false}
-        offline
-        onLeaveRequest={onLeaveRequest}
-        onOpen={vi.fn()}
-      />,
-    );
+    const { onLeaveRequest } = renderPicker({ offline: true });
     fireEvent.click(screen.getByRole('button', { name: 'Sala KTRM. Salir de la sala' }));
     expect(onLeaveRequest).toHaveBeenCalledTimes(1);
     expect(

@@ -3,21 +3,26 @@ import { OfflineNotice } from '@/components/OfflineNotice';
 import { PillButton } from '@/components/PillButton';
 import { Screen } from '@/components/Screen';
 import { copy } from '@/lib/copy';
+import { gameIds, type GameId } from '@/lib/snapshot';
 
 type GamePickerScreenProps = {
   roomCode: string;
+  selected: GameId;
   busy: boolean;
   error?: string;
   offline: boolean;
+  onSelect: (game: GameId) => void;
   onOpen: () => void;
   onLeaveRequest: () => void;
 };
 
 export function GamePickerScreen({
   roomCode,
+  selected,
   busy,
   error,
   offline,
+  onSelect,
   onOpen,
   onLeaveRequest,
 }: GamePickerScreenProps) {
@@ -34,15 +39,29 @@ export function GamePickerScreen({
       notice={offline ? <OfflineNotice>{copy.errors.offline}</OfflineNotice> : null}
     >
       <h1 className="font-display text-4xl uppercase">{copy.games.title}</h1>
-      {/* Con un solo juego disponible no hay nada que elegir: la tarjeta lo muestra elegido. */}
-      <div className="flex flex-col overflow-hidden rounded-card border-3 border-ink bg-paper shadow-hard">
-        <ImpostorCover chosen={copy.games.chosen} />
-        <span className="flex flex-col gap-1 px-4 py-3.5">
-          <span className="font-display text-title uppercase">{copy.games.impostor.name}</span>
-          <span className="text-sm font-medium">{copy.games.impostor.description}</span>
-          <span className="text-label font-bold">{copy.games.impostor.players}</span>
-        </span>
-      </div>
+      <ul className="flex flex-col gap-4">
+        {gameIds.map((game) => (
+          <li key={game}>
+            <button
+              type="button"
+              aria-pressed={game === selected}
+              onClick={() => {
+                onSelect(game);
+              }}
+              className={`flex w-full flex-col overflow-hidden rounded-card border-3 border-ink bg-paper text-left ${
+                game === selected ? 'shadow-hard' : ''
+              }`}
+            >
+              <GameCover game={game} chosen={game === selected} />
+              <span className="flex flex-col gap-1 px-4 py-3.5">
+                <span className="font-display text-title uppercase">{copy.games[game].name}</span>
+                <span className="text-sm font-medium">{copy.games[game].description}</span>
+                <span className="text-label font-bold">{copy.games[game].players}</span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
       <h2 className="text-label font-bold uppercase tracking-label">{copy.games.soon}</h2>
       <ul className="grid grid-cols-2 gap-3">
         {copy.games.upcoming.map((title, index) => (
@@ -68,22 +87,54 @@ export function GamePickerScreen({
 
 // Ilustraciones hechas con formas, como en la referencia: no hay portadas definitivas.
 
-function ImpostorCover({ chosen }: { chosen: string }) {
+function GameCover({ game, chosen }: { game: GameId; chosen: boolean }) {
   return (
     <span
       aria-hidden="true"
-      className="relative flex h-37.5 items-center justify-center gap-3 border-b-3 border-ink bg-tomato"
+      className={`relative flex h-37.5 items-center justify-center gap-3 border-b-3 border-ink ${coverBackgrounds[game]}`}
     >
+      {game === 'impostor' ? <ImpostorFaces /> : <ProbableFaces />}
+      {chosen ? (
+        <span className="absolute top-2.5 right-2.5 rotate-4 rounded-full border-3 border-ink bg-lime px-2.5 py-0.5 text-xs font-bold">
+          {copy.games.chosen}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+const coverBackgrounds: Record<GameId, string> = {
+  impostor: 'bg-tomato',
+  probable: 'bg-sky',
+};
+
+function ImpostorFaces() {
+  return (
+    <>
       <Face />
       <span className="flex size-19 -rotate-6 items-center justify-center gap-3 rounded-full border-3 border-ink bg-ink">
         <span className="h-2 w-4 rounded-full bg-ground" />
         <span className="h-2 w-4 rounded-full bg-ground" />
       </span>
       <Face />
-      <span className="absolute top-2.5 right-2.5 rotate-4 rounded-full border-3 border-ink bg-lime px-2.5 py-0.5 text-xs font-bold">
-        {chosen}
+    </>
+  );
+}
+
+/** Tres caras y la del centro, la señalada, con su punto. */
+function ProbableFaces() {
+  return (
+    <>
+      <Face />
+      <span className="relative flex size-19 items-center justify-center gap-3 rounded-full border-3 border-ink bg-lime">
+        <span className="size-2 rounded-full bg-ink" />
+        <span className="size-2 rounded-full bg-ink" />
+        <span className="absolute -top-4 -right-3 rotate-4 rounded-full border-3 border-ink bg-paper px-2 font-display text-lg">
+          {copy.games.covers.point}
+        </span>
       </span>
-    </span>
+      <Face />
+    </>
   );
 }
 

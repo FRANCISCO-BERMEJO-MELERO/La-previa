@@ -10,14 +10,16 @@ import {
   backToLobby,
   kickPlayer,
   leaveRoom,
+  probableStart,
   setGame,
   startGame,
   type ActionResult,
 } from '@/lib/actions';
 import { copy, errorMessage, type ActionError } from '@/lib/copy';
 import { roomPath } from '@/lib/room-code';
+import { DEFAULT_ROUNDS } from '@/lib/rounds';
 import { shareRoomLink, type ShareOutcome } from '@/lib/share';
-import type { Snapshot } from '@/lib/snapshot';
+import type { GameId, Snapshot } from '@/lib/snapshot';
 import { useRoomSync } from '@/lib/use-room-sync';
 import { useWakeLock } from '@/lib/use-wake-lock';
 import { GamePickerScreen } from '@/screens/GamePickerScreen';
@@ -37,6 +39,8 @@ export function Room({ initial, fresh }: RoomProps) {
   const sync = useRoomSync(initial.room.id, initial);
   const [picking, setPicking] = useState(fresh);
   const [impostors, setImpostors] = useState(1);
+  const [rounds, setRounds] = useState(DEFAULT_ROUNDS);
+  const [pickedGame, setPickedGame] = useState<GameId | null>(null);
   const [error, setError] = useState<ActionError | null>(null);
   const [busy, setBusy] = useState(false);
   const [kickTargetId, setKickTargetId] = useState<string | null>(null);
@@ -152,14 +156,17 @@ export function Room({ initial, fresh }: RoomProps) {
     return withLeaveDialog(
       <GamePickerScreen
         roomCode={code}
+        selected={pickedGame ?? snapshot.room.game}
         busy={busy}
         error={errorText}
         offline={sync.offline}
         onLeaveRequest={openLeave}
+        onSelect={setPickedGame}
         onOpen={() => {
-          void run(() => setGame(roomId, 'impostor')).then((ok) => {
+          void run(() => setGame(roomId, pickedGame ?? snapshot.room.game)).then((ok) => {
             if (!ok) return;
             setPicking(false);
+            setPickedGame(null);
             // Quita el ?nueva=1 para que recargar no vuelva a abrir el selector.
             window.history.replaceState(null, '', roomPath(code));
           });
@@ -193,8 +200,14 @@ export function Room({ initial, fresh }: RoomProps) {
         setQrOpen(false);
       }}
       onImpostorsChange={setImpostors}
+      rounds={rounds}
+      onRoundsChange={setRounds}
       onStart={() => {
-        void run(() => startGame(roomId, impostorCount));
+        void run(() =>
+          snapshot.room.game === 'impostor'
+            ? startGame(roomId, impostorCount)
+            : probableStart(roomId, rounds),
+        );
       }}
       onKickRequest={setKickTargetId}
     />,

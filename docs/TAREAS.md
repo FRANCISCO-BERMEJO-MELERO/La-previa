@@ -113,7 +113,7 @@ Aceptación: todas las pruebas existentes pasan sin cambiar ninguna aserción; l
 - [x] 9.4 Reglas por rondas: avance automático, incorporación de tardíos al abrir ronda, abandono y expulsión, final anticipado con menos de 3 activos
 - [x] 9.5 Variante `probable` en `get_room_state`
 - [x] 9.6 Pruebas pgTAP de `probable`
-- [ ] 9.7 Sala de espera con selector de rondas; selector de juegos con `probable` elegible y su portada
+- [x] 9.7 Sala de espera con selector de rondas; selector de juegos con `probable` elegible y su portada
 - [ ] 9.8 Pantallas de `probable` y su `viewFor`, con tests unitarios
 - [ ] 9.9 Prueba e2e: 5 rondas con 3 jugadores, con cambio desde El impostor en la misma sala
 

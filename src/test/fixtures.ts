@@ -1,4 +1,4 @@
-import type { ImpostorGameState, Snapshot } from '@/lib/snapshot';
+import type { ImpostorGameState, ProbableGameState, Snapshot } from '@/lib/snapshot';
 
 // Fotos de ejemplo para los tests, con los datos de la referencia.
 
@@ -63,4 +63,38 @@ export function inGame(
   rest: Partial<Snapshot> = {},
 ): Snapshot {
   return lobbySnapshot({ game: gameState(game), ...rest });
+}
+
+export function probableState(overrides: Partial<ProbableGameState> = {}): ProbableGameState {
+  return {
+    type: 'probable',
+    id: ids.game,
+    phase: 'voting',
+    round: 3,
+    total_rounds: 10,
+    prompt: 'se duerma antes que nadie en una fiesta',
+    participants: [
+      { user_id: ids.fran, name: 'Fran', alive: true, score: 2, has_responded: false },
+      { user_id: ids.lucia, name: 'Lucía', alive: true, score: 1, has_responded: true },
+      { user_id: ids.alvaro, name: 'Álvaro', alive: true, score: 0, has_responded: false },
+    ],
+    my: { is_participant: true, alive: true, voted_for: null },
+    tally: null,
+    round_winner_ids: null,
+    ranking: null,
+    ...overrides,
+  };
+}
+
+/** Sala con `probable` elegido y la partida dada. */
+export function inProbable(
+  game: Partial<ProbableGameState> = {},
+  rest: Partial<Snapshot> = {},
+): Snapshot {
+  const base = lobbySnapshot();
+  return lobbySnapshot({
+    room: { ...base.room, game: 'probable' },
+    game: probableState(game),
+    ...rest,
+  });
 }

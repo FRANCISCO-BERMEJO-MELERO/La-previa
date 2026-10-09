@@ -41,6 +41,10 @@ export function startGame(roomId: string, impostorCount: number, deps = defaultD
   return callForSnapshot(deps, 'start_game', { room_id: roomId, impostor_count: impostorCount });
 }
 
+export function probableStart(roomId: string, rounds: number, deps = defaultDeps) {
+  return callForSnapshot(deps, 'probable_start', { room_id: roomId, rounds });
+}
+
 export function openVoting(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'open_voting', { room_id: roomId });
 }
