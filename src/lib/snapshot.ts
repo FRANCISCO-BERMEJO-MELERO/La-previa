@@ -81,10 +81,37 @@ const probableGameSchema = z.object({
   round_winner_ids: z.array(id).nullable(),
 });
 
-/** La partida en curso, con la forma propia de cada juego (docs/JUEGOS.md §8). */
-const gameSchema = z.discriminatedUnion('type', [impostorGameSchema, probableGameSchema]);
+const quienLoDijoGameSchema = z.object({
+  ...roundGameShape,
+  type: z.literal('quien_lo_dijo'),
+  phase: z.enum(['writing', 'voting', 'reveal', 'finished']),
+  prompt: z.string(),
+  my: z.object({
+    is_participant: z.boolean(),
+    alive: z.boolean(),
+    answer: z.string().nullable(),
+    is_author: z.boolean(),
+    voted_for: id.nullable(),
+  }),
+  featured_text: z.string().nullable(),
+  vote_progress: z
+    .object({ voted: z.int().nonnegative(), total: z.int().nonnegative() })
+    .nullable(),
+  annulled: z.boolean().nullable(),
+  author_id: id.nullable(),
+  correct_ids: z.array(id).nullable(),
+  wrong_ids: z.array(id).nullable(),
+  answers: z.array(z.object({ user_id: id, text: z.string() })).nullable(),
+});
 
-export const gameIds = ['impostor', 'probable'] as const;
+/** La partida en curso, con la forma propia de cada juego (docs/JUEGOS.md §8). */
+const gameSchema = z.discriminatedUnion('type', [
+  impostorGameSchema,
+  probableGameSchema,
+  quienLoDijoGameSchema,
+]);
+
+export const gameIds = ['impostor', 'probable', 'quien_lo_dijo'] as const;
 
 export const snapshotSchema = z.object({
   server_time: timestamp,
@@ -108,6 +135,7 @@ export type GameState = z.infer<typeof gameSchema>;
 export type GameId = (typeof gameIds)[number];
 export type ImpostorGameState = z.infer<typeof impostorGameSchema>;
 export type ProbableGameState = z.infer<typeof probableGameSchema>;
+export type QuienLoDijoGameState = z.infer<typeof quienLoDijoGameSchema>;
 /** Lo que comparten las partidas de los juegos por rondas. */
 export type RoundGameState = z.infer<z.ZodObject<typeof roundGameShape>>;
 export type Phase = ImpostorGameState['phase'];

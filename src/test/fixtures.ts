@@ -1,4 +1,9 @@
-import type { ImpostorGameState, ProbableGameState, Snapshot } from '@/lib/snapshot';
+import type {
+  ImpostorGameState,
+  ProbableGameState,
+  QuienLoDijoGameState,
+  Snapshot,
+} from '@/lib/snapshot';
 
 // Fotos de ejemplo para los tests, con los datos de la referencia.
 
@@ -95,6 +100,45 @@ export function inProbable(
   return lobbySnapshot({
     room: { ...base.room, game: 'probable' },
     game: probableState(game),
+    ...rest,
+  });
+}
+
+export function quienState(overrides: Partial<QuienLoDijoGameState> = {}): QuienLoDijoGameState {
+  return {
+    type: 'quien_lo_dijo',
+    id: ids.game,
+    phase: 'writing',
+    round: 2,
+    total_rounds: 5,
+    prompt: '¿Qué superpoder elegirías?',
+    participants: [
+      { user_id: ids.fran, name: 'Fran', alive: true, score: 1, has_responded: false },
+      { user_id: ids.lucia, name: 'Lucía', alive: true, score: 2, has_responded: true },
+      { user_id: ids.alvaro, name: 'Álvaro', alive: true, score: 0, has_responded: false },
+    ],
+    my: { is_participant: true, alive: true, answer: null, is_author: false, voted_for: null },
+    featured_text: null,
+    vote_progress: null,
+    annulled: null,
+    author_id: null,
+    correct_ids: null,
+    wrong_ids: null,
+    answers: null,
+    ranking: null,
+    ...overrides,
+  };
+}
+
+/** Sala con `quien_lo_dijo` elegido y la partida dada. */
+export function inQuien(
+  game: Partial<QuienLoDijoGameState> = {},
+  rest: Partial<Snapshot> = {},
+): Snapshot {
+  const base = lobbySnapshot();
+  return lobbySnapshot({
+    room: { ...base.room, game: 'quien_lo_dijo' },
+    game: quienState(game),
     ...rest,
   });
 }

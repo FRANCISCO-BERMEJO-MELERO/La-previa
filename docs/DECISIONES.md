@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-09 · 10.8 · Pantallas de ¿Quién lo dijo?
+
+Con los componentes existentes y acento `lilac`: tarjeta protagonista con la pregunta y campo "Tu respuesta" (80 caracteres, se envía también con la tecla de enviar); espera de respuestas con las fichas de quién falta; votación con la respuesta elegida entre comillas « » y la lista de todos menos uno mismo; el autor ve "Es la tuya" con su respuesta y el contador de votos; la espera de votos enseña solo el contador (ver 10.5); la revelación nombra al autor, dice quién acertó y quién falló y lista el resto de respuestas con su autor; una ronda anulada lo explica y lista todas. El resultado usa la pantalla común con "Gana la partida". En el selector, "¿Quién lo dijo?" pasa de "Próximamente" a elegible con el bocadillo "¿?" como portada; el test del selector se actualiza para tres juegos.
+Descartado: un campo de varias líneas, que invita a escribir más de lo que cabe en una línea de 80 caracteres.
+
 ## 2026-10-09 · 10.7 · Lo común de los juegos por rondas en el cliente
 
 `src/games/rounds/` no es un juego: guarda lo que comparten los juegos por rondas y que ya usan dos. Contiene los datos derivados (jugadores, clasificación con puestos compartidos, ganadores, última ronda), la espera de respuestas (`WaitScreen`, con el contador y, si se puede decir, las fichas de quién falta), la lista para votar, el resultado con la clasificación, los controles del anfitrión (`RoundControls`, que reciben el texto del botón y el de espera) y "volver a jugar o, si faltan jugadores, volver a la sala". La píldora "Ronda 3 de 10" sale de `copy.rounds.pill`. `probable` se queda con lo suyo (pregunta, recuento) y sus pruebas de lo común pasan a `src/games/rounds`. Un juego no importa nada de la carpeta de otro.

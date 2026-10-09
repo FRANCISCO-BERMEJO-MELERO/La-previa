@@ -57,6 +57,30 @@ export function probableNext(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'probable_next', { room_id: roomId });
 }
 
+export function quienLoDijoStart(roomId: string, rounds: number, deps = defaultDeps) {
+  return callForSnapshot(deps, 'quien_lo_dijo_start', { room_id: roomId, rounds });
+}
+
+export function quienLoDijoAnswer(roomId: string, text: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'quien_lo_dijo_answer', { room_id: roomId, text });
+}
+
+export function quienLoDijoCloseWriting(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'quien_lo_dijo_close_writing', { room_id: roomId });
+}
+
+export function quienLoDijoVote(roomId: string, targetId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'quien_lo_dijo_vote', { room_id: roomId, target_id: targetId });
+}
+
+export function quienLoDijoCloseVoting(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'quien_lo_dijo_close_voting', { room_id: roomId });
+}
+
+export function quienLoDijoNext(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'quien_lo_dijo_next', { room_id: roomId });
+}
+
 export function openVoting(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'open_voting', { room_id: roomId });
 }

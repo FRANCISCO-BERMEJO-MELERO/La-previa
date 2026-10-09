@@ -29,9 +29,13 @@ describe('GamePickerScreen (03)', () => {
       'aria-pressed',
       'false',
     );
-    expect(screen.getAllByText('De 3 a 16 jugadores')).toHaveLength(2);
+    expect(screen.getByRole('button', { name: /¿Quién lo dijo\?/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(screen.getAllByText('De 3 a 16 jugadores')).toHaveLength(3);
     expect(screen.getAllByText('Elegido')).toHaveLength(1);
-    for (const title of ['¿Quién lo dijo?', 'Palabras prohibidas', 'La bomba', '¿Qué prefieres?']) {
+    for (const title of ['Palabras prohibidas', 'La bomba', '¿Qué prefieres?']) {
       expect(screen.getByText(title)).toBeInTheDocument();
       expect(screen.queryByRole('button', { name: title })).not.toBeInTheDocument();
     }

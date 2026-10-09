@@ -112,7 +112,12 @@ export const copy = {
       description: 'Sale una pregunta y todos señaláis a alguien a la vez.',
       players: 'De 3 a 16 jugadores',
     },
-    upcoming: ['¿Quién lo dijo?', 'Palabras prohibidas', 'La bomba', '¿Qué prefieres?'],
+    quien_lo_dijo: {
+      name: '¿Quién lo dijo?',
+      description: 'Todos escribís una respuesta y adivináis de quién es la que sale.',
+      players: 'De 3 a 16 jugadores',
+    },
+    upcoming: ['Palabras prohibidas', 'La bomba', '¿Qué prefieres?'],
     covers: { quote: '¿?', banned: 'Palabra', optionA: 'A', optionB: 'B', point: '+1' },
   },
 
@@ -251,6 +256,7 @@ export const copy = {
     ranking: 'Clasificación',
     position: (position: number) => `${String(position)}.º`,
     noWinner: 'Nadie ha sumado puntos',
+    next: 'Siguiente ronda',
     names: (names: readonly string[]) => joinNames(names),
   },
 
@@ -265,8 +271,34 @@ export const copy = {
     votesFrom: (votes: number, names: readonly string[]) =>
       `${votes === 1 ? '1 voto' : `${String(votes)} votos`} de ${joinNames(names)}`,
     point: '+1',
-    next: 'Siguiente ronda',
     resultPill: 'El más probable de la noche',
+  },
+
+  quienLoDijo: {
+    question: '¿Quién lo dijo?',
+    answerLabel: 'Tu respuesta',
+    answerHint: 'Una línea, hasta 80 caracteres. Nadie sabrá que es tuya… de momento.',
+    send: 'Enviar respuesta',
+    mine: (text: string) => `Tu respuesta: ${text}`,
+    responded: 'Han respondido',
+    respondedDetail: 'Ha respondido',
+    closeWriting: 'Cerrar respuestas',
+    closeWritingHint: 'Puedes cerrar con las respuestas que haya.',
+    waitingWriting: (host: string) => `${host} cerrará las respuestas`,
+    voted: 'Han votado',
+    voteHint: 'No puedes votarte a ti. Si aciertas quién lo escribió, sumas un punto.',
+    yours: 'Es la tuya',
+    yoursText: 'Disimula mientras los demás intentan adivinar quién lo escribió.',
+    saidBy: 'Lo dijo',
+    correct: (names: readonly string[]) => `Acertaron: ${joinNames(names)}`,
+    nobodyCorrect: 'Nadie acertó',
+    wrong: (names: readonly string[]) => `Fallaron: ${joinNames(names)}`,
+    annulled: 'Ronda anulada',
+    annulledText: 'Se ha ido quien escribió la respuesta. Esta ronda no suma puntos.',
+    otherAnswers: 'Las demás respuestas',
+    answers: 'Las respuestas',
+    quoted: (text: string) => `«${text}»`,
+    resultPill: 'Gana la partida',
   },
 
   // Solo para la página interna de componentes, que no existe en producción.

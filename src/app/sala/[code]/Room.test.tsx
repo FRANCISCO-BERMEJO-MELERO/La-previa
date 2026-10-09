@@ -4,7 +4,7 @@ import type { ActionResult } from '@/lib/actions';
 import type { ShareOutcome } from '@/lib/share';
 import type { Snapshot } from '@/lib/snapshot';
 import type { RoomSync } from '@/lib/use-room-sync';
-import { gameState, ids, inGame, inProbable, lobbySnapshot } from '@/test/fixtures';
+import { gameState, ids, inGame, inProbable, inQuien, lobbySnapshot } from '@/test/fixtures';
 import { Room } from './Room';
 
 const mocks = vi.hoisted(() => ({
@@ -20,6 +20,12 @@ const mocks = vi.hoisted(() => ({
   probableVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   probableClose: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   probableNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  quienLoDijoStart: vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
+  quienLoDijoAnswer: vi.fn<(roomId: string, text: string) => Promise<ActionResult<Snapshot>>>(),
+  quienLoDijoCloseWriting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  quienLoDijoVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
+  quienLoDijoCloseVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  quienLoDijoNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   openVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   castVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   closeVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -38,6 +44,12 @@ vi.mock('@/lib/actions', () => ({
   probableVote: mocks.probableVote,
   probableClose: mocks.probableClose,
   probableNext: mocks.probableNext,
+  quienLoDijoStart: mocks.quienLoDijoStart,
+  quienLoDijoAnswer: mocks.quienLoDijoAnswer,
+  quienLoDijoCloseWriting: mocks.quienLoDijoCloseWriting,
+  quienLoDijoVote: mocks.quienLoDijoVote,
+  quienLoDijoCloseVoting: mocks.quienLoDijoCloseVoting,
+  quienLoDijoNext: mocks.quienLoDijoNext,
   openVoting: mocks.openVoting,
   castVote: mocks.castVote,
   closeVoting: mocks.closeVoting,
@@ -440,6 +452,124 @@ describe('Room', () => {
         expect(mocks.backToLobby).toHaveBeenCalledWith(ids.room);
       });
       expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('quien_lo_dijo', () => {
+    it('escribe la respuesta y la envía', async () => {
+      ready(inQuien());
+      mocks.quienLoDijoAnswer.mockResolvedValue({
+        ok: true,
+        data: inQuien({
+          my: {
+            is_participant: true,
+            alive: true,
+            answer: 'Volar',
+            is_author: false,
+            voted_for: null,
+          },
+        }),
+      });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(
+        screen.getByRole('button', { name: 'Ronda 2 de 5. Salir de la sala' }),
+      ).toBeInTheDocument();
+      fireEvent.change(screen.getByLabelText('Tu respuesta'), { target: { value: 'Volar' } });
+      fireEvent.click(screen.getByRole('button', { name: 'Enviar respuesta' }));
+      expect(mocks.quienLoDijoAnswer).toHaveBeenCalledWith(ids.room, 'Volar');
+      await waitFor(() => {
+        expect(mocks.apply).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('tras responder, el anfitrión ve quién falta y puede cerrar las respuestas', () => {
+      ready(
+        inQuien({
+          my: {
+            is_participant: true,
+            alive: true,
+            answer: 'Volar',
+            is_author: false,
+            voted_for: null,
+          },
+        }),
+      );
+      mocks.quienLoDijoCloseWriting.mockResolvedValue({ ok: true, data: inQuien() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Tu respuesta: Volar')).toBeInTheDocument();
+      expect(screen.getByText('1 de 3')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Cerrar respuestas' }));
+      expect(mocks.quienLoDijoCloseWriting).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('vota a quien cree que lo escribió, sin poder votarse a sí mismo', () => {
+      ready(
+        inQuien({ phase: 'voting', featured_text: 'Volar', vote_progress: { voted: 0, total: 2 } }),
+      );
+      mocks.quienLoDijoVote.mockResolvedValue({ ok: true, data: inQuien({ phase: 'voting' }) });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('«Volar»')).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /^F?Fran/ })).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: /Lucía/ }));
+      fireEvent.click(screen.getByRole('button', { name: 'Votar a Lucía' }));
+      expect(mocks.quienLoDijoVote).toHaveBeenCalledWith(ids.room, ids.lucia);
+    });
+
+    it('el autor ve que es la suya, el contador sin nombres y, si es anfitrión, puede cerrar', () => {
+      ready(
+        inQuien({
+          phase: 'voting',
+          featured_text: 'Volar',
+          vote_progress: { voted: 1, total: 2 },
+          my: {
+            is_participant: true,
+            alive: true,
+            answer: 'Volar',
+            is_author: true,
+            voted_for: null,
+          },
+        }),
+      );
+      mocks.quienLoDijoCloseVoting.mockResolvedValue({
+        ok: true,
+        data: inQuien({ phase: 'reveal' }),
+      });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Es la tuya')).toBeInTheDocument();
+      expect(screen.getByText('1 de 2')).toBeInTheDocument();
+      expect(screen.queryByTestId('player-chip')).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Cerrar votación' }));
+      expect(mocks.quienLoDijoCloseVoting).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('en la revelación el anfitrión pasa de ronda', () => {
+      ready(
+        inQuien({
+          phase: 'reveal',
+          featured_text: 'Volar',
+          annulled: false,
+          author_id: ids.lucia,
+          correct_ids: [ids.fran],
+          wrong_ids: [ids.alvaro],
+          answers: [{ user_id: ids.lucia, text: 'Volar' }],
+        }),
+      );
+      mocks.quienLoDijoNext.mockResolvedValue({ ok: true, data: inQuien() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('heading', { name: 'Lucía' })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Siguiente ronda' }));
+      expect(mocks.quienLoDijoNext).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('al final vuelve a jugar con las mismas rondas', () => {
+      ready(
+        inQuien({ phase: 'finished', ranking: [{ user_id: ids.lucia, name: 'Lucía', score: 3 }] }),
+      );
+      mocks.quienLoDijoStart.mockResolvedValue({ ok: true, data: inQuien() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Gana la partida')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
+      expect(mocks.quienLoDijoStart).toHaveBeenCalledWith(ids.room, 5);
     });
   });
 });

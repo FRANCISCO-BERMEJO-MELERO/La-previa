@@ -7,11 +7,13 @@ import { PillButton } from '@/components/PillButton';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
 import { clampImpostors } from '@/games/impostor/impostors';
 import { ProbableGame } from '@/games/probable/ProbableGame';
+import { QuienLoDijoGame } from '@/games/quien-lo-dijo/QuienLoDijoGame';
 import {
   backToLobby,
   kickPlayer,
   leaveRoom,
   probableStart,
+  quienLoDijoStart,
   setGame,
   startGame,
   type ActionResult,
@@ -153,6 +155,8 @@ export function Room({ initial, fresh }: RoomProps) {
         return withLeaveDialog(<ImpostorGame {...shared} game={game} />);
       case 'probable':
         return withLeaveDialog(<ProbableGame {...shared} game={game} />);
+      case 'quien_lo_dijo':
+        return withLeaveDialog(<QuienLoDijoGame {...shared} game={game} />);
     }
   }
 
@@ -207,11 +211,16 @@ export function Room({ initial, fresh }: RoomProps) {
       rounds={rounds}
       onRoundsChange={setRounds}
       onStart={() => {
-        void run(() =>
-          snapshot.room.game === 'impostor'
-            ? startGame(roomId, impostorCount)
-            : probableStart(roomId, rounds),
-        );
+        void run(() => {
+          switch (snapshot.room.game) {
+            case 'impostor':
+              return startGame(roomId, impostorCount);
+            case 'probable':
+              return probableStart(roomId, rounds);
+            case 'quien_lo_dijo':
+              return quienLoDijoStart(roomId, rounds);
+          }
+        });
       }}
       onKickRequest={setKickTargetId}
     />,

@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { gameState, ids, inGame, inProbable, lobbySnapshot, probableState } from '@/test/fixtures';
+import {
+  gameState,
+  ids,
+  inGame,
+  inProbable,
+  inQuien,
+  lobbySnapshot,
+  probableState,
+  quienState,
+} from '@/test/fixtures';
 import { parseSnapshot, roomCodeSchema } from './snapshot';
 
 describe('parseSnapshot', () => {
@@ -71,6 +80,34 @@ describe('parseSnapshot', () => {
     expect(
       parseSnapshot({ ...inProbable(), game: { ...gameState(), type: 'probable' } }),
     ).toBeNull();
+  });
+
+  it('acepta la partida de quien_lo_dijo en todas sus fases', () => {
+    const writing = inQuien();
+    expect(parseSnapshot(writing)).toEqual(writing);
+    const voting = inQuien({
+      phase: 'voting',
+      featured_text: 'Volar',
+      vote_progress: { voted: 1, total: 2 },
+    });
+    expect(parseSnapshot(voting)).toEqual(voting);
+    const reveal = inQuien({
+      phase: 'reveal',
+      featured_text: 'Volar',
+      annulled: false,
+      author_id: ids.lucia,
+      correct_ids: [ids.fran],
+      wrong_ids: [],
+      answers: [{ user_id: ids.lucia, text: 'Volar' }],
+    });
+    expect(parseSnapshot(reveal)).toEqual(reveal);
+  });
+
+  it('descarta una partida de quien_lo_dijo sin sus datos propios', () => {
+    expect(
+      parseSnapshot({ ...inQuien(), game: { ...quienState(), my: probableState().my } }),
+    ).toBeNull();
+    expect(parseSnapshot({ ...inQuien(), game: { ...quienState(), phase: 'talking' } })).toBeNull();
   });
 
   it('acepta las fechas tal como las devuelve Postgres', () => {

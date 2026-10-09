@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Button } from '@/components/Button';
 import { OfflineNotice } from '@/components/OfflineNotice';
 import { PillButton } from '@/components/PillButton';
@@ -93,7 +94,7 @@ function GameCover({ game, chosen }: { game: GameId; chosen: boolean }) {
       aria-hidden="true"
       className={`relative flex h-37.5 items-center justify-center gap-3 border-b-3 border-ink ${coverBackgrounds[game]}`}
     >
-      {game === 'impostor' ? <ImpostorFaces /> : <ProbableFaces />}
+      {covers[game]}
       {chosen ? (
         <span className="absolute top-2.5 right-2.5 rotate-4 rounded-full border-3 border-ink bg-lime px-2.5 py-0.5 text-xs font-bold">
           {copy.games.chosen}
@@ -106,6 +107,7 @@ function GameCover({ game, chosen }: { game: GameId; chosen: boolean }) {
 const coverBackgrounds: Record<GameId, string> = {
   impostor: 'bg-tomato',
   probable: 'bg-sky',
+  quien_lo_dijo: 'bg-lilac',
 };
 
 function ImpostorFaces() {
@@ -138,6 +140,24 @@ function ProbableFaces() {
   );
 }
 
+/** Un bocadillo anónimo y la cara de quien pudo decirlo. */
+function QuienLoDijoBubble() {
+  return (
+    <>
+      <span className="-rotate-4 rounded-chip rounded-bl-none border-3 border-ink bg-paper px-5 py-1 font-display text-5xl">
+        {copy.games.covers.quote}
+      </span>
+      <Face />
+    </>
+  );
+}
+
+const covers: Record<GameId, ReactNode> = {
+  impostor: <ImpostorFaces />,
+  probable: <ProbableFaces />,
+  quien_lo_dijo: <QuienLoDijoBubble />,
+};
+
 function Face() {
   return (
     <span className="flex size-15 items-center justify-center gap-2.5 rounded-full border-3 border-ink bg-paper">
@@ -147,7 +167,7 @@ function Face() {
   );
 }
 
-const upcomingBackgrounds = ['bg-sky', 'bg-lilac', 'bg-orange', 'bg-lime'] as const;
+const upcomingBackgrounds = ['bg-lilac', 'bg-orange', 'bg-lime'] as const;
 
 function UpcomingCover({ index }: { index: number }) {
   return (
@@ -156,22 +176,17 @@ function UpcomingCover({ index }: { index: number }) {
       className={`flex h-17 items-center justify-center gap-2 border-b-3 border-ink ${upcomingBackgrounds[index] ?? 'bg-sky'}`}
     >
       {index === 0 ? (
-        <span className="-rotate-4 rounded-chip rounded-bl-none border-3 border-ink bg-paper px-3.5 font-display text-2xl">
-          {copy.games.covers.quote}
-        </span>
-      ) : null}
-      {index === 1 ? (
         <span className="rotate-3 rounded-control border-3 border-ink bg-paper px-2.5 py-0.5 font-display text-lg uppercase line-through decoration-4">
           {copy.games.covers.banned}
         </span>
       ) : null}
-      {index === 2 ? (
+      {index === 1 ? (
         <span className="relative size-10 rounded-full bg-ink">
           <span className="absolute -top-2.5 right-0.5 h-4 w-1.5 rotate-35 bg-ink" />
           <span className="absolute -top-4 -right-2.5 size-3 rounded-full border-3 border-ink bg-tomato" />
         </span>
       ) : null}
-      {index === 3 ? (
+      {index === 2 ? (
         <>
           <span className="flex size-10 -rotate-5 items-center justify-center rounded-control border-3 border-ink bg-paper font-display text-xl">
             {copy.games.covers.optionA}

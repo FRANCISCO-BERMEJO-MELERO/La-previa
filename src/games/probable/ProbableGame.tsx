@@ -79,7 +79,7 @@ export function ProbableGame({
           ? copy.vote.close
           : isLastRound(game)
             ? copy.reveal.seeResult
-            : copy.probable.next
+            : copy.rounds.next
       }
       busy={busy}
       error={error}

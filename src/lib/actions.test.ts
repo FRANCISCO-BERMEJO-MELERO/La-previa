@@ -15,6 +15,12 @@ import {
   probableNext,
   probableStart,
   probableVote,
+  quienLoDijoAnswer,
+  quienLoDijoCloseVoting,
+  quienLoDijoCloseWriting,
+  quienLoDijoNext,
+  quienLoDijoStart,
+  quienLoDijoVote,
   setGame,
   startGame,
   toActionError,
@@ -44,6 +50,12 @@ describe('acciones', () => {
     await probableVote('sala', 'u2', d);
     await probableClose('sala', d);
     await probableNext('sala', d);
+    await quienLoDijoStart('sala', 5, d);
+    await quienLoDijoAnswer('sala', 'Volar', d);
+    await quienLoDijoCloseWriting('sala', d);
+    await quienLoDijoVote('sala', 'u3', d);
+    await quienLoDijoCloseVoting('sala', d);
+    await quienLoDijoNext('sala', d);
     await openVoting('sala', d);
     await castVote('sala', 'u3', d);
     await closeVoting('sala', d);
@@ -60,6 +72,12 @@ describe('acciones', () => {
       ['probable_vote', { room_id: 'sala', target_id: 'u2' }],
       ['probable_close', { room_id: 'sala' }],
       ['probable_next', { room_id: 'sala' }],
+      ['quien_lo_dijo_start', { room_id: 'sala', rounds: 5 }],
+      ['quien_lo_dijo_answer', { room_id: 'sala', text: 'Volar' }],
+      ['quien_lo_dijo_close_writing', { room_id: 'sala' }],
+      ['quien_lo_dijo_vote', { room_id: 'sala', target_id: 'u3' }],
+      ['quien_lo_dijo_close_voting', { room_id: 'sala' }],
+      ['quien_lo_dijo_next', { room_id: 'sala' }],
       ['open_voting', { room_id: 'sala' }],
       ['cast_vote', { room_id: 'sala', target_id: 'u3' }],
       ['close_voting', { room_id: 'sala' }],
