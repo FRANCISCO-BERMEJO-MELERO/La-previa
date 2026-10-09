@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 11 en curso · última actualización 2026-10-09
+Estado: fase 11 terminada, fase 12 pendiente · última actualización 2026-10-09
 
 ## Fase 0 · Preparación
 
@@ -140,7 +140,7 @@ Aceptación: las tres baterías pasan; no queda lógica duplicada entre los dos 
 - [x] 11.3 Variante `una_pista` en `get_room_state`
 - [x] 11.4 Pruebas pgTAP de `una_pista`
 - [x] 11.5 Pantallas de `una_pista` y su `viewFor`, con tests unitarios
-- [ ] 11.6 Prueba e2e: 5 rondas con 4 jugadores, pista duplicada y anulada a mano, sin palabra en la red del adivino
+- [x] 11.6 Prueba e2e: 5 rondas con 4 jugadores, pista duplicada y anulada a mano, sin palabra en la red del adivino
 
 Aceptación: las tres baterías pasan.
 
