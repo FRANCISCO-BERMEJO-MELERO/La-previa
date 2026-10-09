@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-09 · 9.4 · Irse a media votación en un juego por rondas
+
+Se borran el voto de quien se va y también los votos que había recibido en esa ronda: quien le votó vuelve a la pantalla de votar. Así nadie se lleva un punto estando fuera y ningún voto se pierde en un jugador que ya no está. Después, con menos de 3 activos la partida termina; si no, se comprueba si ya han votado todos. En la revelación solo se marca como fuera: el recuento ya enseñado no cambia, como en El impostor.
+Descartado: dejar los votos recibidos, que podían dar el punto de la ronda a alguien que se ha ido.
+
+## 2026-10-09 · 9.4 · Al abrir ronda juegan todos los miembros de la sala
+
+Al abrir cada ronda se incorporan todos los miembros: quien llegó tarde y también quien se fue y ha vuelto a entrar, que recupera su fila con sus puntos (`alive = true`). Quien vuelve a media ronda espera, como quien llega tarde. A quien echan deja de ser miembro y no vuelve.
+Descartado: dejar fuera para toda la partida a quien se fue, que en un juego por rondas castiga un corte de conexión sin motivo.
+
 ## 2026-10-09 · 9.3 · Cada acción comprueba el juego de la partida
 
 `private.require_phase`, que usan todas las acciones de El impostor, pasa a exigir además que la partida sea de El impostor (con la auxiliar nueva `private.require_game(sala, juego, fase)`). Sin eso, el anfitrión podía llamar a `close_voting` sobre una votación de `probable` y eliminar a alguien. `back_to_lobby` deja de usarla y comprueba `finished` para cualquier juego. `probable_start` exige que la sala tenga elegido `probable` (`invalid_game`); `start_game` no se toca para no cambiar El impostor.
