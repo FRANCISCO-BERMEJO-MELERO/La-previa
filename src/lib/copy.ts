@@ -24,6 +24,9 @@ export const errorCodes = [
   'invalid_answer',
   'already_answered',
   'is_author',
+  'invalid_clue',
+  'not_arbiter',
+  'is_guesser',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -52,6 +55,10 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
   invalid_answer: 'La respuesta tiene que tener entre 1 y 80 caracteres. Escribe algo más corto.',
   already_answered: 'Ya has enviado tu respuesta en esta ronda. Espera a que respondan los demás.',
   is_author: 'Esa respuesta es la tuya, así que no votas. Disimula mientras votan los demás.',
+  invalid_clue:
+    'La pista tiene que ser una sola palabra de hasta 20 letras, y no puede ser la palabra secreta ni contenerla. Prueba con otra.',
+  not_arbiter: 'Eso lo decide quien arbitra la ronda. Pídeselo a quien arbitra.',
+  is_guesser: 'Esta ronda te toca adivinar, así que no das pista. Espera a ver las de los demás.',
   unknown: 'Algo ha fallado. Vuelve a intentarlo en un momento.',
   offline: 'Sin conexión. Seguimos intentándolo; no cierres la página.',
 };

@@ -1,5 +1,14 @@
 # Decisiones
 
+## 2026-10-09 · 11.2 · Adivino, árbitro y ronda anulada en Una sola pista
+
+- **Adivino:** al abrir cada ronda, el participante activo que menos veces ha adivinado y, entre ellos, el primero por orden de entrada. Así rota por orden de entrada, salta a quien se ha ido y quien llega tarde se pone a la cola sin colarse. Se guarda en `game_rounds.subject_id`.
+- **Árbitro:** se calcula en cada acción, no se guarda. Es el anfitrión; si le toca adivinar, el siguiente participante activo por orden de entrada después de él, prefiriendo a los conectados. Así un traspaso de anfitrión o un desconectado no dejan la ronda sin árbitro.
+- **Si se va el adivino** antes de la revelación, la ronda se borra con sus pistas y se vuelve a abrir con el mismo número, otro adivino y otra palabra: no cuenta para el total. La palabra de la ronda borrada puede volver a salir. Como quien se va todavía figura en la sala mientras se trata su abandono, abrir ronda recibe a quien se está yendo para dejarlo fuera.
+- **Códigos:** `una_pista_mark` con un resultado que no es `correct`, `wrong` ni `pass` lanza `invalid_answer`; anular pistas sin haber dado ninguna lanza `not_participant`, y una pista que no existe, `invalid_target`. No hacen falta códigos nuevos.
+- El marcador de equipo no se guarda: se cuenta en las rondas marcadas como `correct`.
+  Descartado: guardar el árbitro al abrir la ronda, que la dejaba atascada si ese jugador se desconectaba.
+
 ## 2026-10-09 · 11.1 · La normalización conserva la ñ
 
 `private.normalize_clue` pasa a minúsculas, quita tildes (á, à, â) y diéresis (ü) y quita los espacios, como pide `docs/JUEGOS.md` §5. La ñ no es una tilde de acento sino otra letra, así que "año" y "ano" no se anulan entre sí. Se hace con `translate` y sin la extensión `unaccent`, que habría que instalar y que también convertiría la ñ en n.
