@@ -124,7 +124,7 @@ Aceptación: las tres baterías pasan; en una sala se juega a El impostor, se ca
 - [x] 10.1 Migración: tabla `answers`; `rooms.game` y `games.phase` admiten `quien_lo_dijo`
 - [x] 10.2 Migración de datos con las preguntas de `quien_lo_dijo`; ampliar `docs/PREGUNTAS.md`
 - [x] 10.3 Extraer lo común de `probable` a auxiliares en `private`; `probable` pasa a usarlas sin tocar sus pruebas
-- [ ] 10.4 `quien_lo_dijo_start`, `_answer`, `_close_writing`, `_vote`, `_close_voting`, `_next`
+- [x] 10.4 `quien_lo_dijo_start`, `_answer`, `_close_writing`, `_vote`, `_close_voting`, `_next`
 - [ ] 10.5 Variante `quien_lo_dijo` en `get_room_state`
 - [ ] 10.6 Pruebas pgTAP de `quien_lo_dijo`
 - [ ] 10.7 Componentes comunes de juegos por rondas en el cliente; `probable` pasa a usarlos

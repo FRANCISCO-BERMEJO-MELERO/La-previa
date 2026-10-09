@@ -21,6 +21,9 @@ export const errorCodes = [
   'cannot_kick',
   'invalid_game',
   'invalid_rounds',
+  'invalid_answer',
+  'already_answered',
+  'is_author',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -46,6 +49,9 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
     'Durante la partida solo puedes echar a alguien que se haya desconectado. Espera a que termine.',
   invalid_game: 'Ese juego no está disponible. Elige otro en el selector de juegos.',
   invalid_rounds: 'Las partidas son de 5, 10 o 15 rondas. Elige una de esas opciones.',
+  invalid_answer: 'La respuesta tiene que tener entre 1 y 80 caracteres. Escribe algo más corto.',
+  already_answered: 'Ya has enviado tu respuesta en esta ronda. Espera a que respondan los demás.',
+  is_author: 'Esa respuesta es la tuya, así que no votas. Disimula mientras votan los demás.',
   unknown: 'Algo ha fallado. Vuelve a intentarlo en un momento.',
   offline: 'Sin conexión. Seguimos intentándolo; no cierres la página.',
 };

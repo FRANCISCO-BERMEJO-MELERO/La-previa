@@ -1,5 +1,14 @@
 # Decisiones
 
+## 2026-10-09 · 10.4 · Detalles de ¿Quién lo dijo?
+
+- Una ronda sin respuestas se salta: cuenta como jugada (la partida sigue teniendo las rondas elegidas) y se abre directamente la siguiente, o se termina si era la última. Queda marcada con `{"skipped": true}`.
+- Si se va el autor elegido durante la votación, se borran los votos de la ronda, se marca `{"annulled": true}` y se pasa a la revelación. Las respuestas de la ronda, también la suya, se conservan para enseñarlas, como pide `docs/JUEGOS.md`.
+- En la votación el autor cuenta como que ya ha respondido, así que la fase avanza sola cuando votan todos los demás.
+- Se puede votar a cualquier participante activo menos a uno mismo, aunque no haya respondido: adivinar mal también es jugar.
+- Los votos repetidos usan el código existente `already_voted`; `already_answered` es para las respuestas.
+  Descartado: no contar la ronda saltada, que podía alargar la partida sin fin si nadie escribe.
+
 ## 2026-10-09 · 10.3 · Lo común de los juegos por rondas en SQL
 
 Lo compartido vive en `private`: `start_round_game` (validaciones y creación), `open_round` (incorporación y pregunta sin repetir), `next_round`, `all_responded`, `round_departure` (abandono y final anticipado con menos de 3) y `round_state` (parte común de la foto, con la clasificación al terminar; cada juego añade lo suyo y `with_my` mete sus campos en `my`). Lo que cambia de un juego a otro se reparte en tres funciones pequeñas que cada juego amplía con un `case`: `first_phase`, `has_responded` (qué cuenta como haber respondido en cada fase) y `close_if_done` (qué cierre toca cuando ya no falta nadie). `probable` pasa a usarlas y sus pruebas siguen pasando sin tocarlas; sus funciones sustituidas se borran.
