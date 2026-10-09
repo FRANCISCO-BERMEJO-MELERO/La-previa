@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 9 terminada, fase 10 pendiente · última actualización 2026-10-09
+Estado: fase 10 en curso · última actualización 2026-10-09
 
 ## Fase 0 · Preparación
 
@@ -121,7 +121,7 @@ Aceptación: las tres baterías pasan; en una sala se juega a El impostor, se ca
 
 ## Fase 10 · ¿Quién lo dijo? y extracción de lo común
 
-- [ ] 10.1 Migración: tabla `answers`; `rooms.game` y `games.phase` admiten `quien_lo_dijo`
+- [x] 10.1 Migración: tabla `answers`; `rooms.game` y `games.phase` admiten `quien_lo_dijo`
 - [ ] 10.2 Migración de datos con las preguntas de `quien_lo_dijo`; ampliar `docs/PREGUNTAS.md`
 - [ ] 10.3 Extraer lo común de `probable` a auxiliares en `private`; `probable` pasa a usarlas sin tocar sus pruebas
 - [ ] 10.4 `quien_lo_dijo_start`, `_answer`, `_close_writing`, `_vote`, `_close_voting`, `_next`
