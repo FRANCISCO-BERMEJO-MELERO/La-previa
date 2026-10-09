@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 10 en curso · última actualización 2026-10-09
+Estado: fase 10 terminada, fase 11 pendiente · última actualización 2026-10-09
 
 ## Fase 0 · Preparación
 
@@ -129,7 +129,7 @@ Aceptación: las tres baterías pasan; en una sala se juega a El impostor, se ca
 - [x] 10.6 Pruebas pgTAP de `quien_lo_dijo`
 - [x] 10.7 Componentes comunes de juegos por rondas en el cliente; `probable` pasa a usarlos
 - [x] 10.8 Pantallas de `quien_lo_dijo` y su `viewFor`, con tests unitarios
-- [ ] 10.9 Prueba e2e: 5 rondas con 4 jugadores, sin autor en la red antes de la revelación
+- [x] 10.9 Prueba e2e: 5 rondas con 4 jugadores, sin autor en la red antes de la revelación
 
 Aceptación: las tres baterías pasan; no queda lógica duplicada entre los dos juegos en las piezas de 10.3 y 10.7.
 
