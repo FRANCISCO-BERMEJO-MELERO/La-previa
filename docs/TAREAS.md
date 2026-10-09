@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan terminado · última actualización 2026-10-09
+Estado: fase 8 en curso · última actualización 2026-10-09
 
 ## Fase 0 · Preparación
 
@@ -93,6 +93,76 @@ Aceptación: `npm run test:e2e` pasa tres veces seguidas.
 - [x] 7.6 `docs/INFORME.md`
 
 Aceptación: `check`, `test:db` y `test:e2e` pasan; `npm run build` sin avisos; el informe existe.
+
+## Fase 8 · Preparación de la segunda tanda
+
+- [x] 8.1 Leer `docs/JUEGOS.md`, `docs/DECISIONES.md` e `docs/INFORME.md`; recorrer migraciones, funciones SQL, tipos de la foto, `viewFor` y pantallas de El impostor
+- [x] 8.2 Comprobar que las tres baterías pasan antes de tocar nada (340 unitarios, 291 pgTAP, 8 e2e)
+- [ ] 8.3 Anotar en `docs/DECISIONES.md` las diferencias entre `docs/JUEGOS.md` y el código, y cómo se resuelven
+- [x] 8.4 Añadir las fases 8–13 a `docs/TAREAS.md`
+- [ ] 8.5 El impostor en su propia carpeta de juego; la sala elige el juego por `game.type`, sin cambios de comportamiento
+- [ ] 8.6 `type` en la foto de El impostor y esquema de `game` como unión discriminada de una variante
+
+Aceptación: todas las pruebas existentes pasan sin cambiar ninguna aserción; la app se comporta igual.
+
+## Fase 9 · ¿Quién es más probable que…?
+
+- [ ] 9.1 Migración de esquema: `rooms.game` y `games.phase` admiten el juego, `games.total_rounds`, `game_players.score`, tablas `prompts` y `game_rounds`, con RLS y sin políticas
+- [ ] 9.2 Migración de datos con las preguntas de `probable` y primera versión de `docs/PREGUNTAS.md`
+- [ ] 9.3 `set_game` acepta `probable`; `probable_start`, `probable_vote`, `probable_close`, `probable_next`
+- [ ] 9.4 Reglas por rondas: avance automático, incorporación de tardíos al abrir ronda, abandono y expulsión, final anticipado con menos de 3 activos
+- [ ] 9.5 Variante `probable` en `get_room_state`
+- [ ] 9.6 Pruebas pgTAP de `probable`
+- [ ] 9.7 Sala de espera con selector de rondas; selector de juegos con `probable` elegible y su portada
+- [ ] 9.8 Pantallas de `probable` y su `viewFor`, con tests unitarios
+- [ ] 9.9 Prueba e2e: 5 rondas con 3 jugadores, con cambio desde El impostor en la misma sala
+
+Aceptación: las tres baterías pasan; en una sala se juega a El impostor, se cambia a `probable`, se juega y se vuelve.
+
+## Fase 10 · ¿Quién lo dijo? y extracción de lo común
+
+- [ ] 10.1 Migración: tabla `answers`; `rooms.game` y `games.phase` admiten `quien_lo_dijo`
+- [ ] 10.2 Migración de datos con las preguntas de `quien_lo_dijo`; ampliar `docs/PREGUNTAS.md`
+- [ ] 10.3 Extraer lo común de `probable` a auxiliares en `private`; `probable` pasa a usarlas sin tocar sus pruebas
+- [ ] 10.4 `quien_lo_dijo_start`, `_answer`, `_close_writing`, `_vote`, `_close_voting`, `_next`
+- [ ] 10.5 Variante `quien_lo_dijo` en `get_room_state`
+- [ ] 10.6 Pruebas pgTAP de `quien_lo_dijo`
+- [ ] 10.7 Componentes comunes de juegos por rondas en el cliente; `probable` pasa a usarlos
+- [ ] 10.8 Pantallas de `quien_lo_dijo` y su `viewFor`, con tests unitarios
+- [ ] 10.9 Prueba e2e: 5 rondas con 4 jugadores, sin autor en la red antes de la revelación
+
+Aceptación: las tres baterías pasan; no queda lógica duplicada entre los dos juegos en las piezas de 10.3 y 10.7.
+
+## Fase 11 · Una sola pista
+
+- [ ] 11.1 Migración: `rooms.game` y `games.phase` admiten `una_pista`; normalización de texto con sus pruebas
+- [ ] 11.2 `una_pista_start`, `_clue`, `_close_writing`, `_toggle_clue`, `_show_clues`, `_mark`, `_next`; adivino por turno y árbitro
+- [ ] 11.3 Variante `una_pista` en `get_room_state`
+- [ ] 11.4 Pruebas pgTAP de `una_pista`
+- [ ] 11.5 Pantallas de `una_pista` y su `viewFor`, con tests unitarios
+- [ ] 11.6 Prueba e2e: 5 rondas con 4 jugadores, pista duplicada y anulada a mano, sin palabra en la red del adivino
+
+Aceptación: las tres baterías pasan.
+
+## Fase 12 · Selector y repaso conjunto
+
+- [ ] 12.1 Selector de juegos definitivo: cuatro elegibles, dos "Próximamente", sin "La bomba"
+- [ ] 12.2 Botón de empezar desactivado, con explicación, si faltan jugadores
+- [ ] 12.3 Entrar tarde con el texto según el juego
+- [ ] 12.4 Repaso a 360, 390 y 430 px con nombres de 14, 16 jugadores, respuestas de 80 y pistas de 20
+- [ ] 12.5 Repaso de accesibilidad de las pantallas nuevas
+- [ ] 12.6 Prueba e2e de sesión larga: los cuatro juegos seguidos con una recarga a mitad de cada uno
+
+Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitentes.
+
+## Fase 13 · Cierre de la segunda tanda
+
+- [ ] 13.1 `README.md` con los cuatro juegos y la estructura por carpetas
+- [ ] 13.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
+- [ ] 13.3 Revisión final contra `docs/JUEGOS.md` y "Fuera de alcance"
+- [ ] 13.4 Ampliar `docs/INFORME.md` con esta tanda
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
 ## Bloqueos
 
