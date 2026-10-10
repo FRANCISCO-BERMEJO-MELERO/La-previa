@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: fase 12 en curso · última actualización 2026-10-10
+Estado: fase 12 terminada, fase 13 pendiente · última actualización 2026-10-10
 
 ## Fase 0 · Preparación
 
@@ -151,7 +151,7 @@ Aceptación: las tres baterías pasan.
 - [x] 12.3 Entrar tarde con el texto según el juego
 - [x] 12.4 Repaso a 360, 390 y 430 px con nombres de 14, 16 jugadores, respuestas de 80 y pistas de 20
 - [x] 12.5 Repaso de accesibilidad de las pantallas nuevas
-- [ ] 12.6 Prueba e2e de sesión larga: los cuatro juegos seguidos con una recarga a mitad de cada uno
+- [x] 12.6 Prueba e2e de sesión larga: los cuatro juegos seguidos con una recarga a mitad de cada uno
 
 Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitentes.
 

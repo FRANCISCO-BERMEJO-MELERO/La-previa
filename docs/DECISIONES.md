@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-10 · 12.6 · Sesión larga
+
+`long-session.spec.ts` juega en una sola sala de 4 jugadores una partida de El impostor y otra de cada juego por rondas (5 rondas), cambiando de juego desde el resultado. En cada una alguien recarga a mitad y se comprueba que vuelve a la misma pantalla con lo suyo: el papel en El impostor, su voto en ¿Quién es más probable que…?, su respuesta en ¿Quién lo dijo? y, en Una sola pista, el adivino sigue sin ver la palabra durante la revisión. La prueba tiene un límite de 6 minutos porque son 16 rondas seguidas. Al escribirla se vio que, como en El impostor, el anfitrión o el árbitro solo pueden cerrar una fase después de hacer su parte (votar, dar pista); es el diseño de la 09 y se mantiene.
+
 ## 2026-10-10 · 12.5 · Repaso de accesibilidad de los juegos nuevos
 
 Una e2e (`accessibility-games.spec.ts`) recorre una ronda de cada juego nuevo con 3 jugadores y comprueba en cada pantalla visitada que todo lo pulsable mide 44 px o más y que hay un solo `h1`; además, que el selector de rondas, el campo de respuesta, el de pista y las pistas de la revisión se usan con Tab y Enter, y que el foco se ve. Los campos ya llevaban `label` y los botones sin texto propio, `aria-label`. Faltaba encabezado en tres pantallas: la votación de ¿Quién lo dijo? (la respuesta elegida pasa a ser el `h1`), la pista y la espera de Una sola pista (la palabra) y la pantalla del adivino ("Tus pistas").
