@@ -700,4 +700,49 @@ describe('Room', () => {
       expect(mocks.unaPistaStart).toHaveBeenCalledWith(ids.room, 10);
     });
   });
+
+  describe('entrar tarde según el juego', () => {
+    const marta = { me: { user_id: ids.marta, name: 'Marta', is_host: false } };
+
+    it('en El impostor se juega en la siguiente partida', () => {
+      ready(
+        inGame(
+          { my: { is_participant: false, alive: false, role: null, word: null, voted_for: null } },
+          marta,
+        ),
+      );
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('heading', { name: 'Llegas tarde, Marta' })).toBeInTheDocument();
+      expect(screen.getByText(/Juegas en la siguiente partida/)).toBeInTheDocument();
+    });
+
+    it.each([
+      [
+        'probable',
+        inProbable({ my: { is_participant: false, alive: false, voted_for: null } }, marta),
+      ],
+      [
+        'quien_lo_dijo',
+        inQuien(
+          {
+            my: {
+              is_participant: false,
+              alive: false,
+              answer: null,
+              is_author: false,
+              voted_for: null,
+            },
+          },
+          marta,
+        ),
+      ],
+      ['una_pista', inPista({ my: { is_participant: false, alive: false, clue: null } }, marta)],
+    ])('en %s se juega desde la siguiente ronda', (_game, snapshot) => {
+      ready(snapshot);
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('heading', { name: 'Llegas tarde, Marta' })).toBeInTheDocument();
+      expect(screen.getByText(/Juegas desde la siguiente ronda/)).toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent('Esperando a la siguiente ronda');
+    });
+  });
 });

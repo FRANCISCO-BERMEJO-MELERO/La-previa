@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-10 · 12.3 · El texto de entrar tarde ya venía de la 9.8
+
+La pantalla de entrar tarde pasó a `src/screens` con el texto por prop en la 9.8, cuando la usó el segundo juego: El impostor dice "Juegas en la siguiente partida" y los juegos por rondas, "Juegas desde la siguiente ronda" con la espera "Esperando a la siguiente ronda". La 12.3 se cierra añadiendo las pruebas de los cuatro juegos en `Room`.
+
 ## 2026-10-10 · 12.2 · Empezar sin gente suficiente
 
 Los cuatro juegos piden de 3 a 16 jugadores, así que el mínimo es una constante de la sala de espera (`MIN_PLAYERS = 3`) y no algo de cada juego. Con menos, el botón "Empezar partida" se desactiva y encima aparece "Hacen falta al menos 3 jugadores: falta 1. Comparte el código…", enlazado al botón con `aria-describedby`. El servidor sigue rechazando con `not_enough_players` por si la sala cambia entre la foto y la acción.
