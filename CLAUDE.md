@@ -5,12 +5,13 @@ Web de juegos de fiesta para móvil. Next.js + Supabase + Vercel.
 - **Qué se construye y por qué:** `docs/CONTEXTO.md` (plataforma y El impostor) y `docs/JUEGOS.md` (los otros tres juegos). Son la fuente de verdad; si se contradicen, manda `docs/JUEGOS.md`.
 - **En qué orden:** `docs/PLAN.md` (fases 0–7, terminadas) y `docs/PLAN-2.md` (fases 8–13). Estado en `docs/TAREAS.md`.
 - **Referencia visual:** `docs/referencia-pantallas.html`.
+- **Harness:** rsc (`.rsc.json`). Skills en `.claude/skills/`, agentes en `.claude/agents/`, conocimiento en `02-DOCS/wiki/`. El agente elige el método (Fast-Track para cambios simples, cadena spec-driven para lo grande) y dice por qué. Se refresca con `npx @ericrisco/rsc sync` y se revisa con `npx @ericrisco/rsc doctor`.
 
 Lee `docs/CONTEXTO.md`, `docs/JUEGOS.md` y `docs/TAREAS.md` al empezar cada sesión. Estas reglas son obligatorias; no hay excepciones "por esta vez".
 
 ## Autonomía
 
-- Trabajas sin supervisión. **No hagas preguntas ni esperes confirmación.**
+- Trabajas sin supervisión. **No hagas preguntas ni esperes confirmación**, salvo las que exige el harness: en qué rama trabajar antes de un cambio de código y la aprobación de la especificación en la cadena spec-driven.
 - Ante una duda, elige la opción más simple coherente con `docs/CONTEXTO.md`, anótala en `docs/DECISIONES.md` y sigue.
 - Ante un bloqueo real, sigue el procedimiento de `docs/PLAN.md`. Nunca simules que algo funciona.
 - No modifiques `CLAUDE.md`, `docs/CONTEXTO.md`, `docs/JUEGOS.md`, `docs/PLAN.md` ni `docs/PLAN-2.md`. Si crees que están mal, anótalo en `docs/DECISIONES.md`.
@@ -29,10 +30,11 @@ Dependencias permitidas: `next`, `react`, `react-dom`, `@supabase/supabase-js`, 
 - **Los commits los firma solo el autor configurado en git. Prohibido añadir `Co-Authored-By`, "Generated with…" o cualquier mención a Claude, Anthropic o a una IA en mensajes de commit, descripciones, comentarios de código o documentación.** Tampoco como autor ni como committer.
 - No cambies `user.name` ni `user.email` de git.
 - Un commit por tarea terminada, con la tarea marcada en `docs/TAREAS.md` dentro del mismo commit.
-- Mensajes en español, formato Conventional Commits: `feat(sala): unirse con código`. Tipos: `feat`, `fix`, `test`, `refactor`, `docs`, `chore`. Asunto en minúscula, imperativo, sin punto final, máximo 72 caracteres.
+- Mensajes en español, gitmoji seguido de Conventional Commits: `✨ feat(sala): unirse con código`. Tipos: `feat`, `fix`, `test`, `refactor`, `docs`, `chore`. Asunto en minúscula, imperativo, sin punto final, máximo 72 caracteres. El gancho `gitmoji-guard` de rsc rechaza el commit sin gitmoji.
 - Solo se hace commit si la definición de hecho se cumple. Nunca `--no-verify`.
-- Trabaja en `main`. Prohibido `push --force`, `reset --hard` sobre commits ya hechos, `rebase` y reescribir historia.
-- No hagas `push` salvo que exista un remoto `origin`; en ese caso, al terminar cada fase.
+- Flujo con ramas y pull requests. `main` es producción y está cerrada para el agente (`branch-guard` rechaza commits en ella). `develop` es la rama de integración. El trabajo va en ramas que salen de `develop` (`feat/…`, `fix/…`, `docs/…`) y vuelven a ella por pull request; `develop` pasa a `main` por pull request al publicar.
+- Prohibido `push --force`, `reset --hard` sobre commits ya hechos, `rebase` y reescribir historia.
+- No hagas `push` ni abras pull requests salvo que el usuario lo pida. La sincronización automática de conocimiento (`knowledge-sync`) y los permisos de git sin confirmación (`git-permissions`) de rsc están desactivados a propósito.
 - Nunca subas `.env*` (salvo `.env.example`), claves ni volcados de datos.
 
 ## Definición de hecho

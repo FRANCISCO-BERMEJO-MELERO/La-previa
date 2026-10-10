@@ -30,6 +30,7 @@ Requisitos: Node 20.9 o posterior (LTS), npm y Docker Desktop en marcha.
 ```bash
 npm install
 git config core.hooksPath .githooks   # una vez por clon: activa el gancho de commits
+npx @ericrisco/rsc sync               # una vez por clon: instala las skills y ganchos del harness
 npx supabase start                    # base de datos local en Docker
 npx supabase status -o env            # muestra API_URL y ANON_KEY
 ```

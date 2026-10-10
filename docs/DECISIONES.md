@@ -1,5 +1,17 @@
 # Decisiones
 
+## 2026-10-10 · Harness · Se adopta rsc y el flujo con ramas
+
+Fran pide instalar rsc-harness (`npx @ericrisco/rsc@3.0.13 onboard`, perfil técnico, software en crecimiento, solo Claude Code) y tomar sus reglas. Por eso, y solo con su autorización expresa, cambia `CLAUDE.md`:
+
+- Se trabaja con ramas y pull requests. `main` es producción y queda cerrada para el agente; `develop` es la rama de integración y de ella salen las ramas de trabajo.
+- Los mensajes de commit llevan gitmoji delante del formato Conventional Commits, porque el gancho `gitmoji-guard` lo exige.
+- El agente pregunta en qué rama trabajar y pide aprobar la especificación en la cadena spec-driven, aunque la regla general sigue siendo no preguntar.
+
+Se mantienen la prohibición de mencionar a una IA en los commits (`.githooks/commit-msg`), un commit por tarea y no hacer push sin que Fran lo pida. Por esto último quedan desactivados `knowledge-sync`, que subía `01-TOOLS/` y `02-DOCS/` a la rama `rsc/knowledge` al final de cada turno, y `git-permissions`, que dejaba hacer commit, push y pull requests sin confirmar.
+Pendiente: la constitución de `02-DOCS/wiki/sdd/constitution.md` es un borrador; se completa con la fase `constitution` antes de la primera funcionalidad por la cadena spec-driven.
+Descartado: trabajar directamente en `main`, que era la regla anterior.
+
 ## 2026-10-10 · 13.3 · Revisión final contra JUEGOS
 
 Repasadas las secciones 1 a 11 de `docs/JUEGOS.md`. Se cumple lo que piden, con estas diferencias ya anotadas en su tarea:

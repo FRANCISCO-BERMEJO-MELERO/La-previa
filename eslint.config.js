@@ -5,7 +5,15 @@ import prettier from 'eslint-config-prettier/flat';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
-  globalIgnores(['.next/**', 'out/**', 'coverage/**', 'next-env.d.ts']),
+  globalIgnores([
+    '.next/**',
+    'out/**',
+    'coverage/**',
+    'next-env.d.ts',
+    '.rsc/**',
+    '.claude/**',
+    '.worktrees/**',
+  ]),
   ...nextVitals,
   ...nextTypescript,
   ...tseslint.configs.strictTypeChecked,
