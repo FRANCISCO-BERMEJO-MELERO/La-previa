@@ -158,7 +158,7 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 ## Fase 13 · Cierre de la segunda tanda
 
 - [x] 13.1 `README.md` con los cuatro juegos y la estructura por carpetas
-- [ ] 13.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
+- [x] 13.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
 - [ ] 13.3 Revisión final contra `docs/JUEGOS.md` y "Fuera de alcance"
 - [ ] 13.4 Ampliar `docs/INFORME.md` con esta tanda
 
