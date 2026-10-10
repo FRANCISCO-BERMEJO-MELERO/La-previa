@@ -1,0 +1,136 @@
+# Dependencias
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Build
+build/
+dist/
+*.tsbuildinfo
+
+# Variables de entorno (solo se versiona el ejemplo)
+.env
+.env*
+!.env.example
+
+# Vercel
+.vercel/
+
+# Supabase CLI
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+supabase/seed-dump*.sql
+*.dump
+*.backup
+
+# Tests
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Cachés de herramientas
+.eslintcache
+.prettiercache
+.cache/
+.turbo/
+
+# Certificados y claves
+*.pem
+*.key
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Configuración local de Claude Code
+.claude/settings.local.json
+
+# Notas y listas personales (no se versionan)
+*.local.md
+
+# Generado por next dev
+AGENTS.md
+
+# rsc local state (hooks, seals, logs) and managed skill links — machine-local
+.rsc/
+.worktrees/
+.claude/skills/analyze
+.claude/skills/automation-strategy
+.claude/skills/clarify
+.claude/skills/connect-tool
+.claude/skills/constitution
+.claude/skills/debug
+.claude/skills/decision-challenge
+.claude/skills/deprecation
+.claude/skills/fable-operator
+.claude/skills/ftd
+.claude/skills/harness
+.claude/skills/idea-refinement
+.claude/skills/implement
+.claude/skills/init
+.claude/skills/nextjs
+.claude/skills/orient
+.claude/skills/parallel
+.claude/skills/plan
+.claude/skills/react
+.claude/skills/review
+.claude/skills/sdd
+.claude/skills/sdd-init
+.claude/skills/ship
+.claude/skills/simplify-code
+.claude/skills/source-grounded-development
+.claude/skills/specify
+.claude/skills/suggest
+.claude/skills/tasks
+.claude/skills/ui-engineering
+.claude/skills/unslop
+.claude/skills/verify
+.claude/skills/worktrees
+.claude/skills/.rsc-state.json
+.claude/agents/developer.md
+.claude/agents/finding-verifier.md
+.claude/agents/react-build-resolver.md
+.claude/agents/react-reviewer.md
+.claude/agents/refuter-correctness.md
+.claude/agents/refuter-security.md
+.claude/agents/refuter-tests.md
+.claude/commands/build-fix.md
+.claude/commands/checkpoint.md
+.claude/commands/learn.md
+.claude/commands/nextjs-build.md
+.claude/commands/nextjs-review.md
+.claude/commands/react-build.md
+.claude/commands/react-review.md
+.claude/commands/resume-session.md
+.claude/commands/save-session.md

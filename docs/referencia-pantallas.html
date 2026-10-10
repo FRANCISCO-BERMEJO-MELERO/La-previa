@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Previa: referencia de pantallas (Verbena)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=Archivo+Black&display=swap">
+<style>
+body{margin:0;padding:32px;background:#2B2B2B;font-family:Archivo,sans-serif}
+h1{color:#fff;font-size:20px;margin:0 0 8px}
+p.nota{color:#ddd;font-size:14px;max-width:720px;margin:0 0 32px;line-height:1.4}
+main{display:flex;flex-wrap:wrap;gap:48px 40px}
+section h2{color:#fff;font-size:14px;font-weight:700;margin:0 0 12px;max-width:390px}
+</style>
+</head>
+<body>
+<h1>La Previa: referencia de pantallas (Verbena)</h1>
+<p class="nota">Maquetas estáticas de las 14 pantallas a 390×844. Son la referencia visual: colores, tipografía, bordes, sombras, textos y jerarquía. Los estilos van en línea para poder copiarlos con exactitud; el código real debe usar los tokens definidos en CONTEXTO.md, no estilos en línea.</p>
+<main>
+<section><h2>01 · Inicio</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px">
+<div style="align-self: flex-start; font-size: 13px; font-weight: 700; background: #FF6B5E; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px; transform: rotate(-3deg)">Juegos de fiesta</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 84px; line-height: 0.88; text-transform: uppercase">La<br>Previa</div>
+<div style="font-size: 18px; font-weight: 500; line-height: 1.35">Para jugar en persona, cada uno con su móvil. Sin registro.</div>
+</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<label for="codigo" style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase">Código de la sala</label>
+<input id="codigo" type="text" maxlength="4" value="KTRM" autocomplete="off" style="height: 72px; box-sizing: border-box; width: 100%; border: 3px solid #111111; border-radius: 12px; background: #FFF6D6; color: #111111; text-align: center; letter-spacing: 0.3em; text-transform: uppercase; font: 400 40px 'Archivo Black', sans-serif">
+<button style="height: 56px; border-radius: 12px; border: 3px solid #111111; background: #7FD8FF; color: #111111; font: 400 18px 'Archivo Black', sans-serif; text-transform: uppercase">Unirse</button>
+</div>
+<div style="text-align: center; font-size: 14px; font-weight: 700">o empieza tú</div>
+<button style="height: 64px; border-radius: 16px; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; background: #FF6B5E; color: #111111; font: 400 20px 'Archivo Black', sans-serif; text-transform: uppercase">Crear sala</button>
+</div>
+</section>
+<section><h2>02 · Tu nombre (con error de nombre repetido)</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #FFFFFF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Sala KTRM</div>
+</div>
+<div style="margin-top: 48px; font-family: 'Archivo Black', sans-serif; font-size: 48px; line-height: 0.95; text-transform: uppercase">¿Cómo te llamas?</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<label for="nombre" style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase">Tu nombre</label>
+<input id="nombre" type="text" maxlength="14" value="Álvaro" autocomplete="off" style="height: 64px; box-sizing: border-box; width: 100%; border: 3px solid #111111; border-radius: 12px; background: #FFE1DE; color: #111111; padding: 0 16px; font: 700 24px 'Archivo', sans-serif">
+<div style="font-size: 15px; font-weight: 700; line-height: 1.35">Ya hay un Álvaro en esta sala. Prueba con otro nombre.</div>
+</div>
+<div style="font-size: 16px; font-weight: 500; line-height: 1.4">Así te verán los demás. El nombre no puede repetirse dentro de la sala.</div>
+<button style="margin-top: auto; height: 64px; border-radius: 16px; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; background: #FF6B5E; color: #111111; font: 400 20px 'Archivo Black', sans-serif; text-transform: uppercase">Entrar</button>
+</div>
+</section>
+<section><h2>03 · Elegir juego (anfitrión)</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 16px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #FFFFFF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Sala KTRM</div>
+</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 34px; line-height: 1; text-transform: uppercase">¿A qué jugamos?</div>
+<button aria-pressed="true" style="padding: 0; text-align: left; background: #FFFFFF; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="height: 150px; align-self: stretch; background: #FF6B5E; border-bottom: 3px solid #111111; display: flex; align-items: center; justify-content: center; gap: 12px; position: relative">
+<div style="width: 60px; height: 60px; border-radius: 50%; border: 3px solid #111111; background: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 10px"><div style="width: 8px; height: 8px; border-radius: 50%; background: #111111"></div><div style="width: 8px; height: 8px; border-radius: 50%; background: #111111"></div></div>
+<div style="width: 76px; height: 76px; border-radius: 50%; border: 3px solid #111111; background: #111111; display: flex; align-items: center; justify-content: center; gap: 12px; transform: rotate(-6deg)"><div style="width: 16px; height: 8px; border-radius: 8px; background: #FFD23F"></div><div style="width: 16px; height: 8px; border-radius: 8px; background: #FFD23F"></div></div>
+<div style="width: 60px; height: 60px; border-radius: 50%; border: 3px solid #111111; background: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 10px"><div style="width: 8px; height: 8px; border-radius: 50%; background: #111111"></div><div style="width: 8px; height: 8px; border-radius: 50%; background: #111111"></div></div>
+<div style="position: absolute; top: 10px; right: 10px; font-size: 12px; font-weight: 700; background: #B8F28A; border: 3px solid #111111; padding: 2px 10px; border-radius: 999px; transform: rotate(4deg)">Elegido</div>
+</div>
+<div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">El impostor</div>
+<div style="font-size: 14px; font-weight: 500; line-height: 1.35">Todos conocen la palabra menos uno. Descubrid quién disimula.</div>
+<div style="font-size: 13px; font-weight: 700">De 3 a 16 jugadores</div>
+</div>
+</button>
+<div style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase">Próximamente</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; overflow: hidden">
+<div style="height: 68px; background: #7FD8FF; border-bottom: 3px solid #111111; display: flex; align-items: center; justify-content: center"><div style="font-family: 'Archivo Black', sans-serif; font-size: 26px; background: #FFFFFF; border: 3px solid #111111; border-radius: 14px 14px 14px 2px; padding: 0 14px; transform: rotate(-4deg)">¿?</div></div>
+<div style="padding: 8px 10px; font-size: 14px; font-weight: 700">¿Quién lo dijo?</div>
+</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; overflow: hidden">
+<div style="height: 68px; background: #D9B8FF; border-bottom: 3px solid #111111; display: flex; align-items: center; justify-content: center"><div style="font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase; text-decoration: line-through; text-decoration-thickness: 4px; background: #FFFFFF; border: 3px solid #111111; border-radius: 8px; padding: 2px 10px; transform: rotate(3deg)">Palabra</div></div>
+<div style="padding: 8px 10px; font-size: 14px; font-weight: 700">Palabras prohibidas</div>
+</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; overflow: hidden">
+<div style="height: 68px; background: #FFB36B; border-bottom: 3px solid #111111; display: flex; align-items: center; justify-content: center"><div style="position: relative; width: 40px; height: 40px; border-radius: 50%; background: #111111"><div style="position: absolute; top: -10px; right: 2px; width: 6px; height: 16px; background: #111111; transform: rotate(35deg)"></div><div style="position: absolute; top: -16px; right: -10px; width: 12px; height: 12px; border-radius: 50%; background: #FF6B5E; border: 3px solid #111111"></div></div></div>
+<div style="padding: 8px 10px; font-size: 14px; font-weight: 700">La bomba</div>
+</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; overflow: hidden">
+<div style="height: 68px; background: #B8F28A; border-bottom: 3px solid #111111; display: flex; align-items: center; justify-content: center; gap: 8px"><div style="font-family: 'Archivo Black', sans-serif; font-size: 20px; width: 40px; height: 40px; background: #FFFFFF; border: 3px solid #111111; border-radius: 8px; display: flex; align-items: center; justify-content: center; transform: rotate(-5deg)">A</div><div style="font-family: 'Archivo Black', sans-serif; font-size: 20px; width: 40px; height: 40px; background: #111111; color: #FFFFFF; border: 3px solid #111111; border-radius: 8px; display: flex; align-items: center; justify-content: center; transform: rotate(5deg)">B</div></div>
+<div style="padding: 8px 10px; font-size: 14px; font-weight: 700">¿Qué prefieres?</div>
+</div>
+</div>
+<button style="margin-top: auto; height: 64px; border-radius: 16px; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; background: #FF6B5E; color: #111111; font: 400 20px 'Archivo Black', sans-serif; text-transform: uppercase">Abrir la sala</button>
+</div>
+</section>
+<section><h2>04 · Sala de espera (anfitrión)</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #FF6B5E; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px; transform: rotate(-3deg)">El impostor</div>
+</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase">Código de la sala</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 72px; line-height: 1; letter-spacing: 0.04em">KTRM</div>
+<div style="display: flex; gap: 12px">
+<button style="flex: 1; height: 48px; border-radius: 12px; border: 3px solid #111111; background: #FFFFFF; color: #111111; font: 700 15px 'Archivo', sans-serif">Copiar enlace</button>
+<button style="flex: 1; height: 48px; border-radius: 12px; border: 3px solid #111111; background: #FFFFFF; color: #111111; font: 700 15px 'Archivo', sans-serif">Mostrar QR</button>
+</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase">Jugadores</div>
+<div style="font-size: 14px; font-weight: 700">6 de 16</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px">
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FF6B5E; font-weight: 700; display: flex; align-items: center; justify-content: center">F</div>
+<div style="display: flex; flex-direction: column"><div style="font-size: 16px; font-weight: 700">Fran</div><div style="font-size: 12px; font-weight: 500">Anfitrión</div></div>
+</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px">
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #7FD8FF; font-weight: 700; display: flex; align-items: center; justify-content: center">L</div>
+<div style="font-size: 16px; font-weight: 700">Lucía</div>
+</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px">
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #B8F28A; font-weight: 700; display: flex; align-items: center; justify-content: center">Á</div>
+<div style="font-size: 16px; font-weight: 700">Álvaro</div>
+</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px">
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #D9B8FF; font-weight: 700; display: flex; align-items: center; justify-content: center">M</div>
+<div style="font-size: 16px; font-weight: 700">Marta</div>
+</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px">
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FFB36B; font-weight: 700; display: flex; align-items: center; justify-content: center">D</div>
+<div style="font-size: 16px; font-weight: 700">Dani</div>
+</div>
+<div style="background: #FFE98F; border: 3px dashed #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px">
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FFFFFF; font-weight: 700; display: flex; align-items: center; justify-content: center">P</div>
+<div style="display: flex; flex-direction: column"><div style="font-size: 16px; font-weight: 700">Paula</div><div style="font-size: 12px; font-weight: 500">Desconectada</div></div>
+</div>
+</div>
+<div style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 8px 14px">
+<div style="font-size: 16px; font-weight: 700">Impostores</div>
+<div style="display: flex; align-items: center; gap: 14px">
+<button aria-label="Menos impostores" style="width: 44px; height: 44px; border-radius: 10px; border: 3px solid #111111; background: #FFFFFF; color: #111111; font: 700 22px 'Archivo', sans-serif">−</button>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px">1</div>
+<button aria-label="Más impostores" style="width: 44px; height: 44px; border-radius: 10px; border: 3px solid #111111; background: #FFFFFF; color: #111111; font: 700 22px 'Archivo', sans-serif">+</button>
+</div>
+</div>
+<button style="height: 64px; border-radius: 16px; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; background: #FF6B5E; color: #111111; font: 400 20px 'Archivo Black', sans-serif; text-transform: uppercase">Empezar partida</button>
+</div>
+</section>
+<section><h2>05 · Entrar tarde</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #FFFFFF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Sala KTRM</div>
+</div>
+<div style="flex: 1; background: #FFFFFF; border: 3px solid #111111; box-shadow: 8px 8px 0 #111111; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; justify-content: center; gap: 16px; transform: rotate(1.5deg); margin: 8px 4px">
+<div style="align-self: flex-start; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: #FFB36B; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Partida en curso</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 44px; line-height: 0.95; text-transform: uppercase">Llegas tarde, Sergio</div>
+<div style="font-size: 17px; font-weight: 500; line-height: 1.4">Ya estás en la sala. Juegas en la siguiente partida, en cuanto termine esta.</div>
+</div>
+<div style="display: flex; gap: 8px; align-items: center">
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FF6B5E; font-weight: 700; display: flex; align-items: center; justify-content: center">F</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #7FD8FF; font-weight: 700; display: flex; align-items: center; justify-content: center">L</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #B8F28A; font-weight: 700; display: flex; align-items: center; justify-content: center">Á</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #D9B8FF; font-weight: 700; display: flex; align-items: center; justify-content: center">M</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FFB36B; font-weight: 700; display: flex; align-items: center; justify-content: center">D</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FFFFFF; font-weight: 700; display: flex; align-items: center; justify-content: center">P</div>
+<div style="margin-left: auto; font-size: 14px; font-weight: 700">6 jugando</div>
+</div>
+<div style="height: 64px; box-sizing: border-box; border-radius: 16px; border: 3px dashed #111111; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">Esperando a que termine la partida</div>
+</div>
+</section>
+<section><h2>06 · Reparto: jugador normal (vista del anfitrión)</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #FFFFFF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Sala KTRM</div>
+</div>
+<div style="flex: 1; background: #FFFFFF; border: 3px solid #111111; box-shadow: 8px 8px 0 #111111; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transform: rotate(-1.5deg); margin: 8px 4px">
+<div style="align-self: flex-start; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: #7FD8FF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Tu palabra</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 68px; line-height: 0.95; text-transform: uppercase">Paella</div>
+<div style="display: flex; justify-content: space-between; align-items: center; border-top: 3px solid #111111; padding-top: 14px">
+<div style="font-size: 14px; font-weight: 700">Categoría</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase">Comida</div>
+</div>
+</div>
+<div style="font-size: 16px; font-weight: 500; line-height: 1.4">Hablad las rondas que queráis. Cuando el grupo lo decida, pasa a la votación.</div>
+<div style="display: flex; gap: 8px; align-items: center">
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FF6B5E; font-weight: 700; display: flex; align-items: center; justify-content: center">F</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #7FD8FF; font-weight: 700; display: flex; align-items: center; justify-content: center">L</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #B8F28A; font-weight: 700; display: flex; align-items: center; justify-content: center">Á</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #D9B8FF; font-weight: 700; display: flex; align-items: center; justify-content: center">M</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FFB36B; font-weight: 700; display: flex; align-items: center; justify-content: center">D</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px dashed #111111; box-sizing: border-box; background: #FFE98F; font-weight: 700; display: flex; align-items: center; justify-content: center">P</div>
+<div style="margin-left: auto; font-size: 14px; font-weight: 700">5 conectados</div>
+</div>
+<button style="height: 64px; border-radius: 16px; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; background: #FF6B5E; color: #111111; font: 400 20px 'Archivo Black', sans-serif; text-transform: uppercase">Pasar a votación</button>
+</div>
+</section>
+<section><h2>07 · Reparto: impostor (vista de jugador)</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #FFFFFF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Sala KTRM</div>
+</div>
+<div style="flex: 1; background: #111111; color: #FFFFFF; border: 3px solid #111111; box-shadow: 8px 8px 0 #FF6B5E; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transform: rotate(1.5deg); margin: 8px 4px">
+<div style="align-self: flex-start; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #111111; background: #FF6B5E; border: 3px solid #FFFFFF; padding: 4px 12px; border-radius: 999px">Eres el</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 58px; line-height: 0.95; text-transform: uppercase; color: #FFD23F">Impos&shy;tor</div>
+<div style="display: flex; justify-content: space-between; align-items: center; border-top: 3px solid #FFFFFF; padding-top: 14px">
+<div style="font-size: 14px; font-weight: 700">Tu pista: la categoría</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase">Comida</div>
+</div>
+</div>
+<div style="font-size: 16px; font-weight: 500; line-height: 1.4">No conoces la palabra. Escucha, disimula y que no te pillen.</div>
+<div style="display: flex; gap: 8px; align-items: center">
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FF6B5E; font-weight: 700; display: flex; align-items: center; justify-content: center">F</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #7FD8FF; font-weight: 700; display: flex; align-items: center; justify-content: center">L</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #B8F28A; font-weight: 700; display: flex; align-items: center; justify-content: center">Á</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #D9B8FF; font-weight: 700; display: flex; align-items: center; justify-content: center">M</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FFB36B; font-weight: 700; display: flex; align-items: center; justify-content: center">D</div>
+<div style="width: 36px; height: 36px; border-radius: 50%; border: 3px dashed #111111; box-sizing: border-box; background: #FFE98F; font-weight: 700; display: flex; align-items: center; justify-content: center">P</div>
+<div style="margin-left: auto; font-size: 14px; font-weight: 700">5 conectados</div>
+</div>
+<div style="height: 64px; box-sizing: border-box; border-radius: 16px; border: 3px dashed #111111; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">Fran decide cuándo se vota</div>
+</div>
+</section>
+<section><h2>08 · Votación</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 16px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #7FD8FF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px; transform: rotate(-3deg)">Votación</div>
+</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 38px; line-height: 0.95; text-transform: uppercase">¿Quién es el impostor?</div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<button aria-pressed="false" style="height: 60px; padding: 0 12px; display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; color: #111111; font: 700 18px 'Archivo', sans-serif">
+<span style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FF6B5E; font-size: 16px; display: flex; align-items: center; justify-content: center">F</span>Fran</button>
+<button aria-pressed="true" style="height: 60px; padding: 0 12px; display: flex; align-items: center; gap: 12px; background: #111111; border: 3px solid #111111; box-shadow: 6px 6px 0 #FF6B5E; border-radius: 14px; color: #FFFFFF; font: 700 18px 'Archivo', sans-serif">
+<span style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #FFFFFF; box-sizing: border-box; background: #B8F28A; color: #111111; font-size: 16px; display: flex; align-items: center; justify-content: center">Á</span>Álvaro<span style="margin-left: auto; font-size: 13px; color: #111111; background: #FFD23F; padding: 4px 10px; border-radius: 999px">Tu voto</span></button>
+<button aria-pressed="false" style="height: 60px; padding: 0 12px; display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; color: #111111; font: 700 18px 'Archivo', sans-serif">
+<span style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #D9B8FF; font-size: 16px; display: flex; align-items: center; justify-content: center">M</span>Marta</button>
+<button aria-pressed="false" style="height: 60px; padding: 0 12px; display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; color: #111111; font: 700 18px 'Archivo', sans-serif">
+<span style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FFB36B; font-size: 16px; display: flex; align-items: center; justify-content: center">D</span>Dani</button>
+<button aria-pressed="false" style="height: 60px; padding: 0 12px; display: flex; align-items: center; gap: 12px; background: #FFE98F; border: 3px dashed #111111; border-radius: 14px; color: #111111; font: 700 18px 'Archivo', sans-serif">
+<span style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FFFFFF; font-size: 16px; display: flex; align-items: center; justify-content: center">P</span>Paula<span style="margin-left: auto; font-size: 13px; font-weight: 500">Desconectada</span></button>
+</div>
+<div style="font-size: 15px; font-weight: 500; line-height: 1.4">Lucía, no puedes votarte a ti misma. El voto es secreto hasta que se cierre la votación.</div>
+<button style="margin-top: auto; height: 64px; border-radius: 16px; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; background: #FF6B5E; color: #111111; font: 400 20px 'Archivo Black', sans-serif; text-transform: uppercase">Votar a Álvaro</button>
+</div>
+</section>
+<section><h2>09 · Esperando votos (anfitrión)</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #7FD8FF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px; transform: rotate(-3deg)">Votación</div>
+</div>
+<div style="background: #FFFFFF; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase">Votos recibidos</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 72px; line-height: 1">4 de 6</div>
+<div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px">
+<div style="height: 16px; border: 3px solid #111111; border-radius: 999px; background: #B8F28A"></div>
+<div style="height: 16px; border: 3px solid #111111; border-radius: 999px; background: #B8F28A"></div>
+<div style="height: 16px; border: 3px solid #111111; border-radius: 999px; background: #B8F28A"></div>
+<div style="height: 16px; border: 3px solid #111111; border-radius: 999px; background: #B8F28A"></div>
+<div style="height: 16px; border: 3px solid #111111; border-radius: 999px; background: #FFFFFF"></div>
+<div style="height: 16px; border: 3px solid #111111; border-radius: 999px; background: #FFFFFF"></div>
+</div>
+</div>
+<div style="font-size: 16px; font-weight: 700">Tu voto: Marta</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column"><div style="font-size: 16px; font-weight: 700">Fran</div><div style="font-size: 12px; font-weight: 500">Ha votado</div></div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column"><div style="font-size: 16px; font-weight: 700">Lucía</div><div style="font-size: 12px; font-weight: 500">Ha votado</div></div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column"><div style="font-size: 16px; font-weight: 700">Álvaro</div><div style="font-size: 12px; font-weight: 500">Ha votado</div></div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column"><div style="font-size: 16px; font-weight: 700">Marta</div><div style="font-size: 12px; font-weight: 500">Ha votado</div></div>
+<div style="background: #FFE98F; border: 3px dashed #111111; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column"><div style="font-size: 16px; font-weight: 700">Dani</div><div style="font-size: 12px; font-weight: 500">Pensando</div></div>
+<div style="background: #FFE98F; border: 3px dashed #111111; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column"><div style="font-size: 16px; font-weight: 700">Paula</div><div style="font-size: 12px; font-weight: 500">Desconectada</div></div>
+</div>
+<div style="margin-top: auto; font-size: 15px; font-weight: 500; line-height: 1.4">Puedes cerrar la votación con los votos que haya.</div>
+<button style="height: 64px; border-radius: 16px; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; background: #FF6B5E; color: #111111; font: 400 20px 'Archivo Black', sans-serif; text-transform: uppercase">Cerrar votación</button>
+</div>
+</section>
+<section><h2>10 · Revelación (anfitrión)</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #FFFFFF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Sala KTRM</div>
+</div>
+<div style="flex: 1; background: #FFFFFF; border: 3px solid #111111; box-shadow: 8px 8px 0 #111111; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; transform: rotate(-1.5deg); margin: 8px 4px">
+<div style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase">El grupo expulsa a</div>
+<div style="width: 96px; height: 96px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #B8F28A; font-family: 'Archivo Black', sans-serif; font-size: 44px; display: flex; align-items: center; justify-content: center">Á</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 52px; line-height: 0.95; text-transform: uppercase">Álvaro</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 20px; text-transform: uppercase; background: #7FD8FF; border: 3px solid #111111; padding: 8px 16px; border-radius: 10px; transform: rotate(4deg)">No era el impostor</div>
+</div>
+<div style="font-size: 16px; font-weight: 500; line-height: 1.4">La partida sigue. Quedan 5 jugadores y 1 impostor entre ellos.</div>
+<button style="height: 64px; border-radius: 16px; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; background: #FF6B5E; color: #111111; font: 400 20px 'Archivo Black', sans-serif; text-transform: uppercase">Seguir hablando</button>
+</div>
+</section>
+<section><h2>11 · Empate (anfitrión)</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #FFFFFF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Sala KTRM</div>
+</div>
+<div style="flex: 1; background: #FFFFFF; border: 3px solid #111111; box-shadow: 8px 8px 0 #111111; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; transform: rotate(1.5deg); margin: 8px 4px">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #B8F28A; font-family: 'Archivo Black', sans-serif; font-size: 36px; display: flex; align-items: center; justify-content: center">Á</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 28px">=</div>
+<div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #D9B8FF; font-family: 'Archivo Black', sans-serif; font-size: 36px; display: flex; align-items: center; justify-content: center">M</div>
+</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 60px; line-height: 0.95; text-transform: uppercase">Empate</div>
+<div style="font-size: 17px; font-weight: 500; line-height: 1.4">Álvaro y Marta empatan a votos. Esta vez no se expulsa a nadie.</div>
+</div>
+<div style="font-size: 16px; font-weight: 500; line-height: 1.4">Volved a hablar y votad otra vez cuando queráis.</div>
+<button style="height: 64px; border-radius: 16px; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; background: #FF6B5E; color: #111111; font: 400 20px 'Archivo Black', sans-serif; text-transform: uppercase">Seguir hablando</button>
+</div>
+</section>
+<section><h2>12 · Eliminado</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #D9B8FF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px; transform: rotate(-3deg)">Mirando</div>
+</div>
+<div style="background: #FFFFFF; border: 3px dashed #111111; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 48px; line-height: 0.95; text-transform: uppercase">Estás fuera, Álvaro</div>
+<div style="font-size: 17px; font-weight: 500; line-height: 1.4">Sigues viendo la partida, pero ya no votas. Vuelves a jugar en la siguiente.</div>
+</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase">Siguen jugando</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px"><div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FF6B5E; font-weight: 700; display: flex; align-items: center; justify-content: center">F</div><div style="font-size: 16px; font-weight: 700">Fran</div></div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px"><div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #7FD8FF; font-weight: 700; display: flex; align-items: center; justify-content: center">L</div><div style="font-size: 16px; font-weight: 700">Lucía</div></div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px"><div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #D9B8FF; font-weight: 700; display: flex; align-items: center; justify-content: center">M</div><div style="font-size: 16px; font-weight: 700">Marta</div></div>
+<div style="background: #FFFFFF; border: 3px solid #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px"><div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FFB36B; font-weight: 700; display: flex; align-items: center; justify-content: center">D</div><div style="font-size: 16px; font-weight: 700">Dani</div></div>
+<div style="background: #FFE98F; border: 3px dashed #111111; border-radius: 14px; padding: 10px; display: flex; align-items: center; gap: 10px"><div style="width: 36px; height: 36px; border-radius: 50%; border: 3px solid #111111; box-sizing: border-box; background: #FFFFFF; font-weight: 700; display: flex; align-items: center; justify-content: center">P</div><div style="display: flex; flex-direction: column"><div style="font-size: 16px; font-weight: 700">Paula</div><div style="font-size: 12px; font-weight: 500">Desconectada</div></div></div>
+</div>
+<div style="margin-top: auto; height: 64px; box-sizing: border-box; border-radius: 16px; border: 3px dashed #111111; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">El grupo está hablando</div>
+</div>
+</section>
+<section><h2>13 · Resultado: gana el grupo (anfitrión)</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #FFFFFF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Sala KTRM</div>
+</div>
+<div style="flex: 1; background: #B8F28A; border: 3px solid #111111; box-shadow: 8px 8px 0 #111111; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transform: rotate(-1.5deg); margin: 8px 4px">
+<div style="align-self: flex-start; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: #FFFFFF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Gana el grupo</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 60px; line-height: 0.92; text-transform: uppercase">¡Has ganado!</div>
+<div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid #111111; padding-top: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 14px; font-weight: 700">El impostor era</div><div style="font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase">Marta</div></div>
+<div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 14px; font-weight: 700">La palabra era</div><div style="font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase">Paella</div></div>
+</div>
+</div>
+<button style="height: 56px; border-radius: 14px; border: 3px solid #111111; background: #FFFFFF; color: #111111; font: 700 17px 'Archivo', sans-serif">Cambiar de juego</button>
+<button style="height: 64px; border-radius: 16px; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111; background: #FF6B5E; color: #111111; font: 400 20px 'Archivo Black', sans-serif; text-transform: uppercase">Volver a jugar</button>
+</div>
+</section>
+<section><h2>14 · Resultado: gana el impostor (jugador)</h2>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; background: #FFD23F; color: #111111; font-family: 'Archivo', sans-serif">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 22px; text-transform: uppercase">La Previa</div>
+<div style="font-size: 13px; font-weight: 700; background: #FFFFFF; border: 3px solid #111111; padding: 4px 12px; border-radius: 999px">Sala KTRM</div>
+</div>
+<div style="flex: 1; background: #111111; color: #FFFFFF; border: 3px solid #111111; box-shadow: 8px 8px 0 #FF6B5E; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transform: rotate(1.5deg); margin: 8px 4px">
+<div style="align-self: flex-start; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #111111; background: #FF6B5E; border: 3px solid #FFFFFF; padding: 4px 12px; border-radius: 999px">Gana el impostor</div>
+<div style="font-family: 'Archivo Black', sans-serif; font-size: 60px; line-height: 0.92; text-transform: uppercase; color: #FFD23F">Has perdido</div>
+<div style="display: flex; flex-direction: column; gap: 10px; border-top: 3px solid #FFFFFF; padding-top: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 14px; font-weight: 700">El impostor era</div><div style="font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase">Marta</div></div>
+<div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 14px; font-weight: 700">La palabra era</div><div style="font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase">Paella</div></div>
+</div>
+</div>
+<div style="font-size: 16px; font-weight: 500; line-height: 1.4">Quedaban tantos impostores como jugadores normales.</div>
+<div style="height: 64px; box-sizing: border-box; border-radius: 16px; border: 3px dashed #111111; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">Fran decide si se vuelve a jugar</div>
+</div>
+</section>
+</main>
+</body>
+</html>
