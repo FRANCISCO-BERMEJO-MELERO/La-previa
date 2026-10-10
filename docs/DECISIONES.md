@@ -1,5 +1,19 @@
 # Decisiones
 
+## 2026-10-10 · 13.3 · Revisión final contra JUEGOS
+
+Repasadas las secciones 1 a 11 de `docs/JUEGOS.md`. Se cumple lo que piden, con estas diferencias ya anotadas en su tarea:
+
+- La foto de ¿Quién lo dijo? no dice quién falta por votar y añade `vote_progress` y `annulled` (10.5).
+- `back_to_lobby` vale para cualquier juego terminado; para El impostor se comporta igual (9.3).
+- Las acciones de El impostor exigen que la partida sea de El impostor (9.3).
+- `votes` cambia su `check` por un disparador para permitir votarse a sí mismo en `probable` (8.3).
+- En Una sola pista se reutilizan códigos existentes en vez de inventar otros (11.2).
+
+Fuera de alcance: no hay temporizadores, equipos, comparación de la adivinanza escrita, moderación, plurales ni sinónimos, packs de contenido ni puntos entre partidas. Las ilustraciones nuevas son solo las tres portadas, y no hay tokens nuevos: `globals.css` no ha cambiado en esta tanda; el tono `lime` de la píldora usa el token que ya existía.
+
+Comprobado además que ningún juego importa de la carpeta de otro y que no hay `TODO`, `console`, `as` fuera de `as const` ni `eslint-disable`. Se quitan dos tipos y seis textos de El impostor que ya no usaba nadie (`GameState`, `Outcome` y `copy.result.groupWins`…). Todas las funciones de `private` se usan.
+
 ## 2026-10-10 · 12.6 · Sesión larga
 
 `long-session.spec.ts` juega en una sola sala de 4 jugadores una partida de El impostor y otra de cada juego por rondas (5 rondas), cambiando de juego desde el resultado. En cada una alguien recarga a mitad y se comprueba que vuelve a la misma pantalla con lo suyo: el papel en El impostor, su voto en ¿Quién es más probable que…?, su respuesta en ¿Quién lo dijo? y, en Una sola pista, el adivino sigue sin ver la palabra durante la revisión. La prueba tiene un límite de 6 minutos porque son 16 rondas seguidas. Al escribirla se vio que, como en El impostor, el anfitrión o el árbitro solo pueden cerrar una fase después de hacer su parte (votar, dar pista); es el diseño de la 09 y se mantiene.

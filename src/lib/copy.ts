@@ -249,9 +249,6 @@ export const copy = {
   },
 
   result: {
-    groupWins: 'Gana el grupo',
-    impostorWins: 'Gana el impostor',
-    impostorsWin: 'Ganan los impostores',
     winnerPill: (winner: 'group' | 'impostors', impostorCount: number) =>
       winner === 'group'
         ? 'Gana el grupo'
@@ -263,11 +260,8 @@ export const copy = {
     won: '¡Has ganado!',
     lost: 'Has perdido',
     finished: 'Fin de la partida',
-    impostorWas: 'El impostor era',
-    impostorsWere: 'Los impostores eran',
     wordWas: 'La palabra era',
     impostorsEqual: 'Quedaban tantos impostores como jugadores normales.',
-    noImpostorsLeft: 'No queda ningún impostor en la partida.',
     changeGame: 'Cambiar de juego',
     playAgain: 'Volver a jugar',
     waitingHost: (host: string) => `${host} decide si se vuelve a jugar`,

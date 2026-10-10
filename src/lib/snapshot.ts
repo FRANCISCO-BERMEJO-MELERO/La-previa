@@ -151,7 +151,6 @@ export const snapshotSchema = z.object({
 
 export type Snapshot = z.infer<typeof snapshotSchema>;
 export type RoomPlayer = Snapshot['players'][number];
-export type GameState = z.infer<typeof gameSchema>;
 export type GameId = (typeof gameIds)[number];
 export type ImpostorGameState = z.infer<typeof impostorGameSchema>;
 export type ProbableGameState = z.infer<typeof probableGameSchema>;
@@ -160,7 +159,6 @@ export type UnaPistaGameState = z.infer<typeof unaPistaGameSchema>;
 /** Lo que comparten las partidas de los juegos por rondas. */
 export type RoundGameState = z.infer<z.ZodObject<typeof roundGameShape>>;
 export type Phase = ImpostorGameState['phase'];
-export type Outcome = z.infer<typeof outcomeSchema>;
 
 export function parseSnapshot(raw: unknown): Snapshot | null {
   const result = snapshotSchema.safeParse(raw);

@@ -159,7 +159,7 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 
 - [x] 13.1 `README.md` con los cuatro juegos y la estructura por carpetas
 - [x] 13.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
-- [ ] 13.3 Revisión final contra `docs/JUEGOS.md` y "Fuera de alcance"
+- [x] 13.3 Revisión final contra `docs/JUEGOS.md` y "Fuera de alcance"
 - [ ] 13.4 Ampliar `docs/INFORME.md` con esta tanda
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
