@@ -121,7 +121,7 @@ describe('pantallas de una_pista', () => {
       <GuessScreen {...chrome} clues={[row('hielo', null), row('Supercalifragilisti', null)]} />,
     );
     expect(screen.getByText('hielo')).toHaveClass('uppercase');
-    expect(screen.getByText('Supercalifragilisti')).toHaveClass('text-lg');
+    expect(screen.getByText('Supercalifragilisti')).toHaveClass('text-base');
     expect(screen.getByText('Supercalifragilisti')).not.toHaveClass('uppercase');
   });
 

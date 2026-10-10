@@ -8,6 +8,7 @@ import { copy } from '@/lib/copy';
 import { fitDisplay } from '@/lib/fit-text';
 import type { UnaPistaGameState } from '@/lib/snapshot';
 import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
+import { clueSize } from './clue-size';
 import { ClueList } from './ClueList';
 import type { ClueRow } from './game-view';
 import { WordCard } from './WordCard';
@@ -105,18 +106,6 @@ export function ReviewScreen({
   );
 }
 
-/**
- * Las pistas cortas van grandes y en mayúsculas; las largas (hasta 20 letras), más pequeñas y sin
- * mayúsculas, que en Archivo Black ocupan bastante menos y así caben en una línea a 360 px.
- */
-function clueSize(text: string): string {
-  return Array.from(text).length > LONG_CLUE
-    ? 'text-lg'
-    : `uppercase ${fitDisplay(text, 'text-display-sm')}`;
-}
-
-const LONG_CLUE = 12;
-
 /** El adivino ve las pistas que han sobrevivido y dice su respuesta en voz alta. */
 export function GuessScreen({ clues, ...chrome }: GameScreenProps & { clues: ClueRow[] }) {
   return (
@@ -126,7 +115,10 @@ export function GuessScreen({ clues, ...chrome }: GameScreenProps & { clues: Clu
         {clues.length > 0 ? (
           <ul className="flex flex-col gap-2">
             {clues.map((clue) => (
-              <li key={clue.text} className={`font-display break-all ${clueSize(clue.text)}`}>
+              <li
+                key={clue.text}
+                className={`font-display break-all ${clueSize(clue.text, 'text-display-sm')}`}
+              >
                 {clue.text}
               </li>
             ))}

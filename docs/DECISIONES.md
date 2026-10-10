@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-10 · 12.4 · Repaso con 16 jugadores a 360, 390 y 430 px
+
+Un guion temporal (fuera del repositorio, como en la 1.7) juega en una sala de 16 jugadores con nombres de 14 caracteres una partida de cada juego nuevo, con respuestas de 80 caracteres y pistas de 20, y en cada pantalla comprueba en los 16 móviles que no hay desborde horizontal. No desborda nada en ningún ancho. Las capturas sacaron un defecto: una pista de 20 letras anchas ("ZQWXZ…") se partía en dos líneas en la revisión y en la pantalla del adivino. El tamaño de las pistas pasa a una función común (`clue-size.ts`): hasta 12 letras, en mayúsculas al tamaño de la pantalla; de 13 a 16, `text-lg` sin mayúsculas; de 17 a 20, `text-base`. Los nombres de 14 caracteres se recortan con puntos suspensivos en las fichas de dos columnas de la sala de espera, como ya pasaba en El impostor; en las listas de una columna se ven enteros.
+Descartado: partir las pistas largas, que deja una letra suelta en otra línea.
+
 ## 2026-10-10 · 12.3 · El texto de entrar tarde ya venía de la 9.8
 
 La pantalla de entrar tarde pasó a `src/screens` con el texto por prop en la 9.8, cuando la usó el segundo juego: El impostor dice "Juegas en la siguiente partida" y los juegos por rondas, "Juegas desde la siguiente ronda" con la espera "Esperando a la siguiente ronda". La 12.3 se cierra añadiendo las pruebas de los cuatro juegos en `Room`.

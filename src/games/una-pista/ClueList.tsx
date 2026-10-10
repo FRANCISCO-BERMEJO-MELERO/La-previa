@@ -1,4 +1,5 @@
 import { copy } from '@/lib/copy';
+import { clueSize } from './clue-size';
 import type { ClueRow } from './game-view';
 
 type ClueListProps = {
@@ -21,7 +22,7 @@ export function ClueList({ clues, onToggle, busy = false }: ClueListProps) {
                 <span className="truncate text-sm font-bold">{clue.author.name}</span>
               ) : null}
               <span
-                className={`font-display text-xl uppercase break-all ${clue.cancelled ? 'line-through decoration-4' : ''}`}
+                className={`font-display break-all ${clueSize(clue.text, 'text-xl')} ${clue.cancelled ? 'line-through decoration-4' : ''}`}
               >
                 {clue.text}
               </span>
