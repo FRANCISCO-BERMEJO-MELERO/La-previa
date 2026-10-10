@@ -1,5 +1,14 @@
 # Decisiones
 
+## 2026-10-10 · 12.2 · Empezar sin gente suficiente
+
+Los cuatro juegos piden de 3 a 16 jugadores, así que el mínimo es una constante de la sala de espera (`MIN_PLAYERS = 3`) y no algo de cada juego. Con menos, el botón "Empezar partida" se desactiva y encima aparece "Hacen falta al menos 3 jugadores: falta 1. Comparte el código…", enlazado al botón con `aria-describedby`. El servidor sigue rechazando con `not_enough_players` por si la sala cambia entre la foto y la acción.
+Descartado: dejar el botón activo y enseñar el error después de pulsarlo, que es lo que pasaba hasta ahora.
+
+## 2026-10-10 · 12.1 · "Próximamente" sin La bomba
+
+El selector deja cuatro juegos elegibles y dos próximos, "Palabras prohibidas" y "¿Qué prefieres?". Las portadas de los próximos pasan de ir por posición en la lista a ir con cada juego, para que quitar uno no cambie la portada de los demás.
+
 ## 2026-10-09 · 11.5 · Pantallas de Una sola pista
 
 Con los componentes existentes y acento `lime`, que se añade como tono de la píldora pulsable (el token ya existía). El adivino ve "Te toca adivinar" mientras se escriben y revisan las pistas, y después solo las vivas, grandes; quien da pista ve la palabra y su categoría y un campo de 20 caracteres; la revisión lista las pistas con su autor, las anuladas tachadas, y cada una es un botón (con `aria-pressed`) para quien ha dado pista; el árbitro ve "Cerrar pistas", "Enseñar pistas" y los botones "Acertada", "Fallada" y "Pasa"; la revelación enseña la palabra, cómo ha ido y todas las pistas; el final, "7 de 10" con la frase de su tramo. `RoundControls` pasa a recibir `inCharge` en vez de `isHost`, porque en este juego lleva la ronda el árbitro y la partida el anfitrión. Las pistas de más de 12 letras se pintan más pequeñas y sin mayúsculas en la pantalla del adivino: en mayúsculas no cabían a 360 px.

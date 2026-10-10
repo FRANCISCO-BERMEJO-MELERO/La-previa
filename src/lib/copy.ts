@@ -166,6 +166,10 @@ export const copy = {
     rounds: 'Rondas',
     roundsOption: (rounds: number) => `${String(rounds)} rondas`,
     start: 'Empezar partida',
+    needPlayers: (missing: number) =>
+      missing === 1
+        ? 'Hacen falta al menos 3 jugadores: falta 1. Comparte el código para que entre alguien más.'
+        : `Hacen falta al menos 3 jugadores: faltan ${String(missing)}. Comparte el código para que entren.`,
     waitingHost: (host: string) => `${host} empezará la partida`,
   },
 

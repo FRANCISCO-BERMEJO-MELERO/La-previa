@@ -170,6 +170,26 @@ describe('LobbyScreen (04)', () => {
     expect(props.onStart).toHaveBeenCalledTimes(1);
   });
 
+  it('con menos de 3 jugadores no deja empezar y explica cuántos faltan', () => {
+    const props = renderLobby({ snapshot: withPlayers(2) });
+    const start = screen.getByRole('button', { name: 'Empezar partida' });
+    expect(start).toBeDisabled();
+    expect(start).toHaveAccessibleDescription(/Hacen falta al menos 3 jugadores: falta 1\./);
+    fireEvent.click(start);
+    expect(props.onStart).not.toHaveBeenCalled();
+  });
+
+  it('solo con el anfitrión dice que faltan 2', () => {
+    renderLobby({ snapshot: withPlayers(1) });
+    expect(screen.getByText(/faltan 2\./)).toBeInTheDocument();
+  });
+
+  it('con 3 jugadores ya se puede empezar, sin aviso', () => {
+    renderLobby({ snapshot: withPlayers(3) });
+    expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeEnabled();
+    expect(screen.queryByText(/Hacen falta/)).not.toBeInTheDocument();
+  });
+
   it('quien no es anfitrión no ve el botón de empezar', () => {
     renderLobby({ snapshot: asGuest });
     expect(screen.queryByRole('button', { name: 'Empezar partida' })).not.toBeInTheDocument();

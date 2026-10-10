@@ -16,6 +16,8 @@ import type { RoomPlayer, Snapshot } from '@/lib/snapshot';
 import { KickableChip } from './KickableChip';
 
 export const MAX_PLAYERS = 16;
+/** Los cuatro juegos piden al menos 3 jugadores (docs/JUEGOS.md §1). */
+export const MIN_PLAYERS = 3;
 
 type LobbyScreenProps = {
   snapshot: Snapshot;
@@ -61,6 +63,7 @@ export function LobbyScreen({
 }: LobbyScreenProps) {
   const { players, room, me } = snapshot;
   const hostName = players.find((player) => player.user_id === room.host_id)?.name ?? '';
+  const missing = Math.max(0, MIN_PLAYERS - players.length);
 
   return (
     <Screen
@@ -151,7 +154,17 @@ export function LobbyScreen({
                 onChange={onImpostorsChange}
               />
             )}
-            <Button fullWidth disabled={busy} onClick={onStart}>
+            {missing > 0 ? (
+              <p id="start-hint" className="text-md font-bold">
+                {copy.lobby.needPlayers(missing)}
+              </p>
+            ) : null}
+            <Button
+              fullWidth
+              disabled={busy || missing > 0}
+              aria-describedby={missing > 0 ? 'start-hint' : undefined}
+              onClick={onStart}
+            >
               {copy.lobby.start}
             </Button>
           </>

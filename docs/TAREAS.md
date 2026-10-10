@@ -147,7 +147,7 @@ Aceptación: las tres baterías pasan.
 ## Fase 12 · Selector y repaso conjunto
 
 - [x] 12.1 Selector de juegos definitivo: cuatro elegibles, dos "Próximamente", sin "La bomba"
-- [ ] 12.2 Botón de empezar desactivado, con explicación, si faltan jugadores
+- [x] 12.2 Botón de empezar desactivado, con explicación, si faltan jugadores
 - [ ] 12.3 Entrar tarde con el texto según el juego
 - [ ] 12.4 Repaso a 360, 390 y 430 px con nombres de 14, 16 jugadores, respuestas de 80 y pistas de 20
 - [ ] 12.5 Repaso de accesibilidad de las pantallas nuevas
