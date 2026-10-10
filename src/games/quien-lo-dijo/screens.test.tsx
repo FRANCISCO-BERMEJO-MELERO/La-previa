@@ -81,7 +81,7 @@ describe('VoteScreen de quien_lo_dijo', () => {
         onVote={vi.fn()}
       />,
     );
-    expect(screen.getByText('«Volar»')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('«Volar»');
     expect(screen.getByText(/No puedes votarte a ti/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Elige a quién votar' })).toBeDisabled();
     fireEvent.click(screen.getByRole('button', { name: /Lucía/ }));

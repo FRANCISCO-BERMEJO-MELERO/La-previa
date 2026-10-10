@@ -111,7 +111,9 @@ export function GuessScreen({ clues, ...chrome }: GameScreenProps & { clues: Clu
   return (
     <GameScreen {...chrome}>
       <Card variant="hero" tilt="left">
-        <Pill tone="lime">{copy.unaPista.guessTitle}</Pill>
+        <h1 className="flex">
+          <Pill tone="lime">{copy.unaPista.guessTitle}</Pill>
+        </h1>
         {clues.length > 0 ? (
           <ul className="flex flex-col gap-2">
             {clues.map((clue) => (

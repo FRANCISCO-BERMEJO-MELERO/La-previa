@@ -8,7 +8,7 @@ export function WordCard({ word, category }: { word: string; category: string })
   return (
     <Card variant="hero" tilt="left">
       <Pill tone="lime">{copy.unaPista.wordPill}</Pill>
-      <p className={`font-display uppercase ${fitDisplay(word, 'text-display-md')}`}>{word}</p>
+      <h1 className={`font-display uppercase ${fitDisplay(word, 'text-display-md')}`}>{word}</h1>
       <p className="text-sm font-bold">{copy.unaPista.category(category)}</p>
     </Card>
   );

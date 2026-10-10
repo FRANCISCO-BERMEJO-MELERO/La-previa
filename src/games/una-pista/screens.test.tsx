@@ -8,6 +8,7 @@ import {
   ClueScreen,
   GuesserScreen,
   GuessScreen,
+  GuessWaitScreen,
   MarkControls,
   ResultScreen,
   RevealScreen,
@@ -81,7 +82,7 @@ describe('pantallas de una_pista', () => {
         onSubmit={onSubmit}
       />,
     );
-    expect(screen.getByText('Pingüino')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Pingüino');
     expect(screen.getByText('Categoría: Animales')).toBeInTheDocument();
     const field = screen.getByLabelText('Tu pista');
     expect(field).toHaveAttribute('maxLength', '20');
@@ -109,6 +110,7 @@ describe('pantallas de una_pista', () => {
 
   it('el adivino ve sus pistas, o que no le queda ninguna', () => {
     const { unmount } = render(<GuessScreen {...chrome} clues={[row('hielo', null)]} />);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Tus pistas');
     expect(screen.getByText('hielo')).toBeInTheDocument();
     expect(screen.getByText('Di tu respuesta en voz alta.')).toBeInTheDocument();
     unmount();
@@ -145,6 +147,19 @@ describe('pantallas de una_pista', () => {
     );
     expect(screen.getByRole('status')).toHaveTextContent('Fran marcará la respuesta');
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+
+  it('mientras el adivino piensa, los demás ven la palabra como encabezado y las pistas', () => {
+    render(
+      <GuessWaitScreen
+        {...chrome}
+        word="Pingüino"
+        category="Animales"
+        clues={[row('hielo', 'Álvaro')]}
+      />,
+    );
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Pingüino');
+    expect(screen.getByText('hielo')).toBeInTheDocument();
   });
 
   it('la revelación enseña la palabra, cómo ha ido y todas las pistas', () => {

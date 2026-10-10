@@ -12,12 +12,24 @@ export function QuestionCard({ prompt }: { prompt: string }) {
   );
 }
 
-/** La respuesta elegida, sin autor, entre comillas. */
-export function FeaturedCard({ text, label }: { text: string; label: string }) {
+/**
+ * La respuesta elegida, sin autor, entre comillas. Es el encabezado de la pantalla salvo cuando ya
+ * hay otro (en la espera del autor, el contador).
+ */
+export function FeaturedCard({
+  text,
+  label,
+  heading = false,
+}: {
+  text: string;
+  label: string;
+  heading?: boolean;
+}) {
+  const Text = heading ? 'h1' : 'p';
   return (
     <Card variant="hero" tilt="right">
       <Pill tone="lilac">{label}</Pill>
-      <p className="font-display text-2xl">{copy.quienLoDijo.quoted(text)}</p>
+      <Text className="font-display text-2xl">{copy.quienLoDijo.quoted(text)}</Text>
     </Card>
   );
 }

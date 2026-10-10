@@ -37,7 +37,7 @@ export function VoteScreen({
         </Button>
       }
     >
-      <FeaturedCard text={featuredText} label={copy.quienLoDijo.question} />
+      <FeaturedCard text={featuredText} label={copy.quienLoDijo.question} heading />
       <CandidateList candidates={candidates} selected={selected} onSelect={onSelect} />
       {error ? (
         <p role="alert" className="text-md font-bold">

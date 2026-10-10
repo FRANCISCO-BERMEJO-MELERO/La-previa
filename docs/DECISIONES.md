@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-10 · 12.5 · Repaso de accesibilidad de los juegos nuevos
+
+Una e2e (`accessibility-games.spec.ts`) recorre una ronda de cada juego nuevo con 3 jugadores y comprueba en cada pantalla visitada que todo lo pulsable mide 44 px o más y que hay un solo `h1`; además, que el selector de rondas, el campo de respuesta, el de pista y las pistas de la revisión se usan con Tab y Enter, y que el foco se ve. Los campos ya llevaban `label` y los botones sin texto propio, `aria-label`. Faltaba encabezado en tres pantallas: la votación de ¿Quién lo dijo? (la respuesta elegida pasa a ser el `h1`), la pista y la espera de Una sola pista (la palabra) y la pantalla del adivino ("Tus pistas").
+Descartado: recorrer las cinco rondas de cada juego en esta prueba, que repite pantallas ya comprobadas.
+
 ## 2026-10-10 · 12.4 · Repaso con 16 jugadores a 360, 390 y 430 px
 
 Un guion temporal (fuera del repositorio, como en la 1.7) juega en una sala de 16 jugadores con nombres de 14 caracteres una partida de cada juego nuevo, con respuestas de 80 caracteres y pistas de 20, y en cada pantalla comprueba en los 16 móviles que no hay desborde horizontal. No desborda nada en ningún ancho. Las capturas sacaron un defecto: una pista de 20 letras anchas ("ZQWXZ…") se partía en dos líneas en la revisión y en la pantalla del adivino. El tamaño de las pistas pasa a una función común (`clue-size.ts`): hasta 12 letras, en mayúsculas al tamaño de la pantalla; de 13 a 16, `text-lg` sin mayúsculas; de 17 a 20, `text-base`. Los nombres de 14 caracteres se recortan con puntos suspensivos en las fichas de dos columnas de la sala de espera, como ya pasaba en El impostor; en las listas de una columna se ven enteros.
