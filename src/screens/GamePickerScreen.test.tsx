@@ -18,7 +18,7 @@ function renderPicker(overrides: Partial<Parameters<typeof GamePickerScreen>[0]>
 }
 
 describe('GamePickerScreen (03)', () => {
-  it('muestra los juegos elegibles con el elegido marcado y los próximos sin poder pulsarlos', () => {
+  it('muestra los cuatro juegos elegibles con el elegido marcado y los dos próximos sin poder pulsarlos', () => {
     renderPicker();
     expect(screen.getByRole('heading', { name: '¿A qué jugamos?' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /El impostor/ })).toHaveAttribute(
@@ -39,7 +39,8 @@ describe('GamePickerScreen (03)', () => {
     );
     expect(screen.getAllByText('De 3 a 16 jugadores')).toHaveLength(4);
     expect(screen.getAllByText('Elegido')).toHaveLength(1);
-    for (const title of ['Palabras prohibidas', 'La bomba', '¿Qué prefieres?']) {
+    expect(screen.queryByText('La bomba')).not.toBeInTheDocument();
+    for (const title of ['Palabras prohibidas', '¿Qué prefieres?']) {
       expect(screen.getByText(title)).toBeInTheDocument();
       expect(screen.queryByRole('button', { name: title })).not.toBeInTheDocument();
     }

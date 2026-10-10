@@ -129,7 +129,7 @@ export const copy = {
       description: 'Uno adivina la palabra con una pista de cada uno. Las repetidas no valen.',
       players: 'De 3 a 16 jugadores',
     },
-    upcoming: ['Palabras prohibidas', 'La bomba', '¿Qué prefieres?'],
+    upcoming: { banned: 'Palabras prohibidas', wouldYouRather: '¿Qué prefieres?' },
     covers: {
       quote: '¿?',
       banned: 'Palabra',

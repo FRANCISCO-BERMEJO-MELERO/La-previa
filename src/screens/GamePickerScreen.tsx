@@ -65,9 +65,14 @@ export function GamePickerScreen({
       </ul>
       <h2 className="text-label font-bold uppercase tracking-label">{copy.games.soon}</h2>
       <ul className="grid grid-cols-2 gap-3">
-        {copy.games.upcoming.map((title, index) => (
+        {upcoming.map(({ title, background, cover }) => (
           <li key={title} className="overflow-hidden rounded-chip border-3 border-ink bg-paper">
-            <UpcomingCover index={index} />
+            <div
+              aria-hidden="true"
+              className={`flex h-17 items-center justify-center gap-2 border-b-3 border-ink ${background}`}
+            >
+              {cover}
+            </div>
             <p className="px-2.5 py-2 text-sm font-bold">{title}</p>
           </li>
         ))}
@@ -183,35 +188,29 @@ function Face() {
   );
 }
 
-const upcomingBackgrounds = ['bg-lilac', 'bg-orange', 'bg-lime'] as const;
-
-function UpcomingCover({ index }: { index: number }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={`flex h-17 items-center justify-center gap-2 border-b-3 border-ink ${upcomingBackgrounds[index] ?? 'bg-sky'}`}
-    >
-      {index === 0 ? (
-        <span className="rotate-3 rounded-control border-3 border-ink bg-paper px-2.5 py-0.5 font-display text-lg uppercase line-through decoration-4">
-          {copy.games.covers.banned}
+/** Juegos que aún no se pueden elegir, con su portada hecha con formas. */
+const upcoming = [
+  {
+    title: copy.games.upcoming.banned,
+    background: 'bg-lilac',
+    cover: (
+      <span className="rotate-3 rounded-control border-3 border-ink bg-paper px-2.5 py-0.5 font-display text-lg uppercase line-through decoration-4">
+        {copy.games.covers.banned}
+      </span>
+    ),
+  },
+  {
+    title: copy.games.upcoming.wouldYouRather,
+    background: 'bg-orange',
+    cover: (
+      <>
+        <span className="flex size-10 -rotate-5 items-center justify-center rounded-control border-3 border-ink bg-paper font-display text-xl">
+          {copy.games.covers.optionA}
         </span>
-      ) : null}
-      {index === 1 ? (
-        <span className="relative size-10 rounded-full bg-ink">
-          <span className="absolute -top-2.5 right-0.5 h-4 w-1.5 rotate-35 bg-ink" />
-          <span className="absolute -top-4 -right-2.5 size-3 rounded-full border-3 border-ink bg-tomato" />
+        <span className="flex size-10 rotate-5 items-center justify-center rounded-control border-3 border-ink bg-ink font-display text-xl text-paper">
+          {copy.games.covers.optionB}
         </span>
-      ) : null}
-      {index === 2 ? (
-        <>
-          <span className="flex size-10 -rotate-5 items-center justify-center rounded-control border-3 border-ink bg-paper font-display text-xl">
-            {copy.games.covers.optionA}
-          </span>
-          <span className="flex size-10 rotate-5 items-center justify-center rounded-control border-3 border-ink bg-ink font-display text-xl text-paper">
-            {copy.games.covers.optionB}
-          </span>
-        </>
-      ) : null}
-    </div>
-  );
-}
+      </>
+    ),
+  },
+];
