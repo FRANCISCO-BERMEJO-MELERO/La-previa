@@ -2,9 +2,17 @@
 
 Web gratuita de juegos de fiesta para jugar **en persona**, cada uno con su móvil. Sin registro: se crea una sala, los demás entran con un código de cuatro letras, un enlace o un QR, y el móvil reparte la información y lleva la cuenta mientras el juego ocurre hablando.
 
-La primera versión trae un juego, **El impostor**: todos conocen la palabra menos uno, que solo sabe la categoría y tiene que disimular.
+Trae cuatro juegos, todos de 3 a 16 jugadores:
 
-- Qué se construye y por qué: [`docs/CONTEXTO.md`](docs/CONTEXTO.md).
+- **El impostor**: todos conocen la palabra menos uno, que solo sabe la categoría y tiene que disimular. Se vota a quién expulsar hasta que se descubre o gana.
+- **¿Quién es más probable que…?**: sale una pregunta y todos señalan a alguien a la vez; el más votado se lleva el punto.
+- **¿Quién lo dijo?**: todos escriben una respuesta corta, sale una sin autor y el grupo adivina de quién es.
+- **Una sola pista**: uno adivina una palabra con una pista de una palabra de cada uno; las pistas repetidas se anulan. Es cooperativo.
+
+Los tres últimos van por rondas (5, 10 o 15) y llevan la cuenta de puntos durante la partida.
+
+- Qué se construye y por qué: [`docs/CONTEXTO.md`](docs/CONTEXTO.md) (plataforma y El impostor) y [`docs/JUEGOS.md`](docs/JUEGOS.md) (los otros tres).
+- Contenido para revisar: [`docs/PALABRAS.md`](docs/PALABRAS.md) y [`docs/PREGUNTAS.md`](docs/PREGUNTAS.md).
 - Cómo publicarla: [`docs/DESPLIEGUE.md`](docs/DESPLIEGUE.md).
 - Decisiones tomadas por el camino: [`docs/DECISIONES.md`](docs/DECISIONES.md).
 
@@ -12,7 +20,7 @@ La primera versión trae un juego, **El impostor**: todos conocen la palabra men
 
 - **Next.js** (App Router, TypeScript estricto) para la interfaz, desplegada en **Vercel**.
 - **Supabase**: Postgres, inicio de sesión anónimo y Realtime.
-- **La base de datos es la única autoridad.** Los móviles no leen ni escriben tablas: llaman a funciones RPC que comprueban quién llama, si puede y si la fase lo permite, y reciben una "foto del estado" con solo lo que ese jugador puede ver. Por eso no se puede averiguar al impostor desde las herramientas del navegador.
+- **La base de datos es la única autoridad.** Los móviles no leen ni escriben tablas: llaman a funciones RPC que comprueban quién llama, si puede y si la fase lo permite, y reciben una "foto del estado" con solo lo que ese jugador puede ver. Por eso desde las herramientas del navegador no se puede averiguar al impostor, ver votos ajenos, saber de quién es una respuesta antes de tiempo ni, si te toca adivinar, ver la palabra.
 - La pantalla se deduce entera de esa foto. Se mantiene al día con Realtime, una consulta cada 10 s y al volver a la pestaña o recuperar la conexión, así que un móvil que se bloquea o cambia de red vuelve a su sitio.
 
 ## Arrancar en local
@@ -59,10 +67,16 @@ Abre `http://localhost:3000`. Para jugar en local con varios "móviles", usa ven
 
 ```
 src/
-  app/             Rutas de Next: / (inicio) y /sala/[code]; Room pasa la partida a su juego
-  games/impostor/  El impostor: qué pantalla toca según la foto (view.ts, función pura),
-                     datos derivados y sus pantallas (05–14)
-  screens/         Pantallas de la plataforma (01–04) y diálogos: solo presentación
+  app/             Rutas de Next: / (inicio) y /sala/[code]; Room elige el juego por game.type
+  games/           Una carpeta por juego; ninguna importa de la carpeta de otro juego
+    impostor/        El impostor: qué pantalla toca (view.ts, función pura), datos y pantallas
+    probable/        ¿Quién es más probable que…?
+    quien-lo-dijo/   ¿Quién lo dijo?
+    una-pista/       Una sola pista
+    rounds/          Lo que comparten los juegos por rondas: espera de respuestas, lista para
+                       votar, resultado con clasificación y controles de quien lleva la fase
+  screens/         Pantallas de la plataforma (inicio, nombre, selector, sala de espera, entrar
+                     tarde) y diálogos: solo presentación
   components/      Componentes base de Verbena (botón, tarjeta, píldora, avatar…)
   lib/             Lógica del cliente sin interfaz:
                      snapshot.ts   contrato de la foto del estado, validado con zod
@@ -71,10 +85,13 @@ src/
                      copy.ts       todos los textos de la interfaz
   test/            Datos de ejemplo para los tests
 supabase/
-  migrations/      Esquema, seguridad (RLS), funciones y palabras. Nunca se editan: se añaden nuevas
-  tests/           Pruebas pgTAP, incluidas las de secreto
+  migrations/      Esquema, seguridad (RLS), funciones, palabras y preguntas. Nunca se editan: se
+                     añaden nuevas. Las funciones de cada juego llevan su prefijo
+                     (probable_, quien_lo_dijo_, una_pista_); lo común de los juegos por rondas
+                     vive en el esquema private (open_round, round_departure, round_state…)
+  tests/           Pruebas pgTAP, incluidas las de secreto de cada juego
 e2e/               Pruebas de Playwright
-docs/              Contexto, plan, decisiones, palabras, despliegue e informe
+docs/              Contexto, juegos, planes, decisiones, palabras, preguntas, despliegue e informe
 ```
 
 ## Reglas del repositorio
