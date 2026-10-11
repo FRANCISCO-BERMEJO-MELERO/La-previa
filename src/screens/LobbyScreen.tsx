@@ -3,7 +3,7 @@ import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Dialog } from '@/components/Dialog';
 import { OfflineNotice } from '@/components/OfflineNotice';
-import { PillButton } from '@/components/PillButton';
+import { HeaderAside } from '@/components/HeaderAside';
 import { PlayerChip } from '@/components/PlayerChip';
 import { QrCode } from '@/components/QrCode';
 import { Screen } from '@/components/Screen';
@@ -69,12 +69,11 @@ export function LobbyScreen({
     <Screen
       brand={copy.brand}
       aside={
-        <PillButton
+        <HeaderAside
           tone="tomato"
           tilted
           label={copy.games[room.game].name}
-          hint={copy.room.leave}
-          onClick={onLeaveRequest}
+          onLeave={onLeaveRequest}
         />
       }
       notice={offline ? <OfflineNotice>{copy.errors.offline}</OfflineNotice> : null}

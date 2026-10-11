@@ -1,6 +1,6 @@
 'use client';
 
-import type { PillButtonTone } from '@/components/PillButton';
+import type { HeaderTone } from '@/components/HeaderAside';
 import { useState, type ReactNode } from 'react';
 import { WaitingBox } from '@/components/WaitingBox';
 import {
@@ -32,7 +32,7 @@ type QuePrefieresGameProps = {
   snapshot: Snapshot;
   game: QuePrefieresGameState;
   /** Píldora de la cabecera que abre el diálogo de salir. */
-  pill: (label: string, tone?: PillButtonTone) => ReactNode;
+  pill: (label: string, tone?: HeaderTone) => ReactNode;
   notice: ReactNode;
   busy: boolean;
   error?: string;

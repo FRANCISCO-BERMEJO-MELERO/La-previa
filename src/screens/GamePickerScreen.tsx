@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Button } from '@/components/Button';
 import { OfflineNotice } from '@/components/OfflineNotice';
-import { PillButton } from '@/components/PillButton';
+import { HeaderAside } from '@/components/HeaderAside';
 import { Screen } from '@/components/Screen';
 import { copy } from '@/lib/copy';
 import { gameIds, type GameId } from '@/lib/snapshot';
@@ -30,13 +30,7 @@ export function GamePickerScreen({
   return (
     <Screen
       brand={copy.brand}
-      aside={
-        <PillButton
-          label={copy.room.pill(roomCode)}
-          hint={copy.room.leave}
-          onClick={onLeaveRequest}
-        />
-      }
+      aside={<HeaderAside label={copy.room.pill(roomCode)} onLeave={onLeaveRequest} />}
       notice={offline ? <OfflineNotice>{copy.errors.offline}</OfflineNotice> : null}
     >
       <h1 className="font-display text-4xl uppercase">{copy.games.title}</h1>

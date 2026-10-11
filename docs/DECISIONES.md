@@ -1,5 +1,11 @@
 # Decisiones
 
+## 2026-10-11 · 20.1 · Salir con un botón a la vista
+
+`PillButton` (la píldora que al tocarla abría el diálogo de salir) se sustituye por `HeaderAside`: un botón "Salir" con borde, de 44 px, a la derecha de "La Previa", y la píldora, que ya solo informa (sala, juego o ronda), en su propia fila bajo la cabecera. Con las dos cosas en la misma fila, a 360 px el nombre del juego más largo partía "La Previa" y la propia píldora en dos líneas. El botón se llama "Salir de la sala" para lectores de pantalla y sigue abriendo la confirmación de siempre.
+
+Pruebas existentes modificadas, porque buscaban la píldora como botón ("Ronda 3 de 10. Salir de la sala"): ahora buscan el texto de la píldora o pulsan "Salir de la sala". Son las de `Room`, el selector, la sala de espera, la del componente (que pasa a probar `HeaderAside`) y la e2e de `probable`, que comprobaba que la píldora decía el juego. Lo que comprueban no cambia.
+
 ## 2026-10-11 · 19.2 · Lo que entra en alcance con las mejoras
 
 Fran y su grupo probaron los seis juegos y pidieron ocho mejoras, recogidas en `docs/MEJORAS.md` y ordenadas en `docs/PLAN-4.md`. Fran aprobó los dos documentos. Dos de ellas estaban en "Fuera de alcance" y entran porque las pide él:

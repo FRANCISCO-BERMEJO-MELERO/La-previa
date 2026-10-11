@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 import { OfflineNotice } from '@/components/OfflineNotice';
-import { PillButton, type PillButtonTone } from '@/components/PillButton';
+import { HeaderAside, type HeaderTone } from '@/components/HeaderAside';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
 import { clampImpostors } from '@/games/impostor/impostors';
 import { PalabrasProhibidasGame } from '@/games/palabras-prohibidas/PalabrasProhibidasGame';
@@ -96,14 +96,8 @@ export function Room({ initial, fresh }: RoomProps) {
     setLeaveOpen(true);
   };
 
-  const pill = (label: string, tone: PillButtonTone = 'paper') => (
-    <PillButton
-      tone={tone}
-      tilted={tone !== 'paper'}
-      label={label}
-      hint={copy.room.leave}
-      onClick={openLeave}
-    />
+  const pill = (label: string, tone: HeaderTone = 'paper') => (
+    <HeaderAside tone={tone} tilted={tone !== 'paper'} label={label} onLeave={openLeave} />
   );
 
   const notice = sync.offline ? <OfflineNotice>{copy.errors.offline}</OfflineNotice> : null;

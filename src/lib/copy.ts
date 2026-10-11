@@ -98,6 +98,7 @@ export const copy = {
   room: {
     pill: (code: string) => `Sala ${code}`,
     leave: 'Salir de la sala',
+    leaveShort: 'Salir',
     leaveTitle: '¿Salir de la sala?',
     leaveText: 'Si estáis en mitad de una partida, contará como que te has ido.',
     leaveConfirm: 'Salir',

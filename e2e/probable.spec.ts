@@ -29,7 +29,7 @@ test('9.9 · en la misma sala, El impostor, cambio a probable y 5 rondas con 3 j
   await host.getByRole('button', { name: '5 rondas', exact: true }).click();
   await expect(pageOf(players, 'Lucía').getByRole('status')).toHaveText('Fran empezará la partida');
   await expect(
-    pageOf(players, 'Lucía').getByRole('button', { name: /más probable/ }),
+    pageOf(players, 'Lucía').getByText('¿Quién es más probable que…?', { exact: true }),
   ).toBeVisible();
   await host.getByRole('button', { name: 'Empezar partida' }).click();
 

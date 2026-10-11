@@ -99,7 +99,7 @@ describe('GamePickerScreen (03)', () => {
 
   it('la píldora de la sala sirve para salir y avisa sin conexión', () => {
     const { onLeaveRequest } = renderPicker({ offline: true });
-    fireEvent.click(screen.getByRole('button', { name: 'Sala KTRM. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir de la sala' }));
     expect(onLeaveRequest).toHaveBeenCalledTimes(1);
     expect(
       screen.getByText('Sin conexión. Seguimos intentándolo; no cierres la página.'),

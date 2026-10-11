@@ -258,7 +258,7 @@ describe('Room', () => {
   it('salir pide confirmación, sale y vuelve al inicio', async () => {
     mocks.leaveRoom.mockResolvedValue({ ok: true, data: null });
     render(<Room initial={lobbySnapshot()} fresh={false} />);
-    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir de la sala' }));
     expect(mocks.leaveRoom).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Salir' }));
     expect(mocks.leaveRoom).toHaveBeenCalledWith(ids.room);
@@ -269,7 +269,7 @@ describe('Room', () => {
 
   it('cancelar la salida no hace nada', () => {
     render(<Room initial={lobbySnapshot()} fresh={false} />);
-    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir de la sala' }));
     fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(mocks.leaveRoom).not.toHaveBeenCalled();
@@ -278,7 +278,7 @@ describe('Room', () => {
   it('si no se puede salir, lo dice dentro del diálogo', async () => {
     mocks.leaveRoom.mockResolvedValue({ ok: false, error: 'offline' });
     render(<Room initial={lobbySnapshot()} fresh={false} />);
-    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir de la sala' }));
     fireEvent.click(screen.getByRole('button', { name: 'Salir' }));
     expect(await screen.findByRole('alert')).toHaveTextContent(/Sin conexión/);
     expect(mocks.push).not.toHaveBeenCalled();
@@ -452,9 +452,7 @@ describe('Room', () => {
         data: inProbable({ my: { is_participant: true, alive: true, voted_for: ids.lucia } }),
       });
       render(<Room initial={lobbySnapshot()} fresh={false} />);
-      expect(
-        screen.getByRole('button', { name: 'Ronda 3 de 10. Salir de la sala' }),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Ronda 3 de 10')).toBeInTheDocument();
       fireEvent.click(screen.getByRole('button', { name: /Lucía/ }));
       fireEvent.click(screen.getByRole('button', { name: 'Votar a Lucía' }));
       expect(mocks.probableVote).toHaveBeenCalledWith(ids.room, ids.lucia);
@@ -555,9 +553,7 @@ describe('Room', () => {
         }),
       });
       render(<Room initial={lobbySnapshot()} fresh={false} />);
-      expect(
-        screen.getByRole('button', { name: 'Ronda 2 de 5. Salir de la sala' }),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Ronda 2 de 5')).toBeInTheDocument();
       fireEvent.change(screen.getByLabelText('Tu respuesta'), { target: { value: 'Volar' } });
       fireEvent.click(screen.getByRole('button', { name: 'Enviar respuesta' }));
       expect(mocks.quienLoDijoAnswer).toHaveBeenCalledWith(ids.room, 'Volar');
@@ -771,9 +767,7 @@ describe('Room', () => {
         data: inPrefieres({ my: { is_participant: true, alive: true, choice: 'b' } }),
       });
       render(<Room initial={lobbySnapshot()} fresh={false} />);
-      expect(
-        screen.getByRole('button', { name: 'Ronda 4 de 10. Salir de la sala' }),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Ronda 4 de 10')).toBeInTheDocument();
       fireEvent.click(screen.getByRole('button', { name: 'Opción B: Ser invisible' }));
       fireEvent.click(screen.getByRole('button', { name: 'Elegir la B' }));
       expect(mocks.quePrefieresChoose).toHaveBeenCalledWith(ids.room, 'b');
@@ -853,9 +847,7 @@ describe('Room', () => {
         data: inPalabras({ phase: 'reveal', ...pizzaCard }, lucia),
       });
       render(<Room initial={lobbySnapshot()} fresh={false} />);
-      expect(
-        screen.getByRole('button', { name: 'Ronda 2 de 10. Salir de la sala' }),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Ronda 2 de 10')).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: 'Pizza' })).toBeInTheDocument();
       expect(screen.queryByRole('button', { name: /Álvaro/ })).not.toBeInTheDocument();
       fireEvent.click(screen.getByRole('button', { name: /Marta/ }));

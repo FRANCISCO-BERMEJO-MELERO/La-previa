@@ -154,9 +154,7 @@ describe('LobbyScreen (04)', () => {
     ]);
     fireEvent.click(screen.getByRole('button', { name: '15 rondas' }));
     expect(onRoundsChange).toHaveBeenCalledWith(15);
-    expect(
-      screen.getByRole('button', { name: '¿Quién es más probable que…?. Salir de la sala' }),
-    ).toBeInTheDocument();
+    expect(screen.getByText('¿Quién es más probable que…?')).toBeInTheDocument();
   });
 
   it('quien no es anfitrión no elige rondas', () => {
@@ -204,7 +202,7 @@ describe('LobbyScreen (04)', () => {
 
   it('la píldora de la cabecera sirve para salir de la sala', () => {
     const props = renderLobby();
-    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir de la sala' }));
     expect(props.onLeaveRequest).toHaveBeenCalledTimes(1);
   });
 
