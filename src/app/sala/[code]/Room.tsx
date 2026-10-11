@@ -6,6 +6,7 @@ import { OfflineNotice } from '@/components/OfflineNotice';
 import { PillButton, type PillButtonTone } from '@/components/PillButton';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
 import { clampImpostors } from '@/games/impostor/impostors';
+import { PalabrasProhibidasGame } from '@/games/palabras-prohibidas/PalabrasProhibidasGame';
 import { ProbableGame } from '@/games/probable/ProbableGame';
 import { QuePrefieresGame } from '@/games/que-prefieres/QuePrefieresGame';
 import { QuienLoDijoGame } from '@/games/quien-lo-dijo/QuienLoDijoGame';
@@ -166,6 +167,8 @@ export function Room({ initial, fresh }: RoomProps) {
         return withLeaveDialog(<UnaPistaGame {...shared} game={game} />);
       case 'que_prefieres':
         return withLeaveDialog(<QuePrefieresGame {...shared} game={game} />);
+      case 'palabras_prohibidas':
+        return withLeaveDialog(<PalabrasProhibidasGame {...shared} game={game} />);
     }
   }
 

@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-11 · 16.7 · Pantallas de Palabras prohibidas
+
+Sin maqueta y con acento `tomato`, que va con la tarjeta oscura (`ink` con sombra `tomato`) que pide `docs/JUEGOS-2.md` §7; se añade como acento del resultado común, porque la píldora ya lo tenía.
+
+- **Quien describe** ve la tarjeta oscura con la palabra y las cinco prohibidas tachadas, "¿Quién ha acertado?" con la lista de los que adivinan (ni él ni quien vigila), "Ha acertado Marta" cuando marca a alguien y "Pasar". Se marca y luego se confirma, como el voto, porque el punto no se puede deshacer. `CandidateList` recibe la etiqueta del marcado ("Acierta"); por defecto sigue diciendo "Tu voto".
+- **Quien vigila** ve la misma tarjeta y el botón "¡Prohibida!".
+- **Quien adivina** ve "Adivina en voz alta" con el nombre de quien describe y de quien vigila, y espera a que se marque. El anfitrión, si adivina, también espera: en esta fase no le toca nada.
+- **La revelación** nombra la palabra y cómo ha acabado ("Lo acierta Marta" con "+1 para Marta y +1 para Lucía", "Se dijo una prohibida" o "Lucía ha pasado") y lista las prohibidas. El resultado usa la pantalla común con "Gana la partida".
+- No hay lista de quién falta, porque ninguna ronda espera a todos, y por eso tampoco se echa a nadie desde estas pantallas. Una ronda no se atasca: si quien describe se desconecta, quien vigila (que se calcula prefiriendo a los conectados) puede cerrarla con "¡Prohibida!".
+
 ## 2026-10-11 · 16.6 · Palabras prohibidas elegible y sin "Próximamente"
 
 Con este juego ya no queda ninguno próximo, así que el bloque "Próximamente" del selector y sus textos (`games.soon`, `games.upcoming`) se quitan aquí mismo en vez de dejar una lista vacía o código sin usar hasta la 17.1. La portada es la palabra tachada que ya estaba dibujada, a tamaño de portada grande y sobre el mismo `lilac` de la referencia. La prueba existente del selector pasa a contar seis juegos y a comprobar que no aparece "Próximamente".

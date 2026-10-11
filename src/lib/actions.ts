@@ -133,6 +133,22 @@ export function palabrasProhibidasStart(roomId: string, rounds: number, deps = d
   return callForSnapshot(deps, 'palabras_prohibidas_start', { room_id: roomId, rounds });
 }
 
+export function palabrasProhibidasGuessed(roomId: string, userId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'palabras_prohibidas_guessed', { room_id: roomId, user_id: userId });
+}
+
+export function palabrasProhibidasPass(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'palabras_prohibidas_pass', { room_id: roomId });
+}
+
+export function palabrasProhibidasForbidden(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'palabras_prohibidas_forbidden', { room_id: roomId });
+}
+
+export function palabrasProhibidasNext(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'palabras_prohibidas_next', { room_id: roomId });
+}
+
 export function openVoting(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'open_voting', { room_id: roomId });
 }

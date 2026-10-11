@@ -8,11 +8,13 @@ import {
   gameState,
   ids,
   inGame,
+  inPalabras,
   inPista,
   inPrefieres,
   inProbable,
   inQuien,
   lobbySnapshot,
+  pizzaCard,
 } from '@/test/fixtures';
 import { Room } from './Room';
 
@@ -48,6 +50,11 @@ const mocks = vi.hoisted(() => ({
   quePrefieresNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   palabrasProhibidasStart:
     vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
+  palabrasProhibidasGuessed:
+    vi.fn<(roomId: string, userId: string) => Promise<ActionResult<Snapshot>>>(),
+  palabrasProhibidasPass: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  palabrasProhibidasForbidden: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  palabrasProhibidasNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   openVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   castVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   closeVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -84,6 +91,10 @@ vi.mock('@/lib/actions', () => ({
   quePrefieresClose: mocks.quePrefieresClose,
   quePrefieresNext: mocks.quePrefieresNext,
   palabrasProhibidasStart: mocks.palabrasProhibidasStart,
+  palabrasProhibidasGuessed: mocks.palabrasProhibidasGuessed,
+  palabrasProhibidasPass: mocks.palabrasProhibidasPass,
+  palabrasProhibidasForbidden: mocks.palabrasProhibidasForbidden,
+  palabrasProhibidasNext: mocks.palabrasProhibidasNext,
   openVoting: mocks.openVoting,
   castVote: mocks.castVote,
   closeVoting: mocks.closeVoting,
@@ -831,6 +842,92 @@ describe('Room', () => {
     });
   });
 
+  describe('palabras_prohibidas', () => {
+    const lucia = { me: { user_id: ids.lucia, name: 'Lucía', is_host: false } };
+    const alvaro = { me: { user_id: ids.alvaro, name: 'Álvaro', is_host: false } };
+
+    it('quien describe marca a quien ha acertado y aplica la foto', async () => {
+      ready(inPalabras(pizzaCard, lucia));
+      mocks.palabrasProhibidasGuessed.mockResolvedValue({
+        ok: true,
+        data: inPalabras({ phase: 'reveal', ...pizzaCard }, lucia),
+      });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(
+        screen.getByRole('button', { name: 'Ronda 2 de 10. Salir de la sala' }),
+      ).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Pizza' })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /Álvaro/ })).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: /Marta/ }));
+      fireEvent.click(screen.getByRole('button', { name: 'Ha acertado Marta' }));
+      expect(mocks.palabrasProhibidasGuessed).toHaveBeenCalledWith(ids.room, ids.marta);
+      await waitFor(() => {
+        expect(mocks.apply).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('quien describe puede pasar', () => {
+      ready(inPalabras(pizzaCard, lucia));
+      mocks.palabrasProhibidasPass.mockResolvedValue({ ok: true, data: inPalabras() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      fireEvent.click(screen.getByRole('button', { name: 'Pasar' }));
+      expect(mocks.palabrasProhibidasPass).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('quien vigila canta la prohibida', () => {
+      ready(inPalabras(pizzaCard, alvaro));
+      mocks.palabrasProhibidasForbidden.mockResolvedValue({ ok: true, data: inPalabras() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Vigilas tú')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: '¡Prohibida!' }));
+      expect(mocks.palabrasProhibidasForbidden).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('quien adivina, aunque lleve la sala, solo espera a que marque quien describe', () => {
+      ready(inPalabras());
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Adivina en voz alta')).toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent(
+        'Esperando a que Lucía marque quién acierta',
+      );
+      expect(screen.queryByRole('button', { name: 'Siguiente ronda' })).not.toBeInTheDocument();
+    });
+
+    it('en la revelación el anfitrión pasa a la siguiente ronda', () => {
+      ready(
+        inPalabras({
+          phase: 'reveal',
+          ...pizzaCard,
+          result: { type: 'guessed', user_id: ids.marta },
+        }),
+      );
+      mocks.palabrasProhibidasNext.mockResolvedValue({ ok: true, data: inPalabras() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Lo acierta Marta')).toBeInTheDocument();
+      expect(screen.getByText('+1 para Marta y +1 para Lucía')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Siguiente ronda' }));
+      expect(mocks.palabrasProhibidasNext).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('al final enseña quién gana y vuelve a jugar con las mismas rondas', () => {
+      ready(
+        inPalabras({
+          phase: 'finished',
+          ranking: [
+            { user_id: ids.lucia, name: 'Lucía', score: 3 },
+            { user_id: ids.fran, name: 'Fran', score: 1 },
+          ],
+        }),
+      );
+      mocks.palabrasProhibidasStart.mockResolvedValue({ ok: true, data: inPalabras() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Gana la partida')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Lucía' })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
+      expect(mocks.palabrasProhibidasStart).toHaveBeenCalledWith(ids.room, 10);
+    });
+  });
+
   describe('entrar tarde según el juego', () => {
     const marta = { me: { user_id: ids.marta, name: 'Marta', is_host: false } };
 
@@ -871,6 +968,7 @@ describe('Room', () => {
         'que_prefieres',
         inPrefieres({ my: { is_participant: false, alive: false, choice: null } }, marta),
       ],
+      ['palabras_prohibidas', inPalabras({ my: { is_participant: false, alive: false } }, marta)],
     ])('en %s se juega desde la siguiente ronda', (_game, snapshot) => {
       ready(snapshot);
       render(<Room initial={lobbySnapshot()} fresh={false} />);

@@ -15,6 +15,10 @@ import {
   probableNext,
   probableStart,
   probableVote,
+  palabrasProhibidasForbidden,
+  palabrasProhibidasGuessed,
+  palabrasProhibidasNext,
+  palabrasProhibidasPass,
   palabrasProhibidasStart,
   quePrefieresChoose,
   quePrefieresClose,
@@ -80,6 +84,10 @@ describe('acciones', () => {
     await quePrefieresClose('sala', d);
     await quePrefieresNext('sala', d);
     await palabrasProhibidasStart('sala', 10, d);
+    await palabrasProhibidasGuessed('sala', 'u3', d);
+    await palabrasProhibidasPass('sala', d);
+    await palabrasProhibidasForbidden('sala', d);
+    await palabrasProhibidasNext('sala', d);
     await openVoting('sala', d);
     await castVote('sala', 'u3', d);
     await closeVoting('sala', d);
@@ -114,6 +122,10 @@ describe('acciones', () => {
       ['que_prefieres_close', { room_id: 'sala' }],
       ['que_prefieres_next', { room_id: 'sala' }],
       ['palabras_prohibidas_start', { room_id: 'sala', rounds: 10 }],
+      ['palabras_prohibidas_guessed', { room_id: 'sala', user_id: 'u3' }],
+      ['palabras_prohibidas_pass', { room_id: 'sala' }],
+      ['palabras_prohibidas_forbidden', { room_id: 'sala' }],
+      ['palabras_prohibidas_next', { room_id: 'sala' }],
       ['open_voting', { room_id: 'sala' }],
       ['cast_vote', { room_id: 'sala', target_id: 'u3' }],
       ['close_voting', { room_id: 'sala' }],

@@ -136,6 +136,25 @@ const quePrefieresGameSchema = z.object({
   majority: option.nullable(),
 });
 
+const palabrasProhibidasGameSchema = z.object({
+  ...roundGameShape,
+  type: z.literal('palabras_prohibidas'),
+  phase: z.enum(['describing', 'reveal', 'finished']),
+  my: z.object({ is_participant: z.boolean(), alive: z.boolean() }),
+  describer_id: id,
+  watcher_id: id.nullable(),
+  // Quien adivina las recibe nulas hasta la revelación.
+  word: z.string().nullable(),
+  forbidden: z.array(z.string()).nullable(),
+  result: z
+    .discriminatedUnion('type', [
+      z.object({ type: z.literal('guessed'), user_id: id }),
+      z.object({ type: z.literal('forbidden') }),
+      z.object({ type: z.literal('passed') }),
+    ])
+    .nullable(),
+});
+
 /** La partida en curso, con la forma propia de cada juego (docs/JUEGOS.md §8, JUEGOS-2 §6). */
 const gameSchema = z.discriminatedUnion('type', [
   impostorGameSchema,
@@ -143,6 +162,7 @@ const gameSchema = z.discriminatedUnion('type', [
   quienLoDijoGameSchema,
   unaPistaGameSchema,
   quePrefieresGameSchema,
+  palabrasProhibidasGameSchema,
 ]);
 
 export const gameIds = [
@@ -179,6 +199,7 @@ export type QuienLoDijoGameState = z.infer<typeof quienLoDijoGameSchema>;
 export type UnaPistaGameState = z.infer<typeof unaPistaGameSchema>;
 export type QuePrefieresGameState = z.infer<typeof quePrefieresGameSchema>;
 export type QuePrefieresOption = z.infer<typeof option>;
+export type PalabrasProhibidasGameState = z.infer<typeof palabrasProhibidasGameSchema>;
 /** Lo que comparten las partidas de los juegos por rondas. */
 export type RoundGameState = z.infer<z.ZodObject<typeof roundGameShape>>;
 export type Phase = ImpostorGameState['phase'];

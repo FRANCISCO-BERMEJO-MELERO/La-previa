@@ -3,11 +3,14 @@ import {
   gameState,
   ids,
   inGame,
+  inPalabras,
   inPista,
   inPrefieres,
   inProbable,
   inQuien,
   lobbySnapshot,
+  palabrasState,
+  pizzaCard,
   pistaState,
   prefieresState,
   probableState,
@@ -161,6 +164,36 @@ describe('parseSnapshot', () => {
     ).toBeNull();
     expect(
       parseSnapshot({ ...inPrefieres(), game: { ...prefieresState(), option_b: null } }),
+    ).toBeNull();
+  });
+
+  it('acepta la partida de palabras_prohibidas, con y sin la tarjeta', () => {
+    const guessing = inPalabras();
+    expect(parseSnapshot(guessing)).toEqual(guessing);
+    const describing = inPalabras(pizzaCard);
+    expect(parseSnapshot(describing)).toEqual(describing);
+    for (const result of [
+      { type: 'guessed', user_id: ids.marta } as const,
+      { type: 'forbidden' } as const,
+      { type: 'passed' } as const,
+    ]) {
+      const reveal = inPalabras({ phase: 'reveal', ...pizzaCard, result });
+      expect(parseSnapshot(reveal)).toEqual(reveal);
+    }
+  });
+
+  it('descarta una partida de palabras_prohibidas con un resultado que no existe', () => {
+    expect(
+      parseSnapshot({ ...inPalabras(), game: { ...palabrasState(), result: { type: 'casi' } } }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({
+        ...inPalabras(),
+        game: { ...palabrasState(), result: { type: 'guessed' } },
+      }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({ ...inPalabras(), game: { ...palabrasState(), describer_id: null } }),
     ).toBeNull();
   });
 

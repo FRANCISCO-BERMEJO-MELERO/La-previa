@@ -194,7 +194,7 @@ Aceptación: las tres baterías pasan.
 - [x] 16.4 Variante `palabras_prohibidas` en `get_room_state`
 - [x] 16.5 Pruebas pgTAP de `palabras_prohibidas`
 - [x] 16.6 Selector con el juego elegible y su portada (palabra tachada)
-- [ ] 16.7 Pantallas de `palabras_prohibidas` y su `viewFor`, con tests unitarios
+- [x] 16.7 Pantallas de `palabras_prohibidas` y su `viewFor`, con tests unitarios
 - [ ] 16.8 Prueba e2e: 5 rondas con 4 jugadores, con acierto, prohibida y pase, sin palabra en la red de quien adivina
 
 Aceptación: las tres baterías pasan.

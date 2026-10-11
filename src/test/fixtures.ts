@@ -1,5 +1,6 @@
 import type {
   ImpostorGameState,
+  PalabrasProhibidasGameState,
   ProbableGameState,
   QuePrefieresGameState,
   QuienLoDijoGameState,
@@ -216,6 +217,52 @@ export function inPrefieres(
   return lobbySnapshot({
     room: { ...base.room, game: 'que_prefieres' },
     game: prefieresState(game),
+    ...rest,
+  });
+}
+
+/** Describe Lucía y vigila Álvaro; Fran (quien mira en `lobbySnapshot`) y Marta adivinan. */
+export function palabrasState(
+  overrides: Partial<PalabrasProhibidasGameState> = {},
+): PalabrasProhibidasGameState {
+  return {
+    type: 'palabras_prohibidas',
+    id: ids.game,
+    phase: 'describing',
+    round: 2,
+    total_rounds: 10,
+    participants: [
+      { user_id: ids.fran, name: 'Fran', alive: true, score: 1, has_responded: false },
+      { user_id: ids.lucia, name: 'Lucía', alive: true, score: 2, has_responded: false },
+      { user_id: ids.alvaro, name: 'Álvaro', alive: true, score: 0, has_responded: false },
+      { user_id: ids.marta, name: 'Marta', alive: true, score: 0, has_responded: false },
+    ],
+    my: { is_participant: true, alive: true },
+    describer_id: ids.lucia,
+    watcher_id: ids.alvaro,
+    word: null,
+    forbidden: null,
+    result: null,
+    ranking: null,
+    ...overrides,
+  };
+}
+
+/** La tarjeta de la pizza, tal como la reciben quien describe y quien vigila. */
+export const pizzaCard = {
+  word: 'Pizza',
+  forbidden: ['Italia', 'Queso', 'Masa', 'Horno', 'Tomate'],
+};
+
+/** Sala con `palabras_prohibidas` elegido y la partida dada. */
+export function inPalabras(
+  game: Partial<PalabrasProhibidasGameState> = {},
+  rest: Partial<Snapshot> = {},
+): Snapshot {
+  const base = lobbySnapshot();
+  return lobbySnapshot({
+    room: { ...base.room, game: 'palabras_prohibidas' },
+    game: palabrasState(game),
     ...rest,
   });
 }

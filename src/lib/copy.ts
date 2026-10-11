@@ -408,6 +408,34 @@ export const copy = {
     resultPill: 'Quien mejor conoce al grupo',
   },
 
+  palabrasProhibidas: {
+    describePill: 'Describes tú',
+    watchPill: 'Vigilas tú',
+    word: 'La palabra',
+    forbidden: 'No se puede decir',
+    describeHint: 'Descríbela sin decir ninguna de estas. Cuando alguien acierte, márcalo.',
+    whoGuessed: '¿Quién ha acertado?',
+    chooseGuesser: 'Toca a quien ha acertado',
+    guessed: (name: string) => `Ha acertado ${name}`,
+    picked: 'Acierta',
+    pass: 'Pasar',
+    watchHint: (describer: string) =>
+      `Si ${describer} dice alguna de estas palabras, pulsa el botón y la ronda acaba.`,
+    forbiddenButton: '¡Prohibida!',
+    guessTitle: 'Adivina en voz alta',
+    guessText: (describer: string) =>
+      `${describer} describe una palabra. Grita la respuesta en cuanto la sepas.`,
+    watcherIs: (watcher: string) => `Vigila las prohibidas: ${watcher}`,
+    waitingMark: (describer: string) => `Esperando a que ${describer} marque quién acierta`,
+    guessedPill: (name: string) => `Lo acierta ${name}`,
+    guessedPoints: (guesser: string, describer: string) =>
+      `+1 para ${guesser} y +1 para ${describer}`,
+    forbiddenPill: 'Se dijo una prohibida',
+    passedPill: (describer: string) => `${describer} ha pasado`,
+    noPoints: 'Esta ronda nadie puntúa.',
+    resultPill: 'Gana la partida',
+  },
+
   // Solo para la página interna de componentes, que no existe en producción.
   dev: {
     title: 'Componentes',
