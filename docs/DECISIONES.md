@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-11 · 25.3 · Elegir y cambiar el avatar
+
+Debajo del nombre, en las dos pantallas donde se escribe (crear sala y entrar por enlace), aparece "Tu avatar" con la inicial y las 12 ilustraciones (botones de 56 px con `aria-pressed` y el nombre de cada dibujo para lectores de pantalla). Por defecto se queda la inicial. Tras crear la sala o unirse se llama a `set_avatar`; si esa llamada falla se entra igual, porque el avatar se puede volver a elegir en la sala. En la sala de espera, tu propia ficha es un botón ("Cambiar tu avatar") que abre el mismo selector en un diálogo; cada toque guarda el avatar al momento. Las pruebas existentes de la pantalla de nombre y de la sala de espera solo ganan las propiedades nuevas en sus ayudantes, y las de `Room`, `RoomEntry` y `HomeFlow`, el doble de `setAvatar`.
+
 ## 2026-10-11 · 25.2 · Las 12 ilustraciones
 
 Aguacate con gafas de sol, huevo frito, fantasma, cactus, plátano, pizza, nube enfadada, tostada, pulpo, dónut, cohete y pingüino, en SVG dentro del propio componente (`avatar-art.tsx`): caja de 40 × 40, borde `ink` grueso y relleno con los colores de la paleta (`fill-*`), sin imágenes ni estilos en línea. `Avatar` las pinta sobre `paper` cuando el jugador tiene avatar y, si está desconectado, en gris; si no, la inicial sobre su color, como siempre. El avatar llega a todas las pantallas por los mismos datos que el color (`Player` y `ParticipantView` lo toman de la lista de jugadores de la sala), y en esos tipos es opcional: sin él se pinta la inicial.

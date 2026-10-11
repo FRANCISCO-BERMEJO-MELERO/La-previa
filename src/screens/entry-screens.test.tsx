@@ -69,6 +69,8 @@ function name(overrides: Partial<Parameters<typeof NameScreen>[0]> = {}) {
     name: '',
     busy: false,
     onNameChange: vi.fn(),
+    avatar: null,
+    onAvatarChange: vi.fn(),
     onSubmit: vi.fn(),
     ...overrides,
   };
@@ -77,6 +79,25 @@ function name(overrides: Partial<Parameters<typeof NameScreen>[0]> = {}) {
 }
 
 describe('NameScreen (02)', () => {
+  it('deja elegir avatar de la galería, empezando por la inicial', () => {
+    const props = name({ name: 'Lucía' });
+    expect(screen.getByRole('button', { name: 'Sin avatar: tu inicial' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Pulpo' }));
+    expect(props.onAvatarChange).toHaveBeenCalledWith('octopus');
+    expect(screen.getAllByRole('button', { pressed: false })).toHaveLength(12);
+  });
+
+  it('marca el avatar elegido', () => {
+    name({ name: 'Lucía', avatar: 'ghost' });
+    expect(screen.getByRole('button', { name: 'Fantasma' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
   it('pregunta el nombre con su etiqueta y su explicación', () => {
     name();
     expect(screen.getByRole('heading', { name: '¿Cómo te llamas?' })).toBeInTheDocument();

@@ -20,6 +20,7 @@ import {
   quePrefieresStart,
   quienLoDijoStart,
   unaPistaStart,
+  setAvatar,
   setGame,
   startGame,
   type ActionResult,
@@ -54,6 +55,7 @@ export function Room({ initial, fresh }: RoomProps) {
   const [voteSeconds, setVoteSeconds] = useState<number | null>(null);
   const [topicsOpen, setTopicsOpen] = useState(false);
   const [howToOpen, setHowToOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const [pickedGame, setPickedGame] = useState<GameId | null>(null);
   const [error, setError] = useState<ActionError | null>(null);
   const [busy, setBusy] = useState(false);
@@ -225,6 +227,16 @@ export function Room({ initial, fresh }: RoomProps) {
         setQrOpen(false);
       }}
       howToOpen={howToOpen}
+      avatarOpen={avatarOpen}
+      onAvatarOpen={() => {
+        setAvatarOpen(true);
+      }}
+      onAvatarClose={() => {
+        setAvatarOpen(false);
+      }}
+      onAvatarChange={(avatar) => {
+        void run(() => setAvatar(roomId, avatar));
+      }}
       onHowToOpen={() => {
         setHowToOpen(true);
       }}

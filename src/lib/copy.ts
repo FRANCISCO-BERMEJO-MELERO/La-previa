@@ -94,6 +94,29 @@ export const copy = {
     create: 'Crear sala',
   },
 
+  avatars: {
+    legend: 'Tu avatar',
+    initial: 'Sin avatar: tu inicial',
+    // Inicial de ejemplo mientras aún no se ha escrito el nombre.
+    placeholder: '?',
+    change: 'Cambiar tu avatar',
+    done: 'Listo',
+    names: {
+      avocado: 'Aguacate con gafas',
+      egg: 'Huevo frito',
+      ghost: 'Fantasma',
+      cactus: 'Cactus',
+      banana: 'Plátano',
+      pizza: 'Pizza',
+      cloud: 'Nube enfadada',
+      toast: 'Tostada',
+      octopus: 'Pulpo',
+      donut: 'Dónut',
+      rocket: 'Cohete',
+      penguin: 'Pingüino',
+    },
+  },
+
   howTo: {
     button: 'Cómo se juega',
     title: (game: string) => `Cómo se juega a ${game}`,

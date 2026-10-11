@@ -29,6 +29,7 @@ const mocks = vi.hoisted(() => ({
   startGame:
     vi.fn<(roomId: string, settings: ImpostorSettings) => Promise<ActionResult<Snapshot>>>(),
   impostorCategories: vi.fn<() => Promise<ActionResult<string[]>>>(),
+  setAvatar: vi.fn<(roomId: string, avatar: string | null) => Promise<ActionResult<Snapshot>>>(),
   probableStart: vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
   probableVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   probableClose: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -72,6 +73,7 @@ vi.mock('@/lib/actions', () => ({
   leaveRoom: mocks.leaveRoom,
   startGame: mocks.startGame,
   impostorCategories: mocks.impostorCategories,
+  setAvatar: mocks.setAvatar,
   probableStart: mocks.probableStart,
   probableVote: mocks.probableVote,
   probableClose: mocks.probableClose,
@@ -371,6 +373,17 @@ describe('Room', () => {
       impostorCount: 1,
       categories: ['Fútbol'],
       voteSeconds: null,
+    });
+  });
+
+  it('en la sala de espera, tocar tu ficha deja cambiar el avatar', async () => {
+    mocks.setAvatar.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Cambiar tu avatar' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Pingüino' }));
+    expect(mocks.setAvatar).toHaveBeenCalledWith(ids.room, 'penguin');
+    await waitFor(() => {
+      expect(mocks.apply).toHaveBeenCalledTimes(1);
     });
   });
 

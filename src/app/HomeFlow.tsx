@@ -2,7 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { createRoom } from '@/lib/actions';
+import { createRoom, setAvatar } from '@/lib/actions';
+import type { AvatarId } from '@/lib/avatars';
 import type { ActionError } from '@/lib/copy';
 import { nameErrorText } from '@/lib/name-error';
 import { normalizeCodeInput, roomPath } from '@/lib/room-code';
@@ -18,6 +19,7 @@ export function HomeFlow() {
   const [error, setError] = useState<ActionError | null>(null);
   const [busy, setBusy] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const [avatar, setChosenAvatar] = useState<AvatarId | null>(null);
 
   if (step === 'home') {
     return (
@@ -59,6 +61,8 @@ export function HomeFlow() {
     setError(null);
     const result = await createRoom(name);
     if (result.ok) {
+      // Si no se guarda el avatar, se entra igual: se puede elegir otra vez en la sala.
+      if (avatar !== null) await setAvatar(result.data.room.id, avatar);
       router.push(`${roomPath(result.data.room.code)}?nueva=1`);
       return;
     }
@@ -75,6 +79,8 @@ export function HomeFlow() {
         setName(value);
         setError(null);
       }}
+      avatar={avatar}
+      onAvatarChange={setChosenAvatar}
       onSubmit={() => {
         void create();
       }}

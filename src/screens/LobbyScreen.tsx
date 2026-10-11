@@ -8,11 +8,13 @@ import { PlayerChip } from '@/components/PlayerChip';
 import { QrCode } from '@/components/QrCode';
 import { Screen } from '@/components/Screen';
 import { WaitingBox } from '@/components/WaitingBox';
+import type { AvatarId } from '@/lib/avatars';
 import { copy } from '@/lib/copy';
 import { impostorLimits } from '@/games/impostor/impostors';
 import { isRoundGame, ROUND_OPTIONS } from '@/lib/rounds';
 import type { ShareOutcome } from '@/lib/share';
 import type { RoomPlayer, Snapshot } from '@/lib/snapshot';
+import { AvatarPicker } from './AvatarPicker';
 import { HowToPlayDialog } from './HowToPlayDialog';
 import { KickableChip } from './KickableChip';
 
@@ -37,6 +39,10 @@ type LobbyScreenProps = {
   onShowQr: () => void;
   onCloseQr: () => void;
   howToOpen: boolean;
+  avatarOpen: boolean;
+  onAvatarOpen: () => void;
+  onAvatarClose: () => void;
+  onAvatarChange: (avatar: AvatarId | null) => void;
   onHowToOpen: () => void;
   onHowToClose: () => void;
   onImpostorsChange: (count: number) => void;
@@ -69,6 +75,10 @@ export function LobbyScreen({
   onShowQr,
   onCloseQr,
   howToOpen,
+  avatarOpen,
+  onAvatarOpen,
+  onAvatarClose,
+  onAvatarChange,
   onHowToOpen,
   onHowToClose,
   onImpostorsChange,
@@ -155,6 +165,17 @@ export function LobbyScreen({
                 >
                   {chip}
                 </KickableChip>
+              ) : player.user_id === me.user_id ? (
+                <button
+                  type="button"
+                  aria-label={copy.avatars.change}
+                  aria-haspopup="dialog"
+                  disabled={busy}
+                  onClick={onAvatarOpen}
+                  className="w-full rounded-chip text-left"
+                >
+                  {chip}
+                </button>
               ) : (
                 chip
               )}
@@ -205,6 +226,20 @@ export function LobbyScreen({
           <WaitingBox>{copy.lobby.waitingHost(hostName)}</WaitingBox>
         )}
       </div>
+
+      <Dialog
+        open={avatarOpen}
+        title={copy.avatars.legend}
+        closeLabel={copy.avatars.done}
+        onClose={onAvatarClose}
+      >
+        <AvatarPicker
+          name={me.name}
+          value={players.find((player) => player.user_id === me.user_id)?.avatar ?? null}
+          disabled={busy}
+          onChange={onAvatarChange}
+        />
+      </Dialog>
 
       {/* Montado solo al abrirlo: cerrado, su título repetiría el nombre del juego en la página. */}
       {howToOpen ? <HowToPlayDialog open game={room.game} onClose={onHowToClose} /> : null}
