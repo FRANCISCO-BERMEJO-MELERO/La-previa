@@ -92,6 +92,98 @@ export const copy = {
     create: 'Crear sala',
   },
 
+  howTo: {
+    button: 'Cómo se juega',
+    title: (game: string) => `Cómo se juega a ${game}`,
+    close: 'Cerrar',
+    previous: 'Anterior',
+    next: 'Siguiente',
+    progress: (step: number, total: number) => `Paso ${String(step)} de ${String(total)}`,
+    steps: {
+      impostor: [
+        {
+          title: 'Una palabra para todos',
+          text: 'Todos reciben la misma palabra menos el impostor, que solo sabe la temática.',
+        },
+        {
+          title: 'Pistas por turnos',
+          text: 'Por turnos, cada uno dice una palabra relacionada. El impostor escucha e intenta disimular.',
+        },
+        {
+          title: 'Votad y expulsad',
+          text: 'Votáis a quién expulsar. Si echáis a todos los impostores gana el grupo; si quedan tantos impostores como jugadores, ganan ellos.',
+        },
+      ],
+      probable: [
+        {
+          title: 'Sale una pregunta',
+          text: '«¿Quién es más probable que…?» y una situación. Sin pensarlo mucho.',
+        },
+        {
+          title: 'Señala a alguien',
+          text: 'Cada uno vota en secreto a quien más le pega. Puedes votarte a ti.',
+        },
+        {
+          title: 'Un punto al más votado',
+          text: 'El más votado de cada ronda suma un punto. Al final, gana el más probable de la noche.',
+        },
+      ],
+      quien_lo_dijo: [
+        {
+          title: 'Todos responden',
+          text: 'Sale una pregunta y cada uno escribe una respuesta corta.',
+        },
+        {
+          title: '¿De quién es?',
+          text: 'Sale una respuesta sin nombre y los demás votáis quién la escribió. Su autor disimula.',
+        },
+        {
+          title: 'Puntos',
+          text: 'Un punto por acertar el autor. El autor gana uno por cada uno que falle.',
+        },
+      ],
+      una_pista: [
+        {
+          title: 'A uno le toca adivinar',
+          text: 'Por turnos, uno adivina una palabra que todos los demás ven.',
+        },
+        {
+          title: 'Una pista cada uno',
+          text: 'Los demás escriben una sola palabra de pista. Las repetidas se anulan, así que pensad distinto.',
+        },
+        {
+          title: 'Todos en el mismo equipo',
+          text: 'Quien adivina ve las pistas que quedan y responde en voz alta. Cada acierto suma para el grupo.',
+        },
+      ],
+      que_prefieres: [
+        { title: 'Dos opciones', text: 'Sale un dilema: ¿esto o aquello?' },
+        {
+          title: 'Elige en secreto',
+          text: 'Cada uno elige la suya. Nadie ve qué ha elegido el resto hasta el reparto.',
+        },
+        {
+          title: 'Gana la mayoría',
+          text: 'Quien elige lo mismo que la mayoría se lleva un punto. Si empatan, nadie.',
+        },
+      ],
+      palabras_prohibidas: [
+        {
+          title: 'Uno describe',
+          text: 'A uno le toca describir una palabra sin decir ninguna de las cinco prohibidas.',
+        },
+        {
+          title: 'Otro vigila',
+          text: 'El siguiente ve la tarjeta y pulsa «¡Prohibida!» si se le escapa alguna.',
+        },
+        {
+          title: 'Los demás adivinan',
+          text: 'Decid la respuesta en voz alta. Quien acierta y quien describe se llevan un punto cada uno.',
+        },
+      ],
+    },
+  },
+
   scan: {
     title: 'Escanear QR',
     close: 'Cerrar',

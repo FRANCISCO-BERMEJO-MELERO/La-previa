@@ -53,6 +53,7 @@ export function Room({ initial, fresh }: RoomProps) {
   const [chosenCategories, setChosenCategories] = useState<string[]>([]);
   const [voteSeconds, setVoteSeconds] = useState<number | null>(null);
   const [topicsOpen, setTopicsOpen] = useState(false);
+  const [howToOpen, setHowToOpen] = useState(false);
   const [pickedGame, setPickedGame] = useState<GameId | null>(null);
   const [error, setError] = useState<ActionError | null>(null);
   const [busy, setBusy] = useState(false);
@@ -222,6 +223,13 @@ export function Room({ initial, fresh }: RoomProps) {
       }}
       onCloseQr={() => {
         setQrOpen(false);
+      }}
+      howToOpen={howToOpen}
+      onHowToOpen={() => {
+        setHowToOpen(true);
+      }}
+      onHowToClose={() => {
+        setHowToOpen(false);
       }}
       onImpostorsChange={setImpostors}
       voteSeconds={voteSeconds}

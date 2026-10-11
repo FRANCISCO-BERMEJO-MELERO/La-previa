@@ -374,6 +374,18 @@ describe('Room', () => {
     });
   });
 
+  it('cualquiera abre y cierra el tutorial del juego elegido', () => {
+    ready(lobbySnapshot({ me: { user_id: ids.lucia, name: 'Lucía', is_host: false } }));
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(screen.queryByText('Paso 1 de 3')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Cómo se juega' }));
+    expect(
+      screen.getByRole('heading', { name: 'Cómo se juega a El impostor' }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Cerrar' }));
+    expect(screen.queryByText('Paso 1 de 3')).not.toBeInTheDocument();
+  });
+
   it('quien no lleva la sala no pide las temáticas', () => {
     ready(lobbySnapshot({ me: { user_id: ids.lucia, name: 'Lucía', is_host: false } }));
     render(<Room initial={lobbySnapshot()} fresh={false} />);

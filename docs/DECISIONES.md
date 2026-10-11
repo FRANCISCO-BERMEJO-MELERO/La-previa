@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-11 · 24.1 · Cómo se juega
+
+En la sala de espera, debajo de la tarjeta del código y para todos, un botón "Cómo se juega" abre un diálogo con tres pasos del juego elegido ("Paso 1 de 3", título y una frase), con "Anterior" y "Siguiente". Los textos de los seis juegos están en `copy.howTo` y resumen las reglas de `docs/CONTEXTO.md`, `docs/JUEGOS.md` y `docs/JUEGOS-2.md`. El diálogo solo se monta abierto: así empieza siempre por el primer paso y, cerrado, su título no repite el nombre del juego en la página (la e2e de accesibilidad encontraba dos textos iguales). Las ilustraciones de cada paso llegan en la 24.2.
+
 ## 2026-10-11 · 23.3 · Votación que se cierra sola
 
 `vote-timer.spec.ts` juega con 3 jugadores y 30 segundos para votar: todos ven la cuenta atrás, vota uno solo y nadie pulsa "Cerrar votación"; al acabarse el tiempo, todos ven la expulsión. Tarda unos 40 s por la espera, así que tiene un límite de 2 minutos.

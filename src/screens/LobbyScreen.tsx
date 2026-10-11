@@ -13,6 +13,7 @@ import { impostorLimits } from '@/games/impostor/impostors';
 import { isRoundGame, ROUND_OPTIONS } from '@/lib/rounds';
 import type { ShareOutcome } from '@/lib/share';
 import type { RoomPlayer, Snapshot } from '@/lib/snapshot';
+import { HowToPlayDialog } from './HowToPlayDialog';
 import { KickableChip } from './KickableChip';
 
 export const MAX_PLAYERS = 16;
@@ -35,6 +36,9 @@ type LobbyScreenProps = {
   onShare: () => void;
   onShowQr: () => void;
   onCloseQr: () => void;
+  howToOpen: boolean;
+  onHowToOpen: () => void;
+  onHowToClose: () => void;
   onImpostorsChange: (count: number) => void;
   voteSeconds: number | null;
   onVoteSecondsChange: (seconds: number | null) => void;
@@ -64,6 +68,9 @@ export function LobbyScreen({
   onShare,
   onShowQr,
   onCloseQr,
+  howToOpen,
+  onHowToOpen,
+  onHowToClose,
   onImpostorsChange,
   voteSeconds,
   onVoteSecondsChange,
@@ -116,6 +123,9 @@ export function LobbyScreen({
           </p>
         ) : null}
       </Card>
+      <Button variant="accent" fullWidth aria-haspopup="dialog" onClick={onHowToOpen}>
+        {copy.howTo.button}
+      </Button>
 
       <div className="flex items-baseline justify-between">
         <h1 className="font-display text-lg uppercase">{copy.lobby.players}</h1>
@@ -194,6 +204,9 @@ export function LobbyScreen({
           <WaitingBox>{copy.lobby.waitingHost(hostName)}</WaitingBox>
         )}
       </div>
+
+      {/* Montado solo al abrirlo: cerrado, su título repetiría el nombre del juego en la página. */}
+      {howToOpen ? <HowToPlayDialog open game={room.game} onClose={onHowToClose} /> : null}
 
       <Dialog
         open={topicsOpen}

@@ -32,6 +32,9 @@ function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {})
     onShare: vi.fn(),
     onShowQr: vi.fn(),
     onCloseQr: vi.fn(),
+    howToOpen: false,
+    onHowToOpen: vi.fn(),
+    onHowToClose: vi.fn(),
     onImpostorsChange: vi.fn(),
     voteSeconds: null as number | null,
     onVoteSecondsChange: vi.fn(),
@@ -278,5 +281,15 @@ describe('LobbyScreen: temáticas de El impostor', () => {
       categories,
     });
     expect(screen.queryByRole('button', { name: 'Elegir temáticas' })).not.toBeInTheDocument();
+  });
+});
+
+describe('LobbyScreen: cómo se juega', () => {
+  it('todos, no solo el anfitrión, pueden abrir el tutorial', () => {
+    const props = renderLobby({
+      snapshot: lobbySnapshot({ me: { user_id: ids.lucia, name: 'Lucía', is_host: false } }),
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Cómo se juega' }));
+    expect(props.onHowToOpen).toHaveBeenCalledTimes(1);
   });
 });
