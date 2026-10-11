@@ -230,7 +230,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
 ## Fase 21 · Escanear el QR
 
-- [ ] 21.1 Instalar `jsqr` y la función pura que reconoce un enlace o código de sala
+- [x] 21.1 Instalar `jsqr` y la función pura que reconoce un enlace o código de sala
 - [ ] 21.2 Diálogo de cámara y botón "Escanear QR" en el inicio
 
 ## Fase 22 · Temáticas y palabras
