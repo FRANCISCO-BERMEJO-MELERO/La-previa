@@ -32,6 +32,7 @@ export const errorCodes = [
   'not_watcher',
   'invalid_categories',
   'invalid_vote_seconds',
+  'invalid_avatar',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -66,6 +67,7 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
   is_guesser: 'Esta ronda te toca adivinar, así que no das pista. Espera a ver las de los demás.',
   invalid_option: 'Esa opción no existe. Elige una de las dos.',
   not_describer: 'Eso lo decide quien describe esta ronda. Tú adivina en voz alta.',
+  invalid_avatar: 'Ese avatar no está en la galería. Elige otro.',
   invalid_vote_seconds: 'El tiempo para votar es de 30, 60 o 90 segundos. Elige uno de esos.',
   invalid_categories: 'Alguna temática ya no está disponible. Revisa las temáticas elegidas.',
   not_watcher: 'Eso lo canta quien vigila las palabras prohibidas. Avísale si oyes una.',

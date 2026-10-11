@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { AvatarId } from './avatars';
 import { isErrorCode, type ActionError } from './copy';
 import { parseSnapshot, type Snapshot } from './snapshot';
 import { ensureSession, getSupabase } from './supabase';
@@ -32,6 +33,10 @@ export function getRoomState(roomId: string, deps = defaultDeps) {
 
 export function setGame(roomId: string, game: Snapshot['room']['game'], deps = defaultDeps) {
   return callForSnapshot(deps, 'set_game', { room_id: roomId, game });
+}
+
+export function setAvatar(roomId: string, avatar: AvatarId | null, deps = defaultDeps) {
+  return callForSnapshot(deps, 'set_avatar', { room_id: roomId, avatar });
 }
 
 export function kickPlayer(roomId: string, userId: string, deps = defaultDeps) {

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { avatarIds } from './avatars';
 
 /**
  * Contrato de la foto del estado que devuelven las RPC (docs/CONTEXTO.md §4, "La foto del estado").
@@ -187,7 +188,13 @@ export const snapshotSchema = z.object({
   }),
   me: z.object({ user_id: id, name: z.string(), is_host: z.boolean() }),
   players: z.array(
-    z.object({ user_id: id, name: z.string(), connected: z.boolean(), joined_at: timestamp }),
+    z.object({
+      user_id: id,
+      name: z.string(),
+      avatar: z.enum(avatarIds).nullable(),
+      connected: z.boolean(),
+      joined_at: timestamp,
+    }),
   ),
   game: gameSchema.nullable(),
 });

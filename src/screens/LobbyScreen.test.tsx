@@ -9,6 +9,7 @@ function withPlayers(count: number): Snapshot {
   const players = Array.from({ length: count }, (_, i) => ({
     user_id: `0a1b2c3d-1111-4aaa-8bbb-${String(i + 1).padStart(12, '0')}`,
     name: `Jugador ${String(i + 1)}`,
+    avatar: null,
     connected: true,
     joined_at: '2026-10-08T19:00:00+00:00',
   }));

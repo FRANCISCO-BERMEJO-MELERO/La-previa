@@ -25,16 +25,24 @@ export function lobbySnapshot(overrides: Partial<Snapshot> = {}): Snapshot {
     room: { id: ids.room, code: 'KTRM', game: 'impostor', host_id: ids.fran, version: 3 },
     me: { user_id: ids.fran, name: 'Fran', is_host: true },
     players: [
-      { user_id: ids.fran, name: 'Fran', connected: true, joined_at: '2026-10-08T19:00:00+00:00' },
+      {
+        user_id: ids.fran,
+        name: 'Fran',
+        avatar: null,
+        connected: true,
+        joined_at: '2026-10-08T19:00:00+00:00',
+      },
       {
         user_id: ids.lucia,
         name: 'Lucía',
+        avatar: null,
         connected: true,
         joined_at: '2026-10-08T19:01:00+00:00',
       },
       {
         user_id: ids.alvaro,
         name: 'Álvaro',
+        avatar: null,
         connected: false,
         joined_at: '2026-10-08T19:02:00+00:00',
       },

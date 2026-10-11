@@ -197,6 +197,22 @@ describe('parseSnapshot', () => {
     ).toBeNull();
   });
 
+  it('acepta el avatar de la galería y descarta cualquier otro', () => {
+    const base = lobbySnapshot();
+    const withAvatar = lobbySnapshot({
+      players: base.players.map((player, index) =>
+        index === 0 ? { ...player, avatar: 'ghost' as const } : player,
+      ),
+    });
+    expect(parseSnapshot(withAvatar)).toEqual(withAvatar);
+    expect(
+      parseSnapshot({
+        ...base,
+        players: base.players.map((player) => ({ ...player, avatar: 'unicornio' })),
+      }),
+    ).toBeNull();
+  });
+
   it('acepta las fechas tal como las devuelve Postgres', () => {
     expect(
       parseSnapshot(lobbySnapshot({ server_time: '2026-10-08T19:30:00.123456+00:00' })),
