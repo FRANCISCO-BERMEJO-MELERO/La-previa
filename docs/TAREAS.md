@@ -326,8 +326,8 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 ## Fase 32 · Cierre de Luna llena
 
 - [x] 32.1 Selector con Luna llena elegible, portada del lobo y rango de 6 a 16; pasos de "Cómo se juega"
-- [ ] 32.2 Repaso a 360, 390 y 430 px con 16 jugadores y nombres de 14
-- [ ] 32.3 Repaso de accesibilidad de las pantallas nuevas
+- [x] 32.2 Repaso a 360, 390 y 430 px con 16 jugadores y nombres de 14
+- [x] 32.3 Repaso de accesibilidad de las pantallas nuevas
 - [x] 32.4 Revisión final contra las secciones 1 a 10 del plan y su "Fuera de alcance"
 - [x] 32.5 `README.md` y, si hace falta, `docs/DESPLIEGUE.md`
 - [ ] 32.6 Ampliar `docs/INFORME.md`

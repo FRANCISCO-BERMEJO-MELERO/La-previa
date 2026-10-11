@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-11 · 32.2 y 32.3 · Repaso de anchos y accesibilidad de Luna llena
+
+`accessibility-luna.spec.ts` juega con 16 jugadores de nombre de 14 caracteres y la composición recomendada (todos los roles). En la sala de espera, las cartas, la noche del lobo con las marcas de la manada, la de la vidente y la de quien sospecha, el amanecer con el aviso de los enamorados, el espectador, el alcalde, el debate con sus votos, la acusación, la defensa con quince votos, el veredicto (también el del acusado), la ejecución y el resultado comprueba, a 360, 390 y 430 px, que nada desborda, que todo lo pulsable mide 44 px o más y que hay un solo `h1`. Para llegar al final sin jugar tres días, los lobos se van de la sala, que también prueba el traspaso del narrador si el anfitrión era lobo. No hizo falta ningún cambio.
+
 ## 2026-10-11 · 32.4 · Revisión contra el plan de Luna llena
 
 Repaso de las secciones 1 a 10 de `docs/PLAN-5.md`, una por una, y de su "Fuera de alcance".
