@@ -113,7 +113,15 @@ select pg_temp.restart('null');
 select isnt(pg_temp.category(), null, 'sin pasarlas, también');
 
 -- No repite mientras queden palabras de la temática.
-update public.words set active = (category = 'Videojuegos' and word in ('Tetris', 'Sonic')) or category <> 'Videojuegos';
+-- Solo dos de Videojuegos que aún no hayan salido en la sala (las partidas sin temáticas de antes
+-- pueden haber sacado alguna).
+update public.words set active = category <> 'Videojuegos' or id in (
+  select w.id from public.words w
+  where w.category = 'Videojuegos'
+    and w.id not in (select g.word_id from public.games g where g.room_id = pg_temp.room())
+  order by w.id
+  limit 2
+);
 select pg_temp.restart($$'{Videojuegos}'$$);
 insert into ctx select 'first', to_jsonb((select w.word from public.rooms r join public.games g on g.id = r.current_game_id join public.words w on w.id = g.word_id where r.id = pg_temp.room()));
 select pg_temp.restart($$'{Videojuegos}'$$);

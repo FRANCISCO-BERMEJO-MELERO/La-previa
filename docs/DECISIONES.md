@@ -1,5 +1,11 @@
 # Decisiones
 
+## 2026-10-11 · 23.3 · Votación que se cierra sola
+
+`vote-timer.spec.ts` juega con 3 jugadores y 30 segundos para votar: todos ven la cuenta atrás, vota uno solo y nadie pulsa "Cerrar votación"; al acabarse el tiempo, todos ven la expulsión. Tarda unos 40 s por la espera, así que tiene un límite de 2 minutos.
+
+Al cerrar la fase apareció un fallo intermitente en `38_impostor_categories` (de la 22.2): para comprobar que no se repite palabra dejaba activas "Tetris" y "Sonic", pero las partidas sin temáticas de antes en la misma prueba podían haber sacado una de ellas, y entonces repetir era lo correcto. Ahora deja activas dos de Videojuegos que aún no han salido en la sala. El código no cambia.
+
 ## 2026-10-11 · 23.2 · Cuenta atrás y cierre al llegar a cero
 
 El anfitrión elige "Tiempo para votar" en la sala de espera (Sin, 30, 60 o 90 s; por defecto, sin). La cuenta atrás va en la píldora de la votación ("Votación · 0:23") y se calcula con la hora del servidor de la última foto (`useCountdown`), no con el reloj del móvil. Al llegar a cero, cada móvil pide `close_voting` una vez; si la base de datos responde `not_host` (aún no ve pasada la hora por desfase de reloj) se reintenta hasta tres veces cada 1,5 s, y cualquier otro fallo (otro móvil ya la cerró) no se enseña: la foto nueva llega por la sincronización. "Volver a jugar" usa el tiempo guardado en la partida.
