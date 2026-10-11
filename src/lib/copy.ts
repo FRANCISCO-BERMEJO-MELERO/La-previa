@@ -36,6 +36,8 @@ export const errorCodes = [
   'invalid_config',
   'already_acted',
   'same_as_last_night',
+  'not_hunter',
+  'is_accused',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -73,6 +75,8 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
   invalid_avatar: 'Ese avatar no está en la galería. Elige otro.',
   already_acted: 'Ya has hecho lo tuyo esta noche. Espera al amanecer.',
   same_as_last_night: 'Anoche ya protegiste a esa persona. Esta noche elige a otra.',
+  not_hunter: 'Solo dispara el cazador. Espera a que elija.',
+  is_accused: 'Te están juzgando a ti, así que no votas. Espera el veredicto.',
   invalid_config:
     'Con esa composición no se puede jugar. Ajusta los lobos o los roles hasta que quede al menos un aldeano.',
   invalid_vote_seconds: 'El tiempo para votar es de 30, 60 o 90 segundos. Elige uno de esos.',

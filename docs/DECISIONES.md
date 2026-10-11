@@ -1,5 +1,22 @@
 # Decisiones
 
+## 2026-10-11 · 29.2 y 29.3 · Alcalde y juicio
+
+Las dos votaciones comparten la función de votar, el cierre automático y el forzado, así que van juntas.
+
+- **Alcalde sin votos.** Si nadie vota, todos los vivos empatan a cero y el azar elige entre ellos, como en cualquier empate.
+- **Votos del alcalde a la vista.** Se ven durante el debate del día en que se eligió. En la acusación y el veredicto dejan de verse.
+- **Bufón ahorcado.** Al ahorcarlo se fija `luna_state.winner = 'jester'`, y la partida termina al continuar desde la ejecución, como pide el plan.
+- **Veredicto sin respuesta.** Un veredicto nulo lanza `invalid_option`, el código que ya existe para "elige una de las dos".
+
+## 2026-10-11 · 29.1, 29.4 y 29.5 · Continuar, cazador y victoria
+
+Continuar desde un anuncio necesita saber si dispara el cazador y si alguien ha ganado, así que las tres tareas van en un commit.
+
+- **Orden tras un anuncio.** Primero el disparo pendiente del cazador; al volver al anuncio, que ya incluye el disparo, el narrador continúa otra vez y entonces se comprueba la victoria. Así un cazador que muere en la última muerte también dispara.
+- **Vuelta del cazador.** El disparo se añade al anuncio en curso y la partida vuelve a `dawn` o `execution`. La narración pasa a `hunter_shot`.
+- **Narración compuesta.** `narration` es una clave y sus datos, pero algunas fases cuentan dos cosas. Si alguien muere de pena, los datos llevan `lover` y el narrador lee después la frase `lover_death`. Al empezar el debate del día en que se eligió alcalde, llevan `mayor` y se lee antes `mayor_elected`. El guion no tiene texto para quien se va de la sala; se añade la clave `left` ("{nombre} se ha ido del pueblo. Era {rol}.").
+
 ## 2026-10-11 · 28.4 y 28.5 · La noche en un solo commit
 
 La 28.4 pide que la noche se cierre sola al actuar el último vivo, y eso es justo la resolución de la 28.5. Las dos van en un commit, con sus pruebas, para no dejar un cierre a medias entre ambos.
