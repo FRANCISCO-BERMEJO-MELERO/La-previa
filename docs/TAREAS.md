@@ -236,7 +236,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 ## Fase 22 · Temáticas y palabras
 
 - [x] 22.1 Migración con las 100 palabras nuevas y `docs/PALABRAS.md`
-- [ ] 22.2 `impostor_categories` y temáticas en `start_game`, con pgTAP
+- [x] 22.2 `impostor_categories` y temáticas en `start_game`, con pgTAP
 - [ ] 22.3 Selector de temáticas en la sala de espera
 
 ## Fase 23 · Temporizador

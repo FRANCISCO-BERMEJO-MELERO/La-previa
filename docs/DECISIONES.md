@@ -1,5 +1,13 @@
 # Decisiones
 
+## 2026-10-11 · 22.2 · Temáticas en `start_game`
+
+`start_game` gana un tercer parámetro, `categories text[] default null`; nulo o vacío es "todas". Como en Postgres una función con otro número de parámetros es otra función, se borra la de dos y se crea la de tres: la llamada de siempre, `start_game(sala, 1)`, sigue funcionando por el valor por defecto, y todas las pruebas de El impostor pasan sin tocarlas. `private.pick_word` gana el mismo parámetro y filtra solo si se le dan temáticas, así que Una sola pista la sigue llamando igual. Agotadas las palabras de las temáticas elegidas, se repite dentro de ellas antes que salirse.
+
+`public.impostor_categories()` devuelve las temáticas con alguna palabra activa, en orden alfabético, para que la lista no esté escrita en el cliente. No bloquea ninguna sala porque no lee estado de partida, solo la tabla de palabras.
+
+Código nuevo `invalid_categories` (`docs/MEJORAS.md` §9 no lo preveía): una temática que no existe o sin palabras activas se rechaza; si no, la partida intentaría crearse sin palabra y fallaría con un error técnico. Se añade también al cliente con su texto.
+
 ## 2026-10-11 · 22.1 · Cinco temáticas nuevas
 
 Fútbol, Historia, Videojuegos, Ciencia y Geografía, con 20 palabras cada una, en una migración nueva. Ninguna repite una de las 200 primeras (la prueba de duplicados de `05_words` sigue pasando sobre las 300). Las temáticas son la columna `category` que ya existía, así que no hay tabla nueva. Una sola pista también las usa, porque saca sus palabras de la misma tabla.
