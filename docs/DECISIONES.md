@@ -4,6 +4,20 @@
 
 `long-session.spec.ts` sigue en la misma sala de 4 jugadores tras Una sola pista con ¿Qué prefieres? y Palabras prohibidas, 5 rondas cada uno. En ¿Qué prefieres?, Álvaro recarga tras elegir mientras aún falta Marta y vuelve a ver su elección. En Palabras prohibidas, quien vigila recarga y sigue viendo la tarjeta, y quien adivina recarga y sigue sin verla. El título de la prueba pasa a decir seis juegos; lo que ya comprobaba no cambia. Las tres baterías pasaron tres veces seguidas sin fallos (535 unitarios, 811 pgTAP y 19 e2e en cada pasada). La primera vez que se lanzaron las tres pasadas seguidas en segundo plano, el sistema las paró por falta de memoria; se repitieron en primer plano, una batería detrás de otra.
 
+## 2026-10-11 · 18.3 · Revisión final contra JUEGOS-2
+
+Repasadas las secciones 0 a 9 de `docs/JUEGOS-2.md`. Se cumple lo que piden, con estas diferencias ya anotadas en su tarea:
+
+- La elección de ¿Qué prefieres? va en `answers`, como dice §4, y por eso `has_responded` y los abandonos miran `answers` también en la fase `voting` de este juego (14.3).
+- El turno de quien describe y el cálculo de quien vigila son auxiliares comunes con Una sola pista (`next_subject` y `next_active_after`), con las pruebas de Una sola pista intactas (16.3).
+- Si quien vigila cambia a media ronda, el nuevo pasa a ver la tarjeta: es lo que pide §3 al calcularlo en cada acción (14.3).
+- La tarjeta de una ronda anulada puede volver a salir, igual que la palabra en Una sola pista (16.3).
+- En la pantalla de quien adivina, el titular es "Adivina en voz alta" y no el nombre de quien describe, para que un nombre largo no se parta (17.2).
+
+Fuera de alcance: no hay temporizadores, cuentas atrás ni sonidos; no hay equipos; nada de lo que se dice en voz alta se comprueba por escrito; no hay dilemas ni tarjetas de los jugadores ni puntos entre partidas. No hay maquetas nuevas: las dos portadas son las fichas "A" y "B" y la palabra tachada que ya estaban dibujadas, a tamaño de portada grande, y `globals.css` no ha cambiado; `orange` y `tomato` se añaden como tonos de componentes con los tokens que ya existían.
+
+Comprobado además que ningún juego importa de la carpeta de otro, que no hay `TODO`, `console`, `as` fuera de `as const` ni `eslint-disable` en lo nuevo, que no hay políticas nuevas ni `service_role`, y que todas las funciones nuevas de `private` se usan.
+
 ## 2026-10-11 · 17.3 · Accesibilidad de los dos juegos nuevos
 
 La e2e de accesibilidad de la 12.5 suma una prueba por juego, con 3 jugadores, que comprueba en cada pantalla visitada que todo lo pulsable mide 44 px o más y que hay un solo `h1`. En ¿Qué prefieres? se marca la opción con Tab y Enter (con el foco visible y `aria-pressed`) y se envía igual. En Palabras prohibidas se miran las tres pantallas a la vez (describir, vigilar y adivinar) y quien describe marca el acierto solo con el teclado. No hizo falta cambiar ninguna pantalla: las opciones y la lista de acertantes son `button` con `aria-pressed`, y las opciones llevan `aria-label` con su letra y su texto.
