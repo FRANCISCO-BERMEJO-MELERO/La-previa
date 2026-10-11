@@ -422,6 +422,7 @@ export const copy = {
     watchHint: (describer: string) =>
       `Si ${describer} dice alguna de estas palabras, pulsa el botón y la ronda acaba.`,
     forbiddenButton: '¡Prohibida!',
+    guessPill: 'Te toca adivinar',
     guessTitle: 'Adivina en voz alta',
     guessText: (describer: string) =>
       `${describer} describe una palabra. Grita la respuesta en cuanto la sepas.`,

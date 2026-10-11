@@ -1,5 +1,14 @@
 # Decisiones
 
+## 2026-10-11 · 17.2 · Repaso con 16 jugadores a 360, 390 y 430 px
+
+Un guion temporal (fuera del repositorio, como en la 12.4) juega en una sala de 16 jugadores, repartidos entre los tres anchos y con nombres de 14 caracteres de letras anchas ("Mmmmmmmmmmmm01"), una ronda de ¿Qué prefieres? con el dilema más largo (45 caracteres por opción) y dos de Palabras prohibidas con las tarjetas más largas ("Extraterrestre" y "Fantasma" con "Casa encantada"). Hasta el resultado de cada juego comprueba en los 16 móviles que no hay desborde horizontal. No desborda nada. Las capturas sacaron dos defectos, que se arreglan:
+
+- En "Adivina en voz alta", el nombre de quien describe era el titular y catorce letras anchas se partían en dos líneas. El titular pasa a ser "Adivina en voz alta" y el nombre va en el texto, que corta por los espacios.
+- El tachado de las prohibidas tapaba las letras en la tarjeta oscura. Se quita; el rótulo "No se puede decir" ya dice lo que son, y quien describe y quien vigila tienen que leerlas de un vistazo.
+
+Visto y no cambiado: en el resultado común, que ya existía, catorce letras igual de anchas también parten el nombre del ganador. Con nombres reales de 14 letras cabe, porque `fitDisplay` está medido con palabras reales; cambiar sus umbrales movería también la palabra de El impostor.
+
 ## 2026-10-11 · 16.7 · Pantallas de Palabras prohibidas
 
 Sin maqueta y con acento `tomato`, que va con la tarjeta oscura (`ink` con sombra `tomato`) que pide `docs/JUEGOS-2.md` §7; se añade como acento del resultado común, porque la píldora ya lo tenía.

@@ -22,10 +22,7 @@ function TabooCard({ label, word, forbidden }: CardText & { label: string }) {
       </h2>
       <ul className="flex flex-col gap-1">
         {forbidden.map((text) => (
-          <li
-            key={text}
-            className="text-xl font-bold uppercase line-through decoration-tomato decoration-4"
-          >
+          <li key={text} className="text-xl font-bold uppercase">
             {text}
           </li>
         ))}
@@ -145,10 +142,10 @@ export function GuessScreen({ describer, watcher, ...chrome }: GuessScreenProps)
     <GameScreen {...chrome}>
       <Card variant="hero" tilt="right">
         <Pill tone="tomato" caps>
-          {copy.palabrasProhibidas.guessTitle}
+          {copy.palabrasProhibidas.guessPill}
         </Pill>
-        <h1 className={`font-display uppercase ${fitDisplay(describer, 'text-display-sm')}`}>
-          {describer}
+        <h1 className="font-display text-display-2xs uppercase">
+          {copy.palabrasProhibidas.guessTitle}
         </h1>
         <p className="text-md font-medium">{copy.palabrasProhibidas.guessText(describer)}</p>
       </Card>

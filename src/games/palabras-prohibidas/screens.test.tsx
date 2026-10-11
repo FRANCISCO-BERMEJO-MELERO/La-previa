@@ -115,8 +115,9 @@ describe('WatchScreen de palabras_prohibidas', () => {
 describe('GuessScreen de palabras_prohibidas', () => {
   it('dice quién describe y quién vigila, sin ninguna palabra de la tarjeta', () => {
     render(<GuessScreen {...chrome} describer="Lucía" watcher="Álvaro" />);
-    expect(screen.getByText('Adivina en voz alta')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Lucía' })).toBeInTheDocument();
+    expect(screen.getByText('Te toca adivinar')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Adivina en voz alta' })).toBeInTheDocument();
+    expect(screen.getByText(/^Lucía describe una palabra/)).toBeInTheDocument();
     expect(screen.getByText('Vigila las prohibidas: Álvaro')).toBeInTheDocument();
     expect(screen.queryByText('Pizza')).not.toBeInTheDocument();
   });

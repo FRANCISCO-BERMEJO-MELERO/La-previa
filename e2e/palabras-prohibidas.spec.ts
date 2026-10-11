@@ -48,8 +48,8 @@ test('16.8 · Palabras prohibidas con 4 jugadores y 5 rondas, sin la tarjeta en 
   await expect(lucia.getByText('Vigilas tú')).toBeVisible();
   await expect(lucia.getByRole('heading', { name: card.word })).toBeVisible();
   for (const page of [alvaro, marta]) {
-    await expect(page.getByText('Adivina en voz alta')).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Fran' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Adivina en voz alta' })).toBeVisible();
+    await expect(page.getByText(/^Fran describe una palabra/)).toBeVisible();
   }
   await expect(fran.getByRole('button', { name: /^Lucía/ })).toHaveCount(0);
 
