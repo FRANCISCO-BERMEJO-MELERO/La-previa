@@ -82,34 +82,34 @@ begin
     select 1 from jsonb_array_elements(v -> 'participants') p
     where (p ->> 'alive')::boolean and p ->> 'role' is not null
   ) then
-    found := found || 'rol de un vivo';
+    found := array_append(found, 'rol de un vivo');
   end if;
   if role <> 'wolf' and jsonb_array_length(my -> 'fellow_wolves') > 0 then
-    found := found || 'quiénes son los lobos';
+    found := array_append(found, 'quiénes son los lobos');
   end if;
   if role <> 'wolf' and jsonb_array_length(my -> 'wolf_marks') > 0 then
-    found := found || 'marcas de los lobos';
+    found := array_append(found, 'marcas de los lobos');
   end if;
   if role <> 'seer' and jsonb_array_length(my -> 'seer_results') > 0 then
-    found := found || 'resultado de la vidente';
+    found := array_append(found, 'resultado de la vidente');
   end if;
   if role <> 'protector' and my -> 'last_protected_id' <> 'null' then
-    found := found || 'protegido';
+    found := array_append(found, 'protegido');
   end if;
   if role <> 'cupid' and my -> 'chosen_lovers' <> 'null' then
-    found := found || 'enamorados elegidos';
+    found := array_append(found, 'enamorados elegidos');
   end if;
   if my -> 'lover_id' <> 'null' and pg_temp.u(n) not in (state.lover_a, state.lover_b) then
-    found := found || 'pareja ajena';
+    found := array_append(found, 'pareja ajena');
   end if;
   if v -> 'spectator' <> 'null' then
-    found := found || 'vista de espectador';
+    found := array_append(found, 'vista de espectador');
   end if;
   if v -> 'result' <> 'null' then
-    found := found || 'resultado';
+    found := array_append(found, 'resultado');
   end if;
   if v ->> 'phase' in ('roles', 'night', 'dawn', 'mayor', 'voting', 'verdict') and v -> 'public_votes' <> 'null' then
-    found := found || 'votos sin cerrar';
+    found := array_append(found, 'votos sin cerrar');
   end if;
   return found;
 end;
