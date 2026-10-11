@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan 4 terminado · última actualización 2026-10-11
+Estado: plan 5 (Luna llena) en curso · última actualización 2026-10-11
 
 ## Fase 0 · Preparación
 
@@ -260,6 +260,77 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
 - [x] 26.1 Repaso a 360, 390 y 430 px y de accesibilidad de todo lo nuevo, ampliando las e2e
 - [x] 26.2 `README.md`, `docs/DESPLIEGUE.md` y `docs/INFORME.md`
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
+## Fase 27 · Preparación de Luna llena
+
+Plan: `docs/PLAN-5.md`. Sus fases 14–19 son aquí las 27–32 (ver DECISIONES 27.3).
+
+- [x] 27.1 Leer `docs/PLAN-5.md` entero, con el anexo; repasar El impostor (roles secretos, votación, eliminación) y la estructura por carpetas de juego
+- [x] 27.2 Comprobar que las tres baterías pasan antes de tocar nada (613 unitarios, 855 pgTAP, 24 e2e)
+- [x] 27.3 Anotar en `docs/DECISIONES.md` las diferencias entre el plan y el código
+- [x] 27.4 Añadir las fases 27–32 a `docs/TAREAS.md`
+
+Aceptación: baterías en verde; tareas y decisiones escritas.
+
+## Fase 28 · Luna llena: base de datos, reparto y noche
+
+- [ ] 28.1 Migración: `rooms.game` y `games.phase` admiten `luna_llena`; `game_roles.role` admite los siete roles; tablas `luna_state`, `luna_night_actions` y `luna_votes`, con RLS y sin políticas
+- [ ] 28.2 `set_game` acepta `luna_llena`; auxiliares que validan una composición y calculan la recomendada
+- [ ] 28.3 `luna_llena_start`: validación, reparto aleatorio y estado inicial en `roles`
+- [ ] 28.4 `luna_llena_night_action` para cada rol, con sus restricciones, y cierre automático de la noche
+- [ ] 28.5 Resolución de la noche (`luna_llena_close_night` y su auxiliar) y paso a `dawn` con `announcement`
+- [ ] 28.6 Variante `luna_llena` en `get_room_state` para `roles`, `night` y `dawn`, con `narration` y `spectator`
+- [ ] 28.7 Pruebas pgTAP de composición, reparto, secreto y noche
+
+Aceptación: `npm run test:db` pasa desde cero, con las pruebas anteriores intactas.
+
+## Fase 29 · Luna llena: base de datos, día, juicio y final
+
+- [ ] 29.1 `luna_llena_continue` con todas sus transiciones
+- [ ] 29.2 Elección de alcalde
+- [ ] 29.3 Juicio: acusación, veredicto, cierre forzado y voto doble del alcalde
+- [ ] 29.4 Cazador: fase `hunter`, disparo y salto
+- [ ] 29.5 Comprobación de victoria y `result` en la foto
+- [ ] 29.6 Abandono y expulsión en cada fase
+- [ ] 29.7 Resto de la foto: `public_votes`, `accused_id`, `mayor_id` y todas las claves de `narration`
+- [ ] 29.8 Pruebas pgTAP de transiciones, juicio, cazador, bufón, victorias, abandonos, partidas completas y secreto de extremo a extremo
+
+Aceptación: `npm run test:db` pasa desde cero.
+
+## Fase 30 · Luna llena: cartas, sala y noche
+
+- [ ] 30.1 Las siete ilustraciones SVG y la carta de rol, también en `/dev/componentes`
+- [ ] 30.2 Textos del juego: roles, bandos, efectos y guion del narrador
+- [ ] 30.3 Esquema `zod` de la variante, acciones, errores y `viewFor`, con tests unitarios
+- [ ] 30.4 Sala de espera: lobos, roles opcionales, composición y aviso
+- [ ] 30.5 Caja del narrador
+- [ ] 30.6 Reparto con la carta y botón para volver a verla
+- [ ] 30.7 Noche de cada rol, espera tras actuar, amanecer y aviso a los enamorados
+
+Aceptación: `npm run check` pasa; con seis navegadores se reparte, se juega una noche y se ve el amanecer.
+
+## Fase 31 · Luna llena: día, juicio y final
+
+- [ ] 31.1 Elección de alcalde y su distintivo
+- [ ] 31.2 Día, votación de acusación y defensa
+- [ ] 31.3 Veredicto y ejecución
+- [ ] 31.4 Turno del cazador
+- [ ] 31.5 Vista de espectador
+- [ ] 31.6 Resultado
+- [ ] 31.7 Pruebas e2e con seis contextos y vista de móvil
+
+Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitentes.
+
+## Fase 32 · Cierre de Luna llena
+
+- [ ] 32.1 Selector con Luna llena elegible, portada del lobo y rango de 6 a 16; pasos de "Cómo se juega"
+- [ ] 32.2 Repaso a 360, 390 y 430 px con 16 jugadores y nombres de 14
+- [ ] 32.3 Repaso de accesibilidad de las pantallas nuevas
+- [ ] 32.4 Revisión final contra las secciones 1 a 10 del plan y su "Fuera de alcance"
+- [ ] 32.5 `README.md` y, si hace falta, `docs/DESPLIEGUE.md`
+- [ ] 32.6 Ampliar `docs/INFORME.md`
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 

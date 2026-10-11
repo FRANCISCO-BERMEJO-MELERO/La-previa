@@ -1,5 +1,20 @@
 # Decisiones
 
+## 2026-10-11 · 27.3 · Diferencias entre el plan de Luna llena y el código
+
+`docs/PLAN-5.md` se escribió contando con que `develop` acababa en la fase 13. Antes de empezar se fusionaron en `develop` las ramas de los planes 3 y 4 (fases 14–26), así que:
+
+- **Numeración.** Las fases 14–19 del plan son aquí las 27–32, con la misma subnumeración: la tarea 15.3 del plan es la 28.3. El plan no se toca; la equivalencia queda en `docs/TAREAS.md`.
+- **Séptimo juego, no quinto.** El selector pasa a tener siete juegos elegibles, y "Cómo se juega" (fase 24) gana los pasos de Luna llena, porque la sala de espera ya muestra ese botón para todos los juegos.
+- **Avatares.** Las listas de jugadores de Luna llena pintan el avatar de la sala, como el resto de juegos (fase 25).
+- **Ganador.** `games.winner` solo admite los bandos de El impostor y su `check` obliga a que sea nulo en los demás juegos. El bando ganador de Luna llena (`village`, `wolves` o `jester`) se guarda en `luna_state.winner`, una columna más de las que lista el plan, en vez de relajar esa restricción.
+- **Quién ha actuado.** `game_players.has_voted` es de El impostor. En Luna llena `has_acted` se calcula con `luna_night_actions` y `luna_votes`, sin columna nueva.
+- **Vivo y activo.** En los demás juegos `game_players.alive` significa "participa". En Luna llena significa "vivo", y quien se va muere, así que el sentido coincide.
+- **Roles.** `game_roles.role` pasa a admitir los siete roles además de `player` e `impostor`. El aldeano es `villager` y no reutiliza `player`, para que el rol de cada juego se lea sin mirar el tipo de partida.
+- **Expulsión.** Se mantiene la regla de la plataforma: a media partida solo se puede echar a un desconectado. Al echarle se aplica el abandono de la sección 5 del plan.
+- **Entrar tarde.** Quien llega con la partida empezada no es participante (`my.is_participant` falso) y ve la pantalla de esperar, como en El impostor.
+- **Volver a la sala.** Al terminar se usa `back_to_lobby`, que ya vale para cualquier juego; "Volver a jugar" llama a `luna_llena_start` con la misma composición.
+
 ## 2026-10-11 · 26.1 · Repaso de lo nuevo a 360, 390 y 430 px
 
 `accessibility-mejoras.spec.ts` recorre, en los tres anchos, el inicio con "Escanear QR", la pantalla de nombre con la galería de avatares, la sala de espera con "Salir", "Cómo se juega", el tiempo para votar y las temáticas, y los tres diálogos (temáticas, avatar y tutorial). En cada uno comprueba que no hay desborde horizontal y que todo lo pulsable mide 44 px o más. Otra prueba recorre el tutorial solo con el teclado, con el foco visible, y lo cierra con Escape.
