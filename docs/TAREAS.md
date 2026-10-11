@@ -282,7 +282,7 @@ Aceptación: baterías en verde; tareas y decisiones escritas.
 - [x] 28.4 `luna_llena_night_action` para cada rol, con sus restricciones, y cierre automático de la noche
 - [x] 28.5 Resolución de la noche (`luna_llena_close_night` y su auxiliar) y paso a `dawn` con `announcement`
 - [x] 28.6 Variante `luna_llena` en `get_room_state` para `roles`, `night` y `dawn`, con `narration` y `spectator`
-- [ ] 28.7 Pruebas pgTAP de composición, reparto, secreto y noche
+- [x] 28.7 Pruebas pgTAP de composición, reparto, secreto y noche
 
 Aceptación: `npm run test:db` pasa desde cero, con las pruebas anteriores intactas.
 
