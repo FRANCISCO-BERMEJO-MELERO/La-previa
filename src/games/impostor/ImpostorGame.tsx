@@ -70,9 +70,11 @@ export function ImpostorGame({
       view={view}
       roomPill={pill(
         // A partir de la segunda ronda se dice, para que no parezca una partida nueva.
-        game.round > 1 && game.phase !== 'finished'
-          ? copy.reveal.roundPill(game.round)
-          : copy.room.pill(snapshot.room.code),
+        game.phase === 'finished'
+          ? copy.result.finished
+          : game.round > 1
+            ? copy.reveal.roundPill(game.round)
+            : copy.room.pill(snapshot.room.code),
       )}
       votePill={pill(copy.vote.pill, 'sky')}
       outPill={pill(copy.out.pill, 'lilac')}

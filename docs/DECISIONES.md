@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-11 · 20.3 · Un final de partida que se ve
+
+Al terminar cualquier juego, la píldora de la cabecera dice "Fin de la partida" (antes, "Sala ABCD"). El anfitrión ve "Cambiar de juego" con la variante destacada (`accent`, 56 px, como un botón principal) en lugar del botón pequeño, encima de "Volver a jugar". Los demás leen "Fran elige si jugáis otra o cambiáis de juego". Los botones mantienen sus textos ("Volver a jugar" y "Cambiar de juego") en vez de "Otra de [juego]" y "Elegir otro juego" de `docs/MEJORAS.md` §4: se entienden igual y con nombres de juego largos "Otra de ¿Quién es más probable que…?" ocupaba dos líneas. Las pruebas que leían "Fran decide si se vuelve a jugar" (`HostControls` y las e2e de `probable`, `quien_lo_dijo` y `que_prefieres`) leen el texto nuevo.
+
 ## 2026-10-11 · 20.2 · "Siguiente ronda" en El impostor
 
 El texto que explica que la partida sigue ("La partida sigue. Quedan 4 jugadores y 1 impostor entre ellos.") ya estaba en la revelación; lo que confundía era el botón "Seguir hablando" y que la pantalla siguiente era igual a la de una partida nueva. El botón pasa a "Siguiente ronda" y, desde la segunda ronda, la píldora dice "Ronda 2 de la partida" en lugar de "Sala ABCD". Al terminar vuelve a decir la sala. Las tres pruebas que pulsaban "Seguir hablando" (`Room`, `HostControls` y la e2e del empate) pulsan ahora "Siguiente ronda".

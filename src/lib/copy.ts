@@ -281,7 +281,7 @@ export const copy = {
     impostorsEqual: 'Quedaban tantos impostores como jugadores normales.',
     changeGame: 'Cambiar de juego',
     playAgain: 'Volver a jugar',
-    waitingHost: (host: string) => `${host} decide si se vuelve a jugar`,
+    waitingHost: (host: string) => `${host} elige si jugáis otra o cambiáis de juego`,
   },
 
   rounds: {

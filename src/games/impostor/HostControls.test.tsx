@@ -57,7 +57,7 @@ describe('HostControls', () => {
     ['talking', 'Fran decide cuándo se vota'],
     ['voting', 'Fran cerrará la votación'],
     ['reveal', 'Fran decide cuándo seguir'],
-    ['finished', 'Fran decide si se vuelve a jugar'],
+    ['finished', 'Fran elige si jugáis otra o cambiáis de juego'],
   ] as const)('en %s quien no es anfitrión ve la caja de espera', (phase, text) => {
     renderControls(phase, { isHost: false });
     expect(screen.getByRole('status')).toHaveTextContent(text);

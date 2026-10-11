@@ -238,7 +238,7 @@ export function UnaPistaGame({
     case 'result':
       return (
         <ResultScreen
-          aside={pill(copy.room.pill(snapshot.room.code))}
+          aside={pill(copy.result.finished)}
           notice={notice}
           footer={controls}
           score={game.team_score}

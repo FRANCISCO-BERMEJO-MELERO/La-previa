@@ -75,5 +75,7 @@ test('15.8 · ¿Qué prefieres? con 3 jugadores y 5 rondas, con mayoría y con e
     await expect(page.getByText('4 puntos')).toBeVisible();
     await expect(page.getByText('3 puntos')).toHaveCount(2);
   }
-  await expect(lucia.getByRole('status')).toHaveText('Fran decide si se vuelve a jugar');
+  await expect(lucia.getByRole('status')).toHaveText(
+    'Fran elige si jugáis otra o cambiáis de juego',
+  );
 });

@@ -75,7 +75,7 @@ export function HostControls({
       return (
         <>
           {alert}
-          <Button variant="secondary" fullWidth disabled={busy} onClick={onChangeGame}>
+          <Button variant="accent" fullWidth disabled={busy} onClick={onChangeGame}>
             {copy.result.changeGame}
           </Button>
           <Button fullWidth disabled={busy} onClick={onPlayAgain}>

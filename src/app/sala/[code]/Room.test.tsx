@@ -323,6 +323,32 @@ describe('Room', () => {
     expect(mocks.openVoting).toHaveBeenCalledWith(ids.room);
   });
 
+  it.each([
+    [
+      'El impostor',
+      inGame({
+        phase: 'finished',
+        result: { winner: 'group', word: 'Paella', impostor_ids: [ids.marta] },
+      }),
+    ],
+    ['un juego por rondas', inProbable({ phase: 'finished', ranking: [] })],
+  ])(
+    'al terminar %s, la píldora dice que se acabó y cambiar de juego está a la vista',
+    (_game, snapshot) => {
+      ready(snapshot);
+      const { unmount } = render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Fin de la partida', { selector: 'header *' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Cambiar de juego' })).toHaveClass('h-14');
+      expect(screen.getByRole('button', { name: 'Volver a jugar' })).toBeInTheDocument();
+      unmount();
+      ready({ ...snapshot, me: { user_id: ids.lucia, name: 'Lucía', is_host: false } });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('status')).toHaveTextContent(
+        'Fran elige si jugáis otra o cambiáis de juego',
+      );
+    },
+  );
+
   it('a partir de la segunda ronda, la píldora dice que es la misma partida', () => {
     ready(inGame({ round: 2 }));
     const { unmount } = render(<Room initial={lobbySnapshot()} fresh={false} />);

@@ -72,7 +72,7 @@ test('9.9 · en la misma sala, El impostor, cambio a probable y 5 rondas con 3 j
     await expect(page.getByText('5 puntos')).toBeVisible();
   }
   await expect(pageOf(players, 'Lucía').getByRole('status')).toHaveText(
-    'Fran decide si se vuelve a jugar',
+    'Fran elige si jugáis otra o cambiáis de juego',
   );
 
   // Y se vuelve a El impostor en la misma sala.

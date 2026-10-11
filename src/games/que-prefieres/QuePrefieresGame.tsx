@@ -152,7 +152,7 @@ export function QuePrefieresGame({
       const ranking = rankingRows(snapshot, game);
       return (
         <ResultScreen
-          aside={pill(copy.room.pill(snapshot.room.code))}
+          aside={pill(copy.result.finished)}
           notice={notice}
           footer={controls}
           pill={copy.quePrefieres.resultPill}
