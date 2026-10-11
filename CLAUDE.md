@@ -2,19 +2,19 @@
 
 Web de juegos de fiesta para móvil. Next.js + Supabase + Vercel.
 
-- **Qué se construye y por qué:** `docs/CONTEXTO.md` (plataforma y El impostor) y `docs/JUEGOS.md` (los otros tres juegos). Son la fuente de verdad; si se contradicen, manda `docs/JUEGOS.md`.
-- **En qué orden:** `docs/PLAN.md` (fases 0–7, terminadas) y `docs/PLAN-2.md` (fases 8–13). Estado en `docs/TAREAS.md`.
+- **Qué se construye y por qué:** `docs/CONTEXTO.md` (plataforma y El impostor) y `docs/JUEGOS.md` (los otros tres juegos) y `docs/JUEGOS-2.md` (¿Qué prefieres? y Palabras prohibidas). Son la fuente de verdad; si se contradicen, manda `docs/JUEGOS-2.md` y después `docs/JUEGOS.md`.
+- **En qué orden:** `docs/PLAN.md` (fases 0–7, terminadas), `docs/PLAN-2.md` (fases 8–13, terminadas) y `docs/PLAN-3.md` (fases 14–18). Estado en `docs/TAREAS.md`.
 - **Referencia visual:** `docs/referencia-pantallas.html`.
 - **Harness:** rsc (`.rsc.json`). Skills en `.claude/skills/`, agentes en `.claude/agents/`, conocimiento en `02-DOCS/wiki/`. El agente elige el método (Fast-Track para cambios simples, cadena spec-driven para lo grande) y dice por qué. Se refresca con `npx @ericrisco/rsc sync` y se revisa con `npx @ericrisco/rsc doctor`.
 
-Lee `docs/CONTEXTO.md`, `docs/JUEGOS.md` y `docs/TAREAS.md` al empezar cada sesión. Estas reglas son obligatorias; no hay excepciones "por esta vez".
+Lee `docs/CONTEXTO.md`, `docs/JUEGOS.md`, `docs/JUEGOS-2.md` y `docs/TAREAS.md` al empezar cada sesión. Estas reglas son obligatorias; no hay excepciones "por esta vez".
 
 ## Autonomía
 
 - Trabajas sin supervisión. **No hagas preguntas ni esperes confirmación**, salvo las que exige el harness: en qué rama trabajar antes de un cambio de código y la aprobación de la especificación en la cadena spec-driven.
 - Ante una duda, elige la opción más simple coherente con `docs/CONTEXTO.md`, anótala en `docs/DECISIONES.md` y sigue.
 - Ante un bloqueo real, sigue el procedimiento de `docs/PLAN.md`. Nunca simules que algo funciona.
-- No modifiques `CLAUDE.md`, `docs/CONTEXTO.md`, `docs/JUEGOS.md`, `docs/PLAN.md` ni `docs/PLAN-2.md`. Si crees que están mal, anótalo en `docs/DECISIONES.md`.
+- No modifiques `CLAUDE.md`, `docs/CONTEXTO.md`, `docs/JUEGOS.md`, `docs/JUEGOS-2.md`, `docs/PLAN.md`, `docs/PLAN-2.md` ni `docs/PLAN-3.md`. Si crees que están mal, anótalo en `docs/DECISIONES.md`.
 
 ## Alcance
 
