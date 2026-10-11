@@ -671,6 +671,49 @@ export const copy = {
         art: 'Corazón atravesado por una flecha',
       },
     },
+    // Cómo se nombra cada rol en el guion: "Era vidente".
+    spokenRoles: {
+      wolf: 'lobo',
+      villager: 'aldeano',
+      seer: 'vidente',
+      protector: 'protector',
+      hunter: 'cazador',
+      jester: 'bufón',
+      cupid: 'Cupido',
+    },
+    // Guion del narrador (docs/PLAN-5.md §4). Solo información pública.
+    script: {
+      roles:
+        'Bienvenidos al pueblo. Mirad vuestra carta sin que nadie la vea. Entre vosotros hay lobos.',
+      nightFirst:
+        'Cae la primera noche. Coged todos el móvil y seguid las instrucciones. Nada de mirar al de al lado.',
+      night: 'Cae la noche sobre el pueblo. Todos al móvil.',
+      dawnDeath: (name: string, role: string) => `Amanece. ${name} no ha despertado. Era ${role}.`,
+      dawnDeaths: (names: readonly string[]) =>
+        `Amanece con malas noticias. Han muerto ${joinNames(names)}.`,
+      dawnNone: 'Amanece y, por una vez, estáis todos. Alguien ha tenido suerte esta noche.',
+      hunter: (name: string) =>
+        `${name} era el cazador, y no piensa irse solo. Elige a quién te llevas.`,
+      hunterShot: (name: string, role: string) =>
+        `El cazador dispara. ${name} cae con él. Era ${role}.`,
+      loverDeath: (name: string, role: string) =>
+        `${name} no soporta la pérdida y muere de pena. Era ${role}.`,
+      left: (name: string, role: string) => `${name} se ha ido del pueblo. Era ${role}.`,
+      mayor: 'El pueblo necesita un alcalde. Su voto valdrá doble. Postulaos, convenced y votad.',
+      mayorElected: (name: string) => `${name} es vuestro alcalde.`,
+      day: 'Móviles boca abajo. Tenéis que decidir a quién acusáis. Hablad.',
+      voting: 'Se acabó la charla. Coged el móvil y votad a quién acusáis.',
+      defense: (name: string) =>
+        `El pueblo acusa a ${name}. ${name}, tienes la palabra: defiéndete.`,
+      noAccused: 'El pueblo no se pone de acuerdo. Hoy no se ahorca a nadie.',
+      verdict: 'Habéis oído su defensa. ¿Condenar o salvar? Votad.',
+      executed: (name: string, role: string) =>
+        `El pueblo ha hablado. ${name} sube a la horca. Era ${role}.`,
+      spared: (name: string) => `El pueblo perdona a ${name}. Por ahora.`,
+      winVillage: 'No queda ni un lobo. El pueblo puede dormir tranquilo.',
+      winWolves: 'Los lobos ya son mayoría. El pueblo ha caído.',
+      winJester: 'Habéis ahorcado al bufón, que es justo lo que quería. Gana él solo.',
+    },
     teams: {
       village: 'Bando del pueblo',
       wolves: 'Bando de los lobos',

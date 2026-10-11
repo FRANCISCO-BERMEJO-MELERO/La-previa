@@ -33,6 +33,23 @@ describe('copy', () => {
     expect(copy.deal.waitingVote('Fran')).toBe('Fran decide cuándo se vota');
   });
 
+  it('el guion de Luna llena nombra a los jugadores y sus roles', () => {
+    const { script, spokenRoles } = copy.lunaLlena;
+    expect(script.dawnDeath('Marta', spokenRoles.seer)).toBe(
+      'Amanece. Marta no ha despertado. Era vidente.',
+    );
+    expect(script.dawnDeaths(['Marta', 'Luis'])).toBe(
+      'Amanece con malas noticias. Han muerto Marta y Luis.',
+    );
+    expect(script.defense('Fran')).toBe(
+      'El pueblo acusa a Fran. Fran, tienes la palabra: defiéndete.',
+    );
+    expect(script.hunterShot('Dani', spokenRoles.wolf)).toBe(
+      'El cazador dispara. Dani cae con él. Era lobo.',
+    );
+    expect(copy.lunaLlena.card.packNames(['Lucía', 'Dani', 'Paula'])).toBe('Lucía, Dani y Paula');
+  });
+
   it('concuerda el número de impostores que quedan', () => {
     expect(copy.reveal.continues(5, 1)).toBe(
       'La partida sigue. Quedan 5 jugadores y 1 impostor entre ellos.',
