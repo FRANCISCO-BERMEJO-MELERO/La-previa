@@ -175,7 +175,7 @@ Aceptación: las pruebas existentes pasan sin cambios.
 
 ## Fase 15 · ¿Qué prefieres?
 
-- [ ] 15.1 Migración: `rooms.game`, `games.game_type` y `games.phase` admiten `que_prefieres`; `prompts` admite el juego y gana `text_b`, obligatoria solo para él
+- [x] 15.1 Migración: `rooms.game`, `games.game_type` y `games.phase` admiten `que_prefieres`; `prompts` admite el juego y gana `text_b`, obligatoria solo para él
 - [ ] 15.2 Migración de datos con unos 120 dilemas; ampliar `docs/PREGUNTAS.md`
 - [ ] 15.3 `set_game` acepta el juego; `que_prefieres_start`, `_choose`, `_close`, `_next` con las auxiliares comunes
 - [ ] 15.4 Variante `que_prefieres` en `get_room_state`
