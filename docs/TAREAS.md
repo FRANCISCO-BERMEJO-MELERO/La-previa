@@ -317,7 +317,7 @@ Aceptación: `npm run check` pasa; con seis navegadores se reparte, se juega una
 - [x] 31.2 Día, votación de acusación y defensa
 - [x] 31.3 Veredicto y ejecución
 - [x] 31.4 Turno del cazador
-- [ ] 31.5 Vista de espectador
+- [x] 31.5 Vista de espectador
 - [ ] 31.6 Resultado
 - [ ] 31.7 Pruebas e2e con seis contextos y vista de móvil
 

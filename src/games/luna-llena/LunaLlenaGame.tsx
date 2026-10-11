@@ -23,6 +23,7 @@ import { HunterScreen } from './HunterScreen';
 import { DayScreen, DefenseScreen, VoteScreen, WaitScreen } from './DayScreens';
 import {
   accuseGroups,
+  actionLines,
   liveMayorId,
   lunaPlayers,
   nameOf,
@@ -30,7 +31,9 @@ import {
   nightCandidates,
   nightMode,
   packMarks,
+  pairNames,
   pendingCount,
+  roleRows,
   verdictSides,
   type LunaPlayer,
   type NightMode,
@@ -40,6 +43,7 @@ import { narratorAction, type NarratorStep } from './narrator';
 import { NarratorBox } from './NarratorBox';
 import { NightScreen } from './NightScreen';
 import { RolesScreen } from './RolesScreen';
+import { SpectatorScreen } from './SpectatorScreen';
 import { AccusedScreen, ExecutionScreen, VerdictScreen } from './TrialScreens';
 import { viewFor } from './view';
 
@@ -300,6 +304,18 @@ export function LunaLlenaGame({
           text={texts.hunter.waiting(
             players.find((player) => player.role === 'hunter')?.name ?? '',
           )}
+        />
+      );
+    case 'spectator':
+      return (
+        <SpectatorScreen
+          {...chrome}
+          rows={roleRows(players, game.spectator?.roles ?? [])}
+          lovers={pairNames(players, game.spectator?.lovers ?? null)}
+          actions={
+            game.phase === 'night' ? actionLines(players, game.spectator?.actions ?? []) : null
+          }
+          deaths={game.announcement?.deaths ?? []}
         />
       );
     default:

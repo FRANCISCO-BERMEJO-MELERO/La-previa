@@ -156,3 +156,40 @@ export function verdictSides(
     spare: votes.filter((vote) => vote.condemn === false).map((vote) => label(vote.voter_id)),
   };
 }
+
+export type RoleRow = { userId: string; name: string; role: LunaRole; alive: boolean };
+
+/** Cada jugador con su rol, en el orden de la partida. */
+export function roleRows(
+  players: readonly LunaPlayer[],
+  roles: readonly { user_id: string; role: LunaRole }[],
+): RoleRow[] {
+  return players.flatMap((player) => {
+    const role = roles.find((item) => item.user_id === player.userId)?.role;
+    return role ? [{ userId: player.userId, name: player.name, role, alive: player.alive }] : [];
+  });
+}
+
+/** Los nombres de los enamorados, si los hay. */
+export function pairNames(
+  players: readonly LunaPlayer[],
+  pair: readonly string[] | null,
+): [string, string] | null {
+  const [a, b] = pair ?? [];
+  return a && b ? [nameOf(players, a), nameOf(players, b)] : null;
+}
+
+/** Lo que ha marcado cada uno esta noche, en frases. */
+export function actionLines(
+  players: readonly LunaPlayer[],
+  actions: readonly { user_id: string; target_id: string; target2_id: string | null }[],
+): string[] {
+  const texts = copy.lunaLlena.spectator;
+  return actions.map((action) => {
+    const who = nameOf(players, action.user_id);
+    const target = nameOf(players, action.target_id);
+    return action.target2_id
+      ? texts.pair(who, target, nameOf(players, action.target2_id))
+      : texts.action(who, target);
+  });
+}
