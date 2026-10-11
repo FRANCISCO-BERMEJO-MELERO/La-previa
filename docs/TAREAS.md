@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan 2 terminado · última actualización 2026-10-10
+Estado: plan 3 en curso · última actualización 2026-10-11
 
 ## Fase 0 · Preparación
 
@@ -161,6 +161,59 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 - [x] 13.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
 - [x] 13.3 Revisión final contra `docs/JUEGOS.md` y "Fuera de alcance"
 - [x] 13.4 Ampliar `docs/INFORME.md` con esta tanda
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
+## Fase 14 · Preparación de la tercera tanda
+
+- [x] 14.1 Leer `docs/JUEGOS-2.md`, `docs/DECISIONES.md` (fases 8–13) e `docs/INFORME.md`; repasar las auxiliares de `private` para juegos por rondas y `src/games/rounds`
+- [x] 14.2 Comprobar que las tres baterías pasan antes de tocar nada (472 unitarios, 633 pgTAP, 15 e2e)
+- [ ] 14.3 Anotar en `docs/DECISIONES.md` las diferencias entre `docs/JUEGOS-2.md` y el código, y cómo se resuelven
+- [x] 14.4 Añadir las fases 14–18 a `docs/TAREAS.md`
+
+Aceptación: las pruebas existentes pasan sin cambios.
+
+## Fase 15 · ¿Qué prefieres?
+
+- [ ] 15.1 Migración: `rooms.game`, `games.game_type` y `games.phase` admiten `que_prefieres`; `prompts` admite el juego y gana `text_b`, obligatoria solo para él
+- [ ] 15.2 Migración de datos con unos 120 dilemas; ampliar `docs/PREGUNTAS.md`
+- [ ] 15.3 `set_game` acepta el juego; `que_prefieres_start`, `_choose`, `_close`, `_next` con las auxiliares comunes
+- [ ] 15.4 Variante `que_prefieres` en `get_room_state`
+- [ ] 15.5 Pruebas pgTAP de `que_prefieres`
+- [ ] 15.6 Selector con el juego elegible y su portada (fichas "A" y "B")
+- [ ] 15.7 Pantallas de `que_prefieres` y su `viewFor`, con tests unitarios
+- [ ] 15.8 Prueba e2e: 5 rondas con 3 jugadores, con mayoría y con empate
+
+Aceptación: las tres baterías pasan.
+
+## Fase 16 · Palabras prohibidas
+
+- [ ] 16.1 Migración: `rooms`, `games` y fases admiten el juego; tabla `taboo_cards` con RLS, sin políticas y con sus `check`; `game_rounds.card_id`
+- [ ] 16.2 Migración de datos con unas 150 tarjetas y `docs/TARJETAS.md`
+- [ ] 16.3 `palabras_prohibidas_start`, `_guessed`, `_pass`, `_forbidden`, `_next`; turno de quien describe, quien vigila y ronda anulada
+- [ ] 16.4 Variante `palabras_prohibidas` en `get_room_state`
+- [ ] 16.5 Pruebas pgTAP de `palabras_prohibidas`
+- [ ] 16.6 Selector con el juego elegible y su portada (palabra tachada)
+- [ ] 16.7 Pantallas de `palabras_prohibidas` y su `viewFor`, con tests unitarios
+- [ ] 16.8 Prueba e2e: 5 rondas con 4 jugadores, con acierto, prohibida y pase, sin palabra en la red de quien adivina
+
+Aceptación: las tres baterías pasan.
+
+## Fase 17 · Selector y repaso conjunto (tercera tanda)
+
+- [ ] 17.1 Selector definitivo: seis juegos elegibles y sin "Próximamente"
+- [ ] 17.2 Repaso a 360, 390 y 430 px con 16 jugadores, nombres de 14 y los dilemas y tarjetas más largos
+- [ ] 17.3 Repaso de accesibilidad de las pantallas nuevas en la e2e de accesibilidad de los juegos
+- [ ] 17.4 Sesión larga con los seis juegos seguidos y una recarga a mitad de cada uno
+
+Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitentes.
+
+## Fase 18 · Cierre de la tercera tanda
+
+- [ ] 18.1 `README.md` con los seis juegos
+- [ ] 18.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
+- [ ] 18.3 Revisión final contra `docs/JUEGOS-2.md` y su "Fuera de alcance"
+- [ ] 18.4 Ampliar `docs/INFORME.md` con esta tanda
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
