@@ -63,20 +63,6 @@ export function GamePickerScreen({
           </li>
         ))}
       </ul>
-      <h2 className="text-label font-bold uppercase tracking-label">{copy.games.soon}</h2>
-      <ul className="grid grid-cols-2 gap-3">
-        {upcoming.map(({ title, background, cover }) => (
-          <li key={title} className="overflow-hidden rounded-chip border-3 border-ink bg-paper">
-            <div
-              aria-hidden="true"
-              className={`flex h-17 items-center justify-center gap-2 border-b-3 border-ink ${background}`}
-            >
-              {cover}
-            </div>
-            <p className="px-2.5 py-2 text-sm font-bold">{title}</p>
-          </li>
-        ))}
-      </ul>
       {error ? (
         <p role="alert" className="text-md font-bold">
           {error}
@@ -115,6 +101,7 @@ const coverBackgrounds: Record<GameId, string> = {
   quien_lo_dijo: 'bg-lilac',
   una_pista: 'bg-lime',
   que_prefieres: 'bg-orange',
+  palabras_prohibidas: 'bg-lilac',
 };
 
 function ImpostorFaces() {
@@ -187,12 +174,22 @@ function TwoOptions() {
   );
 }
 
+/** La palabra que no se puede decir. */
+function BannedWord() {
+  return (
+    <span className="rotate-3 rounded-control border-3 border-ink bg-paper px-5 py-1 font-display text-4xl uppercase line-through decoration-4">
+      {copy.games.covers.banned}
+    </span>
+  );
+}
+
 const covers: Record<GameId, ReactNode> = {
   impostor: <ImpostorFaces />,
   probable: <ProbableFaces />,
   quien_lo_dijo: <QuienLoDijoBubble />,
   una_pista: <RepeatedClues />,
   que_prefieres: <TwoOptions />,
+  palabras_prohibidas: <BannedWord />,
 };
 
 function Face() {
@@ -203,16 +200,3 @@ function Face() {
     </span>
   );
 }
-
-/** Juegos que aún no se pueden elegir, con su portada hecha con formas. */
-const upcoming = [
-  {
-    title: copy.games.upcoming.banned,
-    background: 'bg-lilac',
-    cover: (
-      <span className="rotate-3 rounded-control border-3 border-ink bg-paper px-2.5 py-0.5 font-display text-lg uppercase line-through decoration-4">
-        {copy.games.covers.banned}
-      </span>
-    ),
-  },
-];

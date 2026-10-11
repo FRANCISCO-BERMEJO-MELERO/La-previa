@@ -14,6 +14,7 @@ import {
   backToLobby,
   kickPlayer,
   leaveRoom,
+  palabrasProhibidasStart,
   probableStart,
   quePrefieresStart,
   quienLoDijoStart,
@@ -231,6 +232,8 @@ export function Room({ initial, fresh }: RoomProps) {
               return unaPistaStart(roomId, rounds);
             case 'que_prefieres':
               return quePrefieresStart(roomId, rounds);
+            case 'palabras_prohibidas':
+              return palabrasProhibidasStart(roomId, rounds);
           }
         });
       }}

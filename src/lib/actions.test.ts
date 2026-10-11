@@ -15,6 +15,7 @@ import {
   probableNext,
   probableStart,
   probableVote,
+  palabrasProhibidasStart,
   quePrefieresChoose,
   quePrefieresClose,
   quePrefieresNext,
@@ -78,6 +79,7 @@ describe('acciones', () => {
     await quePrefieresChoose('sala', 'b', d);
     await quePrefieresClose('sala', d);
     await quePrefieresNext('sala', d);
+    await palabrasProhibidasStart('sala', 10, d);
     await openVoting('sala', d);
     await castVote('sala', 'u3', d);
     await closeVoting('sala', d);
@@ -111,6 +113,7 @@ describe('acciones', () => {
       ['que_prefieres_choose', { room_id: 'sala', option: 'b' }],
       ['que_prefieres_close', { room_id: 'sala' }],
       ['que_prefieres_next', { room_id: 'sala' }],
+      ['palabras_prohibidas_start', { room_id: 'sala', rounds: 10 }],
       ['open_voting', { room_id: 'sala' }],
       ['cast_vote', { room_id: 'sala', target_id: 'u3' }],
       ['close_voting', { room_id: 'sala' }],

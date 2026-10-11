@@ -129,6 +129,10 @@ export function quePrefieresNext(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'que_prefieres_next', { room_id: roomId });
 }
 
+export function palabrasProhibidasStart(roomId: string, rounds: number, deps = defaultDeps) {
+  return callForSnapshot(deps, 'palabras_prohibidas_start', { room_id: roomId, rounds });
+}
+
 export function openVoting(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'open_voting', { room_id: roomId });
 }

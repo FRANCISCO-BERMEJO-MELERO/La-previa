@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-11 · 16.6 · Palabras prohibidas elegible y sin "Próximamente"
+
+Con este juego ya no queda ninguno próximo, así que el bloque "Próximamente" del selector y sus textos (`games.soon`, `games.upcoming`) se quitan aquí mismo en vez de dejar una lista vacía o código sin usar hasta la 17.1. La portada es la palabra tachada que ya estaba dibujada, a tamaño de portada grande y sobre el mismo `lilac` de la referencia. La prueba existente del selector pasa a contar seis juegos y a comprobar que no aparece "Próximamente".
+
 ## 2026-10-11 · 16.3 · Turnos y ronda anulada en Palabras prohibidas
 
 - `private.una_pista_next_guesser` pasa a ser `private.next_subject` y elige también a quien describe; `open_round` la usa para los dos juegos y guarda la tarjeta en `game_rounds.card_id` con `private.pick_card`, que no repite tarjeta en la sala.

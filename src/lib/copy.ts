@@ -113,7 +113,6 @@ export const copy = {
   games: {
     title: '¿A qué jugamos?',
     chosen: 'Elegido',
-    soon: 'Próximamente',
     open: 'Abrir la sala',
     impostor: {
       name: 'El impostor',
@@ -141,7 +140,11 @@ export const copy = {
         'Sale un dilema y cada uno elige en secreto. Puntúa quien piensa como la mayoría.',
       players: 'De 3 a 16 jugadores',
     },
-    upcoming: { banned: 'Palabras prohibidas' },
+    palabras_prohibidas: {
+      name: 'Palabras prohibidas',
+      description: 'Uno describe una palabra sin decir las cinco prohibidas. Los demás adivinan.',
+      players: 'De 3 a 16 jugadores',
+    },
     covers: {
       quote: '¿?',
       banned: 'Palabra',

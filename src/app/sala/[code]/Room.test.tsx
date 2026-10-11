@@ -46,6 +46,8 @@ const mocks = vi.hoisted(() => ({
   quePrefieresChoose: vi.fn<(roomId: string, option: string) => Promise<ActionResult<Snapshot>>>(),
   quePrefieresClose: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   quePrefieresNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  palabrasProhibidasStart:
+    vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
   openVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   castVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   closeVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -81,6 +83,7 @@ vi.mock('@/lib/actions', () => ({
   quePrefieresChoose: mocks.quePrefieresChoose,
   quePrefieresClose: mocks.quePrefieresClose,
   quePrefieresNext: mocks.quePrefieresNext,
+  palabrasProhibidasStart: mocks.palabrasProhibidasStart,
   openVoting: mocks.openVoting,
   castVote: mocks.castVote,
   closeVoting: mocks.closeVoting,
@@ -172,6 +175,25 @@ describe('Room', () => {
     fireEvent.click(screen.getByRole('button', { name: '5 rondas' }));
     fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
     expect(mocks.quePrefieresStart).toHaveBeenCalledWith(ids.room, 5);
+  });
+
+  it('el anfitrión puede elegir Palabras prohibidas y empezar con las rondas elegidas', async () => {
+    mocks.setGame.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+    const { unmount } = render(<Room initial={lobbySnapshot()} fresh />);
+    fireEvent.click(screen.getByRole('button', { name: /Palabras prohibidas/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir la sala' }));
+    expect(mocks.setGame).toHaveBeenCalledWith(ids.room, 'palabras_prohibidas');
+    expect(await screen.findByText('KTRM')).toBeInTheDocument();
+    unmount();
+
+    const base = lobbySnapshot();
+    const lobby = lobbySnapshot({ room: { ...base.room, game: 'palabras_prohibidas' } });
+    ready(lobby);
+    mocks.palabrasProhibidasStart.mockResolvedValue({ ok: true, data: lobby });
+    render(<Room initial={lobby} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: '15 rondas' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(mocks.palabrasProhibidasStart).toHaveBeenCalledWith(ids.room, 15);
   });
 
   it('quien no es anfitrión nunca ve el selector de juego', () => {

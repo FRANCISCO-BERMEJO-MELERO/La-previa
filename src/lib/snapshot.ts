@@ -151,6 +151,7 @@ export const gameIds = [
   'quien_lo_dijo',
   'una_pista',
   'que_prefieres',
+  'palabras_prohibidas',
 ] as const;
 
 export const snapshotSchema = z.object({
