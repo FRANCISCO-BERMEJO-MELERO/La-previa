@@ -751,6 +751,16 @@ export const copy = {
       packNames: (names: readonly string[]) =>
         names.length === 0 ? 'Cazas solo: no hay más lobos.' : joinNames(names),
     },
+    narrator: {
+      title: 'Lee en voz alta',
+      startNight: 'Que caiga la noche',
+      forceDawn: 'Hacer que amanezca',
+      next: 'Continuar',
+      skipHunter: 'Seguir sin disparo',
+      closeVote: 'Cerrar la votación',
+      openVoting: 'Abrir votación',
+      toVerdict: 'Pasar al veredicto',
+    },
     lobby: {
       wolves: 'Lobos',
       fewerWolves: 'Menos lobos',
