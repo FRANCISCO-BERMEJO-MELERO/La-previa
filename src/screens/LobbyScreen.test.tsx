@@ -33,6 +33,12 @@ function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {})
     onShowQr: vi.fn(),
     onCloseQr: vi.fn(),
     onImpostorsChange: vi.fn(),
+    categories: [] as string[],
+    chosenCategories: [] as string[],
+    topicsOpen: false,
+    onTopicsOpen: vi.fn(),
+    onTopicsClose: vi.fn(),
+    onCategoriesChange: vi.fn(),
     rounds: 10,
     onRoundsChange: vi.fn(),
     onStart: vi.fn(),
@@ -226,5 +232,49 @@ describe('LobbyScreen (04)', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(
       'Eso solo lo puede hacer quien lleva la sala.',
     );
+  });
+});
+
+describe('LobbyScreen: temáticas de El impostor', () => {
+  const categories = ['Animales', 'Fútbol', 'Historia'];
+
+  it('sin temáticas cargadas no se enseña el selector', () => {
+    renderLobby();
+    expect(screen.queryByRole('button', { name: 'Elegir temáticas' })).not.toBeInTheDocument();
+  });
+
+  it('dice qué temáticas hay elegidas y abre el diálogo', () => {
+    const props = renderLobby({ categories, chosenCategories: ['Fútbol', 'Historia'] });
+    expect(screen.getByText('2 temáticas')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Elegir temáticas' }));
+    expect(props.onTopicsOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it('marcar una la añade en el orden de la lista, y desmarcarla la quita', () => {
+    const props = renderLobby({ categories, chosenCategories: ['Historia'], topicsOpen: true });
+    expect(screen.getByRole('button', { name: 'Historia' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Animales' }));
+    expect(props.onCategoriesChange).toHaveBeenLastCalledWith(['Animales', 'Historia']);
+    fireEvent.click(screen.getByRole('button', { name: 'Historia' }));
+    expect(props.onCategoriesChange).toHaveBeenLastCalledWith([]);
+  });
+
+  it('"Todas" deja de filtrar, y está marcada cuando no hay ninguna elegida', () => {
+    const props = renderLobby({ categories, chosenCategories: ['Fútbol'], topicsOpen: true });
+    expect(screen.getByRole('button', { name: 'Todas' })).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(screen.getByRole('button', { name: 'Todas' }));
+    expect(props.onCategoriesChange).toHaveBeenLastCalledWith([]);
+  });
+
+  it('en los juegos por rondas no hay temáticas', () => {
+    const base = lobbySnapshot();
+    renderLobby({
+      snapshot: lobbySnapshot({ room: { ...base.room, game: 'probable' } }),
+      categories,
+    });
+    expect(screen.queryByRole('button', { name: 'Elegir temáticas' })).not.toBeInTheDocument();
   });
 });

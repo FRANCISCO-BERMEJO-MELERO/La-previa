@@ -7,6 +7,7 @@ import {
   continueGame,
   createRoom,
   getRoomState,
+  impostorCategories,
   joinRoom,
   kickPlayer,
   leaveRoom,
@@ -61,7 +62,7 @@ describe('acciones', () => {
     await getRoomState('sala', d);
     await setGame('sala', 'impostor', d);
     await kickPlayer('sala', 'u2', d);
-    await startGame('sala', 2, d);
+    await startGame('sala', { impostorCount: 2, categories: [] }, d);
     await probableStart('sala', 10, d);
     await probableVote('sala', 'u2', d);
     await probableClose('sala', d);
@@ -132,6 +133,27 @@ describe('acciones', () => {
       ['continue_game', { room_id: 'sala' }],
       ['back_to_lobby', { room_id: 'sala' }],
     ]);
+  });
+
+  it('empezar El impostor envía las temáticas solo si se ha elegido alguna', async () => {
+    const d = deps({ data: lobbySnapshot(), error: null });
+    await startGame('sala', { impostorCount: 1, categories: ['Fútbol', 'Historia'] }, d);
+    expect(d.rpc).toHaveBeenCalledWith('start_game', {
+      room_id: 'sala',
+      impostor_count: 1,
+      categories: ['Fútbol', 'Historia'],
+    });
+  });
+
+  it('las temáticas llegan validadas', async () => {
+    expect(await impostorCategories(deps({ data: ['Animales', 'Fútbol'], error: null }))).toEqual({
+      ok: true,
+      data: ['Animales', 'Fútbol'],
+    });
+    expect(await impostorCategories(deps({ data: [1, 2], error: null }))).toEqual({
+      ok: false,
+      error: 'unknown',
+    });
   });
 
   it('inicia sesión antes de llamar', async () => {

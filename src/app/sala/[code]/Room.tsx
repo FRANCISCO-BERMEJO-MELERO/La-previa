@@ -29,6 +29,7 @@ import { roomPath } from '@/lib/room-code';
 import { DEFAULT_ROUNDS } from '@/lib/rounds';
 import { shareRoomLink, type ShareOutcome } from '@/lib/share';
 import type { GameId, Snapshot } from '@/lib/snapshot';
+import { useImpostorCategories } from '@/lib/use-impostor-categories';
 import { useRoomSync } from '@/lib/use-room-sync';
 import { useWakeLock } from '@/lib/use-wake-lock';
 import { GamePickerScreen } from '@/screens/GamePickerScreen';
@@ -49,6 +50,8 @@ export function Room({ initial, fresh }: RoomProps) {
   const [picking, setPicking] = useState(fresh);
   const [impostors, setImpostors] = useState(1);
   const [rounds, setRounds] = useState(DEFAULT_ROUNDS);
+  const [chosenCategories, setChosenCategories] = useState<string[]>([]);
+  const [topicsOpen, setTopicsOpen] = useState(false);
   const [pickedGame, setPickedGame] = useState<GameId | null>(null);
   const [error, setError] = useState<ActionError | null>(null);
   const [busy, setBusy] = useState(false);
@@ -58,6 +61,10 @@ export function Room({ initial, fresh }: RoomProps) {
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [leaveError, setLeaveError] = useState<ActionError | null>(null);
   useWakeLock(sync.status !== 'gone');
+  const lobbyGame = sync.snapshot ?? initial;
+  const categories = useImpostorCategories(
+    lobbyGame.me.is_host && lobbyGame.room.game === 'impostor' && lobbyGame.game === null,
+  );
 
   if (sync.status === 'gone') return <RoomGoneScreen />;
 
@@ -152,7 +159,9 @@ export function Room({ initial, fresh }: RoomProps) {
     };
     switch (game.type) {
       case 'impostor':
-        return withLeaveDialog(<ImpostorGame {...shared} game={game} />);
+        return withLeaveDialog(
+          <ImpostorGame {...shared} game={game} categories={chosenCategories} />,
+        );
       case 'probable':
         return withLeaveDialog(<ProbableGame {...shared} game={game} />);
       case 'quien_lo_dijo':
@@ -214,13 +223,23 @@ export function Room({ initial, fresh }: RoomProps) {
         setQrOpen(false);
       }}
       onImpostorsChange={setImpostors}
+      categories={categories}
+      chosenCategories={chosenCategories}
+      topicsOpen={topicsOpen}
+      onTopicsOpen={() => {
+        setTopicsOpen(true);
+      }}
+      onTopicsClose={() => {
+        setTopicsOpen(false);
+      }}
+      onCategoriesChange={setChosenCategories}
       rounds={rounds}
       onRoundsChange={setRounds}
       onStart={() => {
         void run(() => {
           switch (snapshot.room.game) {
             case 'impostor':
-              return startGame(roomId, impostorCount);
+              return startGame(roomId, { impostorCount, categories: chosenCategories });
             case 'probable':
               return probableStart(roomId, rounds);
             case 'quien_lo_dijo':

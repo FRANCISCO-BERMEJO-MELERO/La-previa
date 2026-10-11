@@ -195,6 +195,18 @@ export const copy = {
     moreImpostors: 'Más impostores',
     minus: '−',
     plus: '+',
+    topics: 'Temáticas',
+    topicsSummary: (chosen: readonly string[]) =>
+      chosen.length === 0
+        ? 'Todas'
+        : chosen.length === 1
+          ? (chosen[0] ?? '')
+          : `${String(chosen.length)} temáticas`,
+    topicsChoose: 'Elegir',
+    topicsChooseLabel: 'Elegir temáticas',
+    topicsHint: 'Marca las que quieras. Sin marcar ninguna, la palabra sale de todas.',
+    topicsAll: 'Todas',
+    topicsDone: 'Listo',
     rounds: 'Rondas',
     roundsOption: (rounds: number) => `${String(rounds)} rondas`,
     start: 'Empezar partida',

@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { isErrorCode, type ActionError } from './copy';
 import { parseSnapshot, type Snapshot } from './snapshot';
 import { ensureSession, getSupabase } from './supabase';
@@ -37,8 +38,30 @@ export function kickPlayer(roomId: string, userId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'kick_player', { room_id: roomId, user_id: userId });
 }
 
-export function startGame(roomId: string, impostorCount: number, deps = defaultDeps) {
-  return callForSnapshot(deps, 'start_game', { room_id: roomId, impostor_count: impostorCount });
+/** Lo que el anfitrión elige antes de empezar El impostor. */
+export type ImpostorSettings = {
+  impostorCount: number;
+  /** Temáticas de la palabra; vacío es todas. */
+  categories: readonly string[];
+};
+
+export function startGame(roomId: string, settings: ImpostorSettings, deps = defaultDeps) {
+  return callForSnapshot(deps, 'start_game', {
+    room_id: roomId,
+    impostor_count: settings.impostorCount,
+    // Sin temáticas no se envían: la base de datos entiende entonces que valen todas.
+    ...(settings.categories.length > 0 ? { categories: settings.categories } : {}),
+  });
+}
+
+const categoriesSchema = z.array(z.string());
+
+/** Temáticas de El impostor que hay en la base de datos. */
+export async function impostorCategories(deps = defaultDeps): Promise<ActionResult<string[]>> {
+  const response = await call(deps, 'impostor_categories', {});
+  if (!response.ok) return response;
+  const parsed = categoriesSchema.safeParse(response.data);
+  return parsed.success ? { ok: true, data: parsed.data } : { ok: false, error: 'unknown' };
 }
 
 export function probableStart(roomId: string, rounds: number, deps = defaultDeps) {

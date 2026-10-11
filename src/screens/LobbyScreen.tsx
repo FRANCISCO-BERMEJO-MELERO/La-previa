@@ -36,6 +36,13 @@ type LobbyScreenProps = {
   onShowQr: () => void;
   onCloseQr: () => void;
   onImpostorsChange: (count: number) => void;
+  /** Temáticas de El impostor que hay; vacío mientras llegan. */
+  categories: readonly string[];
+  chosenCategories: readonly string[];
+  topicsOpen: boolean;
+  onTopicsOpen: () => void;
+  onTopicsClose: () => void;
+  onCategoriesChange: (chosen: string[]) => void;
   rounds: number;
   onRoundsChange: (rounds: number) => void;
   onStart: () => void;
@@ -56,6 +63,12 @@ export function LobbyScreen({
   onShowQr,
   onCloseQr,
   onImpostorsChange,
+  categories,
+  chosenCategories,
+  topicsOpen,
+  onTopicsOpen,
+  onTopicsClose,
+  onCategoriesChange,
   rounds,
   onRoundsChange,
   onStart,
@@ -147,11 +160,16 @@ export function LobbyScreen({
             {isRoundGame(room.game) ? (
               <RoundsPicker value={rounds} onChange={onRoundsChange} />
             ) : (
-              <ImpostorStepper
-                value={impostors}
-                playerCount={players.length}
-                onChange={onImpostorsChange}
-              />
+              <>
+                <ImpostorStepper
+                  value={impostors}
+                  playerCount={players.length}
+                  onChange={onImpostorsChange}
+                />
+                {categories.length > 0 ? (
+                  <TopicsRow chosen={chosenCategories} onOpen={onTopicsOpen} />
+                ) : null}
+              </>
             )}
             {missing > 0 ? (
               <p id="start-hint" className="text-md font-bold">
@@ -171,6 +189,19 @@ export function LobbyScreen({
           <WaitingBox>{copy.lobby.waitingHost(hostName)}</WaitingBox>
         )}
       </div>
+
+      <Dialog
+        open={topicsOpen}
+        title={copy.lobby.topics}
+        closeLabel={copy.lobby.topicsDone}
+        onClose={onTopicsClose}
+      >
+        <TopicsPicker
+          categories={categories}
+          chosen={chosenCategories}
+          onChange={onCategoriesChange}
+        />
+      </Dialog>
 
       <Dialog
         open={qrOpen}
@@ -229,6 +260,95 @@ function ImpostorStepper({
         </StepButton>
       </div>
     </div>
+  );
+}
+
+function TopicsRow({ chosen, onOpen }: { chosen: readonly string[]; onOpen: () => void }) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-chip border-3 border-ink bg-paper px-3.5 py-2">
+      <p className="flex min-w-0 flex-col">
+        <span className="text-base font-bold">{copy.lobby.topics}</span>
+        <span className="truncate text-sm font-medium">{copy.lobby.topicsSummary(chosen)}</span>
+      </p>
+      <button
+        type="button"
+        aria-label={copy.lobby.topicsChooseLabel}
+        aria-haspopup="dialog"
+        onClick={onOpen}
+        className="h-11 shrink-0 rounded-control border-3 border-ink bg-paper px-4 text-md font-bold"
+      >
+        {copy.lobby.topicsChoose}
+      </button>
+    </div>
+  );
+}
+
+/** Una ficha por temática; marcar ninguna es lo mismo que marcarlas todas. */
+function TopicsPicker({
+  categories,
+  chosen,
+  onChange,
+}: {
+  categories: readonly string[];
+  chosen: readonly string[];
+  onChange: (chosen: string[]) => void;
+}) {
+  const toggle = (category: string) => {
+    onChange(
+      chosen.includes(category)
+        ? chosen.filter((item) => item !== category)
+        : categories.filter((item) => item === category || chosen.includes(item)),
+    );
+  };
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="text-md font-medium">{copy.lobby.topicsHint}</p>
+      <ul className="flex flex-wrap gap-2">
+        <li>
+          <TopicChip
+            label={copy.lobby.topicsAll}
+            pressed={chosen.length === 0}
+            onClick={() => {
+              onChange([]);
+            }}
+          />
+        </li>
+        {categories.map((category) => (
+          <li key={category}>
+            <TopicChip
+              label={category}
+              pressed={chosen.includes(category)}
+              onClick={() => {
+                toggle(category);
+              }}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function TopicChip({
+  label,
+  pressed,
+  onClick,
+}: {
+  label: string;
+  pressed: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={pressed}
+      onClick={onClick}
+      className={`min-h-11 rounded-full border-3 border-ink px-3.5 text-md font-bold ${
+        pressed ? 'bg-ink text-paper' : 'bg-paper'
+      }`}
+    >
+      {label}
+    </button>
   );
 }
 

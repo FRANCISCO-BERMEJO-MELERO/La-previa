@@ -46,6 +46,8 @@ type ImpostorGameProps = {
   run: (action: () => Promise<ActionResult<Snapshot>>) => Promise<boolean>;
   onKickRequest: (userId: string) => void;
   onChangeGame: () => void;
+  /** Temáticas elegidas en la sala de espera, para volver a jugar con las mismas. */
+  categories: readonly string[];
 };
 
 /** Partida de El impostor: acciones del juego y pantalla que toca según la foto. */
@@ -55,6 +57,7 @@ export function ImpostorGame({
   pill,
   run,
   onChangeGame,
+  categories,
   ...rest
 }: ImpostorGameProps) {
   const [voteTarget, setVoteTarget] = useState<string | null>(null);
@@ -97,7 +100,7 @@ export function ImpostorGame({
       }}
       onPlayAgain={() => {
         void run(async () => {
-          const again = await startGame(roomId, game.impostor_count);
+          const again = await startGame(roomId, { impostorCount: game.impostor_count, categories });
           // Si ya no vale (se ha ido gente), se vuelve a la sala de espera para ajustarlo.
           const noLongerValid =
             !again.ok &&

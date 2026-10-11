@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ActionResult } from '@/lib/actions';
+import type { ActionResult, ImpostorSettings } from '@/lib/actions';
 import type { ShareOutcome } from '@/lib/share';
 import type { Snapshot } from '@/lib/snapshot';
 import type { RoomSync } from '@/lib/use-room-sync';
@@ -26,7 +26,9 @@ const mocks = vi.hoisted(() => ({
   shareRoomLink: vi.fn<(url: string, title: string) => Promise<ShareOutcome>>(),
   wakeLock: vi.fn<(active: boolean) => void>(),
   leaveRoom: vi.fn<(roomId: string) => Promise<ActionResult<null>>>(),
-  startGame: vi.fn<(roomId: string, count: number) => Promise<ActionResult<Snapshot>>>(),
+  startGame:
+    vi.fn<(roomId: string, settings: ImpostorSettings) => Promise<ActionResult<Snapshot>>>(),
+  impostorCategories: vi.fn<() => Promise<ActionResult<string[]>>>(),
   probableStart: vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
   probableVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   probableClose: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -69,6 +71,7 @@ vi.mock('@/lib/actions', () => ({
   kickPlayer: mocks.kickPlayer,
   leaveRoom: mocks.leaveRoom,
   startGame: mocks.startGame,
+  impostorCategories: mocks.impostorCategories,
   probableStart: mocks.probableStart,
   probableVote: mocks.probableVote,
   probableClose: mocks.probableClose,
@@ -111,6 +114,7 @@ function ready(snapshot: Snapshot = lobbySnapshot()) {
 
 beforeEach(() => {
   vi.resetAllMocks();
+  mocks.impostorCategories.mockResolvedValue({ ok: true, data: ['Animales', 'Fútbol'] });
   ready();
 });
 
@@ -308,7 +312,7 @@ describe('Room', () => {
     mocks.startGame.mockResolvedValue({ ok: true, data: inGame() });
     render(<Room initial={lobbySnapshot()} fresh={false} />);
     fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
-    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, 1);
+    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, { impostorCount: 1, categories: [] });
     await waitFor(() => {
       expect(mocks.apply).toHaveBeenCalledTimes(1);
     });
@@ -348,6 +352,29 @@ describe('Room', () => {
       );
     },
   );
+
+  it('el anfitrión elige temáticas y empieza con ellas', async () => {
+    mocks.startGame.mockResolvedValue({ ok: true, data: inGame() });
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(await screen.findByRole('button', { name: 'Elegir temáticas' })).toBeInTheDocument();
+    expect(screen.getByText('Todas')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Elegir temáticas' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Fútbol' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Listo' }));
+    expect(screen.getAllByText('Fútbol').length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, {
+      impostorCount: 1,
+      categories: ['Fútbol'],
+    });
+  });
+
+  it('quien no lleva la sala no pide las temáticas', () => {
+    ready(lobbySnapshot({ me: { user_id: ids.lucia, name: 'Lucía', is_host: false } }));
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(mocks.impostorCategories).not.toHaveBeenCalled();
+    expect(screen.queryByRole('button', { name: 'Elegir temáticas' })).not.toBeInTheDocument();
+  });
 
   it('a partir de la segunda ronda, la píldora dice que es la misma partida', () => {
     ready(inGame({ round: 2 }));
@@ -435,7 +462,7 @@ describe('Room', () => {
     render(<Room initial={lobbySnapshot()} fresh={false} />);
     expect(screen.getByRole('heading', { name: '¡Has ganado!' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
-    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, 1);
+    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, { impostorCount: 1, categories: [] });
     await waitFor(() => {
       expect(mocks.apply).toHaveBeenCalledTimes(1);
     });

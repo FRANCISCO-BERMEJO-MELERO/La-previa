@@ -1,5 +1,11 @@
 # Decisiones
 
+## 2026-10-11 · 22.3 · Selector de temáticas
+
+Las 15 temáticas no caben en la sala de espera sin alargarla mucho, así que debajo de "Impostores" hay una fila "Temáticas" con lo elegido ("Todas", "Fútbol" o "3 temáticas") y un botón "Elegir" que abre un diálogo con una ficha por temática (`aria-pressed`) y "Todas", que quita el filtro. Lo elegido vive en el estado de `Room`, como el número de impostores, y "Volver a jugar" usa las mismas temáticas; al recargar vuelven a ser todas. Solo el anfitrión de una sala de El impostor pide la lista (`useImpostorCategories`), y mientras no llega no se enseña la fila.
+
+`startGame` pasa a recibir un objeto con los ajustes de El impostor, para que el temporizador de la fase 23 no obligue a cambiar las llamadas otra vez. Las temáticas solo se envían si hay alguna elegida, así que la llamada a la base de datos sin temáticas es la misma de antes. Pruebas existentes modificadas: las que llamaban o esperaban `startGame(sala, 1)` (`actions` y `Room`), el ayudante de la prueba de la sala de espera, que gana las propiedades nuevas, y el doble de acciones de `Room`, que gana `impostorCategories`.
+
 ## 2026-10-11 · 22.2 · Temáticas en `start_game`
 
 `start_game` gana un tercer parámetro, `categories text[] default null`; nulo o vacío es "todas". Como en Postgres una función con otro número de parámetros es otra función, se borra la de dos y se crea la de tres: la llamada de siempre, `start_game(sala, 1)`, sigue funcionando por el valor por defecto, y todas las pruebas de El impostor pasan sin tocarlas. `private.pick_word` gana el mismo parámetro y filtra solo si se le dan temáticas, así que Una sola pista la sigue llamando igual. Agotadas las palabras de las temáticas elegidas, se repite dentro de ellas antes que salirse.
