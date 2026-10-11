@@ -179,7 +179,7 @@ Aceptación: las pruebas existentes pasan sin cambios.
 - [x] 15.2 Migración de datos con unos 120 dilemas; ampliar `docs/PREGUNTAS.md`
 - [x] 15.3 `set_game` acepta el juego; `que_prefieres_start`, `_choose`, `_close`, `_next` con las auxiliares comunes
 - [x] 15.4 Variante `que_prefieres` en `get_room_state`
-- [ ] 15.5 Pruebas pgTAP de `que_prefieres`
+- [x] 15.5 Pruebas pgTAP de `que_prefieres`
 - [ ] 15.6 Selector con el juego elegible y su portada (fichas "A" y "B")
 - [ ] 15.7 Pantallas de `que_prefieres` y su `viewFor`, con tests unitarios
 - [ ] 15.8 Prueba e2e: 5 rondas con 3 jugadores, con mayoría y con empate
