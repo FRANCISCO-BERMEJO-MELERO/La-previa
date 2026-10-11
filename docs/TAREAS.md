@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan 3 terminado · última actualización 2026-10-11
+Estado: plan 4 en curso · última actualización 2026-10-11
 
 ## Fase 0 · Preparación
 
@@ -214,6 +214,52 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 - [x] 18.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
 - [x] 18.3 Revisión final contra `docs/JUEGOS-2.md` y su "Fuera de alcance"
 - [x] 18.4 Ampliar `docs/INFORME.md` con esta tanda
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
+## Fase 19 · Preparación de las mejoras
+
+- [x] 19.1 Añadir las fases 19–26 a `docs/TAREAS.md`
+- [ ] 19.2 Anotar en `docs/DECISIONES.md` lo que entra en alcance y justificar `jsqr`
+
+## Fase 20 · Salir y terminar partida
+
+- [ ] 20.1 Botón "Salir" en la cabecera de la sala y de las partidas; la píldora deja de ser pulsable
+- [ ] 20.2 "Siguiente ronda" y la explicación en la revelación de El impostor
+- [ ] 20.3 Resultado de todos los juegos: "Fin de la partida", dos botones iguales y el texto para los demás
+
+## Fase 21 · Escanear el QR
+
+- [ ] 21.1 Instalar `jsqr` y la función pura que reconoce un enlace o código de sala
+- [ ] 21.2 Diálogo de cámara y botón "Escanear QR" en el inicio
+
+## Fase 22 · Temáticas y palabras
+
+- [ ] 22.1 Migración con las 100 palabras nuevas y `docs/PALABRAS.md`
+- [ ] 22.2 `impostor_categories` y temáticas en `start_game`, con pgTAP
+- [ ] 22.3 Selector de temáticas en la sala de espera
+
+## Fase 23 · Temporizador
+
+- [ ] 23.1 Migración: tiempo y hora límite; `start_game`, `open_voting` y `close_voting` con el tiempo, y pgTAP
+- [ ] 23.2 Selector de tiempo, cuenta atrás y cierre al llegar a cero
+- [ ] 23.3 Prueba e2e: votación que se cierra sola
+
+## Fase 24 · Cómo se juega
+
+- [ ] 24.1 Componente de tutorial por pasos y botón en la sala de espera
+- [ ] 24.2 Pasos e ilustraciones de los seis juegos
+
+## Fase 25 · Avatares
+
+- [ ] 25.1 Migración `room_players.avatar`, `set_avatar` y foto, con pgTAP
+- [ ] 25.2 Las 12 ilustraciones y el `Avatar` que las pinta
+- [ ] 25.3 Elegir avatar al poner el nombre y cambiarlo en la sala de espera
+
+## Fase 26 · Repaso y cierre de las mejoras
+
+- [ ] 26.1 Repaso a 360, 390 y 430 px y de accesibilidad de todo lo nuevo, ampliando las e2e
+- [ ] 26.2 `README.md`, `docs/DESPLIEGUE.md` y `docs/INFORME.md`
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
