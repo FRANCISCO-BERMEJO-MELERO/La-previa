@@ -9,6 +9,7 @@ import {
   lunaLlenaContinue,
   lunaLlenaNightAction,
   lunaLlenaSkipHunter,
+  lunaLlenaVerdict,
   lunaLlenaVote,
   type ActionResult,
 } from '@/lib/actions';
@@ -28,6 +29,7 @@ import {
   nightMode,
   packMarks,
   pendingCount,
+  verdictSides,
   type LunaPlayer,
   type NightMode,
 } from './game-view';
@@ -36,6 +38,7 @@ import { narratorAction, type NarratorStep } from './narrator';
 import { NarratorBox } from './NarratorBox';
 import { NightScreen } from './NightScreen';
 import { RolesScreen } from './RolesScreen';
+import { AccusedScreen, ExecutionScreen, VerdictScreen } from './TrialScreens';
 import { viewFor } from './view';
 
 type LunaLlenaGameProps = {
@@ -240,6 +243,33 @@ export function LunaLlenaGame({
           accusedId={game.accused_id}
           isMe={game.accused_id === myId}
           groups={accuseGroups(game, players)}
+        />
+      );
+    case 'verdict': {
+      const condemn = game.my.vote?.condemn ?? null;
+      return (
+        <VerdictScreen
+          {...chrome}
+          accused={nameOf(players, game.accused_id)}
+          voted={condemn}
+          onVote={(choice) => {
+            void run(() => lunaLlenaVerdict(roomId, choice));
+          }}
+          busy={busy}
+          error={playerError}
+        />
+      );
+    }
+    case 'verdict_accused':
+      return <AccusedScreen {...chrome} />;
+    case 'execution':
+      return (
+        <ExecutionScreen
+          {...chrome}
+          deaths={game.announcement?.deaths ?? []}
+          spared={game.announcement?.spared ?? null}
+          sides={verdictSides(game, players)}
+          left={game.announcement?.kind === 'left'}
         />
       );
     default:
