@@ -319,7 +319,7 @@ Aceptación: `npm run check` pasa; con seis navegadores se reparte, se juega una
 - [x] 31.4 Turno del cazador
 - [x] 31.5 Vista de espectador
 - [x] 31.6 Resultado
-- [ ] 31.7 Pruebas e2e con seis contextos y vista de móvil
+- [x] 31.7 Pruebas e2e con seis contextos y vista de móvil
 
 Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitentes.
 
