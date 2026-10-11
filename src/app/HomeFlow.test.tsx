@@ -12,6 +12,20 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: mocks.push }) }));
 vi.mock('@/lib/actions', () => ({ createRoom: mocks.createRoom }));
+// El escáner de verdad necesita cámara: aquí lee la sala KTRM en cuanto se abre.
+vi.mock('@/screens/ScanDialog', () => ({
+  ScanDialog: ({ open, onCode }: { open: boolean; onCode: (code: string) => void }) =>
+    open ? (
+      <button
+        type="button"
+        onClick={() => {
+          onCode('KTRM');
+        }}
+      >
+        leer QR
+      </button>
+    ) : null,
+}));
 
 beforeEach(() => {
   mocks.push.mockReset();
@@ -25,6 +39,15 @@ describe('HomeFlow', () => {
     expect(screen.getByLabelText('Código de la sala')).toHaveValue('KTRM');
     fireEvent.click(screen.getByRole('button', { name: 'Unirse' }));
     expect(mocks.push).toHaveBeenCalledWith('/sala/KTRM');
+  });
+
+  it('escanear el QR de una sala lleva a ella', () => {
+    render(<HomeFlow />);
+    expect(screen.queryByRole('button', { name: 'leer QR' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Escanear QR' }));
+    fireEvent.click(screen.getByRole('button', { name: 'leer QR' }));
+    expect(mocks.push).toHaveBeenCalledWith('/sala/KTRM');
+    expect(screen.queryByRole('button', { name: 'leer QR' })).not.toBeInTheDocument();
   });
 
   it('crear sala pide el nombre, crea la sala y lleva a ella para elegir juego', async () => {

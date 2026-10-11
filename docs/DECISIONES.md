@@ -1,5 +1,12 @@
 # Decisiones
 
+## 2026-10-11 · 21.2 · Escanear el QR desde el inicio
+
+En la tarjeta del código, debajo de "Unirse", hay un botón "Escanear QR" que abre un diálogo con la cámara trasera. Cada 250 ms se lee un fotograma (reducido a 640 px de lado como mucho) y se busca un QR con `jsqr`, que se carga al abrir el diálogo. Si es el enlace de una sala o cuatro letras válidas, se cierra el diálogo y se entra en la sala por su ruta, igual que al escribir el código. Si es otro QR, lo dice y sigue buscando. Sin permiso de cámara (`NotAllowedError`) pide darlo o escribir el código; cualquier otro fallo (sin cámara, sin `mediaDevices`) pide escribir el código. La cámara vive en un componente que solo existe con el diálogo abierto, así que cerrarlo la apaga siempre.
+
+La cámara, la lectura de fotogramas y el decodificador llegan como dependencias (`ScanDeps`), como las de las acciones, para probar el diálogo con dobles. Aparte se comprobó que `jsqr` lee el QR que dibuja `qrcode` con el enlace de una sala, y que en Chrome con una cámara simulada el vídeo arranca y el diálogo queda escaneando.
+Descartado: llamar a `video.play()`, cuya promesa puede fallar sin más; con `autoPlay`, `muted` y `playsInline` el navegador lo reproduce solo.
+
 ## 2026-10-11 · 20.3 · Un final de partida que se ve
 
 Al terminar cualquier juego, la píldora de la cabecera dice "Fin de la partida" (antes, "Sala ABCD"). El anfitrión ve "Cambiar de juego" con la variante destacada (`accent`, 56 px, como un botón principal) en lugar del botón pequeño, encima de "Volver a jugar". Los demás leen "Fran elige si jugáis otra o cambiáis de juego". Los botones mantienen sus textos ("Volver a jugar" y "Cambiar de juego") en vez de "Otra de [juego]" y "Elegir otro juego" de `docs/MEJORAS.md` §4: se entienden igual y con nombres de juego largos "Otra de ¿Quién es más probable que…?" ocupaba dos líneas. Las pruebas que leían "Fran decide si se vuelve a jugar" (`HostControls` y las e2e de `probable`, `quien_lo_dijo` y `que_prefieres`) leen el texto nuevo.

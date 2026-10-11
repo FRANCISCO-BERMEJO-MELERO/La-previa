@@ -83,8 +83,22 @@ export const copy = {
     intro: 'Para jugar en persona, cada uno con su móvil. Sin registro.',
     codeLabel: 'Código de la sala',
     join: 'Unirse',
+    scan: 'Escanear QR',
     or: 'o empieza tú',
     create: 'Crear sala',
+  },
+
+  scan: {
+    title: 'Escanear QR',
+    close: 'Cerrar',
+    status: {
+      starting: 'Abriendo la cámara…',
+      scanning: 'Apunta al QR de la sala que te enseñan.',
+      not_room: 'Ese QR no es de una sala de La Previa. Prueba con otro.',
+      denied:
+        'No tenemos permiso para usar la cámara. Dáselo en los ajustes del navegador o escribe el código de la sala.',
+      unavailable: 'No podemos usar la cámara en este móvil. Escribe el código de la sala.',
+    },
   },
 
   name: {

@@ -7,6 +7,7 @@ import type { ActionError } from '@/lib/copy';
 import { nameErrorText } from '@/lib/name-error';
 import { normalizeCodeInput, roomPath } from '@/lib/room-code';
 import { HomeScreen } from '@/screens/HomeScreen';
+import { ScanDialog } from '@/screens/ScanDialog';
 import { NameScreen } from '@/screens/NameScreen';
 
 export function HomeFlow() {
@@ -16,23 +17,40 @@ export function HomeFlow() {
   const [name, setName] = useState('');
   const [error, setError] = useState<ActionError | null>(null);
   const [busy, setBusy] = useState(false);
+  const [scanning, setScanning] = useState(false);
 
   if (step === 'home') {
     return (
-      <HomeScreen
-        code={code}
-        busy={busy}
-        onCodeChange={(value) => {
-          setCode(normalizeCodeInput(value));
-        }}
-        onJoin={() => {
-          setBusy(true);
-          router.push(roomPath(code));
-        }}
-        onCreate={() => {
-          setStep('name');
-        }}
-      />
+      <>
+        <HomeScreen
+          code={code}
+          busy={busy}
+          onCodeChange={(value) => {
+            setCode(normalizeCodeInput(value));
+          }}
+          onJoin={() => {
+            setBusy(true);
+            router.push(roomPath(code));
+          }}
+          onScan={() => {
+            setScanning(true);
+          }}
+          onCreate={() => {
+            setStep('name');
+          }}
+        />
+        <ScanDialog
+          open={scanning}
+          onClose={() => {
+            setScanning(false);
+          }}
+          onCode={(scanned) => {
+            setScanning(false);
+            setBusy(true);
+            router.push(roomPath(scanned));
+          }}
+        />
+      </>
     );
   }
 

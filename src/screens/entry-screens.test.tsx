@@ -10,6 +10,7 @@ function home(overrides: Partial<Parameters<typeof HomeScreen>[0]> = {}) {
     busy: false,
     onCodeChange: vi.fn(),
     onJoin: vi.fn(),
+    onScan: vi.fn(),
     onCreate: vi.fn(),
     ...overrides,
   };
@@ -42,6 +43,12 @@ describe('HomeScreen (01)', () => {
     const props = home({ code: 'KTRM' });
     fireEvent.click(screen.getByRole('button', { name: 'Unirse' }));
     expect(props.onJoin).toHaveBeenCalledTimes(1);
+  });
+
+  it('escanear el QR está a la vista y avisa', () => {
+    const props = home();
+    fireEvent.click(screen.getByRole('button', { name: 'Escanear QR' }));
+    expect(props.onScan).toHaveBeenCalledTimes(1);
   });
 
   it('crear sala avisa', () => {
