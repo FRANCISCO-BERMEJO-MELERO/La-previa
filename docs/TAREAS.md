@@ -278,7 +278,7 @@ Aceptación: baterías en verde; tareas y decisiones escritas.
 
 - [x] 28.1 Migración: `rooms.game` y `games.phase` admiten `luna_llena`; `game_roles.role` admite los siete roles; tablas `luna_state`, `luna_night_actions` y `luna_votes`, con RLS y sin políticas
 - [x] 28.2 `set_game` acepta `luna_llena`; auxiliares que validan una composición y calculan la recomendada
-- [ ] 28.3 `luna_llena_start`: validación, reparto aleatorio y estado inicial en `roles`
+- [x] 28.3 `luna_llena_start`: validación, reparto aleatorio y estado inicial en `roles`
 - [ ] 28.4 `luna_llena_night_action` para cada rol, con sus restricciones, y cierre automático de la noche
 - [ ] 28.5 Resolución de la noche (`luna_llena_close_night` y su auxiliar) y paso a `dawn` con `announcement`
 - [ ] 28.6 Variante `luna_llena` en `get_room_state` para `roles`, `night` y `dawn`, con `narration` y `spectator`
