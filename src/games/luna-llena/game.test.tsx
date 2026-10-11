@@ -40,6 +40,7 @@ function renderGame(game: Partial<LunaLlenaGameState> = {}, host = true) {
       notice={null}
       busy={false}
       run={run}
+      onChangeGame={vi.fn()}
     />,
   );
   return run;

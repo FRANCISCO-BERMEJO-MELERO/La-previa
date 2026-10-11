@@ -34,6 +34,7 @@ function renderGame(game: Partial<LunaLlenaGameState> = {}) {
       notice={null}
       busy={false}
       run={async (action) => (await action()).ok}
+      onChangeGame={vi.fn()}
     />,
   );
 }

@@ -2,7 +2,9 @@
 
 import type { HeaderTone } from '@/components/HeaderAside';
 import { useState, type ReactNode } from 'react';
+import { Button } from '@/components/Button';
 import { WaitingBox } from '@/components/WaitingBox';
+import { restartOrLobby } from '@/games/rounds/restart';
 import {
   lunaLlenaCloseNight,
   lunaLlenaCloseVote,
@@ -10,6 +12,7 @@ import {
   lunaLlenaHunterShot,
   lunaLlenaNightAction,
   lunaLlenaSkipHunter,
+  lunaLlenaStart,
   lunaLlenaVerdict,
   lunaLlenaVote,
   type ActionResult,
@@ -31,6 +34,7 @@ import {
   nightCandidates,
   nightMode,
   packMarks,
+  hasWon,
   pairNames,
   pendingCount,
   roleRows,
@@ -42,6 +46,7 @@ import { narrationLines } from './narration';
 import { narratorAction, type NarratorStep } from './narrator';
 import { NarratorBox } from './NarratorBox';
 import { NightScreen } from './NightScreen';
+import { ResultScreen } from './ResultScreen';
 import { RolesScreen } from './RolesScreen';
 import { SpectatorScreen } from './SpectatorScreen';
 import { AccusedScreen, ExecutionScreen, VerdictScreen } from './TrialScreens';
@@ -57,6 +62,7 @@ type LunaLlenaGameProps = {
   error?: string;
   /** Ejecuta una acción y aplica la foto que devuelve; resuelve si ha ido bien. */
   run: (action: () => Promise<ActionResult<Snapshot>>) => Promise<boolean>;
+  onChangeGame: () => void;
 };
 
 function stepAction(step: NarratorStep, roomId: string): Promise<ActionResult<Snapshot>> {
@@ -83,6 +89,7 @@ export function LunaLlenaGame({
   busy,
   error,
   run,
+  onChangeGame,
 }: LunaLlenaGameProps) {
   // Lo elegido vale solo para el momento en que se eligió: al cambiar de fase se olvida.
   const moment = `${game.phase}-${String(game.night)}-${String(game.day)}`;
@@ -114,10 +121,25 @@ export function LunaLlenaGame({
       }}
     />
   ) : (
-    <WaitingBox>
-      {game.phase === 'roles' ? copy.lunaLlena.deal.waiting : copy.lunaLlena.waitingNarrator(host)}
-    </WaitingBox>
+    <WaitingBox>{waitingText(game, host)}</WaitingBox>
   );
+  const controls =
+    game.phase === 'finished' && snapshot.me.is_host ? (
+      <>
+        <Button variant="accent" fullWidth disabled={busy} onClick={onChangeGame}>
+          {copy.result.changeGame}
+        </Button>
+        <Button
+          fullWidth
+          disabled={busy}
+          onClick={() => {
+            void run(() => restartOrLobby(roomId, () => playAgain(roomId, game.config)));
+          }}
+        >
+          {copy.result.playAgain}
+        </Button>
+      </>
+    ) : null;
   const peek =
     game.my.role && game.my.alive && game.phase !== 'roles' ? (
       <CardPeek role={game.my.role} pack={pack} />
@@ -129,6 +151,7 @@ export function LunaLlenaGame({
       <>
         {peek}
         {narrator}
+        {controls}
       </>
     ),
   };
@@ -318,9 +341,35 @@ export function LunaLlenaGame({
           deaths={game.announcement?.deaths ?? []}
         />
       );
-    default:
-      return <WaitScreen {...chrome} text={texts.waitingNarrator(host)} />;
+    case 'result': {
+      const result = game.result;
+      return result ? (
+        <ResultScreen
+          {...chrome}
+          aside={pill(copy.result.finished)}
+          winner={result.winner}
+          won={hasWon(game)}
+          rows={roleRows(players, result.roles)}
+          lovers={pairNames(players, result.lovers)}
+        />
+      ) : null;
+    }
   }
+}
+
+function waitingText(game: LunaLlenaGameState, host: string): string {
+  if (game.phase === 'roles') return texts.deal.waiting;
+  if (game.phase === 'finished') return copy.result.waitingHost(host);
+  return texts.waitingNarrator(host);
+}
+
+/** Volver a jugar con la misma composición; si ya no vale para los que quedan, la recomendada. */
+async function playAgain(
+  roomId: string,
+  config: LunaLlenaGameState['config'],
+): Promise<ActionResult<Snapshot>> {
+  const again = await lunaLlenaStart(roomId, config);
+  return !again.ok && again.error === 'invalid_config' ? lunaLlenaStart(roomId, null) : again;
 }
 
 /** Cupido elige a dos; los demás, a uno. Tocar a un elegido lo quita. */

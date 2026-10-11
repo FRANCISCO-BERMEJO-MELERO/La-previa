@@ -1,5 +1,17 @@
 # Decisiones
 
+## 2026-10-11 · 31.1 a 31.6 · Pantallas del día, el juicio y el final
+
+Ninguna tiene maqueta; se construyen con las piezas existentes y la tarjeta protagonista, como pide el plan.
+
+- **31.1 y 31.2 juntas.** Alcalde y acusación comparten la misma pantalla de votar, así que van en un commit.
+- **Distintivo del alcalde.** Píldora "Alcalde" en `lime` junto al nombre en las listas para elegir, y una línea con su nombre en la pantalla del debate. Un alcalde muerto deja de llevarlo.
+- **Mientras se vota.** Tras votar solo se ve el propio voto y cuántos faltan, nunca a quién han votado los demás.
+- **Ejecución por abandono.** El mismo marco que la ejecución de un juicio, con la píldora "Se ha ido" y sin votos.
+- **Espectador.** Los muertos ven su tarjeta de "Has muerto", el anuncio en curso, de noche lo que marca cada uno en directo, los enamorados y todos los roles. No ven el botón de volver a ver la carta. Si el narrador muere, su caja sigue al pie.
+- **Resultado.** El titular es "¡Has ganado!" o "Has perdido" según el bando: el pueblo gana con todos menos lobos y bufón; el bufón gana solo. Quien no jugaba ve el bando ganador como titular.
+- **Volver a jugar.** Se empieza otra con la misma composición. Si ya no vale para los que quedan, se usa la recomendada; si no hay jugadores bastantes, se vuelve a la sala de espera, como en los demás juegos.
+
 ## 2026-10-11 · 30.4 · Sala de espera de Luna llena
 
 - **Recomendada hasta que se toque.** Mientras el anfitrión no cambie nada, la composición es la recomendada para los jugadores que haya y se recalcula sola si entra o sale alguien. En cuanto cambia los lobos o un rol, se queda con la suya; la línea de composición sigue recalculando los aldeanos. Al empezar, la recomendada se envía nula y la calcula la base de datos con los jugadores de ese momento.

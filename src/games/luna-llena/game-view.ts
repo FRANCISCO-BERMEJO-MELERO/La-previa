@@ -193,3 +193,13 @@ export function actionLines(
       : texts.action(who, target);
   });
 }
+
+/** Si quien mira ha ganado: su bando, o él solo si es el bufón. Nulo si no jugaba. */
+export function hasWon(game: LunaLlenaGameState): boolean | null {
+  const winner = game.result?.winner;
+  const role = game.my.role;
+  if (!winner || !role || !game.my.is_participant) return null;
+  if (winner === 'jester') return role === 'jester';
+  if (winner === 'wolves') return role === 'wolf';
+  return role !== 'wolf' && role !== 'jester';
+}
