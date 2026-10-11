@@ -201,7 +201,7 @@ Aceptación: las tres baterías pasan.
 
 ## Fase 17 · Selector y repaso conjunto (tercera tanda)
 
-- [ ] 17.1 Selector definitivo: seis juegos elegibles y sin "Próximamente"
+- [x] 17.1 Selector definitivo: seis juegos elegibles y sin "Próximamente"
 - [ ] 17.2 Repaso a 360, 390 y 430 px con 16 jugadores, nombres de 14 y los dilemas y tarjetas más largos
 - [ ] 17.3 Repaso de accesibilidad de las pantallas nuevas en la e2e de accesibilidad de los juegos
 - [ ] 17.4 Sesión larga con los seis juegos seguidos y una recarga a mitad de cada uno

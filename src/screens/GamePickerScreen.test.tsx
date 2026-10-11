@@ -51,6 +51,27 @@ describe('GamePickerScreen (03)', () => {
     expect(screen.queryByText('Próximamente')).not.toBeInTheDocument();
   });
 
+  it('lista los seis juegos en el orden de JUEGOS-2, cada uno con su descripción', () => {
+    renderPicker();
+    const games = screen
+      .getAllByRole('button')
+      .filter((button) => button.hasAttribute('aria-pressed'));
+    const names = [
+      'El impostor',
+      '¿Quién es más probable que…?',
+      '¿Quién lo dijo?',
+      'Una sola pista',
+      '¿Qué prefieres?',
+      'Palabras prohibidas',
+    ];
+    expect(games).toHaveLength(names.length);
+    names.forEach((name, index) => {
+      expect(games[index]).toHaveTextContent(name);
+    });
+    expect(screen.getByText(/Sale un dilema y cada uno elige en secreto/)).toBeInTheDocument();
+    expect(screen.getByText(/sin decir las cinco prohibidas/)).toBeInTheDocument();
+  });
+
   it('elegir otro juego avisa de cuál', () => {
     const { onSelect } = renderPicker();
     fireEvent.click(screen.getByRole('button', { name: /¿Quién es más probable que…\?/ }));
