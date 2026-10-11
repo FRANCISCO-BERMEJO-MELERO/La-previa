@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-11 · 28.4 y 28.5 · La noche en un solo commit
+
+La 28.4 pide que la noche se cierre sola al actuar el último vivo, y eso es justo la resolución de la 28.5. Las dos van en un commit, con sus pruebas, para no dejar un cierre a medias entre ambos.
+
+- **Anuncio.** Además de `deaths` y `spared`, el anuncio lleva `kind` (`night`, `trial` o `left`), para saber qué contar y qué votos enseñar sin deducirlo de las causas.
+- **Día.** `luna_state.day` sube al resolver la noche: el amanecer ya es del día siguiente, y los votos de ese día van con su número.
+- **Protector sin actuar.** Si el protector no actúa, `last_protected_id` queda vacío y a la noche siguiente puede proteger a cualquiera.
+- **Sospechas.** Aldeano, cazador, bufón y Cupido desde la segunda noche marcan a otro jugador vivo, nunca a sí mismos. El protector sí puede protegerse.
+- **Errores.** `already_acted` y `same_as_last_night` llegan al cliente con su mensaje. El objetivo inválido, muerto o ajeno a la partida usa `invalid_target`, como en el resto de juegos.
+
 ## 2026-10-11 · 27.3 · Diferencias entre el plan de Luna llena y el código
 
 `docs/PLAN-5.md` se escribió contando con que `develop` acababa en la fase 13. Antes de empezar se fusionaron en `develop` las ramas de los planes 3 y 4 (fases 14–26), así que:

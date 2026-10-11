@@ -34,6 +34,8 @@ export const errorCodes = [
   'invalid_vote_seconds',
   'invalid_avatar',
   'invalid_config',
+  'already_acted',
+  'same_as_last_night',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -69,6 +71,8 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
   invalid_option: 'Esa opción no existe. Elige una de las dos.',
   not_describer: 'Eso lo decide quien describe esta ronda. Tú adivina en voz alta.',
   invalid_avatar: 'Ese avatar no está en la galería. Elige otro.',
+  already_acted: 'Ya has hecho lo tuyo esta noche. Espera al amanecer.',
+  same_as_last_night: 'Anoche ya protegiste a esa persona. Esta noche elige a otra.',
   invalid_config:
     'Con esa composición no se puede jugar. Ajusta los lobos o los roles hasta que quede al menos un aldeano.',
   invalid_vote_seconds: 'El tiempo para votar es de 30, 60 o 90 segundos. Elige uno de esos.',
