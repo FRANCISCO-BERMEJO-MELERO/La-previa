@@ -1,5 +1,19 @@
 # Decisiones
 
+## 2026-10-11 · 19.2 · Lo que entra en alcance con las mejoras
+
+Fran y su grupo probaron los seis juegos y pidieron ocho mejoras, recogidas en `docs/MEJORAS.md` y ordenadas en `docs/PLAN-4.md`. Fran aprobó los dos documentos. Dos de ellas estaban en "Fuera de alcance" y entran porque las pide él:
+
+- **Temporizador**, solo para la votación de El impostor (`docs/JUEGOS.md` §11 y `docs/JUEGOS-2.md` §9 lo dejaban fuera para todos los juegos; en los juegos por rondas sigue fuera).
+- **Avatares con imagen** (`docs/CONTEXTO.md`, "Fuera de alcance"): una galería de ilustraciones dibujadas en el estilo de la app. Subir fotos sigue fuera.
+
+`CLAUDE.md` todavía no nombra `docs/MEJORAS.md` ni `docs/PLAN-4.md`, y no se modifica sin permiso de Fran. Hasta que los añada, manda lo que él ha aprobado.
+
+## 2026-10-11 · 19.2 · `jsqr` para leer el QR con la cámara
+
+Para escanear desde la web hay que decodificar el QR de los fotogramas de la cámara. `BarcodeDetector` es nativo en Chrome para Android, pero Safari en iPhone no lo tiene, y sin iPhone la mitad del grupo se quedaría fuera. `qrcode`, la que ya usamos, solo dibuja QR: no los lee. `jsqr` 1.4.0 lee QR de una imagen en JavaScript puro, sin dependencias, con licencia Apache-2.0 y con sus propios tipos. Entra en la lista permitida como "una librería de QR", y solo se carga al abrir el escáner, así que no pesa en la primera carga.
+Descartado: `html5-qrcode` y otras que traen su propia interfaz (habría que tapar sus estilos con los de Verbena) y escribir un decodificador propio.
+
 ## 2026-10-11 · 17.4 · Sesión larga con los seis juegos
 
 `long-session.spec.ts` sigue en la misma sala de 4 jugadores tras Una sola pista con ¿Qué prefieres? y Palabras prohibidas, 5 rondas cada uno. En ¿Qué prefieres?, Álvaro recarga tras elegir mientras aún falta Marta y vuelve a ver su elección. En Palabras prohibidas, quien vigila recarga y sigue viendo la tarjeta, y quien adivina recarga y sigue sin verla. El título de la prueba pasa a decir seis juegos; lo que ya comprobaba no cambia. Las tres baterías pasaron tres veces seguidas sin fallos (535 unitarios, 811 pgTAP y 19 e2e en cada pasada). La primera vez que se lanzaron las tres pasadas seguidas en segundo plano, el sistema las paró por falta de memoria; se repitieron en primer plano, una batería detrás de otra.

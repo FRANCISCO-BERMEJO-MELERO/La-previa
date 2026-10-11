@@ -220,7 +220,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 ## Fase 19 · Preparación de las mejoras
 
 - [x] 19.1 Añadir las fases 19–26 a `docs/TAREAS.md`
-- [ ] 19.2 Anotar en `docs/DECISIONES.md` lo que entra en alcance y justificar `jsqr`
+- [x] 19.2 Anotar en `docs/DECISIONES.md` lo que entra en alcance y justificar `jsqr`
 
 ## Fase 20 · Salir y terminar partida
 
