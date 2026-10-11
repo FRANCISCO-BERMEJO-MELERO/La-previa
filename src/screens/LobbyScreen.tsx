@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Dialog } from '@/components/Dialog';
@@ -7,7 +6,10 @@ import { HeaderAside } from '@/components/HeaderAside';
 import { PlayerChip } from '@/components/PlayerChip';
 import { QrCode } from '@/components/QrCode';
 import { Screen } from '@/components/Screen';
+import { Stepper } from '@/components/Stepper';
 import { WaitingBox } from '@/components/WaitingBox';
+import { configProblem, MIN_LUNA_PLAYERS, type LunaConfig } from '@/games/luna-llena/composition';
+import { LunaSettings } from '@/games/luna-llena/LunaSettings';
 import type { AvatarId } from '@/lib/avatars';
 import { copy } from '@/lib/copy';
 import { impostorLimits } from '@/games/impostor/impostors';
@@ -19,7 +21,7 @@ import { HowToPlayDialog } from './HowToPlayDialog';
 import { KickableChip } from './KickableChip';
 
 export const MAX_PLAYERS = 16;
-/** Los cuatro juegos piden al menos 3 jugadores (docs/JUEGOS.md §1). */
+/** Todos los juegos piden al menos 3 jugadores (docs/JUEGOS.md §1), salvo Luna llena, que pide 6. */
 export const MIN_PLAYERS = 3;
 
 type LobbyScreenProps = {
@@ -57,6 +59,9 @@ type LobbyScreenProps = {
   onCategoriesChange: (chosen: string[]) => void;
   rounds: number;
   onRoundsChange: (rounds: number) => void;
+  /** Composición de Luna llena: la recomendada mientras el anfitrión no la cambie. */
+  lunaConfig: LunaConfig;
+  onLunaConfigChange: (config: LunaConfig) => void;
   onStart: () => void;
   onKickRequest: (userId: string) => void;
 };
@@ -92,12 +97,23 @@ export function LobbyScreen({
   onCategoriesChange,
   rounds,
   onRoundsChange,
+  lunaConfig,
+  onLunaConfigChange,
   onStart,
   onKickRequest,
 }: LobbyScreenProps) {
   const { players, room, me } = snapshot;
   const hostName = players.find((player) => player.user_id === room.host_id)?.name ?? '';
-  const missing = Math.max(0, MIN_PLAYERS - players.length);
+  const minPlayers = room.game === 'luna_llena' ? MIN_LUNA_PLAYERS : MIN_PLAYERS;
+  const missing = Math.max(0, minPlayers - players.length);
+  const lunaProblem = room.game === 'luna_llena' ? configProblem(players.length, lunaConfig) : null;
+  // Por qué no se puede empezar todavía, si no se puede.
+  const startHint =
+    missing > 0
+      ? copy.lobby.needPlayers(minPlayers, missing)
+      : lunaProblem
+        ? copy.lunaLlena.lobby.problems[lunaProblem]
+        : null;
 
   return (
     <Screen
@@ -193,7 +209,13 @@ export function LobbyScreen({
       <div className="mt-auto flex flex-col gap-5">
         {me.is_host ? (
           <>
-            {isRoundGame(room.game) ? (
+            {room.game === 'luna_llena' ? (
+              <LunaSettings
+                players={players.length}
+                config={lunaConfig}
+                onChange={onLunaConfigChange}
+              />
+            ) : isRoundGame(room.game) ? (
               <RoundsPicker value={rounds} onChange={onRoundsChange} />
             ) : (
               <>
@@ -208,15 +230,15 @@ export function LobbyScreen({
                 ) : null}
               </>
             )}
-            {missing > 0 ? (
+            {startHint ? (
               <p id="start-hint" className="text-md font-bold">
-                {copy.lobby.needPlayers(missing)}
+                {startHint}
               </p>
             ) : null}
             <Button
               fullWidth
-              disabled={busy || missing > 0}
-              aria-describedby={missing > 0 ? 'start-hint' : undefined}
+              disabled={busy || startHint !== null}
+              aria-describedby={startHint ? 'start-hint' : undefined}
               onClick={onStart}
             >
               {copy.lobby.start}
@@ -286,34 +308,16 @@ function ImpostorStepper({
 }) {
   const { min, max } = impostorLimits(playerCount);
   return (
-    <div className="flex items-center justify-between rounded-chip border-3 border-ink bg-paper px-3.5 py-2">
-      <p className="text-base font-bold" id="impostor-count-label">
-        {copy.lobby.impostors}
-      </p>
-      <div className="flex items-center gap-3.5">
-        <StepButton
-          label={copy.lobby.fewerImpostors}
-          disabled={value <= min}
-          onClick={() => {
-            onChange(value - 1);
-          }}
-        >
-          {copy.lobby.minus}
-        </StepButton>
-        <output aria-labelledby="impostor-count-label" className="font-display text-title">
-          {value}
-        </output>
-        <StepButton
-          label={copy.lobby.moreImpostors}
-          disabled={value >= max}
-          onClick={() => {
-            onChange(value + 1);
-          }}
-        >
-          {copy.lobby.plus}
-        </StepButton>
-      </div>
-    </div>
+    <Stepper
+      id="impostor-count"
+      label={copy.lobby.impostors}
+      value={value}
+      min={min}
+      max={max}
+      fewerLabel={copy.lobby.fewerImpostors}
+      moreLabel={copy.lobby.moreImpostors}
+      onChange={onChange}
+    />
   );
 }
 
@@ -467,29 +471,5 @@ function RoundsPicker({ value, onChange }: { value: number; onChange: (rounds: n
         ))}
       </div>
     </div>
-  );
-}
-
-function StepButton({
-  label,
-  disabled,
-  onClick,
-  children,
-}: {
-  label: string;
-  disabled: boolean;
-  onClick: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      disabled={disabled}
-      onClick={onClick}
-      className="flex size-11 items-center justify-center rounded-control border-3 border-ink bg-paper text-2xl font-bold disabled:border-dashed disabled:bg-ground-soft"
-    >
-      {children}
-    </button>
   );
 }

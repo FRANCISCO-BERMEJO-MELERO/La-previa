@@ -1,5 +1,13 @@
 # Decisiones
 
+## 2026-10-11 · 30.4 · Sala de espera de Luna llena
+
+- **Recomendada hasta que se toque.** Mientras el anfitrión no cambie nada, la composición es la recomendada para los jugadores que haya y se recalcula sola si entra o sale alguien. En cuanto cambia los lobos o un rol, se queda con la suya; la línea de composición sigue recalculando los aldeanos. Al empezar, la recomendada se envía nula y la calcula la base de datos con los jugadores de ese momento.
+- **Solo la ve el anfitrión.** La composición vive en el estado de la pantalla del anfitrión, como el número de impostores, así que los demás no la ven hasta el reparto. Para que la vieran habría que guardarla en la sala, y eso pide una RPC y un campo nuevos que el plan no menciona.
+- **Aviso.** Si la composición no vale, el botón de empezar se desactiva y el motivo aparece encima, en el mismo sitio que "faltan jugadores". `needPlayers` recibe ahora el mínimo de cada juego (6 en Luna llena); el texto para 3 no cambia.
+- **Lo común.** El contador con "−" y "+" lo usan ya dos juegos (impostores y lobos), así que sale de la sala de espera a `src/components/Stepper.tsx`. Las pruebas de El impostor no cambian.
+- **Roles opcionales.** Cada uno es un botón con `aria-pressed`, su dibujo en pequeño y su nombre; apagado, con borde discontinuo.
+
 ## 2026-10-11 · 30.3 y 32.1 · Esquema, acciones y el juego en el selector
 
 - **El selector se adelanta.** Al añadir `luna_llena` a la lista de juegos, los tipos obligan a darle textos, portada y pasos de "Cómo se juega" (`Record<GameId, …>`). Esa es la 32.1, que se hace aquí: portada con la cabeza del lobo sobre `tomato` en un fondo `ink`, "De 6 a 16 jugadores" y cuatro pasos con los dibujos de los roles en pequeño.

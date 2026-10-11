@@ -6,6 +6,7 @@ import { OfflineNotice } from '@/components/OfflineNotice';
 import { HeaderAside, type HeaderTone } from '@/components/HeaderAside';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
 import { clampImpostors } from '@/games/impostor/impostors';
+import { recommendedConfig, type LunaConfig } from '@/games/luna-llena/composition';
 import { PalabrasProhibidasGame } from '@/games/palabras-prohibidas/PalabrasProhibidasGame';
 import { ProbableGame } from '@/games/probable/ProbableGame';
 import { QuePrefieresGame } from '@/games/que-prefieres/QuePrefieresGame';
@@ -52,6 +53,8 @@ export function Room({ initial, fresh }: RoomProps) {
   const [picking, setPicking] = useState(fresh);
   const [impostors, setImpostors] = useState(1);
   const [rounds, setRounds] = useState(DEFAULT_ROUNDS);
+  // Composición de Luna llena elegida a mano; sin elegir, sigue a la recomendada.
+  const [lunaConfig, setLunaConfig] = useState<LunaConfig | null>(null);
   const [chosenCategories, setChosenCategories] = useState<string[]>([]);
   const [voteSeconds, setVoteSeconds] = useState<number | null>(null);
   const [topicsOpen, setTopicsOpen] = useState(false);
@@ -259,6 +262,8 @@ export function Room({ initial, fresh }: RoomProps) {
       onCategoriesChange={setChosenCategories}
       rounds={rounds}
       onRoundsChange={setRounds}
+      lunaConfig={lunaConfig ?? recommendedConfig(snapshot.players.length)}
+      onLunaConfigChange={setLunaConfig}
       onStart={() => {
         void run(() => {
           switch (snapshot.room.game) {
@@ -279,7 +284,7 @@ export function Room({ initial, fresh }: RoomProps) {
             case 'palabras_prohibidas':
               return palabrasProhibidasStart(roomId, rounds);
             case 'luna_llena':
-              return lunaLlenaStart(roomId, null);
+              return lunaLlenaStart(roomId, lunaConfig);
           }
         });
       }}

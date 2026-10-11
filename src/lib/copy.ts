@@ -393,10 +393,10 @@ export const copy = {
     rounds: 'Rondas',
     roundsOption: (rounds: number) => `${String(rounds)} rondas`,
     start: 'Empezar partida',
-    needPlayers: (missing: number) =>
+    needPlayers: (min: number, missing: number) =>
       missing === 1
-        ? 'Hacen falta al menos 3 jugadores: falta 1. Comparte el código para que entre alguien más.'
-        : `Hacen falta al menos 3 jugadores: faltan ${String(missing)}. Comparte el código para que entren.`,
+        ? `Hacen falta al menos ${String(min)} jugadores: falta 1. Comparte el código para que entre alguien más.`
+        : `Hacen falta al menos ${String(min)} jugadores: faltan ${String(missing)}. Comparte el código para que entren.`,
     waitingHost: (host: string) => `${host} empezará la partida`,
   },
 
@@ -750,6 +750,25 @@ export const copy = {
       pack: 'Tu manada',
       packNames: (names: readonly string[]) =>
         names.length === 0 ? 'Cazas solo: no hay más lobos.' : joinNames(names),
+    },
+    lobby: {
+      wolves: 'Lobos',
+      fewerWolves: 'Menos lobos',
+      moreWolves: 'Más lobos',
+      optionalRoles: 'Roles opcionales',
+      composition: 'Composición',
+      // "2 lobos · vidente · protector · cazador · 4 aldeanos"
+      compositionLine: (wolves: number, roles: readonly string[], villagers: number) =>
+        [
+          wolves === 1 ? '1 lobo' : `${String(wolves)} lobos`,
+          'vidente',
+          ...roles,
+          villagers === 1 ? '1 aldeano' : `${String(villagers)} aldeanos`,
+        ].join(' · '),
+      problems: {
+        too_many_wolves: 'Demasiados lobos: tienen que ser menos de la mitad. Quita alguno.',
+        no_villager: 'No queda ningún aldeano. Quita un rol opcional o un lobo.',
+      },
     },
   },
 
