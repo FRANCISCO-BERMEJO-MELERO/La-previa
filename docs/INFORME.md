@@ -1,5 +1,62 @@
 # Informe final
 
+## Mejoras tras probarla en grupo (fases 19 a 26)
+
+Estado al cerrar `docs/PLAN-4.md`, el 11 de octubre de 2026.
+
+### Resumen
+
+Las ocho mejoras que Fran y su grupo pidieron tras jugar están hechas: escanear el QR desde el inicio, un botón "Salir" a la vista, "Cómo se juega" con ilustraciones, un final de partida que deja claro qué pasa y quién decide, tiempo para votar en El impostor, temáticas, 100 palabras nuevas y avatares de cachondeo. Todas las fases (19 a 26) están cerradas y sus tareas marcadas en `docs/TAREAS.md`, en 21 commits en la rama `feat/mejoras`, que sale de `feat/plan-3`, sin subir.
+
+Verificación al cerrar, todo partiendo de cero:
+
+| Comprobación                               | Resultado                            |
+| ------------------------------------------ | ------------------------------------ |
+| `npm run check` (lint, tipos, unitarios)   | 613 tests en 54 archivos, sin avisos |
+| `npm run test:db` tras `supabase db reset` | 855 pruebas pgTAP en 40 archivos     |
+| `npm run test:e2e`                         | 24 pruebas                           |
+| `npm run build`                            | Sin avisos                           |
+
+No se ha publicado nada. Las 4 migraciones nuevas se aplican con `npx supabase db push`, como siempre.
+
+### Qué está hecho
+
+- **Escanear el QR** desde el inicio, con la cámara trasera y `jsqr` (la única dependencia nueva, justificada en 19.2). Sin permiso o sin cámara, lo explica y deja escribir el código.
+- **Salir** con un botón con texto en la cabecera de la sala y de todas las partidas; la píldora solo informa.
+- **Fin de partida**: en El impostor, "Siguiente ronda" y "Ronda 2 de la partida" dejan claro que sigue la misma; al terminar cualquier juego, "Fin de la partida", "Cambiar de juego" tan visible como "Volver a jugar", y los demás leen quién decide.
+- **Tiempo para votar** en El impostor (sin tiempo, 30, 60 o 90 s): cuenta atrás con la hora del servidor y cierre automático aunque el móvil del anfitrión esté bloqueado; la base de datos impide cerrar antes de tiempo a quien no es anfitrión.
+- **Temáticas**: el anfitrión elige una, varias o ninguna (todas); la lista sale de la base de datos.
+- **Palabras**: Fútbol, Historia, Videojuegos, Ciencia y Geografía, 20 cada una.
+- **Cómo se juega**: tres pasos ilustrados por juego, para todos los de la sala.
+- **Avatares**: 12 ilustraciones en el estilo de la app, elegibles al poner el nombre y desde tu ficha en la sala.
+
+### Qué no está hecho o no se ha podido verificar
+
+- **El escáner no se ha probado con un móvil y un QR de verdad.** Se comprobó que `jsqr` lee el QR que dibuja la app y que en Chrome con una cámara simulada el vídeo arranca y escanea.
+- **Las ilustraciones (avatares y pasos) son criterio mío**, revisadas con capturas a 36 y 80 px.
+- **`CLAUDE.md` no nombra todavía `docs/MEJORAS.md` ni `docs/PLAN-4.md`**: no se toca sin permiso de Fran.
+
+### Incidencias
+
+- **Un fallo mío, corregido antes del commit**: la cuenta atrás de una votación (en 0) se arrastraba a la siguiente, y el móvil del anfitrión cerraba la segunda votación de un empate nada más abrirla. Hay una prueba que lo cubre y que falla con la versión antigua (23.2).
+- **Una prueba propia intermitente** de las temáticas (22.2) se corrigió en la 23.3: el código estaba bien, la prueba no.
+- **Un desborde que ya existía**: a 360 px el titular "La Previa" del inicio se salía 14 px. Se baja un tamaño por debajo de 390 px, con un punto de corte nuevo en `globals.css` (26.1).
+
+### Decisiones que conviene conocer
+
+- **El temporizador y los avatares con imagen** estaban en "Fuera de alcance"; entran porque los pidió Fran (19.2). Subir fotos sigue fuera.
+- **Se elige y se confirma** el tiempo, las temáticas y el avatar con controles normales; el cierre automático no enseña errores porque lo normal es que otro móvil se adelante.
+- **Lo elegido en la sala de espera** (temáticas, tiempo) vive en el móvil del anfitrión; al recargar vuelve a lo de por defecto. El tiempo de "Volver a jugar" sale de la partida.
+- **Pruebas existentes modificadas**, todas justificadas en su tarea: las que tocaban la píldora como botón (20.1), "Seguir hablando" (20.2), "decide si se vuelve a jugar" (20.3), la firma de `startGame` (22.3 y 23.2), el recuento de palabras (22.1), las fixtures con `avatar` (25.1) y el objeto de participantes de El impostor (25.2).
+
+### Qué revisar primero
+
+1. **El escáner con móviles de verdad**, Android e iPhone, apuntando al QR de "Mostrar QR".
+2. **Los avatares y las ilustraciones de "Cómo se juega"**: `/dev/componentes` en local enseña la galería entera.
+3. **Las 100 palabras nuevas** en `docs/PALABRAS.md`.
+4. **Una partida de El impostor con 30 segundos** para ver si el tiempo os encaja.
+5. **Subir los cambios**: pull request de `feat/plan-3` y después de `feat/mejoras` a `develop`, y `npx supabase db push` antes de publicar.
+
 ## Tercera tanda: ¿Qué prefieres? y Palabras prohibidas (fases 14 a 18)
 
 Estado al cerrar `docs/PLAN-3.md`, el 11 de octubre de 2026.

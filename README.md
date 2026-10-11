@@ -11,9 +11,11 @@ Trae seis juegos, todos de 3 a 16 jugadores:
 - **¿Qué prefieres?**: sale un dilema con dos opciones, cada uno elige en secreto y puntúa quien coincide con la mayoría.
 - **Palabras prohibidas**: uno describe una palabra sin decir las cinco prohibidas, otro vigila que no se le escape ninguna y los demás adivinan en voz alta.
 
-Todos menos El impostor van por rondas (5, 10 o 15) y llevan la cuenta de puntos durante la partida.
+Todos menos El impostor van por rondas (5, 10 o 15) y llevan la cuenta de puntos durante la partida. En El impostor, el anfitrión elige las temáticas de la palabra (300 palabras en 15 temáticas) y si la votación tiene tiempo (30, 60 o 90 segundos) o se cierra a mano.
 
-- Qué se construye y por qué: [`docs/CONTEXTO.md`](docs/CONTEXTO.md) (plataforma y El impostor) y [`docs/JUEGOS.md`](docs/JUEGOS.md) (los tres siguientes) y [`docs/JUEGOS-2.md`](docs/JUEGOS-2.md) (¿Qué prefieres? y Palabras prohibidas).
+Además: se entra en una sala escaneando su QR desde el inicio, cada jugador puede elegir un avatar de una galería de ilustraciones, y la sala de espera explica cada juego en tres pasos ilustrados.
+
+- Qué se construye y por qué: [`docs/CONTEXTO.md`](docs/CONTEXTO.md) (plataforma y El impostor), [`docs/JUEGOS.md`](docs/JUEGOS.md) (los tres siguientes), [`docs/JUEGOS-2.md`](docs/JUEGOS-2.md) (¿Qué prefieres? y Palabras prohibidas) y [`docs/MEJORAS.md`](docs/MEJORAS.md) (lo que se añadió tras probarla en grupo).
 - Contenido para revisar: [`docs/PALABRAS.md`](docs/PALABRAS.md), [`docs/PREGUNTAS.md`](docs/PREGUNTAS.md) (preguntas y dilemas) y [`docs/TARJETAS.md`](docs/TARJETAS.md).
 - Cómo publicarla: [`docs/DESPLIEGUE.md`](docs/DESPLIEGUE.md).
 - Decisiones tomadas por el camino: [`docs/DECISIONES.md`](docs/DECISIONES.md).
@@ -88,6 +90,9 @@ src/
                      actions.ts    una función por RPC y traducción de errores
                      sync.ts, use-room-sync.ts   sincronización (Realtime, sondeo, reintentos)
                      copy.ts       todos los textos de la interfaz
+                     scan.ts, qr-camera.ts   leer el QR de una sala con la cámara
+                     use-countdown.ts        cuenta atrás de la votación con la hora del servidor
+                     avatars.ts    la galería de avatares (las ilustraciones, en components/)
   test/            Datos de ejemplo para los tests
 supabase/
   migrations/      Esquema, seguridad (RLS), funciones, palabras, preguntas y tarjetas. Nunca se editan: se
