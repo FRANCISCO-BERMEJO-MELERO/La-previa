@@ -133,7 +133,8 @@ export const copy = {
     },
     que_prefieres: {
       name: '¿Qué prefieres?',
-      description: 'Sale un dilema y cada uno elige en secreto. Puntúa quien piensa como la mayoría.',
+      description:
+        'Sale un dilema y cada uno elige en secreto. Puntúa quien piensa como la mayoría.',
       players: 'De 3 a 16 jugadores',
     },
     upcoming: { banned: 'Palabras prohibidas' },
@@ -372,6 +373,32 @@ export const copy = {
       if (ratio > 0.4) return 'No está mal. Hay química, pero se puede afinar.';
       return 'Hay que practicar más. La próxima sale mejor.';
     },
+  },
+
+  quePrefieres: {
+    question: '¿Qué prefieres?',
+    or: 'o',
+    letter: (option: 'a' | 'b') => (option === 'a' ? 'A' : 'B'),
+    optionLabel: (option: 'a' | 'b', text: string) =>
+      `Opción ${option === 'a' ? 'A' : 'B'}: ${text}`,
+    chooseHint: 'Nadie ve lo que eliges hasta el reparto. Puntúa quien piensa como la mayoría.',
+    choose: 'Elige una opción',
+    submit: (option: 'a' | 'b') => `Elegir la ${option === 'a' ? 'A' : 'B'}`,
+    chosen: 'Han elegido',
+    chosenDetail: 'Ha elegido',
+    mine: (text: string) => `Tu elección: ${text}`,
+    closeHint: 'Puedes cerrar con las elecciones que haya.',
+    close: 'Cerrar elecciones',
+    waitingClose: (host: string) => `${host} cerrará las elecciones`,
+    majorityPill: 'Gana la mayoría',
+    tie: 'Empate',
+    tieText: 'Las dos opciones empatan: esta ronda nadie puntúa.',
+    nobody: 'Nadie ha elegido',
+    nobodyText: 'Esta ronda nadie se lleva el punto.',
+    count: (count: number) => (count === 1 ? '1 lo prefiere' : `${String(count)} lo prefieren`),
+    none: 'Nadie',
+    point: '+1',
+    resultPill: 'Quien mejor conoce al grupo',
   },
 
   // Solo para la página interna de componentes, que no existe en producción.

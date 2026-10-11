@@ -117,6 +117,18 @@ export function quePrefieresStart(roomId: string, rounds: number, deps = default
   return callForSnapshot(deps, 'que_prefieres_start', { room_id: roomId, rounds });
 }
 
+export function quePrefieresChoose(roomId: string, option: 'a' | 'b', deps = defaultDeps) {
+  return callForSnapshot(deps, 'que_prefieres_choose', { room_id: roomId, option });
+}
+
+export function quePrefieresClose(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'que_prefieres_close', { room_id: roomId });
+}
+
+export function quePrefieresNext(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'que_prefieres_next', { room_id: roomId });
+}
+
 export function openVoting(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'open_voting', { room_id: roomId });
 }

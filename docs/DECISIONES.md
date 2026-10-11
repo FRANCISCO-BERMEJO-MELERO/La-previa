@@ -1,5 +1,10 @@
 # Decisiones
 
+## 2026-10-11 · 15.7 · Pantallas de ¿Qué prefieres?
+
+Sin maqueta, con los componentes de los otros juegos por rondas y acento `orange`, que se añade como tono de la píldora pulsable y del resultado común (el token ya existía, como el `lime` de la 11.5). El dilema es el titular "¿Qué prefieres?" y debajo las dos opciones como tarjetas-botón grandes con su ficha "A" o "B" y un "o" entre ellas. Tocar una la marca (`aria-pressed`) y el botón del pie dice "Elegir la A"; la elección se envía con ese botón, igual que el voto en `probable`, porque no se puede cambiar y un toque sin querer la gastaría. La espera es la común con "Han elegido 1 de 3" y "Tu elección: …". El reparto nombra la opción mayoritaria en la tarjeta protagonista (o "Empate" o "Nadie ha elegido") y lista las dos opciones con cuántos y quiénes, y el "+1" en la mayoritaria. El resultado usa la pantalla común con "Quien mejor conoce al grupo". La prueba de entrar tarde en `Room` suma el caso del juego nuevo. Este commit arregla también el formato de `copy.ts`, que se coló sin pasar Prettier en el de la 15.6.
+Descartado: elegir con un solo toque, que no deja corregir un toque sin querer.
+
 ## 2026-10-11 · 15.6 · ¿Qué prefieres? pasa a elegible
 
 El selector lista cinco juegos elegibles y deja "Palabras prohibidas" como único próximo. La portada son las fichas "A" y "B" que ya estaban dibujadas, a tamaño de portada grande, sobre `orange`. La prueba existente del selector contaba cuatro juegos y dos próximos; se actualiza a cinco y uno, como se hizo en la 9.7 y la 10.8 al añadir cada juego. Elegir el juego y empezar con las rondas elegidas ya llama a `que_prefieres_start`; las pantallas de la partida llegan en la 15.7.

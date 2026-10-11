@@ -4,10 +4,12 @@ import {
   ids,
   inGame,
   inPista,
+  inPrefieres,
   inProbable,
   inQuien,
   lobbySnapshot,
   pistaState,
+  prefieresState,
   probableState,
   quienState,
 } from '@/test/fixtures';
@@ -132,6 +134,34 @@ describe('parseSnapshot', () => {
   it('descarta una partida de una_pista con un resultado que no existe', () => {
     expect(parseSnapshot({ ...inPista(), game: { ...pistaState(), result: 'casi' } })).toBeNull();
     expect(parseSnapshot({ ...inPista(), game: { ...pistaState(), guesser_id: null } })).toBeNull();
+  });
+
+  it('acepta la partida de que_prefieres en todas sus fases', () => {
+    const voting = inPrefieres({ my: { is_participant: true, alive: true, choice: 'a' } });
+    expect(parseSnapshot(voting)).toEqual(voting);
+    const reveal = inPrefieres({
+      phase: 'reveal',
+      choices: { a: [ids.fran], b: [ids.lucia, ids.alvaro] },
+      majority: 'b',
+    });
+    expect(parseSnapshot(reveal)).toEqual(reveal);
+    const tie = inPrefieres({ phase: 'reveal', choices: { a: [], b: [] }, majority: null });
+    expect(parseSnapshot(tie)).toEqual(tie);
+  });
+
+  it('descarta una partida de que_prefieres con una opción que no existe', () => {
+    expect(
+      parseSnapshot({ ...inPrefieres(), game: { ...prefieresState(), majority: 'c' } }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({
+        ...inPrefieres(),
+        game: { ...prefieresState(), my: { is_participant: true, alive: true, choice: 'A' } },
+      }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({ ...inPrefieres(), game: { ...prefieresState(), option_b: null } }),
+    ).toBeNull();
   });
 
   it('acepta las fechas tal como las devuelve Postgres', () => {

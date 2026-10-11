@@ -9,7 +9,7 @@ import type { Player, RankingRow } from './game-view';
 type ResultScreenProps = GameScreenProps & {
   /** Píldora de la tarjeta, con el color de acento del juego. */
   pill: string;
-  accent: 'sky' | 'lilac' | 'lime';
+  accent: 'sky' | 'lilac' | 'lime' | 'orange';
   /** Los de más puntos; vacío si nadie ha puntuado. */
   leaders: Player[];
   ranking: RankingRow[];

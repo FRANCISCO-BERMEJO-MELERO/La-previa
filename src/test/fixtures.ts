@@ -1,6 +1,7 @@
 import type {
   ImpostorGameState,
   ProbableGameState,
+  QuePrefieresGameState,
   QuienLoDijoGameState,
   UnaPistaGameState,
   Snapshot,
@@ -178,6 +179,43 @@ export function inPista(
   return lobbySnapshot({
     room: { ...base.room, game: 'una_pista' },
     game: pistaState(game),
+    ...rest,
+  });
+}
+
+export function prefieresState(
+  overrides: Partial<QuePrefieresGameState> = {},
+): QuePrefieresGameState {
+  return {
+    type: 'que_prefieres',
+    id: ids.game,
+    phase: 'voting',
+    round: 4,
+    total_rounds: 10,
+    option_a: 'Volar',
+    option_b: 'Ser invisible',
+    participants: [
+      { user_id: ids.fran, name: 'Fran', alive: true, score: 2, has_responded: false },
+      { user_id: ids.lucia, name: 'Lucía', alive: true, score: 1, has_responded: true },
+      { user_id: ids.alvaro, name: 'Álvaro', alive: true, score: 0, has_responded: false },
+    ],
+    my: { is_participant: true, alive: true, choice: null },
+    choices: null,
+    majority: null,
+    ranking: null,
+    ...overrides,
+  };
+}
+
+/** Sala con `que_prefieres` elegido y la partida dada. */
+export function inPrefieres(
+  game: Partial<QuePrefieresGameState> = {},
+  rest: Partial<Snapshot> = {},
+): Snapshot {
+  const base = lobbySnapshot();
+  return lobbySnapshot({
+    room: { ...base.room, game: 'que_prefieres' },
+    game: prefieresState(game),
     ...rest,
   });
 }
