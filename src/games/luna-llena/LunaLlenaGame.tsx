@@ -7,6 +7,7 @@ import {
   lunaLlenaCloseNight,
   lunaLlenaCloseVote,
   lunaLlenaContinue,
+  lunaLlenaHunterShot,
   lunaLlenaNightAction,
   lunaLlenaSkipHunter,
   lunaLlenaVerdict,
@@ -18,6 +19,7 @@ import type { LunaLlenaGameState, Snapshot } from '@/lib/snapshot';
 import { LateScreen } from '@/screens/LateScreen';
 import { CardPeek } from './CardPeek';
 import { DawnScreen } from './DawnScreen';
+import { HunterScreen } from './HunterScreen';
 import { DayScreen, DefenseScreen, VoteScreen, WaitScreen } from './DayScreens';
 import {
   accuseGroups,
@@ -270,6 +272,34 @@ export function LunaLlenaGame({
           spared={game.announcement?.spared ?? null}
           sides={verdictSides(game, players)}
           left={game.announcement?.kind === 'left'}
+        />
+      );
+    case 'hunter_shoot': {
+      const target = chosen[0] ?? null;
+      return (
+        <HunterScreen
+          {...chrome}
+          candidates={players.filter((player) => player.alive)}
+          selected={target}
+          onSelect={(userId) => {
+            choose([userId]);
+          }}
+          onShoot={() => {
+            if (!target) return;
+            void run(() => lunaLlenaHunterShot(roomId, target));
+          }}
+          busy={busy}
+          error={playerError}
+        />
+      );
+    }
+    case 'hunter_wait':
+      return (
+        <WaitScreen
+          {...chrome}
+          text={texts.hunter.waiting(
+            players.find((player) => player.role === 'hunter')?.name ?? '',
+          )}
         />
       );
     default:
