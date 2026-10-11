@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { copy } from '@/lib/copy';
+import { RoleArt } from '@/games/luna-llena/RoleArt';
+import { roleBackground, type LunaRole } from '@/games/luna-llena/roles';
 import type { GameId } from '@/lib/snapshot';
 
 // Ilustraciones de los pasos de "Cómo se juega", hechas con formas como las portadas del selector.
@@ -188,4 +190,37 @@ export const howToIllustrations: Record<GameId, readonly ReactNode[]> = {
       <Point />
     </>,
   ],
+  luna_llena: [
+    <>
+      <MiniCard role="villager" />
+      <MiniCard role="wolf" />
+      <MiniCard role="seer" />
+    </>,
+    <>
+      <MiniCard role="wolf" />
+      <MiniCard role="protector" />
+    </>,
+    <>
+      <Column>
+        <Tag tone="lime">{art.mayor}</Tag>
+        <Face />
+      </Column>
+      <Tag tilt="rotate-3">{art.double}</Tag>
+    </>,
+    <>
+      <MiniCard role="villager" />
+      <MiniCard role="jester" />
+    </>,
+  ],
 };
+
+/** El dibujo de un rol de Luna llena en pequeño, sobre el color de su carta. */
+function MiniCard({ role }: { role: LunaRole }) {
+  return (
+    <span
+      className={`w-18 shrink-0 overflow-hidden rounded-control border-3 border-ink ${roleBackground[role]}`}
+    >
+      <RoleArt role={role} decorative />
+    </span>
+  );
+}

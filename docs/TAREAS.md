@@ -303,7 +303,7 @@ Aceptación: `npm run test:db` pasa desde cero.
 
 - [x] 30.1 Las siete ilustraciones SVG y la carta de rol, también en `/dev/componentes`
 - [x] 30.2 Textos del juego: roles, bandos, efectos y guion del narrador
-- [ ] 30.3 Esquema `zod` de la variante, acciones, errores y `viewFor`, con tests unitarios
+- [x] 30.3 Esquema `zod` de la variante, acciones, errores y `viewFor`, con tests unitarios
 - [ ] 30.4 Sala de espera: lobos, roles opcionales, composición y aviso
 - [ ] 30.5 Caja del narrador
 - [ ] 30.6 Reparto con la carta y botón para volver a verla
@@ -325,7 +325,7 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 
 ## Fase 32 · Cierre de Luna llena
 
-- [ ] 32.1 Selector con Luna llena elegible, portada del lobo y rango de 6 a 16; pasos de "Cómo se juega"
+- [x] 32.1 Selector con Luna llena elegible, portada del lobo y rango de 6 a 16; pasos de "Cómo se juega"
 - [ ] 32.2 Repaso a 360, 390 y 430 px con 16 jugadores y nombres de 14
 - [ ] 32.3 Repaso de accesibilidad de las pantallas nuevas
 - [ ] 32.4 Revisión final contra las secciones 1 a 10 del plan y su "Fuera de alcance"

@@ -5,6 +5,7 @@ import type {
   QuePrefieresGameState,
   QuienLoDijoGameState,
   UnaPistaGameState,
+  LunaLlenaGameState,
   Snapshot,
 } from '@/lib/snapshot';
 
@@ -273,6 +274,89 @@ export function inPalabras(
   return lobbySnapshot({
     room: { ...base.room, game: 'palabras_prohibidas' },
     game: palabrasState(game),
+    ...rest,
+  });
+}
+
+/** Los seis jugadores de las partidas de Luna llena: los de la referencia y dos más. */
+export const lunaIds = {
+  ...ids,
+  dani: '0a1b2c3d-1111-4aaa-8bbb-000000000005',
+  paula: '0a1b2c3d-1111-4aaa-8bbb-000000000006',
+} as const;
+
+const lunaNames = [
+  [lunaIds.fran, 'Fran'],
+  [lunaIds.lucia, 'Lucía'],
+  [lunaIds.alvaro, 'Álvaro'],
+  [lunaIds.marta, 'Marta'],
+  [lunaIds.dani, 'Dani'],
+  [lunaIds.paula, 'Paula'],
+] as const;
+
+export function lunaMy(
+  overrides: Partial<LunaLlenaGameState['my']> = {},
+): LunaLlenaGameState['my'] {
+  return {
+    is_participant: true,
+    alive: true,
+    role: 'villager',
+    fellow_wolves: [],
+    action: null,
+    wolf_marks: [],
+    seer_results: [],
+    lover_id: null,
+    chosen_lovers: null,
+    last_protected_id: null,
+    vote: null,
+    ...overrides,
+  };
+}
+
+/** Primera noche de una partida de seis vista por Fran, aldeano y anfitrión. */
+export function lunaState(overrides: Partial<LunaLlenaGameState> = {}): LunaLlenaGameState {
+  return {
+    type: 'luna_llena',
+    id: ids.game,
+    phase: 'night',
+    night: 1,
+    day: 0,
+    mayor_id: null,
+    accused_id: null,
+    config: { wolves: 1, roles: [] },
+    participants: lunaNames.map(([user_id, name]) => ({
+      user_id,
+      name,
+      alive: true,
+      has_acted: false,
+      role: null,
+    })),
+    my: lunaMy(),
+    announcement: null,
+    public_votes: null,
+    narration: { key: 'night_first', params: {} },
+    spectator: null,
+    result: null,
+    ...overrides,
+  };
+}
+
+/** Sala de seis con `luna_llena` elegido y la partida dada. */
+export function inLuna(
+  game: Partial<LunaLlenaGameState> = {},
+  rest: Partial<Snapshot> = {},
+): Snapshot {
+  const base = lobbySnapshot();
+  return lobbySnapshot({
+    room: { ...base.room, game: 'luna_llena' },
+    players: lunaNames.map(([user_id, name], index) => ({
+      user_id,
+      name,
+      avatar: null,
+      connected: true,
+      joined_at: `2026-10-08T19:0${String(index)}:00+00:00`,
+    })),
+    game: lunaState(game),
     ...rest,
   });
 }

@@ -3,6 +3,7 @@ import { Button } from '@/components/Button';
 import { OfflineNotice } from '@/components/OfflineNotice';
 import { HeaderAside } from '@/components/HeaderAside';
 import { Screen } from '@/components/Screen';
+import { RoleArt } from '@/games/luna-llena/RoleArt';
 import { copy } from '@/lib/copy';
 import { gameIds, type GameId } from '@/lib/snapshot';
 
@@ -96,6 +97,7 @@ const coverBackgrounds: Record<GameId, string> = {
   una_pista: 'bg-lime',
   que_prefieres: 'bg-orange',
   palabras_prohibidas: 'bg-lilac',
+  luna_llena: 'bg-ink',
 };
 
 function ImpostorFaces() {
@@ -177,6 +179,15 @@ function BannedWord() {
   );
 }
 
+/** La cabeza del lobo de la carta, sobre su color. */
+function WolfMoon() {
+  return (
+    <span className="w-40 -rotate-3 overflow-hidden rounded-control border-3 border-paper bg-tomato">
+      <RoleArt role="wolf" decorative />
+    </span>
+  );
+}
+
 const covers: Record<GameId, ReactNode> = {
   impostor: <ImpostorFaces />,
   probable: <ProbableFaces />,
@@ -184,6 +195,7 @@ const covers: Record<GameId, ReactNode> = {
   una_pista: <RepeatedClues />,
   que_prefieres: <TwoOptions />,
   palabras_prohibidas: <BannedWord />,
+  luna_llena: <WolfMoon />,
 };
 
 function Face() {

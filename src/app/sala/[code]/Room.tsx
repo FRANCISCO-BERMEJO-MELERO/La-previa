@@ -15,6 +15,7 @@ import {
   backToLobby,
   kickPlayer,
   leaveRoom,
+  lunaLlenaStart,
   palabrasProhibidasStart,
   probableStart,
   quePrefieresStart,
@@ -277,6 +278,8 @@ export function Room({ initial, fresh }: RoomProps) {
               return quePrefieresStart(roomId, rounds);
             case 'palabras_prohibidas':
               return palabrasProhibidasStart(roomId, rounds);
+            case 'luna_llena':
+              return lunaLlenaStart(roomId, null);
           }
         });
       }}

@@ -4,7 +4,7 @@ import type { GameId } from './snapshot';
 export const ROUND_OPTIONS = [5, 10, 15] as const;
 export const DEFAULT_ROUNDS = 10;
 
-/** El impostor no va por rondas; los demás juegos, sí. */
+/** El impostor y Luna llena no van por rondas; los demás juegos, sí. */
 export function isRoundGame(game: GameId): boolean {
-  return game !== 'impostor';
+  return game !== 'impostor' && game !== 'luna_llena';
 }

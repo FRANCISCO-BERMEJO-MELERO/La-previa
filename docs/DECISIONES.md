@@ -1,5 +1,14 @@
 # Decisiones
 
+## 2026-10-11 · 30.3 y 32.1 · Esquema, acciones y el juego en el selector
+
+- **El selector se adelanta.** Al añadir `luna_llena` a la lista de juegos, los tipos obligan a darle textos, portada y pasos de "Cómo se juega" (`Record<GameId, …>`). Esa es la 32.1, que se hace aquí: portada con la cabeza del lobo sobre `tomato` en un fondo `ink`, "De 6 a 16 jugadores" y cuatro pasos con los dibujos de los roles en pequeño.
+- **Prueba del selector.** `GamePickerScreen.test.tsx` contaba seis juegos; ahora cuenta siete, con Luna llena la última, y comprueba su rango. Es el único cambio en una prueba existente, y lo exige el plan.
+- **No va por rondas.** `isRoundGame` excluye también a Luna llena.
+- **Arranque provisional.** Hasta que la sala de espera deje elegir la composición (30.4), "Empezar partida" envía la recomendada (`wolves` y `roles` nulos).
+- **Roles en el cliente.** La lista de roles vive en `src/games/luna-llena/roles.ts` y la foto la importa de ahí, como hace con los avatares.
+- **Tamaño del nombre en la carta.** El plan pide de 46 a 56 px "según quepa". No hay token entre 48 y 68 px y no se añaden tokens, así que el nombre usa `fitDisplay` con tope en `text-display-md` (48 px): "LOBO" sale a 48 px y "PROTECTOR" baja hasta caber a 360 px.
+
 ## 2026-10-11 · 29.6 y 29.7 · Abandono y resto de la foto
 
 - **Abandono tras un juicio.** El plan dice que, si alguien se va de día, se vuelve al debate. Si se va durante la ejecución, o durante el disparo del cazador que la sigue, el juicio del día ya ha terminado; volver al debate permitiría un segundo juicio. En ese caso se sigue con la noche siguiente. El anuncio de tipo `left` guarda a dónde se vuelve en `resume` (`night`, `day` o `next_night`).

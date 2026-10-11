@@ -3,12 +3,16 @@ import {
   gameState,
   ids,
   inGame,
+  inLuna,
   inPalabras,
   inPista,
   inPrefieres,
   inProbable,
   inQuien,
   lobbySnapshot,
+  lunaIds,
+  lunaMy,
+  lunaState,
   palabrasState,
   pizzaCard,
   pistaState,
@@ -238,6 +242,82 @@ describe('parseSnapshot', () => {
   it('no deja pasar campos que no están en el contrato', () => {
     const parsed = parseSnapshot({ ...lobbySnapshot(), secret: 'impostor' });
     expect(parsed).not.toHaveProperty('secret');
+  });
+});
+
+describe('parseSnapshot de Luna llena', () => {
+  it('acepta la foto de un vivo de noche', () => {
+    const snapshot = inLuna();
+    expect(parseSnapshot(snapshot)).toEqual(snapshot);
+  });
+
+  it('acepta un amanecer con muertes, un muerto con su vista y un final', () => {
+    const deaths = [
+      { user_id: lunaIds.marta, name: 'Marta', role: 'seer', cause: 'wolves' },
+      { user_id: lunaIds.dani, name: 'Dani', role: 'cupid', cause: 'heartbreak' },
+    ] as const;
+    expect(
+      parseSnapshot(
+        inLuna({
+          phase: 'dawn',
+          announcement: { kind: 'night', deaths: [...deaths], spared: null },
+          narration: {
+            key: 'dawn_deaths',
+            params: { names: ['Marta', 'Dani'], lover: { name: 'Dani', role: 'cupid' } },
+          },
+        }),
+      ),
+    ).not.toBeNull();
+    expect(
+      parseSnapshot(
+        inLuna({
+          my: lunaMy({ alive: false }),
+          spectator: {
+            roles: [{ user_id: lunaIds.fran, role: 'wolf' }],
+            lovers: [lunaIds.marta, lunaIds.dani],
+            actions: [{ user_id: lunaIds.fran, target_id: lunaIds.lucia, target2_id: null }],
+          },
+        }),
+      ),
+    ).not.toBeNull();
+    expect(
+      parseSnapshot(
+        inLuna({
+          phase: 'finished',
+          result: {
+            winner: 'jester',
+            roles: [{ user_id: lunaIds.fran, role: 'jester' }],
+            lovers: null,
+          },
+          narration: { key: 'win_jester', params: {} },
+        }),
+      ),
+    ).not.toBeNull();
+  });
+
+  it('acepta los votos ya cerrados', () => {
+    expect(
+      parseSnapshot(
+        inLuna({
+          phase: 'execution',
+          public_votes: {
+            kind: 'verdict',
+            votes: [{ voter_id: lunaIds.lucia, target_id: null, condemn: true }],
+          },
+        }),
+      ),
+    ).not.toBeNull();
+  });
+
+  it('rechaza roles, fases y claves del guion que no existen', () => {
+    const broken = (game: Record<string, unknown>) => ({
+      ...inLuna(),
+      game: { ...lunaState(), ...game },
+    });
+    expect(parseSnapshot(broken({ my: { ...lunaMy(), role: 'witch' } }))).toBeNull();
+    expect(parseSnapshot(broken({ phase: 'reveal' }))).toBeNull();
+    expect(parseSnapshot(broken({ narration: { key: 'chat', params: {} } }))).toBeNull();
+    expect(parseSnapshot(inLuna({ config: { wolves: 0, roles: [] } }))).toBeNull();
   });
 });
 

@@ -155,6 +155,8 @@ export const copy = {
       forbiddenB: 'Italia',
       forbiddenCall: '¡Prohibida!',
       shout: '¡Pizza!',
+      mayor: 'Alcalde',
+      double: '×2',
     },
     steps: {
       impostor: [
@@ -238,6 +240,24 @@ export const copy = {
           text: 'Decid la respuesta en voz alta. Quien acierta y quien describe se llevan un punto cada uno.',
         },
       ],
+      luna_llena: [
+        {
+          title: 'Cada uno, su carta',
+          text: 'Recibes un rol en secreto. Los lobos se conocen entre ellos; nadie más sabe nada de nadie.',
+        },
+        {
+          title: 'De noche, todos al móvil',
+          text: 'Todos tocan algo para que nadie se delate. Los lobos eligen víctima y los roles con poder lo usan.',
+        },
+        {
+          title: 'De día, a juicio',
+          text: 'Se anuncia quién ha muerto. Elegís alcalde, debatís con los móviles boca abajo y votáis a quién ahorcar.',
+        },
+        {
+          title: 'Quién gana',
+          text: 'El pueblo, si caen todos los lobos. Los lobos, si llegan a ser tantos como el resto. El bufón, si lo ahorcáis.',
+        },
+      ],
     },
   },
 
@@ -312,6 +332,12 @@ export const copy = {
       name: 'Palabras prohibidas',
       description: 'Uno describe una palabra sin decir las cinco prohibidas. Los demás adivinan.',
       players: 'De 3 a 16 jugadores',
+    },
+    luna_llena: {
+      name: 'Luna llena',
+      description:
+        'Un pueblo con lobos escondidos. De noche matan; de día se ahorca a un sospechoso.',
+      players: 'De 6 a 16 jugadores',
     },
     covers: {
       quote: '¿?',

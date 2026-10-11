@@ -16,6 +16,15 @@ import {
   probableNext,
   probableStart,
   probableVote,
+  lunaLlenaCloseNight,
+  lunaLlenaCloseVote,
+  lunaLlenaContinue,
+  lunaLlenaHunterShot,
+  lunaLlenaNightAction,
+  lunaLlenaSkipHunter,
+  lunaLlenaStart,
+  lunaLlenaVerdict,
+  lunaLlenaVote,
   palabrasProhibidasForbidden,
   palabrasProhibidasGuessed,
   palabrasProhibidasNext,
@@ -134,6 +143,47 @@ describe('acciones', () => {
       ['continue_game', { room_id: 'sala' }],
       ['back_to_lobby', { room_id: 'sala' }],
     ]);
+  });
+
+  it('cada acción de Luna llena llama a su RPC con sus argumentos', async () => {
+    const d = deps({ data: lobbySnapshot(), error: null });
+    await lunaLlenaStart('sala', null, d);
+    await lunaLlenaStart('sala', { wolves: 2, roles: ['protector', 'hunter'] }, d);
+    await lunaLlenaContinue('sala', d);
+    await lunaLlenaNightAction('sala', 'u2', null, d);
+    await lunaLlenaNightAction('sala', 'u2', 'u3', d);
+    await lunaLlenaCloseNight('sala', d);
+    await lunaLlenaVote('sala', 'u4', d);
+    await lunaLlenaVerdict('sala', false, d);
+    await lunaLlenaCloseVote('sala', d);
+    await lunaLlenaHunterShot('sala', 'u5', d);
+    await lunaLlenaSkipHunter('sala', d);
+    expect(d.rpc.mock.calls).toEqual([
+      ['luna_llena_start', { room_id: 'sala', wolves: null, roles: null }],
+      ['luna_llena_start', { room_id: 'sala', wolves: 2, roles: ['protector', 'hunter'] }],
+      ['luna_llena_continue', { room_id: 'sala' }],
+      ['luna_llena_night_action', { room_id: 'sala', target_id: 'u2', target2_id: null }],
+      ['luna_llena_night_action', { room_id: 'sala', target_id: 'u2', target2_id: 'u3' }],
+      ['luna_llena_close_night', { room_id: 'sala' }],
+      ['luna_llena_vote', { room_id: 'sala', target_id: 'u4' }],
+      ['luna_llena_verdict', { room_id: 'sala', condemn: false }],
+      ['luna_llena_close_vote', { room_id: 'sala' }],
+      ['luna_llena_hunter_shot', { room_id: 'sala', target_id: 'u5' }],
+      ['luna_llena_skip_hunter', { room_id: 'sala' }],
+    ]);
+  });
+
+  it('traduce los códigos de error de Luna llena', async () => {
+    for (const code of [
+      'invalid_config',
+      'already_acted',
+      'not_hunter',
+      'is_accused',
+      'same_as_last_night',
+    ] as const) {
+      const d = deps({ data: null, error: { message: code } });
+      expect(await lunaLlenaContinue('sala', d)).toEqual({ ok: false, error: code });
+    }
   });
 
   it('empezar El impostor envía las temáticas solo si se ha elegido alguna', async () => {

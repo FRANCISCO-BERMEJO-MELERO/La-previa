@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { lunaRoles, optionalRoles } from '@/games/luna-llena/roles';
 import { avatarIds } from './avatars';
 
 /**
@@ -158,6 +159,128 @@ const palabrasProhibidasGameSchema = z.object({
     .nullable(),
 });
 
+const lunaRole = z.enum(lunaRoles);
+
+export const lunaNarrationKeys = [
+  'roles',
+  'night_first',
+  'night',
+  'dawn_death',
+  'dawn_deaths',
+  'dawn_none',
+  'hunter',
+  'hunter_shot',
+  'left',
+  'mayor',
+  'day',
+  'voting',
+  'defense',
+  'no_accused',
+  'verdict',
+  'executed',
+  'spared',
+  'win_village',
+  'win_wolves',
+  'win_jester',
+] as const;
+
+const lunaRoleOf = z.object({ user_id: id, role: lunaRole });
+
+/** Luna llena (docs/PLAN-5.md §8). Lo secreto llega nulo o vacío a quien no debe verlo. */
+const lunaLlenaGameSchema = z.object({
+  type: z.literal('luna_llena'),
+  id,
+  phase: z.enum([
+    'roles',
+    'night',
+    'dawn',
+    'hunter',
+    'mayor',
+    'day',
+    'voting',
+    'defense',
+    'verdict',
+    'execution',
+    'finished',
+  ]),
+  night: z.int().nonnegative(),
+  day: z.int().nonnegative(),
+  mayor_id: id.nullable(),
+  accused_id: id.nullable(),
+  config: z.object({ wolves: z.int().positive(), roles: z.array(z.enum(optionalRoles)) }),
+  participants: z.array(
+    z.object({
+      user_id: id,
+      name: z.string(),
+      alive: z.boolean(),
+      has_acted: z.boolean(),
+      // Solo el de los muertos, y el de todos al terminar.
+      role: lunaRole.nullable(),
+    }),
+  ),
+  my: z.object({
+    is_participant: z.boolean(),
+    alive: z.boolean(),
+    role: lunaRole.nullable(),
+    fellow_wolves: z.array(id),
+    action: z.object({ target_id: id, target2_id: id.nullable() }).nullable(),
+    wolf_marks: z.array(z.object({ user_id: id, target_id: id })),
+    seer_results: z.array(
+      z.object({ night: z.int().positive(), user_id: id, is_wolf: z.boolean() }),
+    ),
+    lover_id: id.nullable(),
+    chosen_lovers: z.array(id).nullable(),
+    last_protected_id: id.nullable(),
+    vote: z.object({ target_id: id.nullable(), condemn: z.boolean().nullable() }).nullable(),
+  }),
+  announcement: z
+    .object({
+      kind: z.enum(['night', 'trial', 'left']),
+      deaths: z.array(
+        z.object({
+          user_id: id,
+          name: z.string(),
+          role: lunaRole,
+          cause: z.enum(['wolves', 'hanged', 'hunter', 'heartbreak', 'left']),
+        }),
+      ),
+      spared: z.string().nullable(),
+    })
+    .nullable(),
+  public_votes: z
+    .object({
+      kind: z.enum(['mayor', 'accuse', 'verdict']),
+      votes: z.array(
+        z.object({ voter_id: id, target_id: id.nullable(), condemn: z.boolean().nullable() }),
+      ),
+    })
+    .nullable(),
+  narration: z.object({
+    key: z.enum(lunaNarrationKeys),
+    params: z.object({
+      name: z.string().optional(),
+      role: lunaRole.optional(),
+      names: z.array(z.string()).optional(),
+      lover: z.object({ name: z.string(), role: lunaRole }).optional(),
+      mayor: z.string().optional(),
+    }),
+  }),
+  spectator: z
+    .object({
+      roles: z.array(lunaRoleOf),
+      lovers: z.array(id).nullable(),
+      actions: z.array(z.object({ user_id: id, target_id: id, target2_id: id.nullable() })),
+    })
+    .nullable(),
+  result: z
+    .object({
+      winner: z.enum(['village', 'wolves', 'jester']),
+      roles: z.array(lunaRoleOf),
+      lovers: z.array(id).nullable(),
+    })
+    .nullable(),
+});
+
 /** La partida en curso, con la forma propia de cada juego (docs/JUEGOS.md §8, JUEGOS-2 §6). */
 const gameSchema = z.discriminatedUnion('type', [
   impostorGameSchema,
@@ -166,6 +289,7 @@ const gameSchema = z.discriminatedUnion('type', [
   unaPistaGameSchema,
   quePrefieresGameSchema,
   palabrasProhibidasGameSchema,
+  lunaLlenaGameSchema,
 ]);
 
 export const gameIds = [
@@ -175,6 +299,7 @@ export const gameIds = [
   'una_pista',
   'que_prefieres',
   'palabras_prohibidas',
+  'luna_llena',
 ] as const;
 
 export const snapshotSchema = z.object({
@@ -209,6 +334,8 @@ export type UnaPistaGameState = z.infer<typeof unaPistaGameSchema>;
 export type QuePrefieresGameState = z.infer<typeof quePrefieresGameSchema>;
 export type QuePrefieresOption = z.infer<typeof option>;
 export type PalabrasProhibidasGameState = z.infer<typeof palabrasProhibidasGameSchema>;
+export type LunaLlenaGameState = z.infer<typeof lunaLlenaGameSchema>;
+export type LunaNarration = LunaLlenaGameState['narration'];
 /** Lo que comparten las partidas de los juegos por rondas. */
 export type RoundGameState = z.infer<z.ZodObject<typeof roundGameShape>>;
 export type Phase = ImpostorGameState['phase'];
