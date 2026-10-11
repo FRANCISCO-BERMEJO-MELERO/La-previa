@@ -241,7 +241,8 @@ export const copy = {
         impostors === 1 ? 'impostor' : 'impostores'
       } entre ellos.`,
     gameOver: 'Se acabó la partida.',
-    keepTalking: 'Seguir hablando',
+    nextRound: 'Siguiente ronda',
+    roundPill: (round: number) => `Ronda ${String(round)} de la partida`,
     seeResult: 'Ver resultado',
     waitingHost: (host: string) => `${host} decide cuándo seguir`,
   },

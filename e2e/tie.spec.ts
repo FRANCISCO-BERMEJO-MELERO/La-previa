@@ -25,7 +25,7 @@ test('6.4 · empate y segunda votación', async ({ browser }) => {
   }
 
   // Nadie queda fuera: todos vuelven a hablar en la ronda siguiente.
-  await host.getByRole('button', { name: 'Seguir hablando' }).click();
+  await host.getByRole('button', { name: 'Siguiente ronda' }).click();
   for (const page of Object.values(players)) {
     await expect(page.getByText(/^(Tu palabra|Eres el)$/)).toBeVisible();
   }

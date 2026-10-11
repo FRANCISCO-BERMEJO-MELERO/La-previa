@@ -323,6 +323,16 @@ describe('Room', () => {
     expect(mocks.openVoting).toHaveBeenCalledWith(ids.room);
   });
 
+  it('a partir de la segunda ronda, la píldora dice que es la misma partida', () => {
+    ready(inGame({ round: 2 }));
+    const { unmount } = render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(screen.getByText('Ronda 2 de la partida')).toBeInTheDocument();
+    unmount();
+    ready(inGame());
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(screen.getByText('Sala KTRM')).toBeInTheDocument();
+  });
+
   it('quien no es anfitrión espera a que decida', () => {
     const base = inGame();
     ready({ ...base, me: { user_id: ids.lucia, name: 'Lucía', is_host: false } });
@@ -369,7 +379,7 @@ describe('Room', () => {
     expect(
       screen.getByText('La partida sigue. Quedan 3 jugadores y 1 impostor entre ellos.'),
     ).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Seguir hablando' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Siguiente ronda' }));
     expect(mocks.continueGame).toHaveBeenCalledWith(ids.room);
   });
 

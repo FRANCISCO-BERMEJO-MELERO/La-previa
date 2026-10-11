@@ -67,7 +67,7 @@ export function HostControls({
         <>
           {alert}
           <Button fullWidth disabled={busy} onClick={onContinue}>
-            {gameOver ? copy.reveal.seeResult : copy.reveal.keepTalking}
+            {gameOver ? copy.reveal.seeResult : copy.reveal.nextRound}
           </Button>
         </>
       );

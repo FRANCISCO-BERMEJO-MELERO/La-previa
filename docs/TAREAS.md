@@ -225,7 +225,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 ## Fase 20 · Salir y terminar partida
 
 - [x] 20.1 Botón "Salir" en la cabecera de la sala y de las partidas; la píldora deja de ser pulsable
-- [ ] 20.2 "Siguiente ronda" y la explicación en la revelación de El impostor
+- [x] 20.2 "Siguiente ronda" y la explicación en la revelación de El impostor
 - [ ] 20.3 Resultado de todos los juegos: "Fin de la partida", dos botones iguales y el texto para los demás
 
 ## Fase 21 · Escanear el QR

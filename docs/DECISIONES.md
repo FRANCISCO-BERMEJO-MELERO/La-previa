@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-11 · 20.2 · "Siguiente ronda" en El impostor
+
+El texto que explica que la partida sigue ("La partida sigue. Quedan 4 jugadores y 1 impostor entre ellos.") ya estaba en la revelación; lo que confundía era el botón "Seguir hablando" y que la pantalla siguiente era igual a la de una partida nueva. El botón pasa a "Siguiente ronda" y, desde la segunda ronda, la píldora dice "Ronda 2 de la partida" en lugar de "Sala ABCD". Al terminar vuelve a decir la sala. Las tres pruebas que pulsaban "Seguir hablando" (`Room`, `HostControls` y la e2e del empate) pulsan ahora "Siguiente ronda".
+
 ## 2026-10-11 · 20.1 · Salir con un botón a la vista
 
 `PillButton` (la píldora que al tocarla abría el diálogo de salir) se sustituye por `HeaderAside`: un botón "Salir" con borde, de 44 px, a la derecha de "La Previa", y la píldora, que ya solo informa (sala, juego o ronda), en su propia fila bajo la cabecera. Con las dos cosas en la misma fila, a 360 px el nombre del juego más largo partía "La Previa" y la propia píldora en dos líneas. El botón se llama "Salir de la sala" para lectores de pantalla y sigue abriendo la confirmación de siempre.
