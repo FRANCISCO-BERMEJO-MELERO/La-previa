@@ -751,6 +751,11 @@ export const copy = {
       packNames: (names: readonly string[]) =>
         names.length === 0 ? 'Cazas solo: no hay más lobos.' : joinNames(names),
     },
+    deal: {
+      waiting: 'El narrador dará paso a la noche',
+      peek: 'Mantén para ver tu carta',
+      peekOpen: 'Suelta para ocultarla',
+    },
     narrator: {
       title: 'Lee en voz alta',
       startNight: 'Que caiga la noche',
