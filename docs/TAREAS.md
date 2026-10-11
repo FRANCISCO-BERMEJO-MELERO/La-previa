@@ -294,7 +294,7 @@ Aceptación: `npm run test:db` pasa desde cero, con las pruebas anteriores intac
 - [x] 29.4 Cazador: fase `hunter`, disparo y salto
 - [x] 29.5 Comprobación de victoria y `result` en la foto
 - [x] 29.6 Abandono y expulsión en cada fase
-- [ ] 29.7 Resto de la foto: `public_votes`, `accused_id`, `mayor_id` y todas las claves de `narration`
+- [x] 29.7 Resto de la foto: `public_votes`, `accused_id`, `mayor_id` y todas las claves de `narration`
 - [ ] 29.8 Pruebas pgTAP de transiciones, juicio, cazador, bufón, victorias, abandonos, partidas completas y secreto de extremo a extremo
 
 Aceptación: `npm run test:db` pasa desde cero.

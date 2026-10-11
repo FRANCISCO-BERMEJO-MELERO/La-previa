@@ -1,5 +1,12 @@
 # Decisiones
 
+## 2026-10-11 · 29.6 y 29.7 · Abandono y resto de la foto
+
+- **Abandono tras un juicio.** El plan dice que, si alguien se va de día, se vuelve al debate. Si se va durante la ejecución, o durante el disparo del cazador que la sigue, el juicio del día ya ha terminado; volver al debate permitiría un segundo juicio. En ese caso se sigue con la noche siguiente. El anuncio de tipo `left` guarda a dónde se vuelve en `resume` (`night`, `day` o `next_night`).
+- **Votos cancelados.** Al volver al debate se borran la acusación y el veredicto de ese día, y también la elección de alcalde si estaba en curso. Un alcalde ya elegido ese día se mantiene.
+- **Cazador muerto que se va.** Si aún no había disparado, pierde el disparo. Si estaba en su turno, se vuelve al anuncio sin disparo.
+- **29.7.** `public_votes`, `accused_id`, `mayor_id` y todas las claves de `narration` llegaron con la foto en la 28.6. Esta tarea añade las pruebas de las claves que faltaban.
+
 ## 2026-10-11 · 29.2 y 29.3 · Alcalde y juicio
 
 Las dos votaciones comparten la función de votar, el cierre automático y el forzado, así que van juntas.
