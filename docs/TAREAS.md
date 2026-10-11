@@ -276,7 +276,7 @@ Aceptación: baterías en verde; tareas y decisiones escritas.
 
 ## Fase 28 · Luna llena: base de datos, reparto y noche
 
-- [ ] 28.1 Migración: `rooms.game` y `games.phase` admiten `luna_llena`; `game_roles.role` admite los siete roles; tablas `luna_state`, `luna_night_actions` y `luna_votes`, con RLS y sin políticas
+- [x] 28.1 Migración: `rooms.game` y `games.phase` admiten `luna_llena`; `game_roles.role` admite los siete roles; tablas `luna_state`, `luna_night_actions` y `luna_votes`, con RLS y sin políticas
 - [ ] 28.2 `set_game` acepta `luna_llena`; auxiliares que validan una composición y calculan la recomendada
 - [ ] 28.3 `luna_llena_start`: validación, reparto aleatorio y estado inicial en `roles`
 - [ ] 28.4 `luna_llena_night_action` para cada rol, con sus restricciones, y cierre automático de la noche
