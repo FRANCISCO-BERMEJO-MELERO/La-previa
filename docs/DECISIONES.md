@@ -1,5 +1,13 @@
 # Decisiones
 
+## 2026-10-11 · 23.1 · Tiempo para votar en la base de datos
+
+- `games.vote_seconds` (nulo, 30, 60 o 90, solo en El impostor) se fija al empezar: `start_game` gana un cuarto parámetro con valor por defecto, como las temáticas en la 22.2. Fuera de esos valores lanza `invalid_vote_seconds`, que se añade al cliente.
+- `open_voting` guarda `games.voting_deadline` (ahora más el tiempo) y la foto la incluye solo durante la votación, con `vote_seconds`. La segunda votación de un empate vuelve a pasar por `open_voting`, así que el tiempo empieza de nuevo.
+- `close_voting`: el anfitrión cierra cuando quiere, como siempre. Cualquier otro miembro solo puede cerrar una votación de El impostor con hora límite ya pasada; si no, recibe `not_host`, como antes. Así la votación se cierra aunque el móvil del anfitrión esté bloqueado, y nadie puede adelantarse. Al cerrar se borra la hora límite.
+- La hora la decide la base de datos con `now()`: el móvil solo cuenta hacia atrás y pide cerrar al llegar a cero.
+- Quien no es miembro recibe ahora `not_member` en vez de `not_host` al intentar cerrar, porque se comprueba que sea miembro antes que la hora. Ninguna prueba existente dependía de eso.
+
 ## 2026-10-11 · 22.3 · Selector de temáticas
 
 Las 15 temáticas no caben en la sala de espera sin alargarla mucho, así que debajo de "Impostores" hay una fila "Temáticas" con lo elegido ("Todas", "Fútbol" o "3 temáticas") y un botón "Elegir" que abre un diálogo con una ficha por temática (`aria-pressed`) y "Todas", que quita el filtro. Lo elegido vive en el estado de `Room`, como el número de impostores, y "Volver a jugar" usa las mismas temáticas; al recargar vuelven a ser todas. Solo el anfitrión de una sala de El impostor pide la lista (`useImpostorCategories`), y mientras no llega no se enseña la fila.
