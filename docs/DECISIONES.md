@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-11 · 15.8 · Más pasos de Tab en el selector
+
+La e2e de accesibilidad de la 7.1 llega a "Abrir la sala" con `tabTo`, que prueba como mucho 6 pulsaciones de Tab. Con cinco juegos elegibles el selector tiene 7 paradas (píldora, cinco juegos y el botón), y con seis tendrá 8, así que esa llamada pasa a admitir 10, igual que la de "Mostrar QR" en la misma prueba. Sigue comprobando lo mismo, que el botón se alcanza y se pulsa solo con el teclado; solo cambia cuántos elementos hay delante. La e2e nueva juega 5 rondas con 3 jugadores: mayorías de dos y de tres, y en la ronda 3 el anfitrión cierra con una A y una B, que empatan.
+
 ## 2026-10-11 · 15.7 · Pantallas de ¿Qué prefieres?
 
 Sin maqueta, con los componentes de los otros juegos por rondas y acento `orange`, que se añade como tono de la píldora pulsable y del resultado común (el token ya existía, como el `lime` de la 11.5). El dilema es el titular "¿Qué prefieres?" y debajo las dos opciones como tarjetas-botón grandes con su ficha "A" o "B" y un "o" entre ellas. Tocar una la marca (`aria-pressed`) y el botón del pie dice "Elegir la A"; la elección se envía con ese botón, igual que el voto en `probable`, porque no se puede cambiar y un toque sin querer la gastaría. La espera es la común con "Han elegido 1 de 3" y "Tu elección: …". El reparto nombra la opción mayoritaria en la tarjeta protagonista (o "Empate" o "Nadie ha elegido") y lista las dos opciones con cuántos y quiénes, y el "+1" en la mayoritaria. El resultado usa la pantalla común con "Quien mejor conoce al grupo". La prueba de entrar tarde en `Room` suma el caso del juego nuevo. Este commit arregla también el formato de `copy.ts`, que se coló sin pasar Prettier en el de la 15.6.

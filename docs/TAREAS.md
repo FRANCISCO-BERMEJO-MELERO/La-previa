@@ -182,7 +182,7 @@ Aceptación: las pruebas existentes pasan sin cambios.
 - [x] 15.5 Pruebas pgTAP de `que_prefieres`
 - [x] 15.6 Selector con el juego elegible y su portada (fichas "A" y "B")
 - [x] 15.7 Pantallas de `que_prefieres` y su `viewFor`, con tests unitarios
-- [ ] 15.8 Prueba e2e: 5 rondas con 3 jugadores, con mayoría y con empate
+- [x] 15.8 Prueba e2e: 5 rondas con 3 jugadores, con mayoría y con empate
 
 Aceptación: las tres baterías pasan.
 

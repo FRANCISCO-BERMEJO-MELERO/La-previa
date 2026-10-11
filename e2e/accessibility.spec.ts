@@ -26,7 +26,7 @@ test.describe('7.1 · accesibilidad', () => {
     await page.keyboard.press('Enter');
 
     await expect(page.getByRole('heading', { name: '¿A qué jugamos?' })).toBeVisible();
-    await tabTo(page, page.getByRole('button', { name: 'Abrir la sala' }));
+    await tabTo(page, page.getByRole('button', { name: 'Abrir la sala' }), 10);
     await page.keyboard.press('Enter');
     await expect(page.getByText('Código de la sala')).toBeVisible();
 
