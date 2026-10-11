@@ -4,7 +4,7 @@ import { Pill } from '@/components/Pill';
 import { WaitingBox } from '@/components/WaitingBox';
 import { copy } from '@/lib/copy';
 import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
-import type { AccuseGroup, LunaPlayer } from './game-view';
+import type { VoteGroup, LunaPlayer } from './game-view';
 import { PlayerList } from './PlayerList';
 
 const texts = copy.lunaLlena;
@@ -77,10 +77,15 @@ export function VoteScreen({
   );
 }
 
-type DayScreenProps = GameScreenProps & { day: number; mayor: string | null };
+type DayScreenProps = GameScreenProps & {
+  day: number;
+  mayor: string | null;
+  /** El día en que se elige alcalde, cómo se votó. */
+  mayorVotes: readonly VoteGroup[];
+};
 
 /** El debate: pantalla casi vacía para que el móvil se quede boca abajo. */
-export function DayScreen({ day, mayor, ...chrome }: DayScreenProps) {
+export function DayScreen({ day, mayor, mayorVotes, ...chrome }: DayScreenProps) {
   return (
     <GameScreen {...chrome}>
       <Card variant="dark" tilt="right" grow>
@@ -95,6 +100,14 @@ export function DayScreen({ day, mayor, ...chrome }: DayScreenProps) {
           {mayor ? texts.day.mayor(mayor) : texts.day.noMayor}
         </p>
       </Card>
+      {mayorVotes.length > 0 ? (
+        <section aria-labelledby="mayor-votes" className="flex flex-col gap-3">
+          <h2 id="mayor-votes" className="font-display text-lg uppercase">
+            {texts.day.mayorVotesTitle}
+          </h2>
+          <VoteGroupList groups={mayorVotes} highlightId={null} />
+        </section>
+      ) : null}
     </GameScreen>
   );
 }
@@ -104,7 +117,7 @@ type DefenseScreenProps = GameScreenProps & {
   accused: string | null;
   accusedId: string | null;
   isMe: boolean;
-  groups: readonly AccuseGroup[];
+  groups: readonly VoteGroup[];
 };
 
 /** La defensa: quién votó a quién, con el acusado destacado. */
@@ -133,34 +146,42 @@ export function DefenseScreen({ accused, accusedId, isMe, groups, ...chrome }: D
         {groups.length === 0 ? (
           <p className="text-md font-bold">{texts.defense.noVotes}</p>
         ) : (
-          <ul className="flex flex-col gap-2.5">
-            {groups.map((group) => {
-              const highlighted = group.targetId === accusedId;
-              return (
-                <li
-                  key={group.targetId}
-                  className={`flex flex-col gap-1 rounded-chip border-3 border-ink p-3 ${highlighted ? 'bg-tomato' : 'bg-paper'}`}
-                >
-                  <span className="flex items-baseline justify-between gap-3">
-                    <span className="truncate font-display text-title uppercase">{group.name}</span>
-                    <span className="shrink-0 text-md font-bold">
-                      {texts.defense.votes(group.weight)}
-                    </span>
-                  </span>
-                  <span className="text-sm font-medium">
-                    {copy.result.names(
-                      group.voters.map((voter) =>
-                        voter.double ? `${voter.name} ${texts.defense.double}` : voter.name,
-                      ),
-                    )}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
+          <VoteGroupList groups={groups} highlightId={accusedId} />
         )}
       </section>
     </GameScreen>
+  );
+}
+
+/** Quién votó a quién, agrupado por votado; el destacado, en `tomato`. */
+function VoteGroupList({
+  groups,
+  highlightId,
+}: {
+  groups: readonly VoteGroup[];
+  highlightId: string | null;
+}) {
+  return (
+    <ul className="flex flex-col gap-2.5">
+      {groups.map((group) => (
+        <li
+          key={group.targetId}
+          className={`flex flex-col gap-1 rounded-chip border-3 border-ink p-3 ${group.targetId === highlightId ? 'bg-tomato' : 'bg-paper'}`}
+        >
+          <span className="flex items-baseline justify-between gap-3">
+            <span className="truncate font-display text-title uppercase">{group.name}</span>
+            <span className="shrink-0 text-md font-bold">{texts.defense.votes(group.weight)}</span>
+          </span>
+          <span className="text-sm font-medium">
+            {copy.result.names(
+              group.voters.map((voter) =>
+                voter.double ? `${voter.name} ${texts.defense.double}` : voter.name,
+              ),
+            )}
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }
 

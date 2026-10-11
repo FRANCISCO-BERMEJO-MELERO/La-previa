@@ -1,5 +1,14 @@
 # Decisiones
 
+## 2026-10-11 · 32.4 · Revisión contra el plan de Luna llena
+
+Repaso de las secciones 1 a 10 de `docs/PLAN-5.md`, una por una, y de su "Fuera de alcance".
+
+- **Corregido.** La §9 pide que la elección de alcalde tenga resultado público. La foto ya traía los votos en el debate de ese día, pero la pantalla no los enseñaba. Ahora el debate enseña "Así se eligió al alcalde", agrupado por votado y sin voto doble. La agrupación de la defensa y la del alcalde son la misma función (`voteGroups`).
+- **Añadido a la foto, sin estar en el plan.** `my.vote` (el voto propio en la votación en curso, para que quien recarga lo vea) y `my.chosen_lovers` (Cupido sabe a quién enlazó). Ninguno da información ajena.
+- **Ya anotado antes.** El ganador en `luna_state.winner` (27.3), `kind` y `resume` en el anuncio (28.4 y 29.6), la clave `left` del guion y los datos `lover` y `mayor` de la narración (29.1).
+- **Fuera de alcance.** No hay bruja ni otros roles, los enamorados no son un bando, no hay voz, sonidos, temporizadores, sucesor del alcalde, chats, estadísticas ni tema oscuro, y solo están las siete ilustraciones del anexo.
+
 ## 2026-10-11 · 31.1 a 31.6 · Pantallas del día, el juicio y el final
 
 Ninguna tiene maqueta; se construyen con las piezas existentes y la tarjeta protagonista, como pide el plan.

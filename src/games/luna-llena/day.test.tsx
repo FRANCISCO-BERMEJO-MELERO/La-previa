@@ -4,7 +4,7 @@ import type { ActionResult } from '@/lib/actions';
 import { copy } from '@/lib/copy';
 import type { LunaLlenaGameState, Snapshot } from '@/lib/snapshot';
 import { inLuna, lunaIds, lunaMy, lunaState } from '@/test/fixtures';
-import { accuseGroups, liveMayorId, lunaPlayers } from './game-view';
+import { liveMayorId, lunaPlayers, voteGroups } from './game-view';
 import { LunaLlenaGame } from './LunaLlenaGame';
 
 type Action = (...args: never[]) => Promise<ActionResult<Snapshot>>;
@@ -72,6 +72,24 @@ describe('elección de alcalde', () => {
 });
 
 describe('debate y acusación', () => {
+  it('tras elegir alcalde se ve cómo votó cada uno, sin voto doble', () => {
+    renderGame({
+      phase: 'day',
+      day: 1,
+      mayor_id: ids.lucia,
+      public_votes: {
+        kind: 'mayor',
+        votes: [
+          { voter_id: ids.lucia, target_id: ids.lucia, condemn: null },
+          { voter_id: ids.fran, target_id: ids.lucia, condemn: null },
+        ],
+      },
+    });
+    expect(screen.getByRole('heading', { name: texts.day.mayorVotesTitle })).toBeInTheDocument();
+    expect(screen.getByText('Lucía y Fran')).toBeInTheDocument();
+    expect(screen.getByText(texts.defense.votes(2))).toBeInTheDocument();
+  });
+
   it('el debate pide los móviles boca abajo y dice quién es el alcalde', () => {
     renderGame({ phase: 'day', day: 1, mayor_id: ids.lucia });
     expect(screen.getByRole('heading', { name: texts.day.title })).toBeInTheDocument();
@@ -110,7 +128,7 @@ describe('defensa', () => {
       mayor_id: ids.lucia,
       public_votes: { kind: 'accuse', votes },
     });
-    const groups = accuseGroups(game, lunaPlayers(inLuna(), game));
+    const groups = voteGroups(game, lunaPlayers(inLuna(), game), 'accuse');
     expect(groups.map((group) => [group.name, group.weight])).toEqual([
       ['Marta', 2],
       ['Dani', 2],

@@ -25,7 +25,6 @@ import { DawnScreen } from './DawnScreen';
 import { HunterScreen } from './HunterScreen';
 import { DayScreen, DefenseScreen, VoteScreen, WaitScreen } from './DayScreens';
 import {
-  accuseGroups,
   actionLines,
   liveMayorId,
   lunaPlayers,
@@ -37,6 +36,7 @@ import {
   hasWon,
   pairNames,
   pendingCount,
+  voteGroups,
   roleRows,
   verdictSides,
   type LunaPlayer,
@@ -262,7 +262,12 @@ export function LunaLlenaGame({
     }
     case 'day':
       return (
-        <DayScreen {...chrome} day={game.day} mayor={mayorId ? nameOf(players, mayorId) : null} />
+        <DayScreen
+          {...chrome}
+          day={game.day}
+          mayor={mayorId ? nameOf(players, mayorId) : null}
+          mayorVotes={voteGroups(game, players, 'mayor')}
+        />
       );
     case 'defense':
       return (
@@ -271,7 +276,7 @@ export function LunaLlenaGame({
           accused={game.accused_id ? nameOf(players, game.accused_id) : null}
           accusedId={game.accused_id}
           isMe={game.accused_id === myId}
-          groups={accuseGroups(game, players)}
+          groups={voteGroups(game, players, 'accuse')}
         />
       );
     case 'verdict': {

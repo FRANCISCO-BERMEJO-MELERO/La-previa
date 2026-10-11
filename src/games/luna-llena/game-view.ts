@@ -109,7 +109,7 @@ export function liveMayorId(
   return players.find((player) => player.userId === game.mayor_id && player.alive)?.userId ?? null;
 }
 
-export type AccuseGroup = {
+export type VoteGroup = {
   targetId: string;
   name: string;
   /** Votos contando doble el del alcalde. */
@@ -117,16 +117,20 @@ export type AccuseGroup = {
   voters: { name: string; double: boolean }[];
 };
 
-/** Votos de la acusación agrupados por acusado, del más votado al menos. */
-export function accuseGroups(
+/**
+ * Votos ya cerrados de la acusación o del alcalde, agrupados por votado, del más votado al menos.
+ * El alcalde cuenta doble al acusar, no al elegirse.
+ */
+export function voteGroups(
   game: LunaLlenaGameState,
   players: readonly LunaPlayer[],
-): AccuseGroup[] {
-  if (game.public_votes?.kind !== 'accuse') return [];
-  const groups = new Map<string, AccuseGroup>();
+  kind: 'accuse' | 'mayor',
+): VoteGroup[] {
+  if (game.public_votes?.kind !== kind) return [];
+  const groups = new Map<string, VoteGroup>();
   for (const vote of game.public_votes.votes) {
     if (!vote.target_id) continue;
-    const double = vote.voter_id === game.mayor_id;
+    const double = kind === 'accuse' && vote.voter_id === game.mayor_id;
     const group = groups.get(vote.target_id) ?? {
       targetId: vote.target_id,
       name: nameOf(players, vote.target_id),

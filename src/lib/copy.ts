@@ -836,6 +836,7 @@ export const copy = {
       text: 'Hablad. Decidid a quién acusáis. El narrador abrirá la votación.',
       mayor: (name: string) => `Alcalde: ${name}`,
       noMayor: 'Sin alcalde',
+      mayorVotesTitle: 'Así se eligió al alcalde',
     },
     defense: {
       pill: 'Defensa',
