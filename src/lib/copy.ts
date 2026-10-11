@@ -131,7 +131,12 @@ export const copy = {
       description: 'Uno adivina la palabra con una pista de cada uno. Las repetidas no valen.',
       players: 'De 3 a 16 jugadores',
     },
-    upcoming: { banned: 'Palabras prohibidas', wouldYouRather: '¿Qué prefieres?' },
+    que_prefieres: {
+      name: '¿Qué prefieres?',
+      description: 'Sale un dilema y cada uno elige en secreto. Puntúa quien piensa como la mayoría.',
+      players: 'De 3 a 16 jugadores',
+    },
+    upcoming: { banned: 'Palabras prohibidas' },
     covers: {
       quote: '¿?',
       banned: 'Palabra',

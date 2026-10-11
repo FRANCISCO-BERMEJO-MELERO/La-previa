@@ -15,6 +15,7 @@ import {
   probableNext,
   probableStart,
   probableVote,
+  quePrefieresStart,
   quienLoDijoAnswer,
   quienLoDijoCloseVoting,
   quienLoDijoCloseWriting,
@@ -70,6 +71,7 @@ describe('acciones', () => {
     await unaPistaShowClues('sala', d);
     await unaPistaMark('sala', 'pass', d);
     await unaPistaNext('sala', d);
+    await quePrefieresStart('sala', 5, d);
     await openVoting('sala', d);
     await castVote('sala', 'u3', d);
     await closeVoting('sala', d);
@@ -99,6 +101,7 @@ describe('acciones', () => {
       ['una_pista_show_clues', { room_id: 'sala' }],
       ['una_pista_mark', { room_id: 'sala', result: 'pass' }],
       ['una_pista_next', { room_id: 'sala' }],
+      ['que_prefieres_start', { room_id: 'sala', rounds: 5 }],
       ['open_voting', { room_id: 'sala' }],
       ['cast_vote', { room_id: 'sala', target_id: 'u3' }],
       ['close_voting', { room_id: 'sala' }],

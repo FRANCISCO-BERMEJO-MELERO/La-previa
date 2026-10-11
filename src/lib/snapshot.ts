@@ -131,7 +131,13 @@ const gameSchema = z.discriminatedUnion('type', [
   unaPistaGameSchema,
 ]);
 
-export const gameIds = ['impostor', 'probable', 'quien_lo_dijo', 'una_pista'] as const;
+export const gameIds = [
+  'impostor',
+  'probable',
+  'quien_lo_dijo',
+  'una_pista',
+  'que_prefieres',
+] as const;
 
 export const snapshotSchema = z.object({
   server_time: timestamp,

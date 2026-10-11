@@ -113,6 +113,10 @@ export function unaPistaNext(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'una_pista_next', { room_id: roomId });
 }
 
+export function quePrefieresStart(roomId: string, rounds: number, deps = defaultDeps) {
+  return callForSnapshot(deps, 'que_prefieres_start', { room_id: roomId, rounds });
+}
+
 export function openVoting(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'open_voting', { room_id: roomId });
 }

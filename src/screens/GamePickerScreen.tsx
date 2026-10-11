@@ -114,6 +114,7 @@ const coverBackgrounds: Record<GameId, string> = {
   probable: 'bg-sky',
   quien_lo_dijo: 'bg-lilac',
   una_pista: 'bg-lime',
+  que_prefieres: 'bg-orange',
 };
 
 function ImpostorFaces() {
@@ -172,11 +173,26 @@ function RepeatedClues() {
   );
 }
 
+/** Las dos fichas entre las que se elige. */
+function TwoOptions() {
+  return (
+    <>
+      <span className="flex size-19 -rotate-5 items-center justify-center rounded-control border-3 border-ink bg-paper font-display text-4xl">
+        {copy.games.covers.optionA}
+      </span>
+      <span className="flex size-19 rotate-5 items-center justify-center rounded-control border-3 border-ink bg-ink font-display text-4xl text-paper">
+        {copy.games.covers.optionB}
+      </span>
+    </>
+  );
+}
+
 const covers: Record<GameId, ReactNode> = {
   impostor: <ImpostorFaces />,
   probable: <ProbableFaces />,
   quien_lo_dijo: <QuienLoDijoBubble />,
   una_pista: <RepeatedClues />,
+  que_prefieres: <TwoOptions />,
 };
 
 function Face() {
@@ -197,20 +213,6 @@ const upcoming = [
       <span className="rotate-3 rounded-control border-3 border-ink bg-paper px-2.5 py-0.5 font-display text-lg uppercase line-through decoration-4">
         {copy.games.covers.banned}
       </span>
-    ),
-  },
-  {
-    title: copy.games.upcoming.wouldYouRather,
-    background: 'bg-orange',
-    cover: (
-      <>
-        <span className="flex size-10 -rotate-5 items-center justify-center rounded-control border-3 border-ink bg-paper font-display text-xl">
-          {copy.games.covers.optionA}
-        </span>
-        <span className="flex size-10 rotate-5 items-center justify-center rounded-control border-3 border-ink bg-ink font-display text-xl text-paper">
-          {copy.games.covers.optionB}
-        </span>
-      </>
     ),
   },
 ];

@@ -41,6 +41,7 @@ const mocks = vi.hoisted(() => ({
   unaPistaShowClues: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   unaPistaMark: vi.fn<(roomId: string, result: string) => Promise<ActionResult<Snapshot>>>(),
   unaPistaNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  quePrefieresStart: vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
   openVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   castVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   closeVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -72,6 +73,7 @@ vi.mock('@/lib/actions', () => ({
   unaPistaShowClues: mocks.unaPistaShowClues,
   unaPistaMark: mocks.unaPistaMark,
   unaPistaNext: mocks.unaPistaNext,
+  quePrefieresStart: mocks.quePrefieresStart,
   openVoting: mocks.openVoting,
   castVote: mocks.castVote,
   closeVoting: mocks.closeVoting,
@@ -143,6 +145,26 @@ describe('Room', () => {
     await waitFor(() => {
       expect(mocks.apply).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it('el anfitrión puede elegir ¿Qué prefieres?', async () => {
+    mocks.setGame.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+    render(<Room initial={lobbySnapshot()} fresh />);
+    fireEvent.click(screen.getByRole('button', { name: /¿Qué prefieres\?/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir la sala' }));
+    expect(mocks.setGame).toHaveBeenCalledWith(ids.room, 'que_prefieres');
+    expect(await screen.findByText('KTRM')).toBeInTheDocument();
+  });
+
+  it('¿Qué prefieres? empieza con las rondas elegidas', () => {
+    const base = lobbySnapshot();
+    const lobby = lobbySnapshot({ room: { ...base.room, game: 'que_prefieres' } });
+    ready(lobby);
+    mocks.quePrefieresStart.mockResolvedValue({ ok: true, data: lobby });
+    render(<Room initial={lobby} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: '5 rondas' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(mocks.quePrefieresStart).toHaveBeenCalledWith(ids.room, 5);
   });
 
   it('quien no es anfitrión nunca ve el selector de juego', () => {

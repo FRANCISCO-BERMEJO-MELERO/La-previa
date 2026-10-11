@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-11 · 15.6 · ¿Qué prefieres? pasa a elegible
+
+El selector lista cinco juegos elegibles y deja "Palabras prohibidas" como único próximo. La portada son las fichas "A" y "B" que ya estaban dibujadas, a tamaño de portada grande, sobre `orange`. La prueba existente del selector contaba cuatro juegos y dos próximos; se actualiza a cinco y uno, como se hizo en la 9.7 y la 10.8 al añadir cada juego. Elegir el juego y empezar con las rondas elegidas ya llama a `que_prefieres_start`; las pantallas de la partida llegan en la 15.7.
+
 ## 2026-10-11 · 14.3 · Diferencias entre JUEGOS-2 y el código
 
 Lo que `docs/JUEGOS-2.md` nombra coincide con el código: `rooms.game`, `games.game_type`, `games.phase`, `prompts`, `answers`, `game_rounds.subject_id` y `result`, y las auxiliares comunes de la 10.3. Fran confirma las cuatro decisiones de su §0 y autoriza añadir a `CLAUDE.md` las referencias a `docs/JUEGOS-2.md` y `docs/PLAN-3.md`. Lo que el código pide resolver:

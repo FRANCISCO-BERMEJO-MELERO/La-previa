@@ -14,6 +14,7 @@ import {
   kickPlayer,
   leaveRoom,
   probableStart,
+  quePrefieresStart,
   quienLoDijoStart,
   unaPistaStart,
   setGame,
@@ -225,6 +226,8 @@ export function Room({ initial, fresh }: RoomProps) {
               return quienLoDijoStart(roomId, rounds);
             case 'una_pista':
               return unaPistaStart(roomId, rounds);
+            case 'que_prefieres':
+              return quePrefieresStart(roomId, rounds);
           }
         });
       }}
