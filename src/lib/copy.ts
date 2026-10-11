@@ -99,6 +99,27 @@ export const copy = {
     previous: 'Anterior',
     next: 'Siguiente',
     progress: (step: number, total: number) => `Paso ${String(step)} de ${String(total)}`,
+    // Textos de las ilustraciones de los pasos.
+    art: {
+      word: 'Pizza',
+      secret: '?',
+      clue: 'Queso',
+      otherClue: 'Horno',
+      dots: '…',
+      out: 'Fuera',
+      who: '¿Quién…?',
+      answerA: 'Volar',
+      answerB: 'Siesta',
+      unknown: '¿?',
+      point: '+1',
+      optionA: 'A',
+      optionB: 'B',
+      or: 'o',
+      forbiddenA: 'Queso',
+      forbiddenB: 'Italia',
+      forbiddenCall: '¡Prohibida!',
+      shout: '¡Pizza!',
+    },
     steps: {
       impostor: [
         {

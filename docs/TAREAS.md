@@ -248,7 +248,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 ## Fase 24 · Cómo se juega
 
 - [x] 24.1 Componente de tutorial por pasos y botón en la sala de espera
-- [ ] 24.2 Pasos e ilustraciones de los seis juegos
+- [x] 24.2 Pasos e ilustraciones de los seis juegos
 
 ## Fase 25 · Avatares
 

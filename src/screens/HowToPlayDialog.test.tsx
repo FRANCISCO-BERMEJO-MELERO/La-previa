@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { copy } from '@/lib/copy';
 import { gameIds } from '@/lib/snapshot';
+import { howToIllustrations } from './how-to-illustrations';
 import { HowToPlayDialog } from './HowToPlayDialog';
 
 describe('HowToPlayDialog', () => {
@@ -12,6 +13,8 @@ describe('HowToPlayDialog', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Paso 1 de 3')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Una palabra para todos' })).toBeInTheDocument();
+    // La ilustración es decorativa: se ve, pero no la leen los lectores de pantalla.
+    expect(screen.getAllByText('Pizza')[0]?.closest('[aria-hidden="true"]')).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Anterior' })).toBeDisabled();
     fireEvent.click(screen.getByRole('button', { name: 'Siguiente' }));
     expect(screen.getByText('Paso 2 de 3')).toBeInTheDocument();
@@ -33,8 +36,9 @@ describe('HowToPlayDialog', () => {
     expect(screen.getByText('Paso 1 de 3')).toBeInTheDocument();
   });
 
-  it.each(gameIds)('%s tiene sus pasos', (game) => {
+  it.each(gameIds)('%s tiene sus pasos, cada uno con su ilustración', (game) => {
     expect(copy.howTo.steps[game].length).toBeGreaterThanOrEqual(3);
+    expect(howToIllustrations[game]).toHaveLength(copy.howTo.steps[game].length);
     render(<HowToPlayDialog open game={game} onClose={vi.fn()} />);
     expect(
       screen.getByRole('heading', { name: copy.howTo.steps[game][0].title }),

@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-11 · 24.2 · Ilustraciones de los pasos
+
+Cada paso de "Cómo se juega" lleva una ilustración en una caja de color `ground`, hecha con cuatro piezas en el estilo de las portadas del selector: caras redondas (la del impostor o la de quien adivina, en `ink`), etiquetas con borde grueso (tachadas para lo que se anula o no se puede decir), bocadillos y el "+1". Usan solo los tokens de la paleta, y sus pocos textos ("Pizza", "Fuera", "¡Prohibida!"…) salen de `copy.howTo.art`. Son decorativas (`aria-hidden`): lo que hay que leer está en el título y la frase del paso. Un guion temporal abrió los 18 pasos a 360 px y comprobó que ninguna ilustración se sale de su caja; las capturas sacaron una (las tres pistas de Una sola pista no cabían en fila) y se apilaron las dos repetidas.
+
 ## 2026-10-11 · 24.1 · Cómo se juega
 
 En la sala de espera, debajo de la tarjeta del código y para todos, un botón "Cómo se juega" abre un diálogo con tres pasos del juego elegido ("Paso 1 de 3", título y una frase), con "Anterior" y "Siguiente". Los textos de los seis juegos están en `copy.howTo` y resumen las reglas de `docs/CONTEXTO.md`, `docs/JUEGOS.md` y `docs/JUEGOS-2.md`. El diálogo solo se monta abierto: así empieza siempre por el primer paso y, cerrado, su título no repite el nombre del juego en la página (la e2e de accesibilidad encontraba dos textos iguales). Las ilustraciones de cada paso llegan en la 24.2.

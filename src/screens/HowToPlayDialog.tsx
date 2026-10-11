@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Dialog } from '@/components/Dialog';
 import { copy } from '@/lib/copy';
 import type { GameId } from '@/lib/snapshot';
+import { howToIllustrations } from './how-to-illustrations';
 
 type HowToPlayDialogProps = {
   open: boolean;
@@ -37,6 +38,12 @@ function Steps({ game }: { game: GameId }) {
       <p className="text-label font-bold uppercase tracking-label">
         {copy.howTo.progress(index + 1, steps.length)}
       </p>
+      <div
+        aria-hidden="true"
+        className="flex h-37.5 items-center justify-center gap-3 overflow-hidden rounded-control border-3 border-ink bg-ground"
+      >
+        {howToIllustrations[game][index]}
+      </div>
       <h3 className="font-display text-xl uppercase">{step.title}</h3>
       <p className="text-md font-medium">{step.text}</p>
       <div className="grid grid-cols-2 gap-3">
