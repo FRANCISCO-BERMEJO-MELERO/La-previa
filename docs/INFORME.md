@@ -1,5 +1,63 @@
 # Informe final
 
+## Tercera tanda: ¿Qué prefieres? y Palabras prohibidas (fases 14 a 18)
+
+Estado al cerrar `docs/PLAN-3.md`, el 11 de octubre de 2026.
+
+### Resumen
+
+La Previa tiene ya los seis juegos: a los cuatro anteriores se suman **¿Qué prefieres?** y **Palabras prohibidas**, elegibles en el selector (que ya no tiene sección "Próximamente") y jugables uno detrás de otro en la misma sala. Todas las fases (14 a 18) están cerradas y sus tareas marcadas en `docs/TAREAS.md`, en 27 commits en la rama `feat/plan-3`, sin subir.
+
+Verificación al cerrar, todo partiendo de cero:
+
+| Comprobación                               | Resultado                                                        |
+| ------------------------------------------ | ---------------------------------------------------------------- |
+| `npm run check` (lint, tipos, unitarios)   | 535 tests en 50 archivos, sin avisos                             |
+| `npm run test:db` tras `supabase db reset` | 811 pruebas pgTAP en 36 archivos                                 |
+| `npm run test:e2e`                         | 19 pruebas; las tres baterías pasaron tres veces seguidas (17.4) |
+| `npm run build`                            | Sin avisos                                                       |
+
+No se ha publicado nada: ni push, ni pull request, ni Supabase, ni Vercel. Las 8 migraciones nuevas se aplican con el mismo `npx supabase db push` de `docs/DESPLIEGUE.md` y no piden ningún paso más.
+
+### Qué está hecho
+
+- **Base de datos** (8 migraciones nuevas): `prompts.text_b` para la opción B, tabla `taboo_cards` con RLS, sin políticas y con un `check` que exige cinco prohibidas distintas entre sí y de la palabra, y `game_rounds.card_id`; acciones de los dos juegos con su prefijo; 120 dilemas y 150 tarjetas.
+- **Reglas**: en ¿Qué prefieres? puntúa la mayoría y con empate o sin elecciones nadie; en Palabras prohibidas el turno de describir rota, vigila el siguiente prefiriendo a los conectados, acertar da un punto a quien acierta y otro a quien describe, y si se va quien describe la ronda se repite sin contar. Lo común de los juegos por rondas sigue en `private`, ampliado con un caso por juego; el turno y quien vigila comparten auxiliares con Una sola pista.
+- **Secreto**, probado en pgTAP recorriendo la foto entera y en Playwright mirando la red: antes del reparto nadie ve qué ha elegido otro ni cuántos van con cada opción; quien adivina no recibe la palabra ni las prohibidas hasta la revelación.
+- **Cliente**: `src/games/que-prefieres` y `src/games/palabras-prohibidas`, cada uno con su `viewFor`, sus pantallas y sus pruebas; la foto es una unión validada con zod por `game.type`.
+- **Interfaz**: pantallas hechas solo con componentes y tokens existentes, con acento `orange` y la tarjeta oscura con sombra `tomato`. Sin desbordes a 360, 390 y 430 px con 16 jugadores, nombres de 14 caracteres y los dilemas y tarjetas más largos.
+- **Accesibilidad**: un encabezado por pantalla, objetivos táctiles de 44 px y uso con teclado, con su prueba e2e.
+- **Documentación**: `README.md`, `docs/DESPLIEGUE.md`, `docs/PREGUNTAS.md` (dilemas), `docs/TARJETAS.md` y las decisiones en `docs/DECISIONES.md`.
+
+### Qué no está hecho o no se ha podido verificar
+
+- **Las pantallas nuevas no tenían maqueta.** Están hechas con los componentes de los otros juegos y comprobadas con capturas, pero el aspecto es criterio mío.
+- **No se ha probado en móviles reales** ni en Safari.
+- **GitHub Actions** sigue sin ejecutarse en GitHub: no he hecho push.
+
+### Incidencias
+
+- **Docker estaba parado** al empezar; se arrancó a mano, como en las tandas anteriores.
+- **Una prueba existente de El impostor falló una vez** (`09_game_state`, el orden de entrada de los jugadores) y pasó en las cuatro repeticiones siguientes y en las tres pasadas finales. El orden sale de `clock_timestamp()` y solo puede invertirse si el reloj del contenedor retrocede, lo que encaja con Docker recién arrancado en Windows. No la causa este cambio y no se ha tocado.
+- **La verificación triple se cortó una vez por falta de memoria** al lanzarla en segundo plano. Se repitió en primer plano, una batería detrás de otra, y pasaron las tres veces.
+- **El aviso de rsc decía que la sincronización de conocimiento estaba activa.** No lo está: el interruptor `.rsc/.no-knowledge-sync` sigue puesto y el script lo respeta, así que no ha subido nada.
+
+### Decisiones que conviene conocer
+
+Todas están en `docs/DECISIONES.md`. Las que más afectan al juego:
+
+- **Elegir y confirmar.** En ¿Qué prefieres? y al marcar quién acierta en Palabras prohibidas se toca y luego se confirma, porque no se puede deshacer.
+- **Quien vigila se calcula en cada acción**, así que si se desconecta vigila otro, que pasa a ver la tarjeta. Así una ronda nunca se atasca: aunque quien describe desaparezca, quien vigila puede cerrarla con "¡Prohibida!".
+- **En Palabras prohibidas no se echa a nadie a media ronda**: ninguna ronda espera a todos, así que no hay lista de quién falta.
+- **Pruebas existentes modificadas**: la del selector (ahora seis juegos y sin "Próximamente"), la de entrar tarde en `Room` (un caso por juego nuevo), la e2e de teclado de la 7.1 (más pulsaciones de Tab porque hay más juegos) y la sesión larga (dos juegos más). Justificadas en 15.6, 15.7, 15.8 y 17.4.
+
+### Qué revisar primero
+
+1. **Los dilemas y las tarjetas**: `docs/PREGUNTAS.md` (sección ¿Qué prefieres?) y `docs/TARJETAS.md`. Los he escrito yo; quita o cambia los que no encajen con una migración nueva.
+2. **El aspecto de las pantallas nuevas**: el dilema y el reparto de ¿Qué prefieres?, y las tres pantallas de Palabras prohibidas (describir, vigilar y adivinar) y su revelación. Lo más rápido es una partida de cada en local con tres o cuatro ventanas.
+3. **Una partida real** de Palabras prohibidas con el grupo, que es el que más depende de quién describe y quién vigila.
+4. **Subir los cambios** cuando quieras: pull request de `feat/plan-3` a `develop` y, al publicar, `npx supabase db push` antes del despliegue.
+
 ## Segunda tanda: tres juegos nuevos (fases 8 a 13)
 
 Estado al cerrar `docs/PLAN-2.md`, el 10 de octubre de 2026.

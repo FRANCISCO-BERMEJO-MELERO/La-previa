@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan 3 en curso · última actualización 2026-10-11
+Estado: plan 3 terminado · última actualización 2026-10-11
 
 ## Fase 0 · Preparación
 
@@ -213,7 +213,7 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 - [x] 18.1 `README.md` con los seis juegos
 - [x] 18.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
 - [x] 18.3 Revisión final contra `docs/JUEGOS-2.md` y su "Fuera de alcance"
-- [ ] 18.4 Ampliar `docs/INFORME.md` con esta tanda
+- [x] 18.4 Ampliar `docs/INFORME.md` con esta tanda
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
