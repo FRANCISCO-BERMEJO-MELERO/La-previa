@@ -1,5 +1,11 @@
 # Decisiones
 
+## 2026-10-11 · 22.1 · Cinco temáticas nuevas
+
+Fútbol, Historia, Videojuegos, Ciencia y Geografía, con 20 palabras cada una, en una migración nueva. Ninguna repite una de las 200 primeras (la prueba de duplicados de `05_words` sigue pasando sobre las 300). Las temáticas son la columna `category` que ya existía, así que no hay tabla nueva. Una sola pista también las usa, porque saca sus palabras de la misma tabla.
+
+`05_words` contaba 200 palabras en 10 categorías en toda la tabla. Se limita a las diez categorías de `docs/CONTEXTO.md` §9, así que comprueba lo mismo que antes sobre esas palabras; lo nuevo lo prueba `37_more_words`.
+
 ## 2026-10-11 · 21.2 · Escanear el QR desde el inicio
 
 En la tarjeta del código, debajo de "Unirse", hay un botón "Escanear QR" que abre un diálogo con la cámara trasera. Cada 250 ms se lee un fotograma (reducido a 640 px de lado como mucho) y se busca un QR con `jsqr`, que se carga al abrir el diálogo. Si es el enlace de una sala o cuatro letras válidas, se cierra el diálogo y se entra en la sala por su ruta, igual que al escribir el código. Si es otro QR, lo dice y sigue buscando. Sin permiso de cámara (`NotAllowedError`) pide darlo o escribir el código; cualquier otro fallo (sin cámara, sin `mediaDevices`) pide escribir el código. La cámara vive en un componente que solo existe con el diálogo abierto, así que cerrarlo la apaga siempre.

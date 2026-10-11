@@ -3,10 +3,10 @@ create extension if not exists pgtap with schema extensions;
 
 select plan(6);
 
-select is((select count(*) from public.words where active), 200::bigint, 'hay 200 palabras activas');
-select is((select count(distinct category) from public.words), 10::bigint, 'en 10 categorías');
+select is((select count(*) from public.words where active and category in ('Comida', 'Animales', 'Lugares', 'Objetos de casa', 'Deportes', 'Profesiones', 'Cine y series', 'Música', 'Transporte', 'Fiesta y ocio')), 200::bigint, 'hay 200 palabras activas');
+select is((select count(distinct category) from public.words where category in ('Comida', 'Animales', 'Lugares', 'Objetos de casa', 'Deportes', 'Profesiones', 'Cine y series', 'Música', 'Transporte', 'Fiesta y ocio')), 10::bigint, 'en 10 categorías');
 select set_eq(
-  'select distinct category from public.words',
+  'select distinct category from public.words where category in (''Comida'', ''Animales'', ''Lugares'', ''Objetos de casa'', ''Deportes'', ''Profesiones'', ''Cine y series'', ''Música'', ''Transporte'', ''Fiesta y ocio'')',
   array['Comida', 'Animales', 'Lugares', 'Objetos de casa', 'Deportes', 'Profesiones',
         'Cine y series', 'Música', 'Transporte', 'Fiesta y ocio'],
   'las categorías son las de CONTEXTO §9'
