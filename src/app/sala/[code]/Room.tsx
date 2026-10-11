@@ -7,6 +7,7 @@ import { HeaderAside, type HeaderTone } from '@/components/HeaderAside';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
 import { clampImpostors } from '@/games/impostor/impostors';
 import { recommendedConfig, type LunaConfig } from '@/games/luna-llena/composition';
+import { LunaLlenaGame } from '@/games/luna-llena/LunaLlenaGame';
 import { PalabrasProhibidasGame } from '@/games/palabras-prohibidas/PalabrasProhibidasGame';
 import { ProbableGame } from '@/games/probable/ProbableGame';
 import { QuePrefieresGame } from '@/games/que-prefieres/QuePrefieresGame';
@@ -180,6 +181,8 @@ export function Room({ initial, fresh }: RoomProps) {
         return withLeaveDialog(<QuePrefieresGame {...shared} game={game} />);
       case 'palabras_prohibidas':
         return withLeaveDialog(<PalabrasProhibidasGame {...shared} game={game} />);
+      case 'luna_llena':
+        return withLeaveDialog(<LunaLlenaGame {...shared} game={game} />);
     }
   }
 

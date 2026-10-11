@@ -756,6 +756,61 @@ export const copy = {
       peek: 'Mantén para ver tu carta',
       peekOpen: 'Suelta para ocultarla',
     },
+    night: {
+      pill: (night: number) => `Noche ${String(night)}`,
+      titles: {
+        wolf: 'Elegid víctima',
+        seer: '¿A quién miras?',
+        protector: '¿A quién proteges?',
+        cupid: 'Elige a dos',
+        suspect: '¿De quién sospechas?',
+      },
+      hints: {
+        wolf: 'Marca a quién devoráis. Ves lo que marca tu manada y puedes cambiar hasta el amanecer.',
+        seer: 'Elige a alguien y sabrás al momento si es lobo.',
+        protector: 'Si los lobos van a por esa persona, esta noche no muere nadie.',
+        cupid: 'Serán los enamorados: si uno muere, el otro también. Puedes ser uno de ellos.',
+        suspect: 'Marca a quien te parezca sospechoso. Que nadie sepa qué eres.',
+      },
+      choose: 'Jugadores',
+      confirm: 'Confirmar',
+      changeMark: 'Cambiar la marca',
+      marks: (names: readonly string[]) => `Lo marca ${joinNames(names)}`,
+      mine: 'Elegido',
+      done: {
+        wolf: (name: string) => `Tu marca: ${name}`,
+        seer: (name: string) => `Has mirado a ${name}`,
+        protector: (name: string) => `Proteges a ${name}`,
+        cupid: (a: string, b: string) => `Has enamorado a ${a} y ${b}`,
+        suspect: (name: string) => `Sospechas de ${name}`,
+      },
+      waiting: 'Espera al amanecer',
+      pending: (count: number) =>
+        count === 0
+          ? 'Ya ha actuado todo el pueblo'
+          : count === 1
+            ? 'Falta 1 por actuar'
+            : `Faltan ${String(count)} por actuar`,
+      seerTitle: 'Lo que has visto',
+      seerResult: (night: number, name: string, isWolf: boolean) =>
+        `Noche ${String(night)} · ${name}: ${isWolf ? 'es lobo' : 'no es lobo'}`,
+    },
+    dawn: {
+      pill: 'Amanece',
+      quietTitle: 'Noche tranquila',
+      quietText: 'Esta noche no ha muerto nadie.',
+      deathsTitle: 'Esta noche',
+      causes: {
+        wolves: 'Devorado por los lobos',
+        hanged: 'Ahorcado',
+        hunter: 'Abatido por el cazador',
+        heartbreak: 'Muerto de pena',
+        left: 'Se ha ido del pueblo',
+      },
+      lover: (name: string) => `Estás enamorado de ${name}. Si uno muere, el otro también.`,
+      cupid: (a: string, b: string) => `Has enamorado a ${a} y ${b}. Nadie más lo sabe.`,
+    },
+    waitingNarrator: (host: string) => `Escucha a ${host}, que narra`,
     narrator: {
       title: 'Lee en voz alta',
       startNight: 'Que caiga la noche',

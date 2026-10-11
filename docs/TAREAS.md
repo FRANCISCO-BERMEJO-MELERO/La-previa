@@ -307,7 +307,7 @@ Aceptación: `npm run test:db` pasa desde cero.
 - [x] 30.4 Sala de espera: lobos, roles opcionales, composición y aviso
 - [x] 30.5 Caja del narrador
 - [x] 30.6 Reparto con la carta y botón para volver a verla
-- [ ] 30.7 Noche de cada rol, espera tras actuar, amanecer y aviso a los enamorados
+- [x] 30.7 Noche de cada rol, espera tras actuar, amanecer y aviso a los enamorados
 
 Aceptación: `npm run check` pasa; con seis navegadores se reparte, se juega una noche y se ve el amanecer.
 
