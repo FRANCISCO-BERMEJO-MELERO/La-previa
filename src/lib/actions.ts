@@ -43,6 +43,8 @@ export type ImpostorSettings = {
   impostorCount: number;
   /** Temáticas de la palabra; vacío es todas. */
   categories: readonly string[];
+  /** Tiempo para votar en segundos; nulo es sin tiempo. */
+  voteSeconds: number | null;
 };
 
 export function startGame(roomId: string, settings: ImpostorSettings, deps = defaultDeps) {
@@ -51,6 +53,7 @@ export function startGame(roomId: string, settings: ImpostorSettings, deps = def
     impostor_count: settings.impostorCount,
     // Sin temáticas no se envían: la base de datos entiende entonces que valen todas.
     ...(settings.categories.length > 0 ? { categories: settings.categories } : {}),
+    ...(settings.voteSeconds === null ? {} : { vote_seconds: settings.voteSeconds }),
   });
 }
 

@@ -1,5 +1,11 @@
 # Decisiones
 
+## 2026-10-11 · 23.2 · Cuenta atrás y cierre al llegar a cero
+
+El anfitrión elige "Tiempo para votar" en la sala de espera (Sin, 30, 60 o 90 s; por defecto, sin). La cuenta atrás va en la píldora de la votación ("Votación · 0:23") y se calcula con la hora del servidor de la última foto (`useCountdown`), no con el reloj del móvil. Al llegar a cero, cada móvil pide `close_voting` una vez; si la base de datos responde `not_host` (aún no ve pasada la hora por desfase de reloj) se reintenta hasta tres veces cada 1,5 s, y cualquier otro fallo (otro móvil ya la cerró) no se enseña: la foto nueva llega por la sincronización. "Volver a jugar" usa el tiempo guardado en la partida.
+
+Se detectó y corrigió un fallo propio antes del commit: la cuenta de una votación anterior (en 0) se arrastraba a la siguiente hasta el primer tic, y el móvil del anfitrión cerraba la segunda votación nada más abrirla. Cada cuenta va ahora con su hora límite; una prueba de `Room` lo cubre y falla con la versión antigua. Pruebas existentes modificadas: las que esperaban los ajustes de `startGame`, el ayudante de la sala de espera y la fixture de El impostor, que ganan los campos del tiempo.
+
 ## 2026-10-11 · 23.1 · Tiempo para votar en la base de datos
 
 - `games.vote_seconds` (nulo, 30, 60 o 90, solo en El impostor) se fija al empezar: `start_game` gana un cuarto parámetro con valor por defecto, como las temáticas en la 22.2. Fuera de esos valores lanza `invalid_vote_seconds`, que se añade al cliente.

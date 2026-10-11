@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ActionResult, ImpostorSettings } from '@/lib/actions';
 import type { ShareOutcome } from '@/lib/share';
 import type { Snapshot } from '@/lib/snapshot';
@@ -312,7 +312,11 @@ describe('Room', () => {
     mocks.startGame.mockResolvedValue({ ok: true, data: inGame() });
     render(<Room initial={lobbySnapshot()} fresh={false} />);
     fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
-    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, { impostorCount: 1, categories: [] });
+    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, {
+      impostorCount: 1,
+      categories: [],
+      voteSeconds: null,
+    });
     await waitFor(() => {
       expect(mocks.apply).toHaveBeenCalledTimes(1);
     });
@@ -366,6 +370,7 @@ describe('Room', () => {
     expect(mocks.startGame).toHaveBeenCalledWith(ids.room, {
       impostorCount: 1,
       categories: ['Fútbol'],
+      voteSeconds: null,
     });
   });
 
@@ -412,6 +417,98 @@ describe('Room', () => {
     expect(screen.getByText('Tu voto: Lucía')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Cerrar votación' }));
     expect(mocks.closeVoting).toHaveBeenCalledWith(ids.room);
+  });
+
+  describe('tiempo para votar', () => {
+    const lucia = { me: { user_id: ids.lucia, name: 'Lucía', is_host: false } };
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('con tiempo, todos ven la cuenta atrás en la píldora', () => {
+      ready(
+        inGame(
+          { phase: 'voting', vote_seconds: 30, voting_deadline: '2026-10-08T19:30:30+00:00' },
+          lucia,
+        ),
+      );
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Votación · 0:30')).toBeInTheDocument();
+      expect(mocks.closeVoting).not.toHaveBeenCalled();
+    });
+
+    it('sin tiempo, la píldora dice solo "Votación"', () => {
+      ready(inGame({ phase: 'voting' }, lucia));
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Votación')).toBeInTheDocument();
+    });
+
+    it('una votación nueva no hereda el cero de la anterior', () => {
+      mocks.closeVoting.mockResolvedValue({ ok: true, data: inGame({ phase: 'reveal' }) });
+      ready(
+        inGame({ phase: 'voting', vote_seconds: 30, voting_deadline: '2026-10-08T19:30:00+00:00' }),
+      );
+      const { rerender } = render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(mocks.closeVoting).toHaveBeenCalledTimes(1);
+      ready(inGame({ phase: 'reveal', vote_seconds: 30 }));
+      rerender(<Room initial={lobbySnapshot()} fresh={false} />);
+      ready(
+        inGame({
+          phase: 'voting',
+          round: 2,
+          vote_seconds: 30,
+          voting_deadline: '2026-10-08T19:30:30+00:00',
+        }),
+      );
+      rerender(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Votación · 0:30')).toBeInTheDocument();
+      expect(mocks.closeVoting).toHaveBeenCalledTimes(1);
+    });
+
+    it('al llegar a cero, cualquiera pide cerrar y reintenta si aún no es la hora', async () => {
+      vi.useFakeTimers();
+      mocks.closeVoting
+        .mockResolvedValueOnce({ ok: false, error: 'not_host' })
+        .mockResolvedValueOnce({ ok: true, data: inGame({ phase: 'reveal' }) });
+      ready(
+        inGame(
+          { phase: 'voting', vote_seconds: 30, voting_deadline: '2026-10-08T19:30:00+00:00' },
+          lucia,
+        ),
+      );
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(0);
+      });
+      expect(mocks.closeVoting).toHaveBeenCalledTimes(1);
+      expect(mocks.closeVoting).toHaveBeenCalledWith(ids.room);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1500);
+      });
+      expect(mocks.closeVoting).toHaveBeenCalledTimes(2);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5000);
+      });
+      expect(mocks.closeVoting).toHaveBeenCalledTimes(2);
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+  });
+
+  it('el anfitrión elige el tiempo para votar y empieza con él', () => {
+    mocks.startGame.mockResolvedValue({ ok: true, data: inGame() });
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: '60 segundos para votar' }));
+    expect(screen.getByRole('button', { name: '60 segundos para votar' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, {
+      impostorCount: 1,
+      categories: [],
+      voteSeconds: 60,
+    });
   });
 
   it('en la revelación cuenta cuántos quedan y el anfitrión sigue', () => {
@@ -462,7 +559,11 @@ describe('Room', () => {
     render(<Room initial={lobbySnapshot()} fresh={false} />);
     expect(screen.getByRole('heading', { name: '¡Has ganado!' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
-    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, { impostorCount: 1, categories: [] });
+    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, {
+      impostorCount: 1,
+      categories: [],
+      voteSeconds: null,
+    });
     await waitFor(() => {
       expect(mocks.apply).toHaveBeenCalledTimes(1);
     });

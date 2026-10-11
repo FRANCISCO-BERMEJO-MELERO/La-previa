@@ -36,6 +36,8 @@ type LobbyScreenProps = {
   onShowQr: () => void;
   onCloseQr: () => void;
   onImpostorsChange: (count: number) => void;
+  voteSeconds: number | null;
+  onVoteSecondsChange: (seconds: number | null) => void;
   /** Temáticas de El impostor que hay; vacío mientras llegan. */
   categories: readonly string[];
   chosenCategories: readonly string[];
@@ -63,6 +65,8 @@ export function LobbyScreen({
   onShowQr,
   onCloseQr,
   onImpostorsChange,
+  voteSeconds,
+  onVoteSecondsChange,
   categories,
   chosenCategories,
   topicsOpen,
@@ -166,6 +170,7 @@ export function LobbyScreen({
                   playerCount={players.length}
                   onChange={onImpostorsChange}
                 />
+                <VoteTimePicker value={voteSeconds} onChange={onVoteSecondsChange} />
                 {categories.length > 0 ? (
                   <TopicsRow chosen={chosenCategories} onOpen={onTopicsOpen} />
                 ) : null}
@@ -258,6 +263,42 @@ function ImpostorStepper({
         >
           {copy.lobby.plus}
         </StepButton>
+      </div>
+    </div>
+  );
+}
+
+const VOTE_TIME_OPTIONS = [null, 30, 60, 90] as const;
+
+function VoteTimePicker({
+  value,
+  onChange,
+}: {
+  value: number | null;
+  onChange: (seconds: number | null) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-2 rounded-chip border-3 border-ink bg-paper px-3.5 py-2.5">
+      <p className="text-base font-bold" id="vote-time-label">
+        {copy.lobby.voteTime}
+      </p>
+      <div role="group" aria-labelledby="vote-time-label" className="grid grid-cols-4 gap-2">
+        {VOTE_TIME_OPTIONS.map((option) => (
+          <button
+            key={String(option)}
+            type="button"
+            aria-label={copy.lobby.voteTimeLabel(option)}
+            aria-pressed={option === value}
+            onClick={() => {
+              onChange(option);
+            }}
+            className={`flex h-11 items-center justify-center rounded-control border-3 border-ink font-display text-lg ${
+              option === value ? 'bg-ink text-paper' : 'bg-paper'
+            }`}
+          >
+            {copy.lobby.voteTimeOption(option)}
+          </button>
+        ))}
       </div>
     </div>
   );

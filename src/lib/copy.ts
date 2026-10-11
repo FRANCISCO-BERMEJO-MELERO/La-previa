@@ -197,6 +197,12 @@ export const copy = {
     moreImpostors: 'Más impostores',
     minus: '−',
     plus: '+',
+    voteTime: 'Tiempo para votar',
+    voteTimeOption: (seconds: number | null) => (seconds === null ? 'Sin' : `${String(seconds)} s`),
+    voteTimeLabel: (seconds: number | null) =>
+      seconds === null
+        ? 'Sin tiempo: cierra el anfitrión'
+        : `${String(seconds)} segundos para votar`,
     topics: 'Temáticas',
     topicsSummary: (chosen: readonly string[]) =>
       chosen.length === 0
@@ -245,6 +251,8 @@ export const copy = {
 
   vote: {
     pill: 'Votación',
+    pillTimed: (seconds: number) =>
+      `Votación · ${String(Math.floor(seconds / 60))}:${String(seconds % 60).padStart(2, '0')}`,
     title: '¿Quién es el impostor?',
     yourVote: 'Tu voto',
     hint: (name: string) =>

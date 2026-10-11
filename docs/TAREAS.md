@@ -242,7 +242,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 ## Fase 23 · Temporizador
 
 - [x] 23.1 Migración: tiempo y hora límite; `start_game`, `open_voting` y `close_voting` con el tiempo, y pgTAP
-- [ ] 23.2 Selector de tiempo, cuenta atrás y cierre al llegar a cero
+- [x] 23.2 Selector de tiempo, cuenta atrás y cierre al llegar a cero
 - [ ] 23.3 Prueba e2e: votación que se cierra sola
 
 ## Fase 24 · Cómo se juega

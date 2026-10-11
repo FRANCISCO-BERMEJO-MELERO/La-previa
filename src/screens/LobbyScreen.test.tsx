@@ -33,6 +33,8 @@ function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {})
     onShowQr: vi.fn(),
     onCloseQr: vi.fn(),
     onImpostorsChange: vi.fn(),
+    voteSeconds: null as number | null,
+    onVoteSecondsChange: vi.fn(),
     categories: [] as string[],
     chosenCategories: [] as string[],
     topicsOpen: false,

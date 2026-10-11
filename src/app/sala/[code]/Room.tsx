@@ -51,6 +51,7 @@ export function Room({ initial, fresh }: RoomProps) {
   const [impostors, setImpostors] = useState(1);
   const [rounds, setRounds] = useState(DEFAULT_ROUNDS);
   const [chosenCategories, setChosenCategories] = useState<string[]>([]);
+  const [voteSeconds, setVoteSeconds] = useState<number | null>(null);
   const [topicsOpen, setTopicsOpen] = useState(false);
   const [pickedGame, setPickedGame] = useState<GameId | null>(null);
   const [error, setError] = useState<ActionError | null>(null);
@@ -223,6 +224,8 @@ export function Room({ initial, fresh }: RoomProps) {
         setQrOpen(false);
       }}
       onImpostorsChange={setImpostors}
+      voteSeconds={voteSeconds}
+      onVoteSecondsChange={setVoteSeconds}
       categories={categories}
       chosenCategories={chosenCategories}
       topicsOpen={topicsOpen}
@@ -239,7 +242,11 @@ export function Room({ initial, fresh }: RoomProps) {
         void run(() => {
           switch (snapshot.room.game) {
             case 'impostor':
-              return startGame(roomId, { impostorCount, categories: chosenCategories });
+              return startGame(roomId, {
+                impostorCount,
+                categories: chosenCategories,
+                voteSeconds,
+              });
             case 'probable':
               return probableStart(roomId, rounds);
             case 'quien_lo_dijo':

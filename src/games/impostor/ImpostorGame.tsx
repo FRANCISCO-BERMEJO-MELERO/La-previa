@@ -1,7 +1,7 @@
 'use client';
 
 import type { HeaderTone } from '@/components/HeaderAside';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useEffectEvent, useState, type ReactNode } from 'react';
 import { WaitingBox } from '@/components/WaitingBox';
 import {
   backToLobby,
@@ -13,6 +13,7 @@ import {
   type ActionResult,
 } from '@/lib/actions';
 import { copy } from '@/lib/copy';
+import { useCountdown } from '@/lib/use-countdown';
 import type { ImpostorGameState, Snapshot } from '@/lib/snapshot';
 import { DealScreen } from './DealScreen';
 import {
@@ -33,6 +34,9 @@ import { TieScreen } from './TieScreen';
 import { viewFor } from './view';
 import { VoteScreen } from './VoteScreen';
 import { VoteWaitScreen } from './VoteWaitScreen';
+
+const CLOSE_RETRIES = 3;
+const CLOSE_RETRY_MS = 1500;
 
 type ImpostorGameProps = {
   snapshot: Snapshot;
@@ -62,6 +66,32 @@ export function ImpostorGame({
 }: ImpostorGameProps) {
   const [voteTarget, setVoteTarget] = useState<string | null>(null);
   const roomId = snapshot.room.id;
+  const deadline = game.phase === 'voting' ? game.voting_deadline : null;
+  const timeLeft = useCountdown(deadline, snapshot.server_time);
+  const closeWhenDue = useEffectEvent(() => closeVoting(roomId));
+
+  // Al llegar a cero, cada móvil pide cerrar una vez: el primero lo consigue y la foto nueva llega
+  // a todos por la sincronización. Si la base de datos aún no ve pasada la hora (relojes un poco
+  // distintos), se reintenta. Los demás fallos (otro ya la cerró) no tienen nada que enseñar.
+  useEffect(() => {
+    if (deadline === null || timeLeft !== 0) return;
+    let cancelled = false;
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    const attempt = (triesLeft: number) => {
+      void closeWhenDue().then((result) => {
+        if (cancelled || result.ok || result.error !== 'not_host' || triesLeft === 0) return;
+        retry = setTimeout(() => {
+          attempt(triesLeft - 1);
+        }, CLOSE_RETRY_MS);
+      });
+    };
+    attempt(CLOSE_RETRIES);
+    return () => {
+      cancelled = true;
+      clearTimeout(retry);
+    };
+  }, [deadline, timeLeft]);
+
   const view = viewFor(snapshot);
   if (view === 'lobby') return null;
 
@@ -79,7 +109,7 @@ export function ImpostorGame({
             ? copy.reveal.roundPill(game.round)
             : copy.room.pill(snapshot.room.code),
       )}
-      votePill={pill(copy.vote.pill, 'sky')}
+      votePill={pill(timeLeft === null ? copy.vote.pill : copy.vote.pillTimed(timeLeft), 'sky')}
       outPill={pill(copy.out.pill, 'lilac')}
       voteTarget={voteTarget}
       onSelectTarget={setVoteTarget}
@@ -100,7 +130,11 @@ export function ImpostorGame({
       }}
       onPlayAgain={() => {
         void run(async () => {
-          const again = await startGame(roomId, { impostorCount: game.impostor_count, categories });
+          const again = await startGame(roomId, {
+            impostorCount: game.impostor_count,
+            categories,
+            voteSeconds: game.vote_seconds,
+          });
           // Si ya no vale (se ha ido gente), se vuelve a la sala de espera para ajustarlo.
           const noLongerValid =
             !again.ok &&

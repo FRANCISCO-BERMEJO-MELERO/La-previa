@@ -29,6 +29,8 @@ const impostorGameSchema = z.object({
   impostor_count: z.int().positive(),
   impostors_left: z.int().nonnegative(),
   category: z.string(),
+  vote_seconds: z.union([z.literal(30), z.literal(60), z.literal(90)]).nullable(),
+  voting_deadline: timestamp.nullable(),
   participants: z.array(
     z.object({ user_id: id, name: z.string(), alive: z.boolean(), has_voted: z.boolean() }),
   ),
