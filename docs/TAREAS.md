@@ -289,8 +289,8 @@ Aceptación: `npm run test:db` pasa desde cero, con las pruebas anteriores intac
 ## Fase 29 · Luna llena: base de datos, día, juicio y final
 
 - [x] 29.1 `luna_llena_continue` con todas sus transiciones
-- [ ] 29.2 Elección de alcalde
-- [ ] 29.3 Juicio: acusación, veredicto, cierre forzado y voto doble del alcalde
+- [x] 29.2 Elección de alcalde
+- [x] 29.3 Juicio: acusación, veredicto, cierre forzado y voto doble del alcalde
 - [x] 29.4 Cazador: fase `hunter`, disparo y salto
 - [x] 29.5 Comprobación de victoria y `result` en la foto
 - [ ] 29.6 Abandono y expulsión en cada fase
