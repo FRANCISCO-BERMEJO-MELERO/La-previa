@@ -258,7 +258,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
 ## Fase 26 · Repaso y cierre de las mejoras
 
-- [ ] 26.1 Repaso a 360, 390 y 430 px y de accesibilidad de todo lo nuevo, ampliando las e2e
+- [x] 26.1 Repaso a 360, 390 y 430 px y de accesibilidad de todo lo nuevo, ampliando las e2e
 - [ ] 26.2 `README.md`, `docs/DESPLIEGUE.md` y `docs/INFORME.md`
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.

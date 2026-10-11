@@ -35,7 +35,7 @@ export function HomeScreen({
         <Pill tone="tomato" tilted>
           {copy.home.tagline}
         </Pill>
-        <h1 className="font-display text-display-xl uppercase">
+        <h1 className="font-display text-display-lg uppercase xs:text-display-xl">
           {copy.home.title.split(' ').map((word) => (
             <span key={word} className="block">
               {word}

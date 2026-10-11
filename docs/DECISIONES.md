@@ -1,5 +1,12 @@
 # Decisiones
 
+## 2026-10-11 · 26.1 · Repaso de lo nuevo a 360, 390 y 430 px
+
+`accessibility-mejoras.spec.ts` recorre, en los tres anchos, el inicio con "Escanear QR", la pantalla de nombre con la galería de avatares, la sala de espera con "Salir", "Cómo se juega", el tiempo para votar y las temáticas, y los tres diálogos (temáticas, avatar y tutorial). En cada uno comprueba que no hay desborde horizontal y que todo lo pulsable mide 44 px o más. Otra prueba recorre el tutorial solo con el teclado, con el foco visible, y lo cierra con Escape.
+
+El repaso sacó un desborde que ya existía: a 360 px, "PREVIA" en el titular del inicio (`text-display-xl`, 84 px) ocupaba 14 px más que el ancho útil, y la página se podía desplazar en horizontal. Las pruebas anteriores miraban el inicio a 390, donde sí cabe. Se añade el punto de corte `xs` (390 px, el ancho de la referencia) en `globals.css` y el titular usa `text-display-lg` por debajo y el tamaño de la referencia desde ahí. Es el único cambio de tokens de esta tanda.
+Descartado: bajar el titular a `text-display-lg` en todos los anchos, que se aleja de la referencia a 390.
+
 ## 2026-10-11 · 25.3 · Elegir y cambiar el avatar
 
 Debajo del nombre, en las dos pantallas donde se escribe (crear sala y entrar por enlace), aparece "Tu avatar" con la inicial y las 12 ilustraciones (botones de 56 px con `aria-pressed` y el nombre de cada dibujo para lectores de pantalla). Por defecto se queda la inicial. Tras crear la sala o unirse se llama a `set_avatar`; si esa llamada falla se entra igual, porque el avatar se puede volver a elegir en la sala. En la sala de espera, tu propia ficha es un botón ("Cambiar tu avatar") que abre el mismo selector en un diálogo; cada toque guarda el avatar al momento. Las pruebas existentes de la pantalla de nombre y de la sala de espera solo ganan las propiedades nuevas en sus ayudantes, y las de `Room`, `RoomEntry` y `HomeFlow`, el doble de `setAvatar`.
