@@ -1,3 +1,5 @@
+import type { AvatarId } from '@/lib/avatars';
+import { avatarArt } from './avatar-art';
 import { avatarColor, initialOf } from './avatar-color';
 
 type AvatarSize = 'sm' | 'md' | 'lg';
@@ -5,6 +7,8 @@ type AvatarSize = 'sm' | 'md' | 'lg';
 type AvatarProps = {
   name: string;
   joinIndex: number;
+  /** Ilustración elegida de la galería; sin ella, la inicial sobre su color. */
+  avatar?: AvatarId | null;
   size?: AvatarSize;
   /** Jugador desconectado: sin color de la paleta. */
   muted?: boolean;
@@ -31,6 +35,7 @@ const colorClasses = {
 export function Avatar({
   name,
   joinIndex,
+  avatar = null,
   size = 'sm',
   muted = false,
   dashed = false,
@@ -38,7 +43,7 @@ export function Avatar({
 }: AvatarProps) {
   const color = dashed
     ? 'bg-ground-soft'
-    : muted
+    : muted || avatar !== null
       ? 'bg-paper'
       : colorClasses[avatarColor(joinIndex)];
   const border = `${onDark ? 'border-paper' : 'border-ink'} ${dashed ? 'border-dashed' : ''}`;
@@ -46,9 +51,19 @@ export function Avatar({
     <span
       aria-hidden="true"
       data-testid="avatar"
-      className={`inline-flex shrink-0 items-center justify-center rounded-full border-3 text-ink ${border} ${color} ${sizeClasses[size]}`}
+      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border-3 text-ink ${border} ${color} ${sizeClasses[size]}`}
     >
-      {initialOf(name)}
+      {avatar === null ? (
+        initialOf(name)
+      ) : (
+        <svg
+          viewBox="0 0 40 40"
+          data-avatar={avatar}
+          className={`size-full ${muted || dashed ? 'grayscale' : ''}`}
+        >
+          {avatarArt[avatar]}
+        </svg>
+      )}
     </span>
   );
 }

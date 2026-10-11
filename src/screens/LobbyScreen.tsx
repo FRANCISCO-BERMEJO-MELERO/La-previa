@@ -137,6 +137,7 @@ export function LobbyScreen({
             <PlayerChip
               name={player.name}
               joinIndex={index}
+              avatar={player.avatar}
               muted={!player.connected}
               detail={playerDetail(player, room.host_id)}
             />

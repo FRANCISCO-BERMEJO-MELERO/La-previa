@@ -57,6 +57,7 @@ export function VoteScreen({
                 <Avatar
                   name={candidate.name}
                   joinIndex={candidate.joinIndex}
+                  avatar={candidate.avatar}
                   muted={!candidate.connected}
                   onDark={pressed}
                 />

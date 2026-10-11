@@ -27,6 +27,7 @@ export function OutScreen({ myName, stillPlaying, ...chrome }: OutScreenProps) {
             <PlayerChip
               name={player.name}
               joinIndex={player.joinIndex}
+              avatar={player.avatar}
               muted={!player.connected}
               detail={player.connected ? undefined : copy.lobby.disconnected}
             />

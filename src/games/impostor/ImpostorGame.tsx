@@ -202,6 +202,7 @@ function GameView({
     userId: player.user_id,
     name: player.name,
     joinIndex: index,
+    avatar: player.avatar,
     muted: !player.connected,
   }));
 
@@ -272,6 +273,7 @@ function GameView({
           kind={outcome.type}
           name={outcome.name}
           joinIndex={who?.joinIndex ?? 0}
+          avatar={who?.avatar}
           wasImpostor={outcome.was_impostor}
           summary={
             game.game_over

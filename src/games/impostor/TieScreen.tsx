@@ -23,7 +23,12 @@ export function TieScreen({ tied, ...chrome }: TieScreenProps) {
                   {index > 0 ? (
                     <span className="font-display text-3xl">{copy.tie.equals}</span>
                   ) : null}
-                  <Avatar name={player.name} joinIndex={player.joinIndex} size="md" />
+                  <Avatar
+                    name={player.name}
+                    joinIndex={player.joinIndex}
+                    avatar={player.avatar}
+                    size="md"
+                  />
                 </Fragment>
               ))}
             </div>

@@ -1,23 +1,33 @@
+import type { AvatarId } from '@/lib/avatars';
 import { Avatar } from './Avatar';
 
 type PlayerChipProps = {
   name: string;
   /** Sin posición no se dibuja avatar, como en la lista de quién ha votado. */
   joinIndex?: number;
+  avatar?: AvatarId | null;
   /** Segunda línea: "Anfitrión", "Desconectada", "Ha votado"… */
   detail?: string;
   /** Desconectado o pendiente: borde discontinuo y fondo apagado. */
   muted?: boolean;
 };
 
-export function PlayerChip({ name, joinIndex, detail, muted = false }: PlayerChipProps) {
+export function PlayerChip({
+  name,
+  joinIndex,
+  avatar = null,
+  detail,
+  muted = false,
+}: PlayerChipProps) {
   const look = muted ? 'border-dashed bg-ground-soft' : 'bg-paper';
   return (
     <div
       data-testid="player-chip"
       className={`flex min-w-0 items-center gap-2.5 rounded-chip border-3 border-ink p-2.5 ${look}`}
     >
-      {joinIndex === undefined ? null : <Avatar name={name} joinIndex={joinIndex} muted={muted} />}
+      {joinIndex === undefined ? null : (
+        <Avatar name={name} joinIndex={joinIndex} avatar={avatar} muted={muted} />
+      )}
       <div className="flex min-w-0 flex-1 flex-col">
         <span className="truncate text-base font-bold">{name}</span>
         {detail ? <span className="text-xs font-medium">{detail}</span> : null}

@@ -1,3 +1,4 @@
+import type { AvatarId } from '@/lib/avatars';
 import type { ImpostorGameState, Snapshot } from '@/lib/snapshot';
 
 /** Datos que pintan las pantallas de partida, deducidos de la foto sin estado propio. */
@@ -7,6 +8,8 @@ export type ParticipantView = {
   name: string;
   /** Posición en el orden de entrada a la sala: decide el color del avatar. */
   joinIndex: number;
+  /** El de la galería si lo ha elegido y sigue en la sala. */
+  avatar?: AvatarId | null;
   alive: boolean;
   hasVoted: boolean;
   connected: boolean;
@@ -22,11 +25,16 @@ function joinIndexOf(snapshot: Snapshot, userId: string, fallback: number): numb
   return index === -1 ? fallback : index;
 }
 
+function avatarOf(snapshot: Snapshot, userId: string): AvatarId | null {
+  return snapshot.players.find((player) => player.user_id === userId)?.avatar ?? null;
+}
+
 export function participants(snapshot: Snapshot, game: ImpostorGameState): ParticipantView[] {
   return game.participants.map((participant, index) => ({
     userId: participant.user_id,
     name: participant.name,
     joinIndex: joinIndexOf(snapshot, participant.user_id, index),
+    avatar: avatarOf(snapshot, participant.user_id),
     alive: participant.alive,
     hasVoted: participant.has_voted,
     connected:

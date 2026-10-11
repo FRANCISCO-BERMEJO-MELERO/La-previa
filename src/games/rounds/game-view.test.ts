@@ -18,6 +18,23 @@ describe('datos de los juegos por rondas', () => {
     expect(players(snapshot, game).map((p) => p.connected)).toEqual([true, true, false]);
   });
 
+  it('cada participante lleva el avatar que tiene en la sala', () => {
+    const base = inProbable();
+    const snapshot = inProbable(
+      {},
+      {
+        players: base.players.map((player) =>
+          player.user_id === ids.lucia ? { ...player, avatar: 'octopus' as const } : player,
+        ),
+      },
+    );
+    expect(players(snapshot, probableState()).map((p) => p.avatar)).toEqual([
+      null,
+      'octopus',
+      null,
+    ]);
+  });
+
   it('solo los activos votan y se pueden votar', () => {
     const game = probableState({
       participants: [

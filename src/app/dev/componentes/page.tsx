@@ -8,6 +8,7 @@ import { PlayerChip } from '@/components/PlayerChip';
 import { Screen } from '@/components/Screen';
 import { TextField } from '@/components/TextField';
 import { WaitingBox } from '@/components/WaitingBox';
+import { avatarIds } from '@/lib/avatars';
 import { copy } from '@/lib/copy';
 import { DialogDemo } from './DialogDemo';
 
@@ -94,6 +95,16 @@ export default function ComponentsPage() {
         <div className="flex items-center gap-3">
           <Avatar name="Álvaro" joinIndex={2} size="md" />
           <Avatar name="Álvaro" joinIndex={2} size="lg" />
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {avatarIds.map((id) => (
+            <Avatar key={id} name={id} joinIndex={0} avatar={id} />
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {avatarIds.map((id) => (
+            <Avatar key={id} name={id} joinIndex={0} avatar={id} size="md" />
+          ))}
         </div>
       </Section>
 

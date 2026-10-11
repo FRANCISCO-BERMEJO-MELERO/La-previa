@@ -253,7 +253,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 ## Fase 25 · Avatares
 
 - [x] 25.1 Migración `room_players.avatar`, `set_avatar` y foto, con pgTAP
-- [ ] 25.2 Las 12 ilustraciones y el `Avatar` que las pinta
+- [x] 25.2 Las 12 ilustraciones y el `Avatar` que las pinta
 - [ ] 25.3 Elegir avatar al poner el nombre y cambiarlo en la sala de espera
 
 ## Fase 26 · Repaso y cierre de las mejoras

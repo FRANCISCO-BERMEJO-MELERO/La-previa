@@ -51,7 +51,7 @@ export function RevealScreen({ featuredText, reveal, ...chrome }: RevealScreenPr
                 key={player.userId}
                 className="flex items-center gap-3 rounded-chip border-3 border-ink bg-paper p-2.5"
               >
-                <Avatar name={player.name} joinIndex={player.joinIndex} />
+                <Avatar name={player.name} joinIndex={player.joinIndex} avatar={player.avatar} />
                 <div className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate text-sm font-bold">{player.name}</span>
                   <span className="text-base font-medium wrap-break-word">{text}</span>

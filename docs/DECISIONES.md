@@ -1,5 +1,11 @@
 # Decisiones
 
+## 2026-10-11 · 25.2 · Las 12 ilustraciones
+
+Aguacate con gafas de sol, huevo frito, fantasma, cactus, plátano, pizza, nube enfadada, tostada, pulpo, dónut, cohete y pingüino, en SVG dentro del propio componente (`avatar-art.tsx`): caja de 40 × 40, borde `ink` grueso y relleno con los colores de la paleta (`fill-*`), sin imágenes ni estilos en línea. `Avatar` las pinta sobre `paper` cuando el jugador tiene avatar y, si está desconectado, en gris; si no, la inicial sobre su color, como siempre. El avatar llega a todas las pantallas por los mismos datos que el color (`Player` y `ParticipantView` lo toman de la lista de jugadores de la sala), y en esos tipos es opcional: sin él se pinta la inicial.
+
+Se revisaron a 36 px y a 80 px en `/dev/componentes`; el plátano (demasiado fino, con los ojos fuera) y la sonrisa del aguacate (que se confundía con el hueso) se rehicieron. La prueba de `participants` de El impostor comparaba el objeto entero de cada participante y gana `avatar: null`.
+
 ## 2026-10-11 · 25.1 · Avatar en la base de datos
 
 `room_players.avatar` guarda el nombre de una de las 12 ilustraciones de la galería (`private.avatar_ids()`, con un `check` que no admite otro) o nulo, que sigue enseñando la inicial. `public.set_avatar(sala, avatar)` lo elige, lo cambia o lo quita para quien llama, en cualquier momento; lanza `invalid_avatar` (código nuevo, añadido al cliente) si no es de la galería. La foto lleva `avatar` en cada jugador de la sala y el cliente lo valida con la misma lista (`src/lib/avatars.ts`). Las partidas no copian el avatar: las pantallas lo toman de la lista de jugadores de la sala, como ya hacían con el color.
