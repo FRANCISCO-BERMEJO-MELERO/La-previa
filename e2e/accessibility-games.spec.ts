@@ -134,4 +134,59 @@ test.describe('12.5 · accesibilidad de los juegos nuevos', () => {
     await expectTouchable(lucia);
     await expectTouchable(host);
   });
+
+  test('¿Qué prefieres?: se elige con el teclado y las pantallas se pueden tocar', async ({
+    browser,
+  }) => {
+    const pages = await startedRoom(browser, /¿Qué prefieres\?/);
+    const [host, ...rest] = pages;
+    if (!host) throw new Error('Sin anfitrión');
+    await expect(host.getByRole('heading', { name: '¿Qué prefieres?' })).toBeVisible();
+    await expectTouchable(host);
+    const optionB = host.getByRole('button', { name: /^Opción B: / });
+    await tabTo(host, optionB);
+    expect(await optionB.evaluate((element) => getComputedStyle(element).outlineStyle)).toBe(
+      'solid',
+    );
+    await host.keyboard.press('Enter');
+    await expect(optionB).toHaveAttribute('aria-pressed', 'true');
+    await tabTo(host, host.getByRole('button', { name: 'Elegir la B' }));
+    await host.keyboard.press('Enter');
+    await expect(host.getByText('Han elegido')).toBeVisible();
+    await expectTouchable(host);
+    for (const page of rest) {
+      await page.getByRole('button', { name: /^Opción A: / }).click();
+      await page.getByRole('button', { name: 'Elegir la A' }).click();
+    }
+    for (const page of pages) {
+      await expect(page.getByText('Gana la mayoría')).toBeVisible();
+      await expectTouchable(page);
+    }
+  });
+
+  test('Palabras prohibidas: se marca el acierto con el teclado y las pantallas se pueden tocar', async ({
+    browser,
+  }) => {
+    const pages = await startedRoom(browser, /Palabras prohibidas/);
+    const [host, lucia, alvaro] = pages;
+    if (!host || !lucia || !alvaro) throw new Error('Faltan jugadores');
+    // Describe Fran, vigila Lucía y adivina Álvaro.
+    await expect(host.getByText('Describes tú')).toBeVisible();
+    await expectTouchable(host);
+    await expect(lucia.getByRole('button', { name: '¡Prohibida!' })).toBeVisible();
+    await expectTouchable(lucia);
+    await expect(alvaro.getByRole('heading', { name: 'Adivina en voz alta' })).toBeVisible();
+    await expectTouchable(alvaro);
+
+    const guesser = host.getByRole('button', { name: /^Álvaro/ });
+    await tabTo(host, guesser);
+    await host.keyboard.press('Enter');
+    await expect(guesser).toHaveAttribute('aria-pressed', 'true');
+    await tabTo(host, host.getByRole('button', { name: 'Ha acertado Álvaro' }));
+    await host.keyboard.press('Enter');
+    for (const page of pages) {
+      await expect(page.getByText('Lo acierta Álvaro')).toBeVisible();
+      await expectTouchable(page);
+    }
+  });
 });

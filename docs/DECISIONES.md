@@ -1,5 +1,9 @@
 # Decisiones
 
+## 2026-10-11 · 17.3 · Accesibilidad de los dos juegos nuevos
+
+La e2e de accesibilidad de la 12.5 suma una prueba por juego, con 3 jugadores, que comprueba en cada pantalla visitada que todo lo pulsable mide 44 px o más y que hay un solo `h1`. En ¿Qué prefieres? se marca la opción con Tab y Enter (con el foco visible y `aria-pressed`) y se envía igual. En Palabras prohibidas se miran las tres pantallas a la vez (describir, vigilar y adivinar) y quien describe marca el acierto solo con el teclado. No hizo falta cambiar ninguna pantalla: las opciones y la lista de acertantes son `button` con `aria-pressed`, y las opciones llevan `aria-label` con su letra y su texto.
+
 ## 2026-10-11 · 17.2 · Repaso con 16 jugadores a 360, 390 y 430 px
 
 Un guion temporal (fuera del repositorio, como en la 12.4) juega en una sala de 16 jugadores, repartidos entre los tres anchos y con nombres de 14 caracteres de letras anchas ("Mmmmmmmmmmmm01"), una ronda de ¿Qué prefieres? con el dilema más largo (45 caracteres por opción) y dos de Palabras prohibidas con las tarjetas más largas ("Extraterrestre" y "Fantasma" con "Casa encantada"). Hasta el resultado de cada juego comprueba en los 16 móviles que no hay desborde horizontal. No desborda nada. Las capturas sacaron dos defectos, que se arreglan:
