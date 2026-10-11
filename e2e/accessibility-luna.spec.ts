@@ -124,7 +124,7 @@ test('32.2 y 32.3 · Luna llena con 16 jugadores y nombres de 14 a 360, 390 y 43
 
   // Amanecer: muere v3.
   const alive = names.filter((name) => name !== v3);
-  await expect(host.getByText('Continuar')).toBeVisible();
+  await expect(host.getByRole('button', { name: 'Continuar' })).toBeVisible();
   await fits(pageOf(players, v1), 'amanecer con el aviso de los enamorados');
   await fits(pageOf(players, v3), 'espectador');
   await host.getByRole('button', { name: 'Continuar' }).click();
@@ -135,7 +135,9 @@ test('32.2 y 32.3 · Luna llena con 16 jugadores y nombres de 14 a 360, 390 y 43
   ).toBeVisible();
   await fits(pageOf(players, v1), 'elección de alcalde');
   for (const name of alive) await voteFor(pageOf(players, name), seer);
-  await expect(pageOf(players, v1).getByText('Móviles boca abajo')).toBeVisible();
+  await expect(
+    pageOf(players, v1).getByRole('heading', { name: 'Móviles boca abajo' }),
+  ).toBeVisible();
   await fits(pageOf(players, v1), 'debate con los votos del alcalde');
   await host.getByRole('button', { name: 'Abrir votación' }).click();
   await expect(
@@ -152,7 +154,7 @@ test('32.2 y 32.3 · Luna llena con 16 jugadores y nombres de 14 a 360, 390 y 43
   for (const name of alive.filter((other) => other !== v4)) {
     await pageOf(players, name).getByRole('button', { name: 'Condenar' }).click();
   }
-  await expect(pageOf(players, v1).getByText('A la horca')).toBeVisible();
+  await expect(pageOf(players, v1).getByRole('heading', { name: 'A la horca' })).toBeVisible();
   await fits(pageOf(players, v1), 'ejecución');
 
   // Los lobos se van de la sala y el pueblo gana.
@@ -163,12 +165,16 @@ test('32.2 y 32.3 · Luna llena con 16 jugadores y nombres de 14 a 360, 390 y 43
     await expect(page).toHaveURL(/\/$/);
   }
   const stayed = names.filter((name) => !wolves.includes(name));
-  let narrator: Page | undefined;
-  for (const name of stayed) {
-    const page = pageOf(players, name);
-    if (await page.getByRole('button', { name: 'Continuar' }).isVisible()) narrator = page;
-  }
-  if (!narrator) throw new Error('Nadie narra');
+  // Si el anfitrión era lobo, narra quien le sustituye en cuanto le llega la foto nueva.
+  const narratorName = async (): Promise<string | null> => {
+    for (const name of stayed) {
+      const button = pageOf(players, name).getByRole('button', { name: 'Continuar' });
+      if (await button.isVisible()) return name;
+    }
+    return null;
+  };
+  await expect.poll(narratorName).not.toBeNull();
+  const narrator = pageOf(players, (await narratorName()) ?? '');
   await narrator.getByRole('button', { name: 'Continuar' }).click();
   await expect(pageOf(players, v1).getByText('Gana el pueblo').first()).toBeVisible();
   await fits(pageOf(players, v1), 'resultado');
