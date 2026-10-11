@@ -9,15 +9,18 @@ import {
   lunaLlenaContinue,
   lunaLlenaNightAction,
   lunaLlenaSkipHunter,
+  lunaLlenaVote,
   type ActionResult,
 } from '@/lib/actions';
 import { copy } from '@/lib/copy';
 import type { LunaLlenaGameState, Snapshot } from '@/lib/snapshot';
-import { GameScreen } from '@/screens/GameScreen';
 import { LateScreen } from '@/screens/LateScreen';
 import { CardPeek } from './CardPeek';
 import { DawnScreen } from './DawnScreen';
+import { DayScreen, DefenseScreen, VoteScreen, WaitScreen } from './DayScreens';
 import {
+  accuseGroups,
+  liveMayorId,
   lunaPlayers,
   nameOf,
   namesOf,
@@ -60,6 +63,8 @@ function stepAction(step: NarratorStep, roomId: string): Promise<ActionResult<Sn
   }
 }
 
+const texts = copy.lunaLlena;
+
 /** Partida de Luna llena: acciones del juego y pantalla según la foto. */
 export function LunaLlenaGame({
   snapshot,
@@ -80,6 +85,9 @@ export function LunaLlenaGame({
   const host = players.find((player) => player.userId === snapshot.room.host_id)?.name ?? '';
   const pack = namesOf(players, game.my.fellow_wolves);
   const action = narratorAction(game);
+  const mayorId = liveMayorId(game, players);
+  // El error del narrador sale en su caja; el de los demás, en su pantalla.
+  const playerError = snapshot.me.is_host ? undefined : error;
 
   const choose = (ids: string[]) => {
     setChoice({ moment, ids });
@@ -158,7 +166,7 @@ export function LunaLlenaGame({
             });
           }}
           busy={busy}
-          error={snapshot.me.is_host ? undefined : error}
+          error={playerError}
           done={current ? doneText(mode, players, current) : null}
           marks={
             new Map(
@@ -187,12 +195,55 @@ export function LunaLlenaGame({
           secret={game.night === 1 ? loverSecret(game, players) : null}
         />
       );
-    default:
+    case 'mayor':
+    case 'voting': {
+      const electing = game.phase === 'mayor';
+      const target = chosen[0] ?? null;
+      const votedFor = game.my.vote?.target_id ?? null;
       return (
-        <GameScreen {...chrome}>
-          <WaitingBox>{copy.lunaLlena.waitingNarrator(host)}</WaitingBox>
-        </GameScreen>
+        <VoteScreen
+          {...chrome}
+          pill={electing ? texts.vote.mayorPill : texts.vote.accusePill(game.day)}
+          title={electing ? texts.vote.mayorTitle : texts.vote.accuseTitle}
+          hint={electing ? texts.vote.mayorHint : texts.vote.accuseHint}
+          // Para alcalde vale cualquier vivo; para acusar, cualquiera menos uno mismo.
+          candidates={players.filter(
+            (player) => player.alive && (electing || player.userId !== myId),
+          )}
+          mayorId={mayorId}
+          selected={target}
+          onSelect={(userId) => {
+            choose([userId]);
+          }}
+          onSubmit={() => {
+            if (!target) return;
+            void run(() => lunaLlenaVote(roomId, target)).then((ok) => {
+              if (ok) choose([]);
+            });
+          }}
+          busy={busy}
+          error={playerError}
+          voted={votedFor ? nameOf(players, votedFor) : null}
+          pending={pendingCount(players)}
+        />
       );
+    }
+    case 'day':
+      return (
+        <DayScreen {...chrome} day={game.day} mayor={mayorId ? nameOf(players, mayorId) : null} />
+      );
+    case 'defense':
+      return (
+        <DefenseScreen
+          {...chrome}
+          accused={game.accused_id ? nameOf(players, game.accused_id) : null}
+          accusedId={game.accused_id}
+          isMe={game.accused_id === myId}
+          groups={accuseGroups(game, players)}
+        />
+      );
+    default:
+      return <WaitScreen {...chrome} text={texts.waitingNarrator(host)} />;
   }
 }
 

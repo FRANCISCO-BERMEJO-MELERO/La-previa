@@ -1,4 +1,5 @@
 import type { AvatarId } from '@/lib/avatars';
+import { copy } from '@/lib/copy';
 import type { LunaLlenaGameState, Snapshot } from '@/lib/snapshot';
 import type { LunaRole } from './roles';
 
@@ -98,4 +99,60 @@ export function packMarks(
     ]);
   }
   return marks;
+}
+
+/** El alcalde, mientras vive. */
+export function liveMayorId(
+  game: LunaLlenaGameState,
+  players: readonly LunaPlayer[],
+): string | null {
+  return players.find((player) => player.userId === game.mayor_id && player.alive)?.userId ?? null;
+}
+
+export type AccuseGroup = {
+  targetId: string;
+  name: string;
+  /** Votos contando doble el del alcalde. */
+  weight: number;
+  voters: { name: string; double: boolean }[];
+};
+
+/** Votos de la acusación agrupados por acusado, del más votado al menos. */
+export function accuseGroups(
+  game: LunaLlenaGameState,
+  players: readonly LunaPlayer[],
+): AccuseGroup[] {
+  if (game.public_votes?.kind !== 'accuse') return [];
+  const groups = new Map<string, AccuseGroup>();
+  for (const vote of game.public_votes.votes) {
+    if (!vote.target_id) continue;
+    const double = vote.voter_id === game.mayor_id;
+    const group = groups.get(vote.target_id) ?? {
+      targetId: vote.target_id,
+      name: nameOf(players, vote.target_id),
+      weight: 0,
+      voters: [],
+    };
+    group.weight += double ? 2 : 1;
+    group.voters.push({ name: nameOf(players, vote.voter_id), double });
+    groups.set(vote.target_id, group);
+  }
+  return [...groups.values()].sort((a, b) => b.weight - a.weight);
+}
+
+/** Quién votó condenar y quién salvar, con el alcalde marcado. */
+export function verdictSides(
+  game: LunaLlenaGameState,
+  players: readonly LunaPlayer[],
+): { condemn: string[]; spare: string[] } | null {
+  if (game.public_votes?.kind !== 'verdict') return null;
+  const label = (voterId: string) =>
+    voterId === game.mayor_id
+      ? `${nameOf(players, voterId)} ${copy.lunaLlena.defense.double}`
+      : nameOf(players, voterId);
+  const votes = game.public_votes.votes;
+  return {
+    condemn: votes.filter((vote) => vote.condemn === true).map((vote) => label(vote.voter_id)),
+    spare: votes.filter((vote) => vote.condemn === false).map((vote) => label(vote.voter_id)),
+  };
 }
