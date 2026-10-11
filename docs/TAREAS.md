@@ -168,7 +168,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
 - [x] 14.1 Leer `docs/JUEGOS-2.md`, `docs/DECISIONES.md` (fases 8–13) e `docs/INFORME.md`; repasar las auxiliares de `private` para juegos por rondas y `src/games/rounds`
 - [x] 14.2 Comprobar que las tres baterías pasan antes de tocar nada (472 unitarios, 633 pgTAP, 15 e2e)
-- [ ] 14.3 Anotar en `docs/DECISIONES.md` las diferencias entre `docs/JUEGOS-2.md` y el código, y cómo se resuelven
+- [x] 14.3 Anotar en `docs/DECISIONES.md` las diferencias entre `docs/JUEGOS-2.md` y el código, y cómo se resuelven
 - [x] 14.4 Añadir las fases 14–18 a `docs/TAREAS.md`
 
 Aceptación: las pruebas existentes pasan sin cambios.

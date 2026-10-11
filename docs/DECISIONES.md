@@ -1,5 +1,21 @@
 # Decisiones
 
+## 2026-10-11 · 14.3 · Diferencias entre JUEGOS-2 y el código
+
+Lo que `docs/JUEGOS-2.md` nombra coincide con el código: `rooms.game`, `games.game_type`, `games.phase`, `prompts`, `answers`, `game_rounds.subject_id` y `result`, y las auxiliares comunes de la 10.3. Fran confirma las cuatro decisiones de su §0 y autoriza añadir a `CLAUDE.md` las referencias a `docs/JUEGOS-2.md` y `docs/PLAN-3.md`. Lo que el código pide resolver:
+
+- **`has_responded` en `voting`** mira `votes`, pero la elección de ¿Qué prefieres? va en `answers` (§4). Se añade un caso por juego: en `que_prefieres` cuenta la fila de `answers`.
+- **Irse a media ronda** solo borra `answers` en `writing`. En `que_prefieres` la elección también se borra en `voting`, como pide §2.
+- **Turno de quien describe:** es la misma regla que el adivino de Una sola pista, así que `private.una_pista_next_guesser` pasa a ser la auxiliar común `private.next_subject` en cuanto la usan dos juegos.
+- **Quien vigila:** es el mismo cálculo que el árbitro de Una sola pista cuando al anfitrión le toca adivinar ("el siguiente activo por orden de entrada después de X, prefiriendo a los conectados"). Se extrae `private.next_active_after(partida, X)` y `private.una_pista_arbiter` pasa a usarla; conserva su nombre porque lo usan sus pruebas.
+- **Si quien vigila cambia a media ronda** (se va o se desconecta), quien le sustituye pasa a ver la palabra: es consecuencia de calcularlo en cada acción, como manda §3. Quien deja de vigilar al reconectarse otro sigue sabiéndola; se acepta.
+- **Puntos y reparto de ¿Qué prefieres?** se guardan al cerrar la ronda en `game_rounds.result` (`{choices: {a, b}, majority}`), como el recuento de `probable` (9.3): lo que pase después no cambia lo ya enseñado.
+- **Resultado de Palabras prohibidas** en `game_rounds.result` con la forma que pide §6 para la foto (`{type: …}`).
+- **Acertante no válido** (quien describe, quien vigila, un inactivo o alguien de fuera) lanza `invalid_target`, ya existente. Los códigos nuevos son los tres de §5: `invalid_option`, `not_describer` y `not_watcher`, que se añaden también al cliente.
+- **`text_b`** sigue el límite de `text` (1 a 200 caracteres) y un `check` exige que exista si y solo si el juego es `que_prefieres`.
+- **Las prohibidas de una tarjeta** se comparan con `private.normalize_clue`, la misma normalización de Una sola pista (11.1).
+  Descartado: guardar quien vigila al abrir la ronda, que la dejaba atascada si se desconectaba (el mismo motivo de la 11.2).
+
 ## 2026-10-10 · Harness · Se adopta rsc y el flujo con ramas
 
 Fran pide instalar rsc-harness (`npx @ericrisco/rsc@3.0.13 onboard`, perfil técnico, software en crecimiento, solo Claude Code) y tomar sus reglas. Por eso, y solo con su autorización expresa, cambia `CLAUDE.md`:
