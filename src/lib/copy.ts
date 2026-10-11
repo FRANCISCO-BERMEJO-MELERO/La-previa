@@ -28,6 +28,8 @@ export const errorCodes = [
   'not_arbiter',
   'is_guesser',
   'invalid_option',
+  'not_describer',
+  'not_watcher',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -61,6 +63,8 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
   not_arbiter: 'Eso lo decide quien arbitra la ronda. Pídeselo a quien arbitra.',
   is_guesser: 'Esta ronda te toca adivinar, así que no das pista. Espera a ver las de los demás.',
   invalid_option: 'Esa opción no existe. Elige una de las dos.',
+  not_describer: 'Eso lo decide quien describe esta ronda. Tú adivina en voz alta.',
+  not_watcher: 'Eso lo canta quien vigila las palabras prohibidas. Avísale si oyes una.',
   unknown: 'Algo ha fallado. Vuelve a intentarlo en un momento.',
   offline: 'Sin conexión. Seguimos intentándolo; no cierres la página.',
 };

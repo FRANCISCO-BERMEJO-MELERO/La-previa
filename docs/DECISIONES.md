@@ -1,5 +1,13 @@
 # Decisiones
 
+## 2026-10-11 · 16.3 · Turnos y ronda anulada en Palabras prohibidas
+
+- `private.una_pista_next_guesser` pasa a ser `private.next_subject` y elige también a quien describe; `open_round` la usa para los dos juegos y guarda la tarjeta en `game_rounds.card_id` con `private.pick_card`, que no repite tarjeta en la sala.
+- `private.next_active_after(partida, X)` es el "siguiente activo por orden de entrada después de X, empezando por los conectados". Quien vigila es el siguiente después de quien describe, y el árbitro de Una sola pista, cuando al anfitrión le toca adivinar, el siguiente después del anfitrión. Las pruebas de Una sola pista pasan sin tocarlas.
+- Si se va quien describe antes de la revelación, la ronda se borra y se vuelve a abrir con el mismo número, como en Una sola pista. La tarjeta de la ronda borrada puede volver a salir, igual que allí la palabra.
+- Acertar, pasar y "¡Prohibida!" guardan el resultado y pasan a la revelación en la misma auxiliar. Acertar da un punto a quien acierta y otro a quien describe.
+- Los textos de `not_describer` y `not_watcher` dicen a cada uno lo que sí puede hacer.
+
 ## 2026-10-11 · 15.8 · Más pasos de Tab en el selector
 
 La e2e de accesibilidad de la 7.1 llega a "Abrir la sala" con `tabTo`, que prueba como mucho 6 pulsaciones de Tab. Con cinco juegos elegibles el selector tiene 7 paradas (píldora, cinco juegos y el botón), y con seis tendrá 8, así que esa llamada pasa a admitir 10, igual que la de "Mostrar QR" en la misma prueba. Sigue comprobando lo mismo, que el botón se alcanza y se pulsa solo con el teclado; solo cambia cuántos elementos hay delante. La e2e nueva juega 5 rondas con 3 jugadores: mayorías de dos y de tres, y en la ronda 3 el anfitrión cierra con una A y una B, que empatan.

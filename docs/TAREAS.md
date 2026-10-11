@@ -190,7 +190,7 @@ Aceptación: las tres baterías pasan.
 
 - [x] 16.1 Migración: `rooms`, `games` y fases admiten el juego; tabla `taboo_cards` con RLS, sin políticas y con sus `check`; `game_rounds.card_id`
 - [x] 16.2 Migración de datos con unas 150 tarjetas y `docs/TARJETAS.md`
-- [ ] 16.3 `palabras_prohibidas_start`, `_guessed`, `_pass`, `_forbidden`, `_next`; turno de quien describe, quien vigila y ronda anulada
+- [x] 16.3 `palabras_prohibidas_start`, `_guessed`, `_pass`, `_forbidden`, `_next`; turno de quien describe, quien vigila y ronda anulada
 - [ ] 16.4 Variante `palabras_prohibidas` en `get_room_state`
 - [ ] 16.5 Pruebas pgTAP de `palabras_prohibidas`
 - [ ] 16.6 Selector con el juego elegible y su portada (palabra tachada)
