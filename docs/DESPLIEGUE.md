@@ -22,7 +22,7 @@ npx supabase db push
 ```
 
 - El `ref` es la parte de la URL del proyecto: `https://supabase.com/dashboard/project/<ref>`.
-- `db push` pide la contraseña del paso 1.1 y aplica todas las migraciones de `supabase/migrations`: tablas con RLS, la única política de lectura de `rooms`, `rooms` en Realtime, las funciones de los cuatro juegos, las 200 palabras y las 230 preguntas. No hace falta activar ninguna extensión de Postgres.
+- `db push` pide la contraseña del paso 1.1 y aplica todas las migraciones de `supabase/migrations`: tablas con RLS, la única política de lectura de `rooms`, `rooms` en Realtime, las funciones de los seis juegos, las 200 palabras, las 230 preguntas, los 120 dilemas y las 150 tarjetas. No hace falta activar ninguna extensión de Postgres.
 - Comprueba que están todas: `npx supabase migration list` debe mostrar cada migración en las columnas _Local_ y _Remote_.
 
 **Nunca** ejecutes `npx supabase db reset --linked`: borra la base de datos de producción.
@@ -56,7 +56,7 @@ Con dos o tres móviles de verdad (o un móvil y ventanas de incógnito):
 2. En el segundo, entra con el código. En el tercero, escanea el QR (**Mostrar QR**). Los tres ven la lista actualizarse sola.
 3. **Empezar partida**: los jugadores normales ven la misma palabra; el impostor, solo la categoría.
 4. Vota, cierra la votación, sigue hasta el resultado y **Volver a jugar**.
-5. **Cambiar de juego** y juega una partida de 5 rondas de **¿Quién es más probable que…?**, **¿Quién lo dijo?** y **Una sola pista**. En esta última, quien adivina no ve la palabra hasta el final.
+5. **Cambiar de juego** y juega una partida de 5 rondas de **¿Quién es más probable que…?**, **¿Quién lo dijo?**, **Una sola pista**, **¿Qué prefieres?** y **Palabras prohibidas**. En Una sola pista, quien adivina no ve la palabra hasta el final; en Palabras prohibidas, quien adivina no ve la tarjeta.
 6. Bloquea un móvil un minuto y desbloquéalo: vuelve a su pantalla sin pedir el nombre.
 7. Abre `https://<tu-dominio>/dev/componentes`: tiene que responder que la página no existe.
 
@@ -65,4 +65,5 @@ Con dos o tres móviles de verdad (o un móvil y ventanas de incógnito):
 - **Pausa del plan gratuito.** Supabase pausa los proyectos gratuitos tras 7 días sin actividad. Abre la web el día antes de la fiesta; si está pausado, se reactiva desde el panel de Supabase con **Restore project**.
 - **Salas abandonadas.** No se borran solas en esta versión (ver `docs/CONTEXTO.md` §10). Ocupan muy poco; si algún día hace falta, la vía prevista es una tarea `pg_cron` que borre salas con `last_activity_at` antiguo.
 - **Palabras.** Para quitar o añadir palabras, crea una migración nueva (por ejemplo, `update public.words set active = false where word = '…'`) y aplícala con `npx supabase db push`. La lista legible está en `docs/PALABRAS.md`. Una sola pista usa las mismas palabras.
-- **Preguntas.** Igual con las de ¿Quién es más probable que…? y ¿Quién lo dijo? (tabla `public.prompts`): una migración nueva que las desactive o añada. La lista legible está en `docs/PREGUNTAS.md`.
+- **Preguntas.** Igual con las de ¿Quién es más probable que…?, ¿Quién lo dijo? y los dilemas de ¿Qué prefieres? (tabla `public.prompts`): una migración nueva que las desactive o añada. La lista legible está en `docs/PREGUNTAS.md`.
+- **Tarjetas.** Igual con las de Palabras prohibidas (tabla `public.taboo_cards`). La base de datos rechaza una tarjeta que no tenga cinco prohibidas distintas entre sí y de la palabra. La lista legible está en `docs/TARJETAS.md`.

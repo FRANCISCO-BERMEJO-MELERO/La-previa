@@ -211,7 +211,7 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 ## Fase 18 · Cierre de la tercera tanda
 
 - [x] 18.1 `README.md` con los seis juegos
-- [ ] 18.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
+- [x] 18.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
 - [ ] 18.3 Revisión final contra `docs/JUEGOS-2.md` y su "Fuera de alcance"
 - [ ] 18.4 Ampliar `docs/INFORME.md` con esta tanda
 
