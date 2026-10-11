@@ -8,6 +8,8 @@ import { PlayerChip } from '@/components/PlayerChip';
 import { Screen } from '@/components/Screen';
 import { TextField } from '@/components/TextField';
 import { WaitingBox } from '@/components/WaitingBox';
+import { RoleCard } from '@/games/luna-llena/RoleCard';
+import { lunaRoles } from '@/games/luna-llena/roles';
 import { avatarIds } from '@/lib/avatars';
 import { copy } from '@/lib/copy';
 import { DialogDemo } from './DialogDemo';
@@ -155,6 +157,12 @@ export default function ComponentsPage() {
 
       <Section title={copy.dev.sections.dialog}>
         <DialogDemo />
+      </Section>
+
+      <Section title={copy.dev.sections.lunaCards}>
+        {lunaRoles.map((role) => (
+          <RoleCard key={role} role={role} pack={['Lucía', 'Dani']} headingLevel={2} />
+        ))}
       </Section>
     </Screen>
   );

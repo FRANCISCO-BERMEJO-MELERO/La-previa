@@ -626,6 +626,64 @@ export const copy = {
     resultPill: 'Gana la partida',
   },
 
+  lunaLlena: {
+    roles: {
+      wolf: {
+        name: 'Lobo',
+        effect:
+          'Cada noche elegís entre los lobos a quién devorar. De día, disimula y que ahorquen a otro.',
+        art: 'Cabeza de lobo bajo la luna',
+      },
+      villager: {
+        name: 'Aldeano',
+        effect:
+          'No tienes poderes. Tu arma es hablar: descubre a los lobos y convence al resto de a quién ahorcar.',
+        art: 'Aldeano con sombrero de paja',
+      },
+      seer: {
+        name: 'Vidente',
+        effect:
+          'Cada noche eliges a un jugador y descubres si es lobo. Úsalo con cabeza: si te delatas, eres la siguiente cena.',
+        art: 'Bola de cristal con un ojo',
+      },
+      protector: {
+        name: 'Protector',
+        effect:
+          'Cada noche proteges a un jugador del ataque de los lobos. Puedes protegerte a ti, pero no a la misma persona dos noches seguidas.',
+        art: 'Escudo',
+      },
+      hunter: {
+        name: 'Cazador',
+        effect:
+          'Si mueres, de noche o en la horca, disparas antes de caer y te llevas contigo a quien elijas.',
+        art: 'Punto de mira',
+      },
+      jester: {
+        name: 'Bufón',
+        effect:
+          'Ganas tú, y solo tú, si el pueblo te ahorca. Hazte el sospechoso sin que se note. Si te matan los lobos, pierdes.',
+        art: 'Bufón con gorro de tres puntas',
+      },
+      cupid: {
+        name: 'Cupido',
+        effect:
+          'La primera noche eliges a dos enamorados. Si uno muere, el otro muere con él. Después eres un aldeano más.',
+        art: 'Corazón atravesado por una flecha',
+      },
+    },
+    teams: {
+      village: 'Bando del pueblo',
+      wolves: 'Bando de los lobos',
+      solo: 'Juegas solo',
+    },
+    card: {
+      youAre: 'Eres',
+      pack: 'Tu manada',
+      packNames: (names: readonly string[]) =>
+        names.length === 0 ? 'Cazas solo: no hay más lobos.' : joinNames(names),
+    },
+  },
+
   // Solo para la página interna de componentes, que no existe en producción.
   dev: {
     title: 'Componentes',
@@ -638,6 +696,7 @@ export const copy = {
       waiting: 'Caja de espera',
       fields: 'Campos de texto',
       dialog: 'Diálogo',
+      lunaCards: 'Cartas de Luna llena',
     },
     disabled: 'Desactivado',
     openDialog: 'Abrir diálogo',

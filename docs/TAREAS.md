@@ -301,7 +301,7 @@ Aceptación: `npm run test:db` pasa desde cero.
 
 ## Fase 30 · Luna llena: cartas, sala y noche
 
-- [ ] 30.1 Las siete ilustraciones SVG y la carta de rol, también en `/dev/componentes`
+- [x] 30.1 Las siete ilustraciones SVG y la carta de rol, también en `/dev/componentes`
 - [ ] 30.2 Textos del juego: roles, bandos, efectos y guion del narrador
 - [ ] 30.3 Esquema `zod` de la variante, acciones, errores y `viewFor`, con tests unitarios
 - [ ] 30.4 Sala de espera: lobos, roles opcionales, composición y aviso
