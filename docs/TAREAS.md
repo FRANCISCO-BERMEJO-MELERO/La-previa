@@ -329,7 +329,7 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 - [ ] 32.2 Repaso a 360, 390 y 430 px con 16 jugadores y nombres de 14
 - [ ] 32.3 Repaso de accesibilidad de las pantallas nuevas
 - [ ] 32.4 Revisión final contra las secciones 1 a 10 del plan y su "Fuera de alcance"
-- [ ] 32.5 `README.md` y, si hace falta, `docs/DESPLIEGUE.md`
+- [x] 32.5 `README.md` y, si hace falta, `docs/DESPLIEGUE.md`
 - [ ] 32.6 Ampliar `docs/INFORME.md`
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.

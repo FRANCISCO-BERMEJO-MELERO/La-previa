@@ -22,7 +22,7 @@ npx supabase db push
 ```
 
 - El `ref` es la parte de la URL del proyecto: `https://supabase.com/dashboard/project/<ref>`.
-- `db push` pide la contraseña del paso 1.1 y aplica todas las migraciones de `supabase/migrations`: tablas con RLS, la única política de lectura de `rooms`, `rooms` en Realtime, las funciones de los seis juegos, el tiempo para votar, los avatares, las 300 palabras en 15 temáticas, las 230 preguntas, los 120 dilemas y las 150 tarjetas. No hace falta activar ninguna extensión de Postgres.
+- `db push` pide la contraseña del paso 1.1 y aplica todas las migraciones de `supabase/migrations`: tablas con RLS, la única política de lectura de `rooms`, `rooms` en Realtime, las funciones de los siete juegos (Luna llena no trae contenido: solo sus tablas y funciones), el tiempo para votar, los avatares, las 300 palabras en 15 temáticas, las 230 preguntas, los 120 dilemas y las 150 tarjetas. No hace falta activar ninguna extensión de Postgres.
 - Comprueba que están todas: `npx supabase migration list` debe mostrar cada migración en las columnas _Local_ y _Remote_.
 
 **Nunca** ejecutes `npx supabase db reset --linked`: borra la base de datos de producción.
