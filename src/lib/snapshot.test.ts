@@ -301,8 +301,8 @@ describe('parseSnapshot de Luna llena', () => {
         inLuna({
           phase: 'execution',
           public_votes: {
-            kind: 'verdict',
-            votes: [{ voter_id: lunaIds.lucia, target_id: null, condemn: true }],
+            kind: 'accuse',
+            votes: [{ voter_id: lunaIds.lucia, target_id: lunaIds.marta }],
           },
         }),
       ),

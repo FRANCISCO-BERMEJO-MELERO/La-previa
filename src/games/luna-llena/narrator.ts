@@ -21,14 +21,13 @@ export function narratorAction(game: LunaLlenaGameState): NarratorAction | null 
       return { step: 'skip_hunter', label: labels.skipHunter };
     case 'mayor':
     case 'voting':
-    case 'verdict':
       return { step: 'close_vote', label: labels.closeVote };
     case 'day':
       return { step: 'continue', label: labels.openVoting };
     case 'defense':
       return {
         step: 'continue',
-        label: game.accused_id ? labels.toVerdict : labels.startNight,
+        label: game.accused_id ? labels.toGallows : labels.startNight,
       };
     case 'finished':
       return null;

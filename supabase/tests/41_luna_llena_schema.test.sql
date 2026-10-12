@@ -99,11 +99,11 @@ select throws_ok(
 );
 select throws_ok(
   $$insert into public.luna_votes (game_id, day, kind, voter_id, target_id) values ('20000000-0000-0000-0000-000000000001', 1, 'verdict', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001')$$,
-  '23514', null, 'el veredicto no lleva objetivo'
+  '23514', null, 'no hay votos de veredicto'
 );
-select lives_ok(
-  $$insert into public.luna_votes (game_id, day, kind, voter_id, condemn) values ('20000000-0000-0000-0000-000000000001', 1, 'verdict', '00000000-0000-0000-0000-000000000002', true)$$,
-  'sino condenar o salvar'
+select throws_ok(
+  $$update public.games set phase = 'verdict' where id = '20000000-0000-0000-0000-000000000001'$$,
+  '23514', null, 'ni fase de veredicto'
 );
 
 select * from finish();

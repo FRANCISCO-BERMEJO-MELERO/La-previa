@@ -217,10 +217,6 @@ export function lunaLlenaVote(roomId: string, targetId: string, deps = defaultDe
   return callForSnapshot(deps, 'luna_llena_vote', { room_id: roomId, target_id: targetId });
 }
 
-export function lunaLlenaVerdict(roomId: string, condemn: boolean, deps = defaultDeps) {
-  return callForSnapshot(deps, 'luna_llena_verdict', { room_id: roomId, condemn });
-}
-
 export function lunaLlenaCloseVote(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'luna_llena_close_vote', { room_id: roomId });
 }

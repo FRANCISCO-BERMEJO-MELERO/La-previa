@@ -16,16 +16,15 @@ describe('narratorAction', () => {
     ['mayor', 'close_vote', labels.closeVote],
     ['day', 'continue', labels.openVoting],
     ['voting', 'close_vote', labels.closeVote],
-    ['verdict', 'close_vote', labels.closeVote],
     ['execution', 'continue', labels.next],
   ] as const)('en %s el botón hace %s', (phase, step, label) => {
     expect(narratorAction(lunaState({ phase }))).toEqual({ step, label });
   });
 
-  it('en la defensa, con acusado se pasa al veredicto y sin él cae la noche', () => {
+  it('en la defensa, con acusado se le ahorca y sin él cae la noche', () => {
     expect(narratorAction(lunaState({ phase: 'defense', accused_id: lunaIds.lucia }))).toEqual({
       step: 'continue',
-      label: labels.toVerdict,
+      label: labels.toGallows,
     });
     expect(narratorAction(lunaState({ phase: 'defense', accused_id: null }))).toEqual({
       step: 'continue',

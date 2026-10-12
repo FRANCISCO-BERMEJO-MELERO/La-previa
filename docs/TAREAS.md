@@ -341,3 +341,4 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 ## Descubierto por el camino
 
 - [x] D.1 (para 5.1 y 5.5) Ajustar el tamaño de la palabra y de los titulares a su longitud: a 360 px una palabra de 6 letras en `text-display-lg` ya no cabe en la tarjeta protagonista. La `Card` parte palabras para no desbordar, pero partir la palabra secreta queda mal.
+- [x] D.2 (Luna llena, a petición de Fran) Quitar la segunda votación del juicio: el acusado dice sus últimas palabras y el narrador lo ahorca

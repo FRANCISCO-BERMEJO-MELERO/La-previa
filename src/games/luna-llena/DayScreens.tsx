@@ -154,7 +154,7 @@ export function DefenseScreen({ accused, accusedId, isMe, groups, ...chrome }: D
 }
 
 /** Quién votó a quién, agrupado por votado; el destacado, en `tomato`. */
-function VoteGroupList({
+export function VoteGroupList({
   groups,
   highlightId,
 }: {

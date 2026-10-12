@@ -176,9 +176,7 @@ export const lunaNarrationKeys = [
   'voting',
   'defense',
   'no_accused',
-  'verdict',
   'executed',
-  'spared',
   'win_village',
   'win_wolves',
   'win_jester',
@@ -199,7 +197,6 @@ const lunaLlenaGameSchema = z.object({
     'day',
     'voting',
     'defense',
-    'verdict',
     'execution',
     'finished',
   ]),
@@ -231,7 +228,7 @@ const lunaLlenaGameSchema = z.object({
     lover_id: id.nullable(),
     chosen_lovers: z.array(id).nullable(),
     last_protected_id: id.nullable(),
-    vote: z.object({ target_id: id.nullable(), condemn: z.boolean().nullable() }).nullable(),
+    vote: z.object({ target_id: id }).nullable(),
   }),
   announcement: z
     .object({
@@ -249,10 +246,8 @@ const lunaLlenaGameSchema = z.object({
     .nullable(),
   public_votes: z
     .object({
-      kind: z.enum(['mayor', 'accuse', 'verdict']),
-      votes: z.array(
-        z.object({ voter_id: id, target_id: id.nullable(), condemn: z.boolean().nullable() }),
-      ),
+      kind: z.enum(['mayor', 'accuse']),
+      votes: z.array(z.object({ voter_id: id, target_id: id })),
     })
     .nullable(),
   narration: z.object({

@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(47);
+select plan(41);
 
 -- Utilidades ------------------------------------------------------------------------------
 
@@ -73,14 +73,6 @@ create function pg_temp.vote(n integer, target integer) returns jsonb language s
   select pg_temp.call(n, pg_temp.vote_sql(target))
 $$;
 
-create function pg_temp.verdict_sql(condemn boolean) returns text language sql stable as $$
-  select format('select public.luna_llena_verdict(%L, %L)', pg_temp.room(), condemn)
-$$;
-
-create function pg_temp.verdict(n integer, condemn boolean) returns jsonb language sql as $$
-  select pg_temp.call(n, pg_temp.verdict_sql(condemn))
-$$;
-
 create function pg_temp.close_sql() returns text language sql stable as $$
   select format('select public.luna_llena_close_vote(%L)', pg_temp.room())
 $$;
@@ -126,7 +118,6 @@ select pg_temp.as_admin();
 select pg_temp.open('mayor', 1);
 select is(pg_temp.view(3) -> 'narration', '{"key": "mayor", "params": {}}'::jsonb, 'el narrador pide un alcalde');
 select pg_temp.as_user(3);
-select throws_ok(format('select public.luna_llena_verdict(%L, true)', pg_temp.room()), 'P0001', 'invalid_phase', 'eligiendo alcalde no hay veredicto');
 select lives_ok(pg_temp.vote_sql(3), 'para alcalde uno puede votarse a sí mismo');
 select throws_ok(pg_temp.vote_sql(6), 'P0001', 'already_voted', 'y no vota dos veces');
 select pg_temp.as_admin();
@@ -135,7 +126,7 @@ select pg_temp.vote(n, 6) from generate_series(1, 2) n;
 select pg_temp.vote(n, 6) from generate_series(4, 6) n;
 select pg_temp.vote(7, 7);
 select is(pg_temp.view(7) -> 'public_votes', 'null'::jsonb, 'mientras se vota no se ven los votos');
-select is(pg_temp.view(7) #> '{my,vote}', jsonb_build_object('target_id', pg_temp.u(7), 'condemn', null), 'solo el propio');
+select is(pg_temp.view(7) #> '{my,vote}', jsonb_build_object('target_id', pg_temp.u(7)), 'solo el propio');
 select is(
   (select count(*) from jsonb_array_elements(pg_temp.view(7) -> 'participants') p where (p ->> 'has_acted')::boolean),
   7::bigint,
@@ -162,48 +153,37 @@ select is(pg_temp.view(3) -> 'public_votes', 'null'::jsonb, 'y los votos del alc
 select pg_temp.as_user(6);
 select throws_ok(pg_temp.vote_sql(6), 'P0001', 'invalid_target', 'nadie se acusa a sí mismo');
 select pg_temp.as_admin();
-select pg_temp.vote(6, 5);
+select pg_temp.vote(6, 8);
 select pg_temp.vote(7, 4);
 select pg_temp.close();
 
 select is(pg_temp.phase(), 'defense', 'forzada, se pasa a la defensa');
-select is((pg_temp.state()).accused_id, pg_temp.u(5), 'el voto doble del alcalde decide la acusación');
+select is((pg_temp.state()).accused_id, pg_temp.u(8), 'el voto doble del alcalde decide la acusación');
 select is(
   pg_temp.view(3) -> 'public_votes',
   jsonb_build_object('kind', 'accuse', 'votes', jsonb_build_array(
-    jsonb_build_object('voter_id', pg_temp.u(6), 'target_id', pg_temp.u(5), 'condemn', null),
-    jsonb_build_object('voter_id', pg_temp.u(7), 'target_id', pg_temp.u(4), 'condemn', null)
+    jsonb_build_object('voter_id', pg_temp.u(6), 'target_id', pg_temp.u(8)),
+    jsonb_build_object('voter_id', pg_temp.u(7), 'target_id', pg_temp.u(4))
   )),
   'en la defensa se ve quién votó a quién'
 );
-select is(pg_temp.view(3) -> 'narration', '{"key": "defense", "params": {"name": "Jugador 5"}}'::jsonb, 'y el acusado toma la palabra');
+select is(pg_temp.view(3) -> 'narration', '{"key": "defense", "params": {"name": "Jugador 8"}}'::jsonb, 'y el acusado tiene sus últimas palabras');
 
--- Veredicto empatado: se salva -----------------------------------------------------------------
+-- Sin segunda votación: el acusado sube a la horca ------------------------------------------------
 
-select pg_temp.next();
-select is(pg_temp.phase(), 'verdict', 'tras la defensa, el veredicto');
-select pg_temp.as_user(5);
-select throws_ok(pg_temp.verdict_sql(false), 'P0001', 'is_accused', 'el acusado no vota');
-select pg_temp.as_user(1);
-select throws_ok(format('select public.luna_llena_verdict(%L, null)', pg_temp.room()), 'P0001', 'invalid_option', 'condenar o salvar, sin término medio');
-select throws_ok(pg_temp.vote_sql(3), 'P0001', 'invalid_phase', 'en el veredicto no se acusa');
+select pg_temp.as_user(3);
+select throws_ok(pg_temp.vote_sql(4), 'P0001', 'invalid_phase', 'en la defensa ya no se vota');
 select pg_temp.as_admin();
-
-select pg_temp.verdict(1, true);
-select pg_temp.verdict(2, true);
-select pg_temp.verdict(4, true);
-select pg_temp.verdict(8, true);
-select pg_temp.verdict(3, false);
-select pg_temp.verdict(7, false);
-select is(pg_temp.phase(), 'verdict', 'falta el alcalde');
-select is(pg_temp.view(7) -> 'public_votes', 'null'::jsonb, 'y no se ven los votos');
-select pg_temp.verdict(6, false);
-
-select is(pg_temp.phase(), 'execution', 'sin contar al acusado, al votar el último se cierra');
-select is((pg_temp.state()).announcement, '{"kind": "trial", "deaths": [], "spared": "Jugador 5"}'::jsonb, 'cuatro contra dos dobles: empate y se salva');
-select is(pg_temp.view(3) -> 'narration', '{"key": "spared", "params": {"name": "Jugador 5"}}'::jsonb, 'el narrador lo cuenta');
-select is(pg_temp.view(3) #>> '{public_votes,kind}', 'verdict', 'y se ve quién votó qué');
-select is(jsonb_array_length(pg_temp.view(3) #> '{public_votes,votes}'), 7, 'todos menos el acusado');
+select pg_temp.next();
+select is(pg_temp.phase(), 'execution', 'tras la defensa, el narrador lo ahorca');
+select is(
+  (select jsonb_agg(jsonb_build_array(d ->> 'name', d ->> 'cause')) from jsonb_array_elements((pg_temp.state()).announcement -> 'deaths') d),
+  '[["Jugador 8", "hanged"]]'::jsonb,
+  'el acusado muere ahorcado'
+);
+select is(pg_temp.view(3) -> 'narration', '{"key": "executed", "params": {"name": "Jugador 8", "role": "villager"}}'::jsonb, 'el narrador lo cuenta');
+select is(pg_temp.view(3) #>> '{public_votes,kind}', 'accuse', 'y se ve otra vez quién votó a quién');
+select is(jsonb_array_length(pg_temp.view(3) #> '{public_votes,votes}'), 2, 'con todos los votos de la acusación');
 
 select pg_temp.next();
 select is(pg_temp.phase(), 'night', 'y llega la noche');
@@ -218,12 +198,12 @@ select is(pg_temp.view(3) -> 'public_votes', '{"kind": "accuse", "votes": []}'::
 
 select pg_temp.open('voting', 3);
 select pg_temp.vote(1, 7);
-select pg_temp.vote(2, 8);
+select pg_temp.vote(2, 6);
 select pg_temp.close();
 select is((pg_temp.state()).accused_id, null::uuid, 'con empate tampoco');
 
 select pg_temp.open('voting', 4);
-select pg_temp.vote(6, 8);
+select pg_temp.vote(6, 3);
 select pg_temp.vote(1, 7);
 select pg_temp.vote(2, 7);
 select pg_temp.close();
@@ -242,17 +222,15 @@ select pg_temp.close();
 select ok(private.luna_is_alive((pg_temp.game()).id, (pg_temp.state()).mayor_id), 'si nadie vota, el azar elige entre los vivos');
 select is(pg_temp.view(3) #> '{public_votes}', 'null'::jsonb, 'sin votos que enseñar en el debate');
 
--- El voto doble condena al bufón, que gana ----------------------------------------------------
+-- El bufón acusado sube a la horca y gana ----------------------------------------------------
 
-update public.luna_state set mayor_id = pg_temp.u(6), accused_id = pg_temp.u(5) where game_id = (pg_temp.game()).id;
-select pg_temp.open('verdict', 7);
-select pg_temp.verdict(6, true);
-select pg_temp.verdict(1, false);
-select pg_temp.close();
+update public.luna_state set accused_id = pg_temp.u(5) where game_id = (pg_temp.game()).id;
+select pg_temp.open('defense', 7);
+select pg_temp.next();
 select is(
   (select jsonb_agg(d ->> 'cause') from jsonb_array_elements((pg_temp.state()).announcement -> 'deaths') d),
   '["hanged"]'::jsonb,
-  'dos contra uno: el bufón sube a la horca'
+  'el bufón acusado sube a la horca'
 );
 select is(pg_temp.view(3) -> 'narration', '{"key": "executed", "params": {"name": "Jugador 5", "role": "jester"}}'::jsonb, 'el narrador lo cuenta');
 select pg_temp.next();

@@ -108,7 +108,7 @@ begin
   if v -> 'result' <> 'null' then
     found := array_append(found, 'resultado');
   end if;
-  if v ->> 'phase' in ('roles', 'night', 'dawn', 'mayor', 'voting', 'verdict') and v -> 'public_votes' <> 'null' then
+  if v ->> 'phase' in ('roles', 'night', 'dawn', 'mayor', 'voting') and v -> 'public_votes' <> 'null' then
     found := array_append(found, 'votos sin cerrar');
   end if;
   return found;

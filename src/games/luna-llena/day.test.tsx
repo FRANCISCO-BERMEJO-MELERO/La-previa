@@ -63,7 +63,7 @@ describe('elección de alcalde', () => {
       phase: 'mayor',
       day: 1,
       participants: participants.map((p, index) => ({ ...p, has_acted: index < 5 })),
-      my: lunaMy({ vote: { target_id: ids.marta, condemn: null } }),
+      my: lunaMy({ vote: { target_id: ids.marta } }),
     });
     expect(screen.getByText(texts.vote.voted('Marta'))).toBeInTheDocument();
     expect(screen.getByText(texts.vote.pending(1))).toBeInTheDocument();
@@ -80,8 +80,8 @@ describe('debate y acusación', () => {
       public_votes: {
         kind: 'mayor',
         votes: [
-          { voter_id: ids.lucia, target_id: ids.lucia, condemn: null },
-          { voter_id: ids.fran, target_id: ids.lucia, condemn: null },
+          { voter_id: ids.lucia, target_id: ids.lucia },
+          { voter_id: ids.fran, target_id: ids.lucia },
         ],
       },
     });
@@ -117,9 +117,9 @@ describe('debate y acusación', () => {
 
 describe('defensa', () => {
   const votes = [
-    { voter_id: ids.lucia, target_id: ids.marta, condemn: null },
-    { voter_id: ids.fran, target_id: ids.dani, condemn: null },
-    { voter_id: ids.alvaro, target_id: ids.dani, condemn: null },
+    { voter_id: ids.lucia, target_id: ids.marta },
+    { voter_id: ids.fran, target_id: ids.dani },
+    { voter_id: ids.alvaro, target_id: ids.dani },
   ];
 
   it('agrupa los votos por acusado contando doble el del alcalde', () => {
@@ -147,7 +147,7 @@ describe('defensa', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(texts.defense.speak('Dani'))).toBeInTheDocument();
     expect(screen.getByText('Fran y Álvaro')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: texts.narrator.toVerdict }));
+    fireEvent.click(screen.getByRole('button', { name: texts.narrator.toGallows }));
     expect(mocks.lunaLlenaContinue).toHaveBeenCalled();
   });
 

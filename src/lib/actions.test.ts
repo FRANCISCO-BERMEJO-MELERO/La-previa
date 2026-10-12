@@ -23,7 +23,6 @@ import {
   lunaLlenaNightAction,
   lunaLlenaSkipHunter,
   lunaLlenaStart,
-  lunaLlenaVerdict,
   lunaLlenaVote,
   palabrasProhibidasForbidden,
   palabrasProhibidasGuessed,
@@ -154,7 +153,6 @@ describe('acciones', () => {
     await lunaLlenaNightAction('sala', 'u2', 'u3', d);
     await lunaLlenaCloseNight('sala', d);
     await lunaLlenaVote('sala', 'u4', d);
-    await lunaLlenaVerdict('sala', false, d);
     await lunaLlenaCloseVote('sala', d);
     await lunaLlenaHunterShot('sala', 'u5', d);
     await lunaLlenaSkipHunter('sala', d);
@@ -166,7 +164,6 @@ describe('acciones', () => {
       ['luna_llena_night_action', { room_id: 'sala', target_id: 'u2', target2_id: 'u3' }],
       ['luna_llena_close_night', { room_id: 'sala' }],
       ['luna_llena_vote', { room_id: 'sala', target_id: 'u4' }],
-      ['luna_llena_verdict', { room_id: 'sala', condemn: false }],
       ['luna_llena_close_vote', { room_id: 'sala' }],
       ['luna_llena_hunter_shot', { room_id: 'sala', target_id: 'u5' }],
       ['luna_llena_skip_hunter', { room_id: 'sala' }],
@@ -178,7 +175,6 @@ describe('acciones', () => {
       'invalid_config',
       'already_acted',
       'not_hunter',
-      'is_accused',
       'same_as_last_night',
     ] as const) {
       const d = deps({ data: null, error: { message: code } });

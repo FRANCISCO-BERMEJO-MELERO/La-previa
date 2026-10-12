@@ -54,7 +54,10 @@ async function pick(page: Page, target: string): Promise<void> {
 
 async function act(page: Page, target: string): Promise<void> {
   await pick(page, target);
-  await page.getByRole('button', { name: 'Confirmar' }).click();
+  const confirm = page.getByRole('button', { name: 'Confirmar' });
+  await confirm.click();
+  // La acción ha llegado cuando el botón desaparece: ya no hay nada que confirmar.
+  await expect(confirm).toBeHidden();
 }
 
 async function voteFor(page: Page, target: string): Promise<void> {
@@ -129,7 +132,7 @@ test('32.2 y 32.3 · Luna llena con 16 jugadores y nombres de 14 a 360, 390 y 43
   await fits(pageOf(players, v3), 'espectador');
   await host.getByRole('button', { name: 'Continuar' }).click();
 
-  // Alcalde, debate, acusación con muchos votos, veredicto y ejecución.
+  // Alcalde, debate, acusación con muchos votos, defensa y ejecución.
   await expect(
     pageOf(players, v1).getByRole('heading', { name: '¿Quién es el alcalde?' }),
   ).toBeVisible();
@@ -147,13 +150,8 @@ test('32.2 y 32.3 · Luna llena con 16 jugadores y nombres de 14 a 360, 390 y 43
   for (const name of alive) await voteFor(pageOf(players, name), name === v4 ? v5 : v4);
   await expect(pageOf(players, v1).getByText(`Acusado: ${v4}`)).toBeVisible();
   await fits(pageOf(players, v1), 'defensa con muchos votos');
-  await host.getByRole('button', { name: 'Pasar al veredicto' }).click();
-  await expect(pageOf(players, v1).getByRole('button', { name: 'Condenar' })).toBeVisible();
-  await fits(pageOf(players, v1), 'veredicto');
-  await fits(pageOf(players, v4), 'veredicto del acusado');
-  for (const name of alive.filter((other) => other !== v4)) {
-    await pageOf(players, name).getByRole('button', { name: 'Condenar' }).click();
-  }
+  await fits(pageOf(players, v4), 'últimas palabras del acusado');
+  await host.getByRole('button', { name: 'A la horca' }).click();
   await expect(pageOf(players, v1).getByRole('heading', { name: 'A la horca' })).toBeVisible();
   await fits(pageOf(players, v1), 'ejecución');
 

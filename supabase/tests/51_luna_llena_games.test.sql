@@ -80,10 +80,6 @@ create function pg_temp.vote(n integer, target integer) returns jsonb language s
   select pg_temp.call(n, format('select public.luna_llena_vote(%L, %L)', pg_temp.room(), pg_temp.u(target)))
 $$;
 
-create function pg_temp.verdict(n integer, condemn boolean) returns jsonb language sql as $$
-  select pg_temp.call(n, format('select public.luna_llena_verdict(%L, %L)', pg_temp.room(), condemn))
-$$;
-
 create function pg_temp.shoot(n integer, target integer) returns jsonb language sql as $$
   select pg_temp.call(n, format('select public.luna_llena_hunter_shot(%L, %L)', pg_temp.room(), pg_temp.u(target)))
 $$;
@@ -143,7 +139,7 @@ begin
   if v -> 'spectator' <> 'null' or v -> 'result' <> 'null' then
     found := array_append(found, 'espectador o resultado');
   end if;
-  if v ->> 'phase' in ('roles', 'night', 'dawn', 'mayor', 'voting', 'verdict') and v -> 'public_votes' <> 'null' then
+  if v ->> 'phase' in ('roles', 'night', 'dawn', 'mayor', 'voting') and v -> 'public_votes' <> 'null' then
     found := array_append(found, 'votos sin cerrar');
   end if;
   return found;
@@ -159,7 +155,6 @@ declare
     when 'hunter' then array['hunter_shot', 'skip_hunter']
     when 'mayor' then array['vote', 'close_vote']
     when 'voting' then array['vote', 'close_vote']
-    when 'verdict' then array['verdict', 'close_vote']
     when 'finished' then array[]::text[]
     else array['continue']
   end;
@@ -172,7 +167,6 @@ begin
       ('night_action', format('select public.luna_llena_night_action(%L, %L, null)', pg_temp.room(), pg_temp.u(9))),
       ('close_night', format('select public.luna_llena_close_night(%L)', pg_temp.room())),
       ('vote', format('select public.luna_llena_vote(%L, %L)', pg_temp.room(), pg_temp.u(9))),
-      ('verdict', format('select public.luna_llena_verdict(%L, true)', pg_temp.room())),
       ('close_vote', format('select public.luna_llena_close_vote(%L)', pg_temp.room())),
       ('hunter_shot', format('select public.luna_llena_hunter_shot(%L, %L)', pg_temp.room(), pg_temp.u(9))),
       ('skip_hunter', format('select public.luna_llena_skip_hunter(%L)', pg_temp.room()))
@@ -246,9 +240,7 @@ select pg_temp.audit();
 select pg_temp.vote(n, 1) from generate_series(3, 10) n;
 select pg_temp.audit();
 select pg_temp.next();
-select pg_temp.verdict(n, true) from generate_series(2, 9) n;
 select pg_temp.audit();
-select pg_temp.verdict(10, true);
 select pg_temp.audit();
 select is(pg_temp.alive(), array[2, 3, 4, 5, 6, 7, 8, 9, 10], 'el pueblo ahorca a un lobo');
 
@@ -318,9 +310,7 @@ select pg_temp.vote(9, 7);
 select is((pg_temp.state()).accused_id, pg_temp.u(4), 'el voto doble del alcalde decide la acusación');
 select pg_temp.audit();
 select pg_temp.next();
-select pg_temp.verdict(n, true) from unnest(array[1, 2, 9, 10]) n;
-select pg_temp.verdict(n, false) from unnest(array[5, 6, 7, 8]) n;
-select is(pg_temp.alive(), array[1, 2, 5, 6, 7, 8, 9, 10], 'y la condena, cinco contra cuatro');
+select is(pg_temp.alive(), array[1, 2, 5, 6, 7, 8, 9, 10], 'y sube a la horca sin segunda votación');
 select pg_temp.audit();
 
 -- Noche 2: los lobos matan al cazador, que se lleva a u8.
@@ -343,8 +333,6 @@ select pg_temp.vote(6, 7);
 select pg_temp.vote(7, 6);
 select pg_temp.vote(9, 6);
 select pg_temp.next();
-select pg_temp.verdict(n, true) from unnest(array[1, 2, 10]) n;
-select pg_temp.verdict(n, false) from unnest(array[6, 7]) n;
 select is(pg_temp.alive(), array[1, 2, 6, 7, 10], 'ahorcado u9');
 select pg_temp.audit();
 
@@ -380,8 +368,6 @@ select pg_temp.vote(n, 6) from generate_series(1, 5) n;
 select pg_temp.vote(n, 6) from generate_series(7, 9) n;
 select pg_temp.audit();
 select pg_temp.next();
-select pg_temp.verdict(n, true) from generate_series(1, 5) n;
-select pg_temp.verdict(n, true) from generate_series(7, 9) n;
 select pg_temp.audit();
 select pg_temp.next();
 select is((pg_temp.phase(), (pg_temp.state()).winner)::text, '(finished,jester)', 'el pueblo ahorca al bufón y gana él solo');

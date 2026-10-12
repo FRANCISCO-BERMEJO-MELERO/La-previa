@@ -42,7 +42,7 @@ describe('copy', () => {
       'Amanece con malas noticias. Han muerto Marta y Luis.',
     );
     expect(script.defense('Fran')).toBe(
-      'El pueblo acusa a Fran. Fran, tienes la palabra: defiéndete.',
+      'El pueblo acusa a Fran. Fran, tienes la palabra: son tus últimas palabras.',
     );
     expect(script.hunterShot('Dani', spokenRoles.wolf)).toBe(
       'El cazador dispara. Dani cae con él. Era lobo.',

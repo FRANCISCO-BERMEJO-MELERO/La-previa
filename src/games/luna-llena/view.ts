@@ -11,14 +11,12 @@ export type LunaLlenaView =
   | 'mayor' // elegir alcalde
   | 'day' // móviles boca abajo
   | 'voting' // acusar
-  | 'defense' // quién votó a quién
-  | 'verdict' // condenar o salvar
-  | 'verdict_accused' // el acusado espera el veredicto
-  | 'execution' // el veredicto y su resultado
+  | 'defense' // quién votó a quién y las últimas palabras del acusado
+  | 'execution' // quién sube a la horca
   | 'spectator' // los muertos lo ven todo
   | 'result'; // bando ganador y todos los roles
 
-export function viewFor(game: LunaLlenaGameState, myId: string): LunaLlenaView {
+export function viewFor(game: LunaLlenaGameState): LunaLlenaView {
   if (game.phase === 'finished') return 'result';
   if (!game.my.is_participant) return 'late';
   // El cazador ya está muerto cuando dispara.
@@ -37,7 +35,5 @@ export function viewFor(game: LunaLlenaGameState, myId: string): LunaLlenaView {
       return game.phase;
     case 'hunter':
       return 'hunter_wait';
-    case 'verdict':
-      return game.accused_id === myId ? 'verdict_accused' : 'verdict';
   }
 }

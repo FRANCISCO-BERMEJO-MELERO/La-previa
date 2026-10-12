@@ -59,7 +59,10 @@ async function act(page: Page, target: string): Promise<void> {
     .getByRole('button', { name: new RegExp(`^\\S*\\s*${target}`) })
     .first()
     .click();
-  await page.getByRole('button', { name: 'Confirmar' }).click();
+  const confirm = page.getByRole('button', { name: 'Confirmar' });
+  await confirm.click();
+  // La acción ha llegado cuando el botón desaparece: ya no hay nada que confirmar.
+  await expect(confirm).toBeHidden();
 }
 
 test('30 · seis jugadores: reparto, una noche y el amanecer', async ({ browser }) => {
@@ -125,7 +128,7 @@ async function allSee(players: Players, names: readonly string[], text: string |
   }
 }
 
-/** Un día entero: todos eligen alcalde, acusan y condenan a quien se diga. */
+/** Un día entero: todos eligen alcalde y acusan a quien se diga, que sube a la horca. */
 async function hang(
   players: Players,
   host: Page,
@@ -142,12 +145,13 @@ async function hang(
     await voteFor(pageOf(players, name), target);
   }
   await allSee(players, alive, `Acusado: ${accused}`);
-  await narrate(host, 'Pasar al veredicto');
-  const voters = alive.filter((other) => other !== accused);
-  for (const name of voters) {
-    await pageOf(players, name).getByRole('button', { name: 'Condenar' }).click();
-  }
-  await allSee(players, voters, 'A la horca');
+  // Sin segunda votación: tras sus últimas palabras, el narrador lo ahorca.
+  await narrate(host, 'A la horca');
+  await allSee(
+    players,
+    alive.filter((other) => other !== accused),
+    'A la horca',
+  );
 }
 
 test('31.7 · partida completa con la composición recomendada para 6', async ({ browser }) => {

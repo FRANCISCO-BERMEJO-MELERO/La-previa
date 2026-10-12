@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(14);
+select plan(13);
 
 -- Utilidades ------------------------------------------------------------------------------
 
@@ -82,7 +82,6 @@ update public.luna_state set night = 2, day = 1 where game_id = (pg_temp.game())
 select is(pg_temp.reads('night'), '{"key": "night", "params": {}}'::jsonb, 'desde la segunda noche, el texto de siempre');
 select is(pg_temp.reads('day'), '{"key": "day", "params": {}}'::jsonb, 'un debate sin elección de alcalde ese día no lo anuncia');
 select is(pg_temp.reads('voting'), '{"key": "voting", "params": {}}'::jsonb, 'votar a quién se acusa');
-select is(pg_temp.reads('verdict'), '{"key": "verdict", "params": {}}'::jsonb, 'condenar o salvar');
 
 -- Muertes encadenadas -------------------------------------------------------------------------
 

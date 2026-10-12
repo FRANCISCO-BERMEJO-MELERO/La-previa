@@ -37,7 +37,6 @@ export const errorCodes = [
   'already_acted',
   'same_as_last_night',
   'not_hunter',
-  'is_accused',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -76,7 +75,6 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
   already_acted: 'Ya has hecho lo tuyo esta noche. Espera al amanecer.',
   same_as_last_night: 'Anoche ya protegiste a esa persona. Esta noche elige a otra.',
   not_hunter: 'Solo dispara el cazador. Espera a que elija.',
-  is_accused: 'Te están juzgando a ti, así que no votas. Espera el veredicto.',
   invalid_config:
     'Con esa composición no se puede jugar. Ajusta los lobos o los roles hasta que quede al menos un aldeano.',
   invalid_vote_seconds: 'El tiempo para votar es de 30, 60 o 90 segundos. Elige uno de esos.',
@@ -730,12 +728,10 @@ export const copy = {
       day: 'Móviles boca abajo. Tenéis que decidir a quién acusáis. Hablad.',
       voting: 'Se acabó la charla. Coged el móvil y votad a quién acusáis.',
       defense: (name: string) =>
-        `El pueblo acusa a ${name}. ${name}, tienes la palabra: defiéndete.`,
+        `El pueblo acusa a ${name}. ${name}, tienes la palabra: son tus últimas palabras.`,
       noAccused: 'El pueblo no se pone de acuerdo. Hoy no se ahorca a nadie.',
-      verdict: 'Habéis oído su defensa. ¿Condenar o salvar? Votad.',
       executed: (name: string, role: string) =>
         `El pueblo ha hablado. ${name} sube a la horca. Era ${role}.`,
-      spared: (name: string) => `El pueblo perdona a ${name}. Por ahora.`,
       winVillage: 'No queda ni un lobo. El pueblo puede dormir tranquilo.',
       winWolves: 'Los lobos ya son mayoría. El pueblo ha caído.',
       winJester: 'Habéis ahorcado al bufón, que es justo lo que quería. Gana él solo.',
@@ -815,10 +811,11 @@ export const copy = {
     vote: {
       mayorPill: 'Alcalde',
       mayorTitle: '¿Quién es el alcalde?',
-      mayorHint: 'Su voto valdrá doble al acusar y en el veredicto. Puedes votarte a ti.',
+      mayorHint: 'Su voto valdrá doble al acusar. Puedes votarte a ti.',
       accusePill: (day: number) => `Día ${String(day)}`,
       accuseTitle: '¿A quién acusáis?',
-      accuseHint: 'El más votado se defenderá. Con empate, hoy no se juzga a nadie.',
+      accuseHint:
+        'El más votado dirá sus últimas palabras y subirá a la horca. Con empate, hoy no se ahorca a nadie.',
       choose: 'Jugadores',
       submit: (name: string) => `Votar a ${name}`,
       choosePlayer: 'Elige a alguien',
@@ -841,8 +838,8 @@ export const copy = {
     defense: {
       pill: 'Defensa',
       accused: (name: string) => `Acusado: ${name}`,
-      speak: (name: string) => `${name} tiene la palabra.`,
-      youSpeak: 'Te acusan a ti. Defiéndete de palabra.',
+      speak: (name: string) => `${name} dice sus últimas palabras.`,
+      youSpeak: 'Te acusan a ti. Di tus últimas palabras: después, a la horca.',
       noAccused: 'Sin acusado',
       noAccusedText: 'Empate o nadie ha votado. Hoy no se ahorca a nadie.',
       votesTitle: 'Quién votó a quién',
@@ -850,25 +847,10 @@ export const copy = {
       double: '×2',
       noVotes: 'Nadie ha votado.',
     },
-    verdict: {
-      pill: 'Veredicto',
-      title: (name: string) => `¿Condenáis a ${name}?`,
-      hint: 'Con empate se salva. El voto del alcalde vale doble.',
-      condemn: 'Condenar',
-      spare: 'Salvar',
-      voted: (condemn: boolean) => (condemn ? 'Has votado condenar' : 'Has votado salvar'),
-      accusedTitle: 'Te están juzgando',
-      accusedText: 'No votas. Espera a que el pueblo decida.',
-    },
     execution: {
-      pill: 'Veredicto',
-      spared: (name: string) => `${name} se salva`,
-      sparedText: 'El pueblo ha decidido perdonarle. Por ahora.',
+      pill: 'Ejecución',
       hanged: 'A la horca',
       left: 'Se ha ido',
-      condemnVotes: 'Condenar',
-      spareVotes: 'Salvar',
-      nobody: 'Nadie',
     },
     hunter: {
       pill: 'Cazador',
@@ -908,7 +890,7 @@ export const copy = {
       skipHunter: 'Seguir sin disparo',
       closeVote: 'Cerrar la votación',
       openVoting: 'Abrir votación',
-      toVerdict: 'Pasar al veredicto',
+      toGallows: 'A la horca',
     },
     lobby: {
       wolves: 'Lobos',

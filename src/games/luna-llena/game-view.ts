@@ -144,23 +144,6 @@ export function voteGroups(
   return [...groups.values()].sort((a, b) => b.weight - a.weight);
 }
 
-/** Quién votó condenar y quién salvar, con el alcalde marcado. */
-export function verdictSides(
-  game: LunaLlenaGameState,
-  players: readonly LunaPlayer[],
-): { condemn: string[]; spare: string[] } | null {
-  if (game.public_votes?.kind !== 'verdict') return null;
-  const label = (voterId: string) =>
-    voterId === game.mayor_id
-      ? `${nameOf(players, voterId)} ${copy.lunaLlena.defense.double}`
-      : nameOf(players, voterId);
-  const votes = game.public_votes.votes;
-  return {
-    condemn: votes.filter((vote) => vote.condemn === true).map((vote) => label(vote.voter_id)),
-    spare: votes.filter((vote) => vote.condemn === false).map((vote) => label(vote.voter_id)),
-  };
-}
-
 export type RoleRow = { userId: string; name: string; role: LunaRole; alive: boolean };
 
 /** Cada jugador con su rol, en el orden de la partida. */

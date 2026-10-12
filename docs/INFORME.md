@@ -6,7 +6,7 @@ Estado al cerrar `docs/PLAN-5.md`, el 11 de octubre de 2026.
 
 ### Resumen
 
-Luna llena, el séptimo juego, está hecho de principio a fin: reparto con las siete cartas ilustradas, noche en la que todos tocan el móvil, amanecer, cazador, alcalde, debate, acusación, defensa, veredicto, espectadores y resultado, con el anfitrión narrando desde una caja con el guion. Todas las fases (27 a 32) están cerradas y sus tareas marcadas en `docs/TAREAS.md`, en 32 commits en la rama `feat/luna-llena`, que sale de `develop` después de fusionar en ella las ramas de los planes 3 y 4 (PR #2). No se ha subido la rama.
+Luna llena, el séptimo juego, está hecho de principio a fin: reparto con las siete cartas ilustradas, noche en la que todos tocan el móvil, amanecer, cazador, alcalde, debate, acusación, defensa con las últimas palabras del acusado, ahorcamiento, espectadores y resultado, con el anfitrión narrando desde una caja con el guion. Todas las fases (27 a 32) están cerradas y sus tareas marcadas en `docs/TAREAS.md`, en 32 commits en la rama `feat/luna-llena`, que sale de `develop` después de fusionar en ella las ramas de los planes 3 y 4 (PR #2). No se ha subido la rama.
 
 El plan numeraba sus fases de la 14 a la 19 y hablaba del quinto juego porque se escribió contando con que `develop` acababa en la fase 13. Aquí son las fases 27 a 32 y es el séptimo juego (DECISIONES 27.3).
 
@@ -37,7 +37,9 @@ No se ha publicado nada. Las 8 migraciones nuevas se aplican con `npx supabase d
 
 ### Decisiones que conviene conocer
 
-Están todas en `docs/DECISIONES.md` (entradas 27.3 a 32.4). Las que más afectan al juego:
+Están todas en `docs/DECISIONES.md` (entradas 27.3 a 32.4 y la del 12 de octubre). Las que más afectan al juego:
+
+- **Sin veredicto**, por decisión tuya tras revisar el juego: el más votado en la acusación dice sus últimas palabras y el narrador lo ahorca. Se quitó la segunda votación de condenar o salvar que pedía el plan.
 
 - **La composición la ve solo el anfitrión** en la sala de espera; los demás la descubren en el reparto. Es la recomendada mientras no la cambie.
 - **Narración compuesta**: cuando alguien muere de pena o se acaba de elegir alcalde, el narrador lee dos frases seguidas. El guion no tenía texto para quien se va de la sala y se añadió uno.
@@ -49,7 +51,7 @@ Están todas en `docs/DECISIONES.md` (entradas 27.3 a 32.4). Las que más afecta
 
 1. **El guion del narrador, leído en voz alta** (`src/lib/copy.ts`, `lunaLlena.script`). El tono es el del plan; lo que falta saber es si se lee con naturalidad y si las frases encadenadas ("Han muerto…" y después "… muere de pena") suenan bien.
 2. **El equilibrio del reparto recomendado.** Con 6 jugadores hay un solo lobo y ningún opcional, y la partida puede acabar en una noche y un día. Con 16 hay tres lobos contra trece. Conviene jugar alguna partida de cada tamaño antes de tocar la tabla, que está repetida en `private.luna_recommended_config` y en `src/games/luna-llena/composition.ts`.
-3. **Las pantallas sin maqueta**: noche, espera, amanecer, alcalde, debate, defensa, veredicto, ejecución, cazador, espectador y resultado. Están hechas con los componentes de siempre; mira sobre todo si la noche parece igual para todos vista de reojo, que es la idea del juego.
+3. **Las pantallas sin maqueta**: noche, espera, amanecer, alcalde, debate, defensa, ejecución, cazador, espectador y resultado. Están hechas con los componentes de siempre; mira sobre todo si la noche parece igual para todos vista de reojo, que es la idea del juego.
 4. **El gesto de la carta**: "Mantén para ver tu carta" en un móvil real, y si cuatro segundos son pocos o muchos.
 
 ## Mejoras tras probarla en grupo (fases 19 a 26)

@@ -171,13 +171,13 @@ select is(pg_temp.phase(), 'night', 'sin acusado, de la defensa se pasa a la noc
 select is((pg_temp.state()).night, 2, 'la siguiente');
 
 select pg_temp.set_phase('defense');
-update public.luna_state set accused_id = pg_temp.u(5) where game_id = (pg_temp.game()).id;
+update public.luna_state set accused_id = pg_temp.u(8) where game_id = (pg_temp.game()).id;
 select pg_temp.next();
-select is(pg_temp.phase(), 'verdict', 'con acusado, al veredicto');
-
-select pg_temp.announce('trial');
-select pg_temp.kill(8, 'hanged');
-select pg_temp.set_phase('execution');
+select is(
+  (pg_temp.phase(), pg_temp.deaths())::text,
+  '(execution,"[[8, ""villager"", ""hanged""]]")',
+  'con acusado, al continuar el narrador lo ahorca, sin segunda votación'
+);
 select pg_temp.next();
 select is(pg_temp.phase(), 'night', 'tras la ejecución, la noche');
 select is((pg_temp.state()).night, 3, 'la siguiente');

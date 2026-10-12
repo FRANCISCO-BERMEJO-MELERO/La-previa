@@ -45,12 +45,8 @@ export function narrationLines({ key, params }: LunaNarration): string[] {
       return [script.defense(name)];
     case 'no_accused':
       return [script.noAccused];
-    case 'verdict':
-      return [script.verdict];
     case 'executed':
       return [script.executed(name, role), ...lover];
-    case 'spared':
-      return [script.spared(name)];
     case 'win_village':
       return [script.winVillage];
     case 'win_wolves':
