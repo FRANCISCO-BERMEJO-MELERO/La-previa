@@ -1,5 +1,57 @@
 # Informe final
 
+## Luna llena (fases 27 a 32)
+
+Estado al cerrar `docs/PLAN-5.md`, el 11 de octubre de 2026.
+
+### Resumen
+
+Luna llena, el séptimo juego, está hecho de principio a fin: reparto con las siete cartas ilustradas, noche en la que todos tocan el móvil, amanecer, cazador, alcalde, debate, acusación, defensa, veredicto, espectadores y resultado, con el anfitrión narrando desde una caja con el guion. Todas las fases (27 a 32) están cerradas y sus tareas marcadas en `docs/TAREAS.md`, en 32 commits en la rama `feat/luna-llena`, que sale de `develop` después de fusionar en ella las ramas de los planes 3 y 4 (PR #2). No se ha subido la rama.
+
+El plan numeraba sus fases de la 14 a la 19 y hablaba del quinto juego porque se escribió contando con que `develop` acababa en la fase 13. Aquí son las fases 27 a 32 y es el séptimo juego (DECISIONES 27.3).
+
+Verificación al cerrar, todo partiendo de cero, tres veces seguidas:
+
+| Comprobación                               | Resultado, en las tres vueltas       |
+| ------------------------------------------ | ------------------------------------ |
+| `npm run check` (lint, tipos, unitarios)   | 750 tests en 67 archivos, sin avisos |
+| `npm run test:db` tras `supabase db reset` | 1166 pruebas pgTAP en 51 archivos    |
+| `npm run test:e2e`                         | 31 pruebas                           |
+| `npm run build`                            | Sin avisos                           |
+
+Una primera tanda de tres vueltas sacó un fallo intermitente en la prueba nueva de anchos: dependía del reparto al azar (si el aldeano de referencia era el anfitrión, el texto de su caja de narrador coincidía con la búsqueda; si el anfitrión era lobo, no se esperaba a que llegara la foto al nuevo narrador). Era de la prueba, no del juego; se arregló y pasó diez veces seguidas antes de repetir las tres vueltas de la tabla.
+
+No se ha publicado nada. Las 8 migraciones nuevas se aplican con `npx supabase db push`, como siempre; Luna llena no trae contenido que revisar, solo tablas y funciones.
+
+### Qué está hecho
+
+- **Base de datos**: tablas `luna_state`, `luna_night_actions` y `luna_votes`, con RLS y sin políticas; las nueve funciones del plan (`luna_llena_start`, `_continue`, `_night_action`, `_close_night`, `_vote`, `_verdict`, `_close_vote`, `_hunter_shot`, `_skip_hunter`); abandono y expulsión en cada fase; la foto con la narración y la vista de espectador. Los cinco códigos de error nuevos llegan al cliente con su mensaje.
+- **Pruebas de la base de datos**: 11 archivos pgTAP. Entre ellos, tres partidas completas jugadas solo con las funciones públicas (gana el pueblo, ganan los lobos y gana el bufón) que, en cada paso, comprueban que ningún vivo recibe nada de la lista prohibida del plan y que ninguna acción funciona fuera de su fase. Se comprobó que esa revisión detecta una fuga de verdad.
+- **Aplicación**: la sala de espera con lobos, roles opcionales y la línea de composición; las siete ilustraciones y la carta del anexo (también en `/dev/componentes`); "Mantén para ver tu carta", que se oculta al soltar o a los cuatro segundos; una pantalla por fase; la caja del narrador; el selector con la portada del lobo y "Cómo se juega" en cuatro pasos.
+- **Extremo a extremo**: seis jugadores hasta el primer amanecer; una partida completa con la composición de 6; otra de 9 con todos los opcionales, cazador incluido; recargar de noche; el narrador muerto que sigue avanzando; el secreto en la red de un aldeano; y 16 jugadores con nombres de 14 a 360, 390 y 430 px.
+
+### Qué no está hecho o no se ha podido verificar
+
+- **No se ha jugado con personas.** Todo está probado con navegadores automáticos; el ritmo de la partida, si el guion suena bien en voz alta y si el debate se hace largo solo se ve jugando.
+- **Móviles reales**, como en las tandas anteriores: falta probar en iPhone, sobre todo el gesto de mantener pulsado para ver la carta.
+
+### Decisiones que conviene conocer
+
+Están todas en `docs/DECISIONES.md` (entradas 27.3 a 32.4). Las que más afectan al juego:
+
+- **La composición la ve solo el anfitrión** en la sala de espera; los demás la descubren en el reparto. Es la recomendada mientras no la cambie.
+- **Narración compuesta**: cuando alguien muere de pena o se acaba de elegir alcalde, el narrador lee dos frases seguidas. El guion no tenía texto para quien se va de la sala y se añadió uno.
+- **Abandono tras un juicio**: si alguien se va durante la ejecución, se sigue con la noche, para no repetir el juicio del día.
+- **Volver a jugar** usa la misma composición; si ya no vale para los que quedan, la recomendada.
+- **El nombre del rol en la carta** baja de tamaño hasta caber, con tope en 48 px, porque no hay token entre 48 y 68 px.
+
+### Qué revisar primero
+
+1. **El guion del narrador, leído en voz alta** (`src/lib/copy.ts`, `lunaLlena.script`). El tono es el del plan; lo que falta saber es si se lee con naturalidad y si las frases encadenadas ("Han muerto…" y después "… muere de pena") suenan bien.
+2. **El equilibrio del reparto recomendado.** Con 6 jugadores hay un solo lobo y ningún opcional, y la partida puede acabar en una noche y un día. Con 16 hay tres lobos contra trece. Conviene jugar alguna partida de cada tamaño antes de tocar la tabla, que está repetida en `private.luna_recommended_config` y en `src/games/luna-llena/composition.ts`.
+3. **Las pantallas sin maqueta**: noche, espera, amanecer, alcalde, debate, defensa, veredicto, ejecución, cazador, espectador y resultado. Están hechas con los componentes de siempre; mira sobre todo si la noche parece igual para todos vista de reojo, que es la idea del juego.
+4. **El gesto de la carta**: "Mantén para ver tu carta" en un móvil real, y si cuatro segundos son pocos o muchos.
+
 ## Mejoras tras probarla en grupo (fases 19 a 26)
 
 Estado al cerrar `docs/PLAN-4.md`, el 11 de octubre de 2026.

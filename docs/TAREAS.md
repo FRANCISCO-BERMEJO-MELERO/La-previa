@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan 5 (Luna llena) en curso · última actualización 2026-10-11
+Estado: plan 5 (Luna llena) terminado · última actualización 2026-10-11
 
 ## Fase 0 · Preparación
 
@@ -330,7 +330,7 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 - [x] 32.3 Repaso de accesibilidad de las pantallas nuevas
 - [x] 32.4 Revisión final contra las secciones 1 a 10 del plan y su "Fuera de alcance"
 - [x] 32.5 `README.md` y, si hace falta, `docs/DESPLIEGUE.md`
-- [ ] 32.6 Ampliar `docs/INFORME.md`
+- [x] 32.6 Ampliar `docs/INFORME.md`
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
