@@ -82,6 +82,9 @@ desktop.ini
 # Generado por next dev
 AGENTS.md
 
+# Imágenes originales de los avatares (las procesadas van en public/avatars)
+avatares-originales/
+
 # rsc local state (hooks, seals, logs) and managed skill links — machine-local
 .rsc/
 .worktrees/
