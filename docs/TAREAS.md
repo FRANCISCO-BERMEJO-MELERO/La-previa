@@ -343,3 +343,4 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 - [x] D.1 (para 5.1 y 5.5) Ajustar el tamaño de la palabra y de los titulares a su longitud: a 360 px una palabra de 6 letras en `text-display-lg` ya no cabe en la tarjeta protagonista. La `Card` parte palabras para no desbordar, pero partir la palabra secreta queda mal.
 - [x] D.2 (Luna llena, a petición de Fran) Quitar la segunda votación del juicio: el acusado dice sus últimas palabras y el narrador lo ahorca
 - [x] D.3 (a petición de Fran) Luna llena pasa a llamarse El lobo, se juega desde 4 jugadores y sale la primera en el selector; en la sala de espera, el anfitrión cambia de juego pulsando la píldora, que ahora parece un botón
+- [x] D.4 (a petición de Fran) Los avatares pasan a ser las 11 imágenes de `public/avatars/` en lugar de los 12 dibujos con formas

@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(9);
+select plan(10);
 
 insert into auth.users (id)
 select format('00000000-0000-0000-0000-0000000000%s', lpad(i::text, 2, '0'))::uuid
@@ -55,22 +55,23 @@ select pg_temp.call(2, format('select public.join_room(%L, %L)', (select code fr
 
 select is(pg_temp.avatar_of(1, 2), 'null'::jsonb, 'sin elegir, no hay avatar');
 
-select pg_temp.call(2, format('select public.set_avatar(%L, %L)', pg_temp.room(), 'ghost'));
-select is(pg_temp.avatar_of(1, 2), '"ghost"'::jsonb, 'quien elige avatar lo enseña a todos');
+select pg_temp.call(2, format('select public.set_avatar(%L, %L)', pg_temp.room(), 'moon'));
+select is(pg_temp.avatar_of(1, 2), '"moon"'::jsonb, 'quien elige avatar lo enseña a todos');
 select is(pg_temp.avatar_of(1, 1), 'null'::jsonb, 'sin tocar el de los demás');
 
-select pg_temp.call(2, format('select public.set_avatar(%L, %L)', pg_temp.room(), 'donut'));
-select is(pg_temp.avatar_of(2, 2), '"donut"'::jsonb, 'se puede cambiar');
+select pg_temp.call(2, format('select public.set_avatar(%L, %L)', pg_temp.room(), 'olive'));
+select is(pg_temp.avatar_of(2, 2), '"olive"'::jsonb, 'se puede cambiar');
 
 select pg_temp.call(2, format('select public.set_avatar(%L, null)', pg_temp.room()));
 select is(pg_temp.avatar_of(2, 2), 'null'::jsonb, 'y quitar, para volver a la inicial');
 
 select pg_temp.as_user(2);
 select throws_ok(format('select public.set_avatar(%L, %L)', pg_temp.room(), 'unicornio'), 'P0001', 'invalid_avatar', 'solo valen los de la galería');
+select throws_ok(format('select public.set_avatar(%L, %L)', pg_temp.room(), 'ghost'), 'P0001', 'invalid_avatar', 'ni los de la galería antigua');
 select pg_temp.as_user(3);
-select throws_ok(format('select public.set_avatar(%L, %L)', pg_temp.room(), 'ghost'), 'P0001', 'not_member', 'quien no está en la sala no elige');
+select throws_ok(format('select public.set_avatar(%L, %L)', pg_temp.room(), 'moon'), 'P0001', 'not_member', 'quien no está en la sala no elige');
 select pg_temp.as_admin();
-insert into ctx select 'anon_call', to_jsonb(format('select public.set_avatar(%L, %L)', pg_temp.room(), 'ghost'));
+insert into ctx select 'anon_call', to_jsonb(format('select public.set_avatar(%L, %L)', pg_temp.room(), 'moon'));
 set local role anon;
 select throws_ok((select value #>> '{}' from ctx where key = 'anon_call'), '42501', null, 'sin sesión no se puede');
 reset role;

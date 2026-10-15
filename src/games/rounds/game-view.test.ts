@@ -24,15 +24,11 @@ describe('datos de los juegos por rondas', () => {
       {},
       {
         players: base.players.map((player) =>
-          player.user_id === ids.lucia ? { ...player, avatar: 'octopus' as const } : player,
+          player.user_id === ids.lucia ? { ...player, avatar: 'dice' as const } : player,
         ),
       },
     );
-    expect(players(snapshot, probableState()).map((p) => p.avatar)).toEqual([
-      null,
-      'octopus',
-      null,
-    ]);
+    expect(players(snapshot, probableState()).map((p) => p.avatar)).toEqual([null, 'dice', null]);
   });
 
   it('solo los activos votan y se pueden votar', () => {
