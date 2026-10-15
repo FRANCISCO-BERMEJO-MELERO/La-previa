@@ -1,5 +1,14 @@
 # Decisiones
 
+## 2026-10-15 · D.3 · El lobo, desde 4 jugadores y cambiar de juego en la sala
+
+Fran pide, tras probar Luna llena, cuatro cambios. Contradicen a `docs/PLAN-5.md` §1 y §2 (nombre "Luna llena", de 6 a 16 jugadores) y a la referencia (la píldora del juego solo informa). El plan no se toca; esta entrada manda sobre él en estos puntos.
+
+- **Nombre.** El nombre visible pasa a "El lobo". El identificador `luna_llena`, la carpeta `src/games/luna-llena`, las funciones `luna_llena_*` y las tablas `luna_*` no cambian: renombrarlos obligaría a migrar toda la base de datos sin que se note nada en pantalla. "El lobo" es genérico y no es el nombre de ningún juego comercial.
+- **Desde 4 jugadores.** Migración nueva que redefine `private.luna_config` con el mínimo en 4; en el cliente, `MIN_LUNA_PLAYERS`. Con 4 o 5 vale el reparto recomendado de 6 (un lobo, la vidente y aldeanos), que ya cumple las reglas de validación. Las pruebas pgTAP 42 y 43 que comprobaban el mínimo de 6 se ajustan a 4: la regla que comprobaban es la que cambia.
+- **Orden.** El lobo es el primero en el selector: va primero en `gameIds`.
+- **Cambiar de juego en la sala.** En la sala de espera, la píldora del juego es para el anfitrión un botón con sombra, 44 px de alto y una etiqueta "Cambiar", que abre el selector. Elegir y pulsar "Abrir la sala" llama a `set_game`, que ya aceptaba cambiar el juego mientras no hay partida; elegir el mismo juego sirve para volver sin cambiar nada. Para los demás jugadores la píldora sigue informando.
+
 ## 2026-10-12 · D.2 · Luna llena sin veredicto
 
 Fran decide quitar la segunda votación del juicio (condenar o salvar) que pide `docs/PLAN-5.md` §3, porque la considera redundante con la acusación. El plan no se toca; esta entrada manda sobre él en este punto.

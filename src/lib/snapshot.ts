@@ -288,13 +288,13 @@ const gameSchema = z.discriminatedUnion('type', [
 ]);
 
 export const gameIds = [
+  'luna_llena',
   'impostor',
   'probable',
   'quien_lo_dijo',
   'una_pista',
   'que_prefieres',
   'palabras_prohibidas',
-  'luna_llena',
 ] as const;
 
 export const snapshotSchema = z.object({

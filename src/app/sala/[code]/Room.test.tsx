@@ -213,6 +213,16 @@ describe('Room', () => {
     expect(mocks.palabrasProhibidasStart).toHaveBeenCalledWith(ids.room, 15);
   });
 
+  it('en la sala de espera, el anfitrión cambia de juego desde la píldora', async () => {
+    mocks.setGame.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Cambiar de juego. Ahora: El impostor' }));
+    fireEvent.click(screen.getByRole('button', { name: /El lobo/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir la sala' }));
+    expect(mocks.setGame).toHaveBeenCalledWith(ids.room, 'luna_llena');
+    expect(await screen.findByText('KTRM')).toBeInTheDocument();
+  });
+
   it('quien no es anfitrión nunca ve el selector de juego', () => {
     const base = lobbySnapshot();
     ready(lobbySnapshot({ me: { ...base.me, user_id: ids.lucia, name: 'Lucía', is_host: false } }));

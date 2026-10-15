@@ -58,6 +58,7 @@ function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {})
     onLunaConfigChange: vi.fn(),
     onStart: vi.fn(),
     onKickRequest: vi.fn(),
+    onChangeGame: vi.fn(),
     ...overrides,
   };
   render(<LobbyScreen {...props} />);
@@ -304,15 +305,34 @@ describe('LobbyScreen: cómo se juega', () => {
   });
 });
 
-describe('LobbyScreen: Luna llena', () => {
+describe('LobbyScreen: cambiar de juego', () => {
+  it('el anfitrión pulsa la píldora del juego para cambiarlo', () => {
+    const props = renderLobby();
+    const pill = screen.getByRole('button', { name: 'Cambiar de juego. Ahora: El impostor' });
+    expect(pill).toHaveTextContent('El impostorCambiar');
+    expect(pill).toHaveClass('min-h-11', 'shadow-hard');
+    fireEvent.click(pill);
+    expect(props.onChangeGame).toHaveBeenCalledTimes(1);
+  });
+
+  it('para los demás la píldora solo dice a qué se juega', () => {
+    renderLobby({
+      snapshot: lobbySnapshot({ me: { user_id: ids.lucia, name: 'Lucía', is_host: false } }),
+    });
+    expect(screen.getByText('El impostor')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Cambiar de juego/ })).not.toBeInTheDocument();
+  });
+});
+
+describe('LobbyScreen: El lobo', () => {
   const inLunaLobby = (count: number) => {
     const snapshot = withPlayers(count);
     return lobbySnapshot({ ...snapshot, room: { ...snapshot.room, game: 'luna_llena' } });
   };
 
-  it('pide al menos 6 jugadores', () => {
-    renderLobby({ snapshot: inLunaLobby(4) });
-    expect(screen.getByText(/Hacen falta al menos 6 jugadores: faltan 2/)).toBeInTheDocument();
+  it('pide al menos 4 jugadores', () => {
+    renderLobby({ snapshot: inLunaLobby(2) });
+    expect(screen.getByText(/Hacen falta al menos 4 jugadores: faltan 2/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
   });
 

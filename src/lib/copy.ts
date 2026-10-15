@@ -282,6 +282,8 @@ export const copy = {
 
   room: {
     pill: (code: string) => `Sala ${code}`,
+    change: 'Cambiar',
+    changeLabel: (game: string) => `Cambiar de juego. Ahora: ${game}`,
     leave: 'Salir de la sala',
     leaveShort: 'Salir',
     leaveTitle: '¿Salir de la sala?',
@@ -332,10 +334,10 @@ export const copy = {
       players: 'De 3 a 16 jugadores',
     },
     luna_llena: {
-      name: 'Luna llena',
+      name: 'El lobo',
       description:
         'Un pueblo con lobos escondidos. De noche matan; de día se ahorca a un sospechoso.',
-      players: 'De 6 a 16 jugadores',
+      players: 'De 4 a 16 jugadores',
     },
     covers: {
       quote: '¿?',
@@ -925,7 +927,7 @@ export const copy = {
       waiting: 'Caja de espera',
       fields: 'Campos de texto',
       dialog: 'Diálogo',
-      lunaCards: 'Cartas de Luna llena',
+      lunaCards: 'Cartas del lobo',
     },
     disabled: 'Desactivado',
     openDialog: 'Abrir diálogo',

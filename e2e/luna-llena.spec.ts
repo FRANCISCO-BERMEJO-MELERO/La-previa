@@ -29,7 +29,7 @@ async function lunaRoom(browser: Browser, names: readonly string[]) {
   await host.getByRole('button', { name: 'Crear sala' }).click();
   await host.getByLabel('Tu nombre').fill(names[0] ?? '');
   await host.getByRole('button', { name: 'Entrar' }).click();
-  await host.getByRole('button', { name: /Luna llena/ }).click();
+  await host.getByRole('button', { name: /El lobo/ }).click();
   await host.getByRole('button', { name: 'Abrir la sala' }).click();
   const code = /\/sala\/([A-Z]{4})/.exec(host.url())?.[1] ?? '';
   for (const name of names.slice(1)) await joinByLink(pageOf(players, name), code, name);
@@ -322,7 +322,7 @@ test('31.7 · un aldeano vivo no recibe por la red el rol de nadie vivo', async 
   await host.getByRole('button', { name: 'Crear sala' }).click();
   await host.getByLabel('Tu nombre').fill('Fran');
   await host.getByRole('button', { name: 'Entrar' }).click();
-  await host.getByRole('button', { name: /Luna llena/ }).click();
+  await host.getByRole('button', { name: /El lobo/ }).click();
   await host.getByRole('button', { name: 'Abrir la sala' }).click();
   const code = /\/sala\/([A-Z]{4})/.exec(host.url())?.[1] ?? '';
   for (const name of six.slice(1)) await joinByLink(pageOf(players, name), code, name);
