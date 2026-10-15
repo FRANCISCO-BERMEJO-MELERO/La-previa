@@ -205,7 +205,7 @@ describe('parseSnapshot', () => {
     const base = lobbySnapshot();
     const withAvatar = lobbySnapshot({
       players: base.players.map((player, index) =>
-        index === 0 ? { ...player, avatar: 'ghost' as const } : player,
+        index === 0 ? { ...player, avatar: 'popcorn' as const } : player,
       ),
     });
     expect(parseSnapshot(withAvatar)).toEqual(withAvatar);
@@ -213,6 +213,12 @@ describe('parseSnapshot', () => {
       parseSnapshot({
         ...base,
         players: base.players.map((player) => ({ ...player, avatar: 'unicornio' })),
+      }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({
+        ...base,
+        players: base.players.map((player) => ({ ...player, avatar: 'ghost' })),
       }),
     ).toBeNull();
   });

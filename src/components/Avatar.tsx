@@ -1,5 +1,5 @@
-import type { AvatarId } from '@/lib/avatars';
-import { avatarArt } from './avatar-art';
+import Image from 'next/image';
+import { avatarImages, type AvatarId } from '@/lib/avatars';
 import { avatarColor, initialOf } from './avatar-color';
 
 type AvatarSize = 'sm' | 'md' | 'lg';
@@ -56,13 +56,16 @@ export function Avatar({
       {avatar === null ? (
         initialOf(name)
       ) : (
-        <svg
-          viewBox="0 0 40 40"
+        // Ya vienen a 256 px y por debajo de 20 KB: optimizarlas no ahorra nada.
+        <Image
+          src={avatarImages[avatar]}
+          alt=""
+          width={256}
+          height={256}
+          unoptimized
           data-avatar={avatar}
           className={`size-full ${muted || dashed ? 'grayscale' : ''}`}
-        >
-          {avatarArt[avatar]}
-        </svg>
+        />
       )}
     </span>
   );

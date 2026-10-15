@@ -58,12 +58,12 @@ describe('HomeFlow', () => {
     render(<HomeFlow />);
     fireEvent.click(screen.getByRole('button', { name: 'Crear sala' }));
     fireEvent.change(screen.getByLabelText('Tu nombre'), { target: { value: 'Fran' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Cohete' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Farolillo' }));
     fireEvent.click(screen.getByRole('button', { name: 'Entrar' }));
     await waitFor(() => {
       expect(mocks.push).toHaveBeenCalledWith('/sala/KTRM?nueva=1');
     });
-    expect(mocks.setAvatar).toHaveBeenCalledWith(lobbySnapshot().room.id, 'rocket');
+    expect(mocks.setAvatar).toHaveBeenCalledWith(lobbySnapshot().room.id, 'lantern');
   });
 
   it('crear sala pide el nombre, crea la sala y lleva a ella para elegir juego', async () => {

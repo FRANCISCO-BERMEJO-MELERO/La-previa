@@ -14,7 +14,7 @@ Trae siete juegos. Seis son de 3 a 16 jugadores y El lobo, de 4 a 16:
 
 Todos menos El impostor y El lobo van por rondas (5, 10 o 15) y llevan la cuenta de puntos durante la partida. En El impostor, el anfitrión elige las temáticas de la palabra (300 palabras en 15 temáticas) y si la votación tiene tiempo (30, 60 o 90 segundos) o se cierra a mano. En El lobo elige cuántos lobos hay y qué roles opcionales entran; por defecto, el reparto recomendado para los que sois. En la sala de espera, el anfitrión cambia de juego pulsando la píldora con su nombre.
 
-Además: se entra en una sala escaneando su QR desde el inicio, cada jugador puede elegir un avatar de una galería de ilustraciones, y la sala de espera explica cada juego en unos pocos pasos ilustrados.
+Además: se entra en una sala escaneando su QR desde el inicio, cada jugador puede elegir uno de los 11 avatares de la galería (una aceituna, un churro, una chancla…), y la sala de espera explica cada juego en unos pocos pasos ilustrados.
 
 - Qué se construye y por qué: [`docs/CONTEXTO.md`](docs/CONTEXTO.md) (plataforma y El impostor), [`docs/JUEGOS.md`](docs/JUEGOS.md) (los tres siguientes), [`docs/JUEGOS-2.md`](docs/JUEGOS-2.md) (¿Qué prefieres? y Palabras prohibidas), [`docs/MEJORAS.md`](docs/MEJORAS.md) (lo que se añadió tras probarla en grupo) y [`docs/PLAN-5.md`](docs/PLAN-5.md) (Luna llena, con las ilustraciones de sus cartas).
 - Contenido para revisar: [`docs/PALABRAS.md`](docs/PALABRAS.md), [`docs/PREGUNTAS.md`](docs/PREGUNTAS.md) (preguntas y dilemas) y [`docs/TARJETAS.md`](docs/TARJETAS.md).
@@ -95,7 +95,7 @@ src/
                      copy.ts       todos los textos de la interfaz
                      scan.ts, qr-camera.ts   leer el QR de una sala con la cámara
                      use-countdown.ts        cuenta atrás de la votación con la hora del servidor
-                     avatars.ts    la galería de avatares (las ilustraciones, en components/)
+                     avatars.ts    la galería de avatares (las imágenes, en public/avatars/)
   test/            Datos de ejemplo para los tests
 supabase/
   migrations/      Esquema, seguridad (RLS), funciones, palabras, preguntas y tarjetas. Nunca se editan: se

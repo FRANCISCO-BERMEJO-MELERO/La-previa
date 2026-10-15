@@ -1,6 +1,8 @@
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { avatarIds } from '@/lib/avatars';
+import { avatarIds, avatarImages } from '@/lib/avatars';
 import { Avatar } from './Avatar';
 import { Button } from './Button';
 import { Card } from './Card';
@@ -133,17 +135,25 @@ describe('Avatar', () => {
     expect(screen.getByTestId('avatar')).toHaveClass('bg-paper');
   });
 
-  it.each(avatarIds)('con el avatar %s pinta su ilustración en vez de la inicial', (id) => {
+  it.each(avatarIds)('con el avatar %s pinta su imagen en vez de la inicial', (id) => {
     render(<Avatar name="Paula" joinIndex={0} avatar={id} />);
     const avatar = screen.getByTestId('avatar');
     expect(avatar).not.toHaveTextContent('P');
     expect(avatar).toHaveClass('bg-paper');
-    expect(avatar.querySelector(`svg[data-avatar="${id}"]`)?.childElementCount).toBeGreaterThan(0);
+    const image = avatar.querySelector(`img[data-avatar="${id}"]`);
+    expect(image).toHaveAttribute('src', avatarImages[id]);
+    expect(image).toHaveAttribute('alt', '');
   });
 
-  it('con avatar y desconectado, la ilustración se apaga', () => {
-    render(<Avatar name="Paula" joinIndex={0} avatar="ghost" muted />);
-    expect(screen.getByTestId('avatar').querySelector('svg')).toHaveClass('grayscale');
+  it('cada avatar tiene su imagen en public/avatars', () => {
+    for (const id of avatarIds) {
+      expect(existsSync(join(process.cwd(), 'public', avatarImages[id]))).toBe(true);
+    }
+  });
+
+  it('con avatar y desconectado, la imagen se apaga', () => {
+    render(<Avatar name="Paula" joinIndex={0} avatar="popcorn" muted />);
+    expect(screen.getByTestId('avatar').querySelector('img')).toHaveClass('grayscale');
   });
 });
 

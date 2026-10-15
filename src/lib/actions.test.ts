@@ -208,10 +208,10 @@ describe('acciones', () => {
 
   it('elegir avatar y quitarlo llaman a set_avatar', async () => {
     const d = deps({ data: lobbySnapshot(), error: null });
-    await setAvatar('sala', 'ghost', d);
+    await setAvatar('sala', 'popcorn', d);
     await setAvatar('sala', null, d);
     expect(d.rpc.mock.calls).toEqual([
-      ['set_avatar', { room_id: 'sala', avatar: 'ghost' }],
+      ['set_avatar', { room_id: 'sala', avatar: 'popcorn' }],
       ['set_avatar', { room_id: 'sala', avatar: null }],
     ]);
   });

@@ -85,14 +85,14 @@ describe('NameScreen (02)', () => {
       'aria-pressed',
       'true',
     );
-    fireEvent.click(screen.getByRole('button', { name: 'Pulpo' }));
-    expect(props.onAvatarChange).toHaveBeenCalledWith('octopus');
-    expect(screen.getAllByRole('button', { pressed: false })).toHaveLength(12);
+    fireEvent.click(screen.getByRole('button', { name: 'Dado con cadena' }));
+    expect(props.onAvatarChange).toHaveBeenCalledWith('dice');
+    expect(screen.getAllByRole('button', { pressed: false })).toHaveLength(11);
   });
 
   it('marca el avatar elegido', () => {
-    name({ name: 'Lucía', avatar: 'ghost' });
-    expect(screen.getByRole('button', { name: 'Fantasma' })).toHaveAttribute(
+    name({ name: 'Lucía', avatar: 'popcorn' });
+    expect(screen.getByRole('button', { name: 'Palomita' })).toHaveAttribute(
       'aria-pressed',
       'true',
     );
