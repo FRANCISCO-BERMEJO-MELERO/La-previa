@@ -7,8 +7,9 @@ import {
   villagerCount,
 } from './composition';
 
-describe('composición de Luna llena', () => {
+describe('composición de El lobo', () => {
   it('la recomendada sigue la tabla del plan', () => {
+    expect(recommendedConfig(4)).toEqual({ wolves: 1, roles: [] });
     expect(recommendedConfig(6)).toEqual({ wolves: 1, roles: [] });
     expect(recommendedConfig(8)).toEqual({ wolves: 2, roles: ['protector'] });
     expect(recommendedConfig(9)).toEqual({ wolves: 2, roles: ['protector', 'hunter'] });
@@ -19,8 +20,8 @@ describe('composición de Luna llena', () => {
     });
   });
 
-  it('la recomendada es válida de 6 a 16 jugadores', () => {
-    for (let players = 6; players <= 16; players += 1) {
+  it('la recomendada es válida de 4 a 16 jugadores', () => {
+    for (let players = 4; players <= 16; players += 1) {
       expect(configProblem(players, recommendedConfig(players))).toBeNull();
     }
   });

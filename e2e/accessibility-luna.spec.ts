@@ -77,7 +77,7 @@ test('32.2 y 32.3 · Luna llena con 16 jugadores y nombres de 14 a 360, 390 y 43
   await host.getByRole('button', { name: 'Crear sala' }).click();
   await host.getByLabel('Tu nombre').fill(hostName);
   await host.getByRole('button', { name: 'Entrar' }).click();
-  await host.getByRole('button', { name: /Luna llena/ }).click();
+  await host.getByRole('button', { name: /El lobo/ }).click();
   await host.getByRole('button', { name: 'Abrir la sala' }).click();
   const code = /\/sala\/([A-Z]{4})/.exec(host.url())?.[1] ?? '';
   for (const name of names.slice(1)) await joinByLink(pageOf(players, name), code, name);

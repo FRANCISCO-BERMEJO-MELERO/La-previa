@@ -292,6 +292,9 @@ export function Room({ initial, fresh }: RoomProps) {
         });
       }}
       onKickRequest={setKickTargetId}
+      onChangeGame={() => {
+        setPicking(true);
+      }}
     />,
   );
 }
