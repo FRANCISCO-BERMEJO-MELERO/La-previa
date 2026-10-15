@@ -28,11 +28,7 @@ describe('datos de los juegos por rondas', () => {
         ),
       },
     );
-    expect(players(snapshot, probableState()).map((p) => p.avatar)).toEqual([
-      null,
-      'dice',
-      null,
-    ]);
+    expect(players(snapshot, probableState()).map((p) => p.avatar)).toEqual([null, 'dice', null]);
   });
 
   it('solo los activos votan y se pueden votar', () => {
