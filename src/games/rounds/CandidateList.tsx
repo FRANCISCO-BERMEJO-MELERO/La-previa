@@ -6,10 +6,17 @@ type CandidateListProps = {
   candidates: Player[];
   selected: string | null;
   onSelect: (userId: string) => void;
+  /** Etiqueta del marcado; por defecto, "Tu voto". */
+  pressedLabel?: string;
 };
 
 /** Lista de jugadores para votar; el elegido queda marcado hasta que se envía el voto. */
-export function CandidateList({ candidates, selected, onSelect }: CandidateListProps) {
+export function CandidateList({
+  candidates,
+  selected,
+  onSelect,
+  pressedLabel = copy.vote.yourVote,
+}: CandidateListProps) {
   return (
     <ul className="flex flex-col gap-3">
       {candidates.map((candidate) => {
@@ -32,13 +39,14 @@ export function CandidateList({ candidates, selected, onSelect }: CandidateListP
               <Avatar
                 name={candidate.name}
                 joinIndex={candidate.joinIndex}
+                avatar={candidate.avatar}
                 muted={!candidate.connected}
                 onDark={pressed}
               />
               <span className="min-w-0 flex-1 truncate">{candidate.name}</span>
               {pressed ? (
                 <span className="rounded-full bg-ground px-2.5 py-1 text-label text-ink">
-                  {copy.vote.yourVote}
+                  {pressedLabel}
                 </span>
               ) : candidate.connected ? null : (
                 <span className="text-label font-medium">{copy.lobby.disconnected}</span>

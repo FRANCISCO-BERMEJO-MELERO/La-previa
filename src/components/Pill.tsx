@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
-type PillTone = 'paper' | 'tomato' | 'sky' | 'lime' | 'lilac' | 'orange';
+type PillTone =
+  'paper' | 'tomato' | 'sky' | 'lime' | 'lilac' | 'orange' | 'ground-soft' | 'field-error';
 
 type PillProps = {
   tone?: PillTone;
@@ -20,6 +21,8 @@ const toneClasses: Record<PillTone, string> = {
   lime: 'bg-lime',
   lilac: 'bg-lilac',
   orange: 'bg-orange',
+  'ground-soft': 'bg-ground-soft',
+  'field-error': 'bg-field-error',
 };
 
 export function Pill({

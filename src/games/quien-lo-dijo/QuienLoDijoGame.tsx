@@ -1,6 +1,6 @@
 'use client';
 
-import type { PillButtonTone } from '@/components/PillButton';
+import type { HeaderTone } from '@/components/HeaderAside';
 import { useState, type ReactNode } from 'react';
 import { WaitingBox } from '@/components/WaitingBox';
 import {
@@ -38,7 +38,7 @@ type QuienLoDijoGameProps = {
   snapshot: Snapshot;
   game: QuienLoDijoGameState;
   /** Píldora de la cabecera que abre el diálogo de salir. */
-  pill: (label: string, tone?: PillButtonTone) => ReactNode;
+  pill: (label: string, tone?: HeaderTone) => ReactNode;
   notice: ReactNode;
   busy: boolean;
   error?: string;
@@ -228,7 +228,7 @@ export function QuienLoDijoGame({
       const ranking = rankingRows(snapshot, game);
       return (
         <ResultScreen
-          aside={pill(copy.room.pill(snapshot.room.code))}
+          aside={pill(copy.result.finished)}
           notice={notice}
           footer={controls}
           pill={copy.quienLoDijo.resultPill}

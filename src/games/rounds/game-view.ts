@@ -1,3 +1,4 @@
+import type { AvatarId } from '@/lib/avatars';
 import type { RoundGameState, Snapshot } from '@/lib/snapshot';
 
 /** Datos que comparten las pantallas de los juegos por rondas, deducidos de la foto. */
@@ -7,6 +8,8 @@ export type Player = {
   name: string;
   /** Posición en el orden de entrada a la sala: decide el color del avatar. */
   joinIndex: number;
+  /** El de la galería si lo ha elegido y sigue en la sala. */
+  avatar?: AvatarId | null;
   active: boolean;
   score: number;
   hasResponded: boolean;
@@ -23,6 +26,7 @@ export function players(snapshot: Snapshot, game: RoundGameState): Player[] {
       name: participant.name,
       // Quien ya no está en la sala conserva su sitio en la partida.
       joinIndex: inRoom === -1 ? index : inRoom,
+      avatar: snapshot.players[inRoom]?.avatar ?? null,
       active: participant.alive,
       score: participant.score,
       hasResponded: participant.has_responded,

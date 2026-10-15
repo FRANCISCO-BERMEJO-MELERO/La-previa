@@ -36,7 +36,7 @@ describe('HostControls', () => {
 
   it('en la revelación sigue hablando o ve el resultado si se acaba', () => {
     const props = renderControls('reveal');
-    fireEvent.click(screen.getByRole('button', { name: 'Seguir hablando' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Siguiente ronda' }));
     expect(props.onContinue).toHaveBeenCalledTimes(1);
   });
 
@@ -57,7 +57,7 @@ describe('HostControls', () => {
     ['talking', 'Fran decide cuándo se vota'],
     ['voting', 'Fran cerrará la votación'],
     ['reveal', 'Fran decide cuándo seguir'],
-    ['finished', 'Fran decide si se vuelve a jugar'],
+    ['finished', 'Fran elige si jugáis otra o cambiáis de juego'],
   ] as const)('en %s quien no es anfitrión ve la caja de espera', (phase, text) => {
     renderControls(phase, { isHost: false });
     expect(screen.getByRole('status')).toHaveTextContent(text);

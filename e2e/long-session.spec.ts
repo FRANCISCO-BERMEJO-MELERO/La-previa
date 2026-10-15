@@ -32,7 +32,7 @@ async function roundStarted(players: Players, round: number): Promise<void> {
   }
 }
 
-test('12.6 · una sala, los cuatro juegos seguidos y una recarga a mitad de cada uno', async ({
+test('12.6 y 17.4 · una sala, los seis juegos seguidos y una recarga a mitad de cada uno', async ({
   browser,
 }) => {
   test.setTimeout(360_000);
@@ -136,5 +136,48 @@ test('12.6 · una sala, los cuatro juegos seguidos y una recarga a mitad de cada
   }
   for (const page of Object.values(players)) {
     await expect(page.getByRole('heading', { name: '5 de 5' })).toBeVisible();
+  }
+
+  // ¿Qué prefieres?: Álvaro recarga tras elegir (aún falta Marta) y conserva su elección. -------
+  await changeGame(host, /¿Qué prefieres\?/);
+  for (let round = 1; round <= 5; round += 1) {
+    await roundStarted(players, round);
+    for (const [name, page] of Object.entries(players)) {
+      await page.getByRole('button', { name: /^Opción A: / }).click();
+      await page.getByRole('button', { name: 'Elegir la A' }).click();
+      if (round === 2 && name === 'Álvaro') {
+        await alvaro.reload();
+        await expect(alvaro.getByText(/^Tu elección: /)).toBeVisible();
+      }
+    }
+    await host
+      .getByRole('button', { name: round === 5 ? 'Ver resultado' : 'Siguiente ronda' })
+      .click();
+  }
+  await expect(marta.getByText('Quien mejor conoce al grupo')).toBeVisible();
+
+  // Palabras prohibidas: quien vigila recarga y sigue viendo la tarjeta; quien adivina, no. ----
+  await changeGame(host, /Palabras prohibidas/);
+  for (let round = 1; round <= 5; round += 1) {
+    await roundStarted(players, round);
+    if (round === 1) {
+      // Describe Fran, vigila Lucía y adivinan Álvaro y Marta.
+      const word = (await host.getByRole('heading', { level: 1 }).textContent()) ?? '';
+      await lucia.reload();
+      await expect(lucia.getByText('Vigilas tú')).toBeVisible();
+      await expect(lucia.getByRole('heading', { name: word })).toBeVisible();
+      await alvaro.reload();
+      await expect(alvaro.getByRole('heading', { name: 'Adivina en voz alta' })).toBeVisible();
+      await expect(alvaro.getByText(word, { exact: true })).toHaveCount(0);
+    }
+    const describer = await pageWithButton(players, 'Pasar');
+    await describer.getByRole('button', { name: 'Pasar' }).click();
+    await host
+      .getByRole('button', { name: round === 5 ? 'Ver resultado' : 'Siguiente ronda' })
+      .click();
+  }
+  for (const page of Object.values(players)) {
+    await expect(page.getByText('Gana la partida')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Nadie ha sumado puntos' })).toBeVisible();
   }
 });

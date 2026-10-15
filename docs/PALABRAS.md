@@ -1,8 +1,8 @@
 # Palabras de El impostor
 
-Lista inicial para revisar y podar. La fuente es la migración `supabase/migrations/20261008200000_words.sql`; para cambiarla hace falta una migración nueva (desactivar con `active = false` o añadir palabras).
+Lista para revisar y podar. Las fuentes son las migraciones `supabase/migrations/20261008200000_words.sql` (las 10 primeras categorías) y `supabase/migrations/20261011120000_more_words.sql` (las 5 últimas); para cambiarlas hace falta una migración nueva (desactivar con `active = false` o añadir palabras). Las categorías son las temáticas que el anfitrión elige en El impostor; Una sola pista usa todas.
 
-200 palabras en 10 categorías. Criterios (docs/CONTEXTO.md §9): conocidas por cualquiera de veintitantos en España, una sola idea por entrada, nada ofensivo, sin nombres de personas reales y con dificultad variada.
+300 palabras en 15 categorías. Criterios (docs/CONTEXTO.md §9): conocidas por cualquiera de veintitantos en España, una sola idea por entrada, nada ofensivo, sin nombres de personas reales y con dificultad variada. En Fútbol y Videojuegos valen títulos muy conocidos ("Tetris", "Mario"), pero no equipos ni personas reales.
 
 ## Comida (20)
 
@@ -43,3 +43,23 @@ Coche, Bicicleta, Metro, Autobús, Avión, Tren, Barco, Moto, Patinete, Taxi, He
 ## Fiesta y ocio (20)
 
 Cumpleaños, Disfraz, Barbacoa, Piscina, Baraja de cartas, Videojuego, Escape room, Feria, Fuegos artificiales, Nochevieja, Despedida de soltero, Bolera, Confeti, Piñata, Juego de mesa, Vermú, Verbena, Tardeo, Photocall, Botellón.
+
+## Fútbol (20)
+
+Penalti, Fuera de juego, Córner, Portero, Árbitro, Tarjeta roja, Gol en propia puerta, Larguero, Banquillo, Chilena, Prórroga, Mundial, Saque de banda, Afición, VAR, Delantero, Vestuario, Bufanda, Fichaje, Derbi.
+
+## Historia (20)
+
+Pirámides, Dinosaurio, Romanos, Vikingos, Castillo, Caballero, Gladiador, Faraón, Momia, Cavernícola, Carabela, Revolución Francesa, Muralla China, Imprenta, Armadura, Coliseo, Edad Media, Catapulta, Pergamino, Corona.
+
+## Videojuegos (20)
+
+Tetris, Mario, Pac-Man, Minecraft, Pokémon, Sonic, Zelda, Los Sims, Fortnite, Tamagotchi, Consola, Mando de consola, Game over, Jefe final, Vida extra, Partida guardada, Realidad virtual, Máquina recreativa, Modo multijugador, Nivel secreto.
+
+## Ciencia (20)
+
+Microscopio, Átomo, Imán, Volcán, Telescopio, Laboratorio, Gravedad, ADN, Planeta, Agujero negro, Bata blanca, Tabla periódica, Fósil, Electricidad, Arcoíris, Eclipse, Robot, Probeta, Satélite, Terremoto.
+
+## Geografía (20)
+
+Mapa, Brújula, Desierto, Selva, Isla, Río, Polo Norte, Glaciar, Cascada, Océano, Península, Frontera, Globo terráqueo, Archipiélago, Cordillera, Oasis, Huracán, Pasaporte, Bandera, Rascacielos.

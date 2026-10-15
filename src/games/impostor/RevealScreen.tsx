@@ -2,6 +2,7 @@ import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
 import { copy } from '@/lib/copy';
 import { fitDisplay } from '@/lib/fit-text';
+import type { AvatarId } from '@/lib/avatars';
 import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 
 type RevealScreenProps = GameScreenProps & {
@@ -9,6 +10,7 @@ type RevealScreenProps = GameScreenProps & {
   kind: 'eliminated' | 'left';
   name: string;
   joinIndex: number;
+  avatar?: AvatarId | null;
   wasImpostor: boolean;
   /** Texto bajo la tarjeta: cómo sigue la partida o que se ha acabado. */
   summary: string;
@@ -19,6 +21,7 @@ export function RevealScreen({
   kind,
   name,
   joinIndex,
+  avatar = null,
   wasImpostor,
   summary,
   ...chrome
@@ -30,7 +33,7 @@ export function RevealScreen({
           <p className="text-label font-bold uppercase tracking-label">
             {kind === 'left' ? copy.reveal.left : copy.reveal.expelled}
           </p>
-          <Avatar name={name} joinIndex={joinIndex} size="lg" />
+          <Avatar name={name} joinIndex={joinIndex} avatar={avatar} size="lg" />
           <h1 className={`font-display uppercase ${fitDisplay(name, 'text-display-md')}`}>
             {name}
           </h1>

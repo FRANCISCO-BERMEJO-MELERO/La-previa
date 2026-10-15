@@ -3,11 +3,20 @@ import {
   gameState,
   ids,
   inGame,
+  inLuna,
+  inPalabras,
   inPista,
+  inPrefieres,
   inProbable,
   inQuien,
   lobbySnapshot,
+  lunaIds,
+  lunaMy,
+  lunaState,
+  palabrasState,
+  pizzaCard,
   pistaState,
+  prefieresState,
   probableState,
   quienState,
 } from '@/test/fixtures';
@@ -134,6 +143,80 @@ describe('parseSnapshot', () => {
     expect(parseSnapshot({ ...inPista(), game: { ...pistaState(), guesser_id: null } })).toBeNull();
   });
 
+  it('acepta la partida de que_prefieres en todas sus fases', () => {
+    const voting = inPrefieres({ my: { is_participant: true, alive: true, choice: 'a' } });
+    expect(parseSnapshot(voting)).toEqual(voting);
+    const reveal = inPrefieres({
+      phase: 'reveal',
+      choices: { a: [ids.fran], b: [ids.lucia, ids.alvaro] },
+      majority: 'b',
+    });
+    expect(parseSnapshot(reveal)).toEqual(reveal);
+    const tie = inPrefieres({ phase: 'reveal', choices: { a: [], b: [] }, majority: null });
+    expect(parseSnapshot(tie)).toEqual(tie);
+  });
+
+  it('descarta una partida de que_prefieres con una opción que no existe', () => {
+    expect(
+      parseSnapshot({ ...inPrefieres(), game: { ...prefieresState(), majority: 'c' } }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({
+        ...inPrefieres(),
+        game: { ...prefieresState(), my: { is_participant: true, alive: true, choice: 'A' } },
+      }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({ ...inPrefieres(), game: { ...prefieresState(), option_b: null } }),
+    ).toBeNull();
+  });
+
+  it('acepta la partida de palabras_prohibidas, con y sin la tarjeta', () => {
+    const guessing = inPalabras();
+    expect(parseSnapshot(guessing)).toEqual(guessing);
+    const describing = inPalabras(pizzaCard);
+    expect(parseSnapshot(describing)).toEqual(describing);
+    for (const result of [
+      { type: 'guessed', user_id: ids.marta } as const,
+      { type: 'forbidden' } as const,
+      { type: 'passed' } as const,
+    ]) {
+      const reveal = inPalabras({ phase: 'reveal', ...pizzaCard, result });
+      expect(parseSnapshot(reveal)).toEqual(reveal);
+    }
+  });
+
+  it('descarta una partida de palabras_prohibidas con un resultado que no existe', () => {
+    expect(
+      parseSnapshot({ ...inPalabras(), game: { ...palabrasState(), result: { type: 'casi' } } }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({
+        ...inPalabras(),
+        game: { ...palabrasState(), result: { type: 'guessed' } },
+      }),
+    ).toBeNull();
+    expect(
+      parseSnapshot({ ...inPalabras(), game: { ...palabrasState(), describer_id: null } }),
+    ).toBeNull();
+  });
+
+  it('acepta el avatar de la galería y descarta cualquier otro', () => {
+    const base = lobbySnapshot();
+    const withAvatar = lobbySnapshot({
+      players: base.players.map((player, index) =>
+        index === 0 ? { ...player, avatar: 'ghost' as const } : player,
+      ),
+    });
+    expect(parseSnapshot(withAvatar)).toEqual(withAvatar);
+    expect(
+      parseSnapshot({
+        ...base,
+        players: base.players.map((player) => ({ ...player, avatar: 'unicornio' })),
+      }),
+    ).toBeNull();
+  });
+
   it('acepta las fechas tal como las devuelve Postgres', () => {
     expect(
       parseSnapshot(lobbySnapshot({ server_time: '2026-10-08T19:30:00.123456+00:00' })),
@@ -159,6 +242,82 @@ describe('parseSnapshot', () => {
   it('no deja pasar campos que no están en el contrato', () => {
     const parsed = parseSnapshot({ ...lobbySnapshot(), secret: 'impostor' });
     expect(parsed).not.toHaveProperty('secret');
+  });
+});
+
+describe('parseSnapshot de Luna llena', () => {
+  it('acepta la foto de un vivo de noche', () => {
+    const snapshot = inLuna();
+    expect(parseSnapshot(snapshot)).toEqual(snapshot);
+  });
+
+  it('acepta un amanecer con muertes, un muerto con su vista y un final', () => {
+    const deaths = [
+      { user_id: lunaIds.marta, name: 'Marta', role: 'seer', cause: 'wolves' },
+      { user_id: lunaIds.dani, name: 'Dani', role: 'cupid', cause: 'heartbreak' },
+    ] as const;
+    expect(
+      parseSnapshot(
+        inLuna({
+          phase: 'dawn',
+          announcement: { kind: 'night', deaths: [...deaths], spared: null },
+          narration: {
+            key: 'dawn_deaths',
+            params: { names: ['Marta', 'Dani'], lover: { name: 'Dani', role: 'cupid' } },
+          },
+        }),
+      ),
+    ).not.toBeNull();
+    expect(
+      parseSnapshot(
+        inLuna({
+          my: lunaMy({ alive: false }),
+          spectator: {
+            roles: [{ user_id: lunaIds.fran, role: 'wolf' }],
+            lovers: [lunaIds.marta, lunaIds.dani],
+            actions: [{ user_id: lunaIds.fran, target_id: lunaIds.lucia, target2_id: null }],
+          },
+        }),
+      ),
+    ).not.toBeNull();
+    expect(
+      parseSnapshot(
+        inLuna({
+          phase: 'finished',
+          result: {
+            winner: 'jester',
+            roles: [{ user_id: lunaIds.fran, role: 'jester' }],
+            lovers: null,
+          },
+          narration: { key: 'win_jester', params: {} },
+        }),
+      ),
+    ).not.toBeNull();
+  });
+
+  it('acepta los votos ya cerrados', () => {
+    expect(
+      parseSnapshot(
+        inLuna({
+          phase: 'execution',
+          public_votes: {
+            kind: 'accuse',
+            votes: [{ voter_id: lunaIds.lucia, target_id: lunaIds.marta }],
+          },
+        }),
+      ),
+    ).not.toBeNull();
+  });
+
+  it('rechaza roles, fases y claves del guion que no existen', () => {
+    const broken = (game: Record<string, unknown>) => ({
+      ...inLuna(),
+      game: { ...lunaState(), ...game },
+    });
+    expect(parseSnapshot(broken({ my: { ...lunaMy(), role: 'witch' } }))).toBeNull();
+    expect(parseSnapshot(broken({ phase: 'reveal' }))).toBeNull();
+    expect(parseSnapshot(broken({ narration: { key: 'chat', params: {} } }))).toBeNull();
+    expect(parseSnapshot(inLuna({ config: { wolves: 0, roles: [] } }))).toBeNull();
   });
 });
 

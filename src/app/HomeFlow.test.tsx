@@ -8,14 +8,30 @@ import { HomeFlow } from './HomeFlow';
 const mocks = vi.hoisted(() => ({
   push: vi.fn(),
   createRoom: vi.fn<(name: string) => Promise<ActionResult<Snapshot>>>(),
+  setAvatar: vi.fn<(roomId: string, avatar: string | null) => Promise<ActionResult<Snapshot>>>(),
 }));
 
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: mocks.push }) }));
-vi.mock('@/lib/actions', () => ({ createRoom: mocks.createRoom }));
+vi.mock('@/lib/actions', () => ({ createRoom: mocks.createRoom, setAvatar: mocks.setAvatar }));
+// El escáner de verdad necesita cámara: aquí lee la sala KTRM en cuanto se abre.
+vi.mock('@/screens/ScanDialog', () => ({
+  ScanDialog: ({ open, onCode }: { open: boolean; onCode: (code: string) => void }) =>
+    open ? (
+      <button
+        type="button"
+        onClick={() => {
+          onCode('KTRM');
+        }}
+      >
+        leer QR
+      </button>
+    ) : null,
+}));
 
 beforeEach(() => {
   mocks.push.mockReset();
   mocks.createRoom.mockReset();
+  mocks.setAvatar.mockReset();
 });
 
 describe('HomeFlow', () => {
@@ -25,6 +41,29 @@ describe('HomeFlow', () => {
     expect(screen.getByLabelText('Código de la sala')).toHaveValue('KTRM');
     fireEvent.click(screen.getByRole('button', { name: 'Unirse' }));
     expect(mocks.push).toHaveBeenCalledWith('/sala/KTRM');
+  });
+
+  it('escanear el QR de una sala lleva a ella', () => {
+    render(<HomeFlow />);
+    expect(screen.queryByRole('button', { name: 'leer QR' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Escanear QR' }));
+    fireEvent.click(screen.getByRole('button', { name: 'leer QR' }));
+    expect(mocks.push).toHaveBeenCalledWith('/sala/KTRM');
+    expect(screen.queryByRole('button', { name: 'leer QR' })).not.toBeInTheDocument();
+  });
+
+  it('al crear sala con avatar, lo guarda antes de entrar', async () => {
+    mocks.createRoom.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+    mocks.setAvatar.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+    render(<HomeFlow />);
+    fireEvent.click(screen.getByRole('button', { name: 'Crear sala' }));
+    fireEvent.change(screen.getByLabelText('Tu nombre'), { target: { value: 'Fran' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Cohete' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Entrar' }));
+    await waitFor(() => {
+      expect(mocks.push).toHaveBeenCalledWith('/sala/KTRM?nueva=1');
+    });
+    expect(mocks.setAvatar).toHaveBeenCalledWith(lobbySnapshot().room.id, 'rocket');
   });
 
   it('crear sala pide el nombre, crea la sala y lleva a ella para elegir juego', async () => {

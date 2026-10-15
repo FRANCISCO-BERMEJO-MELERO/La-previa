@@ -7,6 +7,7 @@ import {
   continueGame,
   createRoom,
   getRoomState,
+  impostorCategories,
   joinRoom,
   kickPlayer,
   leaveRoom,
@@ -15,6 +16,23 @@ import {
   probableNext,
   probableStart,
   probableVote,
+  lunaLlenaCloseNight,
+  lunaLlenaCloseVote,
+  lunaLlenaContinue,
+  lunaLlenaHunterShot,
+  lunaLlenaNightAction,
+  lunaLlenaSkipHunter,
+  lunaLlenaStart,
+  lunaLlenaVote,
+  palabrasProhibidasForbidden,
+  palabrasProhibidasGuessed,
+  palabrasProhibidasNext,
+  palabrasProhibidasPass,
+  palabrasProhibidasStart,
+  quePrefieresChoose,
+  quePrefieresClose,
+  quePrefieresNext,
+  quePrefieresStart,
   quienLoDijoAnswer,
   quienLoDijoCloseVoting,
   quienLoDijoCloseWriting,
@@ -28,6 +46,7 @@ import {
   unaPistaShowClues,
   unaPistaStart,
   unaPistaToggleClue,
+  setAvatar,
   setGame,
   startGame,
   toActionError,
@@ -52,7 +71,7 @@ describe('acciones', () => {
     await getRoomState('sala', d);
     await setGame('sala', 'impostor', d);
     await kickPlayer('sala', 'u2', d);
-    await startGame('sala', 2, d);
+    await startGame('sala', { impostorCount: 2, categories: [], voteSeconds: null }, d);
     await probableStart('sala', 10, d);
     await probableVote('sala', 'u2', d);
     await probableClose('sala', d);
@@ -70,6 +89,15 @@ describe('acciones', () => {
     await unaPistaShowClues('sala', d);
     await unaPistaMark('sala', 'pass', d);
     await unaPistaNext('sala', d);
+    await quePrefieresStart('sala', 5, d);
+    await quePrefieresChoose('sala', 'b', d);
+    await quePrefieresClose('sala', d);
+    await quePrefieresNext('sala', d);
+    await palabrasProhibidasStart('sala', 10, d);
+    await palabrasProhibidasGuessed('sala', 'u3', d);
+    await palabrasProhibidasPass('sala', d);
+    await palabrasProhibidasForbidden('sala', d);
+    await palabrasProhibidasNext('sala', d);
     await openVoting('sala', d);
     await castVote('sala', 'u3', d);
     await closeVoting('sala', d);
@@ -99,12 +127,104 @@ describe('acciones', () => {
       ['una_pista_show_clues', { room_id: 'sala' }],
       ['una_pista_mark', { room_id: 'sala', result: 'pass' }],
       ['una_pista_next', { room_id: 'sala' }],
+      ['que_prefieres_start', { room_id: 'sala', rounds: 5 }],
+      ['que_prefieres_choose', { room_id: 'sala', option: 'b' }],
+      ['que_prefieres_close', { room_id: 'sala' }],
+      ['que_prefieres_next', { room_id: 'sala' }],
+      ['palabras_prohibidas_start', { room_id: 'sala', rounds: 10 }],
+      ['palabras_prohibidas_guessed', { room_id: 'sala', user_id: 'u3' }],
+      ['palabras_prohibidas_pass', { room_id: 'sala' }],
+      ['palabras_prohibidas_forbidden', { room_id: 'sala' }],
+      ['palabras_prohibidas_next', { room_id: 'sala' }],
       ['open_voting', { room_id: 'sala' }],
       ['cast_vote', { room_id: 'sala', target_id: 'u3' }],
       ['close_voting', { room_id: 'sala' }],
       ['continue_game', { room_id: 'sala' }],
       ['back_to_lobby', { room_id: 'sala' }],
     ]);
+  });
+
+  it('cada acción de Luna llena llama a su RPC con sus argumentos', async () => {
+    const d = deps({ data: lobbySnapshot(), error: null });
+    await lunaLlenaStart('sala', null, d);
+    await lunaLlenaStart('sala', { wolves: 2, roles: ['protector', 'hunter'] }, d);
+    await lunaLlenaContinue('sala', d);
+    await lunaLlenaNightAction('sala', 'u2', null, d);
+    await lunaLlenaNightAction('sala', 'u2', 'u3', d);
+    await lunaLlenaCloseNight('sala', d);
+    await lunaLlenaVote('sala', 'u4', d);
+    await lunaLlenaCloseVote('sala', d);
+    await lunaLlenaHunterShot('sala', 'u5', d);
+    await lunaLlenaSkipHunter('sala', d);
+    expect(d.rpc.mock.calls).toEqual([
+      ['luna_llena_start', { room_id: 'sala', wolves: null, roles: null }],
+      ['luna_llena_start', { room_id: 'sala', wolves: 2, roles: ['protector', 'hunter'] }],
+      ['luna_llena_continue', { room_id: 'sala' }],
+      ['luna_llena_night_action', { room_id: 'sala', target_id: 'u2', target2_id: null }],
+      ['luna_llena_night_action', { room_id: 'sala', target_id: 'u2', target2_id: 'u3' }],
+      ['luna_llena_close_night', { room_id: 'sala' }],
+      ['luna_llena_vote', { room_id: 'sala', target_id: 'u4' }],
+      ['luna_llena_close_vote', { room_id: 'sala' }],
+      ['luna_llena_hunter_shot', { room_id: 'sala', target_id: 'u5' }],
+      ['luna_llena_skip_hunter', { room_id: 'sala' }],
+    ]);
+  });
+
+  it('traduce los códigos de error de Luna llena', async () => {
+    for (const code of [
+      'invalid_config',
+      'already_acted',
+      'not_hunter',
+      'same_as_last_night',
+    ] as const) {
+      const d = deps({ data: null, error: { message: code } });
+      expect(await lunaLlenaContinue('sala', d)).toEqual({ ok: false, error: code });
+    }
+  });
+
+  it('empezar El impostor envía las temáticas solo si se ha elegido alguna', async () => {
+    const d = deps({ data: lobbySnapshot(), error: null });
+    await startGame(
+      'sala',
+      { impostorCount: 1, categories: ['Fútbol', 'Historia'], voteSeconds: null },
+      d,
+    );
+    expect(d.rpc).toHaveBeenCalledWith('start_game', {
+      room_id: 'sala',
+      impostor_count: 1,
+      categories: ['Fútbol', 'Historia'],
+    });
+  });
+
+  it('empezar El impostor envía el tiempo para votar solo si lo hay', async () => {
+    const d = deps({ data: lobbySnapshot(), error: null });
+    await startGame('sala', { impostorCount: 1, categories: [], voteSeconds: 90 }, d);
+    expect(d.rpc).toHaveBeenCalledWith('start_game', {
+      room_id: 'sala',
+      impostor_count: 1,
+      vote_seconds: 90,
+    });
+  });
+
+  it('elegir avatar y quitarlo llaman a set_avatar', async () => {
+    const d = deps({ data: lobbySnapshot(), error: null });
+    await setAvatar('sala', 'ghost', d);
+    await setAvatar('sala', null, d);
+    expect(d.rpc.mock.calls).toEqual([
+      ['set_avatar', { room_id: 'sala', avatar: 'ghost' }],
+      ['set_avatar', { room_id: 'sala', avatar: null }],
+    ]);
+  });
+
+  it('las temáticas llegan validadas', async () => {
+    expect(await impostorCategories(deps({ data: ['Animales', 'Fútbol'], error: null }))).toEqual({
+      ok: true,
+      data: ['Animales', 'Fútbol'],
+    });
+    expect(await impostorCategories(deps({ data: [1, 2], error: null }))).toEqual({
+      ok: false,
+      error: 'unknown',
+    });
   });
 
   it('inicia sesión antes de llamar', async () => {

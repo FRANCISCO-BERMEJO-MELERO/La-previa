@@ -1,9 +1,11 @@
+import type { AvatarId } from '@/lib/avatars';
 import { Avatar } from './Avatar';
 
 export type AvatarRowItem = {
   userId: string;
   name: string;
   joinIndex: number;
+  avatar?: AvatarId | null;
   muted: boolean;
 };
 
@@ -20,7 +22,12 @@ export function AvatarRow({ players, summary }: AvatarRowProps) {
       <ul className="flex min-w-0 flex-wrap gap-2">
         {players.map((player) => (
           <li key={player.userId} title={player.name}>
-            <Avatar name={player.name} joinIndex={player.joinIndex} dashed={player.muted} />
+            <Avatar
+              name={player.name}
+              joinIndex={player.joinIndex}
+              avatar={player.avatar}
+              dashed={player.muted}
+            />
             <span className="sr-only">{player.name}</span>
           </li>
         ))}

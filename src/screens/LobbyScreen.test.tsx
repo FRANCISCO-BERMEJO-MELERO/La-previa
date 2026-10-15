@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import type { LunaConfig } from '@/games/luna-llena/composition';
 import type { Snapshot } from '@/lib/snapshot';
 import { ids, lobbySnapshot } from '@/test/fixtures';
 import { LobbyScreen } from './LobbyScreen';
@@ -9,6 +10,7 @@ function withPlayers(count: number): Snapshot {
   const players = Array.from({ length: count }, (_, i) => ({
     user_id: `0a1b2c3d-1111-4aaa-8bbb-${String(i + 1).padStart(12, '0')}`,
     name: `Jugador ${String(i + 1)}`,
+    avatar: null,
     connected: true,
     joined_at: '2026-10-08T19:00:00+00:00',
   }));
@@ -18,6 +20,8 @@ function withPlayers(count: number): Snapshot {
     me: { ...base.me, user_id: players[0]?.user_id ?? '' },
   });
 }
+
+const defaultLunaConfig: LunaConfig = { wolves: 1, roles: [] };
 
 function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {}) {
   const props = {
@@ -32,9 +36,26 @@ function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {})
     onShare: vi.fn(),
     onShowQr: vi.fn(),
     onCloseQr: vi.fn(),
+    howToOpen: false,
+    avatarOpen: false,
+    onAvatarOpen: vi.fn(),
+    onAvatarClose: vi.fn(),
+    onAvatarChange: vi.fn(),
+    onHowToOpen: vi.fn(),
+    onHowToClose: vi.fn(),
     onImpostorsChange: vi.fn(),
+    voteSeconds: null as number | null,
+    onVoteSecondsChange: vi.fn(),
+    categories: [] as string[],
+    chosenCategories: [] as string[],
+    topicsOpen: false,
+    onTopicsOpen: vi.fn(),
+    onTopicsClose: vi.fn(),
+    onCategoriesChange: vi.fn(),
     rounds: 10,
     onRoundsChange: vi.fn(),
+    lunaConfig: defaultLunaConfig,
+    onLunaConfigChange: vi.fn(),
     onStart: vi.fn(),
     onKickRequest: vi.fn(),
     ...overrides,
@@ -154,9 +175,7 @@ describe('LobbyScreen (04)', () => {
     ]);
     fireEvent.click(screen.getByRole('button', { name: '15 rondas' }));
     expect(onRoundsChange).toHaveBeenCalledWith(15);
-    expect(
-      screen.getByRole('button', { name: '¿Quién es más probable que…?. Salir de la sala' }),
-    ).toBeInTheDocument();
+    expect(screen.getByText('¿Quién es más probable que…?')).toBeInTheDocument();
   });
 
   it('quien no es anfitrión no elige rondas', () => {
@@ -204,7 +223,7 @@ describe('LobbyScreen (04)', () => {
 
   it('la píldora de la cabecera sirve para salir de la sala', () => {
     const props = renderLobby();
-    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir de la sala' }));
     expect(props.onLeaveRequest).toHaveBeenCalledTimes(1);
   });
 
@@ -228,5 +247,125 @@ describe('LobbyScreen (04)', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(
       'Eso solo lo puede hacer quien lleva la sala.',
     );
+  });
+});
+
+describe('LobbyScreen: temáticas de El impostor', () => {
+  const categories = ['Animales', 'Fútbol', 'Historia'];
+
+  it('sin temáticas cargadas no se enseña el selector', () => {
+    renderLobby();
+    expect(screen.queryByRole('button', { name: 'Elegir temáticas' })).not.toBeInTheDocument();
+  });
+
+  it('dice qué temáticas hay elegidas y abre el diálogo', () => {
+    const props = renderLobby({ categories, chosenCategories: ['Fútbol', 'Historia'] });
+    expect(screen.getByText('2 temáticas')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Elegir temáticas' }));
+    expect(props.onTopicsOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it('marcar una la añade en el orden de la lista, y desmarcarla la quita', () => {
+    const props = renderLobby({ categories, chosenCategories: ['Historia'], topicsOpen: true });
+    expect(screen.getByRole('button', { name: 'Historia' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Animales' }));
+    expect(props.onCategoriesChange).toHaveBeenLastCalledWith(['Animales', 'Historia']);
+    fireEvent.click(screen.getByRole('button', { name: 'Historia' }));
+    expect(props.onCategoriesChange).toHaveBeenLastCalledWith([]);
+  });
+
+  it('"Todas" deja de filtrar, y está marcada cuando no hay ninguna elegida', () => {
+    const props = renderLobby({ categories, chosenCategories: ['Fútbol'], topicsOpen: true });
+    expect(screen.getByRole('button', { name: 'Todas' })).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(screen.getByRole('button', { name: 'Todas' }));
+    expect(props.onCategoriesChange).toHaveBeenLastCalledWith([]);
+  });
+
+  it('en los juegos por rondas no hay temáticas', () => {
+    const base = lobbySnapshot();
+    renderLobby({
+      snapshot: lobbySnapshot({ room: { ...base.room, game: 'probable' } }),
+      categories,
+    });
+    expect(screen.queryByRole('button', { name: 'Elegir temáticas' })).not.toBeInTheDocument();
+  });
+});
+
+describe('LobbyScreen: cómo se juega', () => {
+  it('todos, no solo el anfitrión, pueden abrir el tutorial', () => {
+    const props = renderLobby({
+      snapshot: lobbySnapshot({ me: { user_id: ids.lucia, name: 'Lucía', is_host: false } }),
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Cómo se juega' }));
+    expect(props.onHowToOpen).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('LobbyScreen: Luna llena', () => {
+  const inLunaLobby = (count: number) => {
+    const snapshot = withPlayers(count);
+    return lobbySnapshot({ ...snapshot, room: { ...snapshot.room, game: 'luna_llena' } });
+  };
+
+  it('pide al menos 6 jugadores', () => {
+    renderLobby({ snapshot: inLunaLobby(4) });
+    expect(screen.getByText(/Hacen falta al menos 6 jugadores: faltan 2/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
+  });
+
+  it('enseña los lobos, los roles opcionales y la composición', () => {
+    renderLobby({
+      snapshot: inLunaLobby(9),
+      lunaConfig: { wolves: 2, roles: ['protector', 'hunter'] },
+    });
+    expect(
+      screen.getByText('2 lobos · vidente · protector · cazador · 4 aldeanos'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Protector/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: /Bufón/ })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.queryByRole('button', { name: 'Más impostores' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('group', { name: 'Rondas' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeEnabled();
+  });
+
+  it('cambiar lobos o roles avisa con la composición nueva', () => {
+    const props = renderLobby({
+      snapshot: inLunaLobby(9),
+      lunaConfig: { wolves: 2, roles: ['protector', 'hunter'] },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Más lobos' }));
+    expect(props.onLunaConfigChange).toHaveBeenLastCalledWith({
+      wolves: 3,
+      roles: ['protector', 'hunter'],
+    });
+    fireEvent.click(screen.getByRole('button', { name: /Cupido/ }));
+    expect(props.onLunaConfigChange).toHaveBeenLastCalledWith({
+      wolves: 2,
+      roles: ['protector', 'hunter', 'cupid'],
+    });
+    fireEvent.click(screen.getByRole('button', { name: /Protector/ }));
+    expect(props.onLunaConfigChange).toHaveBeenLastCalledWith({ wolves: 2, roles: ['hunter'] });
+  });
+
+  it('los lobos no llegan a la mitad', () => {
+    renderLobby({ snapshot: inLunaLobby(6), lunaConfig: { wolves: 2, roles: [] } });
+    expect(screen.getByRole('button', { name: 'Más lobos' })).toBeDisabled();
+  });
+
+  it('sin hueco para un aldeano no se puede empezar y se dice por qué', () => {
+    renderLobby({
+      snapshot: inLunaLobby(6),
+      lunaConfig: { wolves: 2, roles: ['protector', 'hunter', 'jester'] },
+    });
+    expect(
+      screen.getByText('No queda ningún aldeano. Quita un rol opcional o un lobo.'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
   });
 });

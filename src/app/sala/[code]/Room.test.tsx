@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ActionResult } from '@/lib/actions';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ActionResult, ImpostorSettings } from '@/lib/actions';
 import type { ShareOutcome } from '@/lib/share';
 import type { Snapshot } from '@/lib/snapshot';
 import type { RoomSync } from '@/lib/use-room-sync';
@@ -8,10 +8,13 @@ import {
   gameState,
   ids,
   inGame,
+  inPalabras,
   inPista,
+  inPrefieres,
   inProbable,
   inQuien,
   lobbySnapshot,
+  pizzaCard,
 } from '@/test/fixtures';
 import { Room } from './Room';
 
@@ -23,7 +26,10 @@ const mocks = vi.hoisted(() => ({
   shareRoomLink: vi.fn<(url: string, title: string) => Promise<ShareOutcome>>(),
   wakeLock: vi.fn<(active: boolean) => void>(),
   leaveRoom: vi.fn<(roomId: string) => Promise<ActionResult<null>>>(),
-  startGame: vi.fn<(roomId: string, count: number) => Promise<ActionResult<Snapshot>>>(),
+  startGame:
+    vi.fn<(roomId: string, settings: ImpostorSettings) => Promise<ActionResult<Snapshot>>>(),
+  impostorCategories: vi.fn<() => Promise<ActionResult<string[]>>>(),
+  setAvatar: vi.fn<(roomId: string, avatar: string | null) => Promise<ActionResult<Snapshot>>>(),
   probableStart: vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
   probableVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   probableClose: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -41,6 +47,17 @@ const mocks = vi.hoisted(() => ({
   unaPistaShowClues: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   unaPistaMark: vi.fn<(roomId: string, result: string) => Promise<ActionResult<Snapshot>>>(),
   unaPistaNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  quePrefieresStart: vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
+  quePrefieresChoose: vi.fn<(roomId: string, option: string) => Promise<ActionResult<Snapshot>>>(),
+  quePrefieresClose: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  quePrefieresNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  palabrasProhibidasStart:
+    vi.fn<(roomId: string, rounds: number) => Promise<ActionResult<Snapshot>>>(),
+  palabrasProhibidasGuessed:
+    vi.fn<(roomId: string, userId: string) => Promise<ActionResult<Snapshot>>>(),
+  palabrasProhibidasPass: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  palabrasProhibidasForbidden: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
+  palabrasProhibidasNext: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   openVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
   castVote: vi.fn<(roomId: string, target: string) => Promise<ActionResult<Snapshot>>>(),
   closeVoting: vi.fn<(roomId: string) => Promise<ActionResult<Snapshot>>>(),
@@ -55,6 +72,8 @@ vi.mock('@/lib/actions', () => ({
   kickPlayer: mocks.kickPlayer,
   leaveRoom: mocks.leaveRoom,
   startGame: mocks.startGame,
+  impostorCategories: mocks.impostorCategories,
+  setAvatar: mocks.setAvatar,
   probableStart: mocks.probableStart,
   probableVote: mocks.probableVote,
   probableClose: mocks.probableClose,
@@ -72,6 +91,15 @@ vi.mock('@/lib/actions', () => ({
   unaPistaShowClues: mocks.unaPistaShowClues,
   unaPistaMark: mocks.unaPistaMark,
   unaPistaNext: mocks.unaPistaNext,
+  quePrefieresStart: mocks.quePrefieresStart,
+  quePrefieresChoose: mocks.quePrefieresChoose,
+  quePrefieresClose: mocks.quePrefieresClose,
+  quePrefieresNext: mocks.quePrefieresNext,
+  palabrasProhibidasStart: mocks.palabrasProhibidasStart,
+  palabrasProhibidasGuessed: mocks.palabrasProhibidasGuessed,
+  palabrasProhibidasPass: mocks.palabrasProhibidasPass,
+  palabrasProhibidasForbidden: mocks.palabrasProhibidasForbidden,
+  palabrasProhibidasNext: mocks.palabrasProhibidasNext,
   openVoting: mocks.openVoting,
   castVote: mocks.castVote,
   closeVoting: mocks.closeVoting,
@@ -88,6 +116,7 @@ function ready(snapshot: Snapshot = lobbySnapshot()) {
 
 beforeEach(() => {
   vi.resetAllMocks();
+  mocks.impostorCategories.mockResolvedValue({ ok: true, data: ['Animales', 'Fútbol'] });
   ready();
 });
 
@@ -145,6 +174,45 @@ describe('Room', () => {
     });
   });
 
+  it('el anfitrión puede elegir ¿Qué prefieres?', async () => {
+    mocks.setGame.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+    render(<Room initial={lobbySnapshot()} fresh />);
+    fireEvent.click(screen.getByRole('button', { name: /¿Qué prefieres\?/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir la sala' }));
+    expect(mocks.setGame).toHaveBeenCalledWith(ids.room, 'que_prefieres');
+    expect(await screen.findByText('KTRM')).toBeInTheDocument();
+  });
+
+  it('¿Qué prefieres? empieza con las rondas elegidas', () => {
+    const base = lobbySnapshot();
+    const lobby = lobbySnapshot({ room: { ...base.room, game: 'que_prefieres' } });
+    ready(lobby);
+    mocks.quePrefieresStart.mockResolvedValue({ ok: true, data: lobby });
+    render(<Room initial={lobby} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: '5 rondas' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(mocks.quePrefieresStart).toHaveBeenCalledWith(ids.room, 5);
+  });
+
+  it('el anfitrión puede elegir Palabras prohibidas y empezar con las rondas elegidas', async () => {
+    mocks.setGame.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+    const { unmount } = render(<Room initial={lobbySnapshot()} fresh />);
+    fireEvent.click(screen.getByRole('button', { name: /Palabras prohibidas/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir la sala' }));
+    expect(mocks.setGame).toHaveBeenCalledWith(ids.room, 'palabras_prohibidas');
+    expect(await screen.findByText('KTRM')).toBeInTheDocument();
+    unmount();
+
+    const base = lobbySnapshot();
+    const lobby = lobbySnapshot({ room: { ...base.room, game: 'palabras_prohibidas' } });
+    ready(lobby);
+    mocks.palabrasProhibidasStart.mockResolvedValue({ ok: true, data: lobby });
+    render(<Room initial={lobby} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: '15 rondas' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(mocks.palabrasProhibidasStart).toHaveBeenCalledWith(ids.room, 15);
+  });
+
   it('quien no es anfitrión nunca ve el selector de juego', () => {
     const base = lobbySnapshot();
     ready(lobbySnapshot({ me: { ...base.me, user_id: ids.lucia, name: 'Lucía', is_host: false } }));
@@ -196,7 +264,7 @@ describe('Room', () => {
   it('salir pide confirmación, sale y vuelve al inicio', async () => {
     mocks.leaveRoom.mockResolvedValue({ ok: true, data: null });
     render(<Room initial={lobbySnapshot()} fresh={false} />);
-    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir de la sala' }));
     expect(mocks.leaveRoom).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Salir' }));
     expect(mocks.leaveRoom).toHaveBeenCalledWith(ids.room);
@@ -207,7 +275,7 @@ describe('Room', () => {
 
   it('cancelar la salida no hace nada', () => {
     render(<Room initial={lobbySnapshot()} fresh={false} />);
-    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir de la sala' }));
     fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(mocks.leaveRoom).not.toHaveBeenCalled();
@@ -216,7 +284,7 @@ describe('Room', () => {
   it('si no se puede salir, lo dice dentro del diálogo', async () => {
     mocks.leaveRoom.mockResolvedValue({ ok: false, error: 'offline' });
     render(<Room initial={lobbySnapshot()} fresh={false} />);
-    fireEvent.click(screen.getByRole('button', { name: 'El impostor. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir de la sala' }));
     fireEvent.click(screen.getByRole('button', { name: 'Salir' }));
     expect(await screen.findByRole('alert')).toHaveTextContent(/Sin conexión/);
     expect(mocks.push).not.toHaveBeenCalled();
@@ -246,7 +314,11 @@ describe('Room', () => {
     mocks.startGame.mockResolvedValue({ ok: true, data: inGame() });
     render(<Room initial={lobbySnapshot()} fresh={false} />);
     fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
-    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, 1);
+    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, {
+      impostorCount: 1,
+      categories: [],
+      voteSeconds: null,
+    });
     await waitFor(() => {
       expect(mocks.apply).toHaveBeenCalledTimes(1);
     });
@@ -259,6 +331,89 @@ describe('Room', () => {
     expect(screen.getByText('Paella')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Pasar a votación' }));
     expect(mocks.openVoting).toHaveBeenCalledWith(ids.room);
+  });
+
+  it.each([
+    [
+      'El impostor',
+      inGame({
+        phase: 'finished',
+        result: { winner: 'group', word: 'Paella', impostor_ids: [ids.marta] },
+      }),
+    ],
+    ['un juego por rondas', inProbable({ phase: 'finished', ranking: [] })],
+  ])(
+    'al terminar %s, la píldora dice que se acabó y cambiar de juego está a la vista',
+    (_game, snapshot) => {
+      ready(snapshot);
+      const { unmount } = render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Fin de la partida', { selector: 'header *' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Cambiar de juego' })).toHaveClass('h-14');
+      expect(screen.getByRole('button', { name: 'Volver a jugar' })).toBeInTheDocument();
+      unmount();
+      ready({ ...snapshot, me: { user_id: ids.lucia, name: 'Lucía', is_host: false } });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('status')).toHaveTextContent(
+        'Fran elige si jugáis otra o cambiáis de juego',
+      );
+    },
+  );
+
+  it('el anfitrión elige temáticas y empieza con ellas', async () => {
+    mocks.startGame.mockResolvedValue({ ok: true, data: inGame() });
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(await screen.findByRole('button', { name: 'Elegir temáticas' })).toBeInTheDocument();
+    expect(screen.getByText('Todas')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Elegir temáticas' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Fútbol' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Listo' }));
+    expect(screen.getAllByText('Fútbol').length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, {
+      impostorCount: 1,
+      categories: ['Fútbol'],
+      voteSeconds: null,
+    });
+  });
+
+  it('en la sala de espera, tocar tu ficha deja cambiar el avatar', async () => {
+    mocks.setAvatar.mockResolvedValue({ ok: true, data: lobbySnapshot() });
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Cambiar tu avatar' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Pingüino' }));
+    expect(mocks.setAvatar).toHaveBeenCalledWith(ids.room, 'penguin');
+    await waitFor(() => {
+      expect(mocks.apply).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('cualquiera abre y cierra el tutorial del juego elegido', () => {
+    ready(lobbySnapshot({ me: { user_id: ids.lucia, name: 'Lucía', is_host: false } }));
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(screen.queryByText('Paso 1 de 3')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Cómo se juega' }));
+    expect(
+      screen.getByRole('heading', { name: 'Cómo se juega a El impostor' }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Cerrar' }));
+    expect(screen.queryByText('Paso 1 de 3')).not.toBeInTheDocument();
+  });
+
+  it('quien no lleva la sala no pide las temáticas', () => {
+    ready(lobbySnapshot({ me: { user_id: ids.lucia, name: 'Lucía', is_host: false } }));
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(mocks.impostorCategories).not.toHaveBeenCalled();
+    expect(screen.queryByRole('button', { name: 'Elegir temáticas' })).not.toBeInTheDocument();
+  });
+
+  it('a partir de la segunda ronda, la píldora dice que es la misma partida', () => {
+    ready(inGame({ round: 2 }));
+    const { unmount } = render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(screen.getByText('Ronda 2 de la partida')).toBeInTheDocument();
+    unmount();
+    ready(inGame());
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    expect(screen.getByText('Sala KTRM')).toBeInTheDocument();
   });
 
   it('quien no es anfitrión espera a que decida', () => {
@@ -289,6 +444,98 @@ describe('Room', () => {
     expect(mocks.closeVoting).toHaveBeenCalledWith(ids.room);
   });
 
+  describe('tiempo para votar', () => {
+    const lucia = { me: { user_id: ids.lucia, name: 'Lucía', is_host: false } };
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('con tiempo, todos ven la cuenta atrás en la píldora', () => {
+      ready(
+        inGame(
+          { phase: 'voting', vote_seconds: 30, voting_deadline: '2026-10-08T19:30:30+00:00' },
+          lucia,
+        ),
+      );
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Votación · 0:30')).toBeInTheDocument();
+      expect(mocks.closeVoting).not.toHaveBeenCalled();
+    });
+
+    it('sin tiempo, la píldora dice solo "Votación"', () => {
+      ready(inGame({ phase: 'voting' }, lucia));
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Votación')).toBeInTheDocument();
+    });
+
+    it('una votación nueva no hereda el cero de la anterior', () => {
+      mocks.closeVoting.mockResolvedValue({ ok: true, data: inGame({ phase: 'reveal' }) });
+      ready(
+        inGame({ phase: 'voting', vote_seconds: 30, voting_deadline: '2026-10-08T19:30:00+00:00' }),
+      );
+      const { rerender } = render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(mocks.closeVoting).toHaveBeenCalledTimes(1);
+      ready(inGame({ phase: 'reveal', vote_seconds: 30 }));
+      rerender(<Room initial={lobbySnapshot()} fresh={false} />);
+      ready(
+        inGame({
+          phase: 'voting',
+          round: 2,
+          vote_seconds: 30,
+          voting_deadline: '2026-10-08T19:30:30+00:00',
+        }),
+      );
+      rerender(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Votación · 0:30')).toBeInTheDocument();
+      expect(mocks.closeVoting).toHaveBeenCalledTimes(1);
+    });
+
+    it('al llegar a cero, cualquiera pide cerrar y reintenta si aún no es la hora', async () => {
+      vi.useFakeTimers();
+      mocks.closeVoting
+        .mockResolvedValueOnce({ ok: false, error: 'not_host' })
+        .mockResolvedValueOnce({ ok: true, data: inGame({ phase: 'reveal' }) });
+      ready(
+        inGame(
+          { phase: 'voting', vote_seconds: 30, voting_deadline: '2026-10-08T19:30:00+00:00' },
+          lucia,
+        ),
+      );
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(0);
+      });
+      expect(mocks.closeVoting).toHaveBeenCalledTimes(1);
+      expect(mocks.closeVoting).toHaveBeenCalledWith(ids.room);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1500);
+      });
+      expect(mocks.closeVoting).toHaveBeenCalledTimes(2);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(5000);
+      });
+      expect(mocks.closeVoting).toHaveBeenCalledTimes(2);
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+  });
+
+  it('el anfitrión elige el tiempo para votar y empieza con él', () => {
+    mocks.startGame.mockResolvedValue({ ok: true, data: inGame() });
+    render(<Room initial={lobbySnapshot()} fresh={false} />);
+    fireEvent.click(screen.getByRole('button', { name: '60 segundos para votar' }));
+    expect(screen.getByRole('button', { name: '60 segundos para votar' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, {
+      impostorCount: 1,
+      categories: [],
+      voteSeconds: 60,
+    });
+  });
+
   it('en la revelación cuenta cuántos quedan y el anfitrión sigue', () => {
     mocks.continueGame.mockResolvedValue({ ok: true, data: inGame() });
     ready(
@@ -307,7 +554,7 @@ describe('Room', () => {
     expect(
       screen.getByText('La partida sigue. Quedan 3 jugadores y 1 impostor entre ellos.'),
     ).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Seguir hablando' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Siguiente ronda' }));
     expect(mocks.continueGame).toHaveBeenCalledWith(ids.room);
   });
 
@@ -337,7 +584,11 @@ describe('Room', () => {
     render(<Room initial={lobbySnapshot()} fresh={false} />);
     expect(screen.getByRole('heading', { name: '¡Has ganado!' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
-    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, 1);
+    expect(mocks.startGame).toHaveBeenCalledWith(ids.room, {
+      impostorCount: 1,
+      categories: [],
+      voteSeconds: null,
+    });
     await waitFor(() => {
       expect(mocks.apply).toHaveBeenCalledTimes(1);
     });
@@ -390,9 +641,7 @@ describe('Room', () => {
         data: inProbable({ my: { is_participant: true, alive: true, voted_for: ids.lucia } }),
       });
       render(<Room initial={lobbySnapshot()} fresh={false} />);
-      expect(
-        screen.getByRole('button', { name: 'Ronda 3 de 10. Salir de la sala' }),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Ronda 3 de 10')).toBeInTheDocument();
       fireEvent.click(screen.getByRole('button', { name: /Lucía/ }));
       fireEvent.click(screen.getByRole('button', { name: 'Votar a Lucía' }));
       expect(mocks.probableVote).toHaveBeenCalledWith(ids.room, ids.lucia);
@@ -493,9 +742,7 @@ describe('Room', () => {
         }),
       });
       render(<Room initial={lobbySnapshot()} fresh={false} />);
-      expect(
-        screen.getByRole('button', { name: 'Ronda 2 de 5. Salir de la sala' }),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Ronda 2 de 5')).toBeInTheDocument();
       fireEvent.change(screen.getByLabelText('Tu respuesta'), { target: { value: 'Volar' } });
       fireEvent.click(screen.getByRole('button', { name: 'Enviar respuesta' }));
       expect(mocks.quienLoDijoAnswer).toHaveBeenCalledWith(ids.room, 'Volar');
@@ -701,6 +948,167 @@ describe('Room', () => {
     });
   });
 
+  describe('que_prefieres', () => {
+    it('elige una opción del dilema y aplica la foto', async () => {
+      ready(inPrefieres());
+      mocks.quePrefieresChoose.mockResolvedValue({
+        ok: true,
+        data: inPrefieres({ my: { is_participant: true, alive: true, choice: 'b' } }),
+      });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Ronda 4 de 10')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Opción B: Ser invisible' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Elegir la B' }));
+      expect(mocks.quePrefieresChoose).toHaveBeenCalledWith(ids.room, 'b');
+      await waitFor(() => {
+        expect(mocks.apply).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('tras elegir, ve su elección y el anfitrión puede cerrar con las que haya', () => {
+      ready(inPrefieres({ my: { is_participant: true, alive: true, choice: 'a' } }));
+      mocks.quePrefieresClose.mockResolvedValue({ ok: true, data: inPrefieres() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Tu elección: Volar')).toBeInTheDocument();
+      expect(screen.getByText('1 de 3')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Cerrar elecciones' }));
+      expect(mocks.quePrefieresClose).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('quien no lleva la sala espera a que cierre el anfitrión', () => {
+      ready(
+        inPrefieres(
+          { my: { is_participant: true, alive: true, choice: 'a' } },
+          { me: { user_id: ids.lucia, name: 'Lucía', is_host: false } },
+        ),
+      );
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('status')).toHaveTextContent('Fran cerrará las elecciones');
+      expect(screen.queryByRole('button', { name: 'Cerrar elecciones' })).not.toBeInTheDocument();
+    });
+
+    it('en el reparto el anfitrión pasa a la siguiente ronda', () => {
+      ready(
+        inPrefieres({
+          phase: 'reveal',
+          choices: { a: [ids.fran, ids.lucia], b: [ids.alvaro] },
+          majority: 'a',
+        }),
+      );
+      mocks.quePrefieresNext.mockResolvedValue({ ok: true, data: inPrefieres() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByRole('heading', { name: 'Volar' })).toBeInTheDocument();
+      expect(screen.getByText('Fran y Lucía')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Siguiente ronda' }));
+      expect(mocks.quePrefieresNext).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('al final nombra a quien mejor conoce al grupo y vuelve a jugar con las mismas rondas', async () => {
+      ready(
+        inPrefieres({
+          phase: 'finished',
+          ranking: [
+            { user_id: ids.lucia, name: 'Lucía', score: 4 },
+            { user_id: ids.fran, name: 'Fran', score: 2 },
+          ],
+        }),
+      );
+      mocks.quePrefieresStart.mockResolvedValue({ ok: true, data: inPrefieres() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Quien mejor conoce al grupo')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Lucía' })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
+      expect(mocks.quePrefieresStart).toHaveBeenCalledWith(ids.room, 10);
+      await waitFor(() => {
+        expect(mocks.apply).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
+  describe('palabras_prohibidas', () => {
+    const lucia = { me: { user_id: ids.lucia, name: 'Lucía', is_host: false } };
+    const alvaro = { me: { user_id: ids.alvaro, name: 'Álvaro', is_host: false } };
+
+    it('quien describe marca a quien ha acertado y aplica la foto', async () => {
+      ready(inPalabras(pizzaCard, lucia));
+      mocks.palabrasProhibidasGuessed.mockResolvedValue({
+        ok: true,
+        data: inPalabras({ phase: 'reveal', ...pizzaCard }, lucia),
+      });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Ronda 2 de 10')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Pizza' })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /Álvaro/ })).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: /Marta/ }));
+      fireEvent.click(screen.getByRole('button', { name: 'Ha acertado Marta' }));
+      expect(mocks.palabrasProhibidasGuessed).toHaveBeenCalledWith(ids.room, ids.marta);
+      await waitFor(() => {
+        expect(mocks.apply).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('quien describe puede pasar', () => {
+      ready(inPalabras(pizzaCard, lucia));
+      mocks.palabrasProhibidasPass.mockResolvedValue({ ok: true, data: inPalabras() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      fireEvent.click(screen.getByRole('button', { name: 'Pasar' }));
+      expect(mocks.palabrasProhibidasPass).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('quien vigila canta la prohibida', () => {
+      ready(inPalabras(pizzaCard, alvaro));
+      mocks.palabrasProhibidasForbidden.mockResolvedValue({ ok: true, data: inPalabras() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Vigilas tú')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: '¡Prohibida!' }));
+      expect(mocks.palabrasProhibidasForbidden).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('quien adivina, aunque lleve la sala, solo espera a que marque quien describe', () => {
+      ready(inPalabras());
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Adivina en voz alta')).toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent(
+        'Esperando a que Lucía marque quién acierta',
+      );
+      expect(screen.queryByRole('button', { name: 'Siguiente ronda' })).not.toBeInTheDocument();
+    });
+
+    it('en la revelación el anfitrión pasa a la siguiente ronda', () => {
+      ready(
+        inPalabras({
+          phase: 'reveal',
+          ...pizzaCard,
+          result: { type: 'guessed', user_id: ids.marta },
+        }),
+      );
+      mocks.palabrasProhibidasNext.mockResolvedValue({ ok: true, data: inPalabras() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Lo acierta Marta')).toBeInTheDocument();
+      expect(screen.getByText('+1 para Marta y +1 para Lucía')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Siguiente ronda' }));
+      expect(mocks.palabrasProhibidasNext).toHaveBeenCalledWith(ids.room);
+    });
+
+    it('al final enseña quién gana y vuelve a jugar con las mismas rondas', () => {
+      ready(
+        inPalabras({
+          phase: 'finished',
+          ranking: [
+            { user_id: ids.lucia, name: 'Lucía', score: 3 },
+            { user_id: ids.fran, name: 'Fran', score: 1 },
+          ],
+        }),
+      );
+      mocks.palabrasProhibidasStart.mockResolvedValue({ ok: true, data: inPalabras() });
+      render(<Room initial={lobbySnapshot()} fresh={false} />);
+      expect(screen.getByText('Gana la partida')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Lucía' })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Volver a jugar' }));
+      expect(mocks.palabrasProhibidasStart).toHaveBeenCalledWith(ids.room, 10);
+    });
+  });
+
   describe('entrar tarde según el juego', () => {
     const marta = { me: { user_id: ids.marta, name: 'Marta', is_host: false } };
 
@@ -737,6 +1145,11 @@ describe('Room', () => {
         ),
       ],
       ['una_pista', inPista({ my: { is_participant: false, alive: false, clue: null } }, marta)],
+      [
+        'que_prefieres',
+        inPrefieres({ my: { is_participant: false, alive: false, choice: null } }, marta),
+      ],
+      ['palabras_prohibidas', inPalabras({ my: { is_participant: false, alive: false } }, marta)],
     ])('en %s se juega desde la siguiente ronda', (_game, snapshot) => {
       ready(snapshot);
       render(<Room initial={lobbySnapshot()} fresh={false} />);

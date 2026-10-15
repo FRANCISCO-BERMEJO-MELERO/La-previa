@@ -51,6 +51,9 @@
   --text-display-xl: 5.25rem;
   --text-display-xl--line-height: 0.88;
 
+  /* Ancho de la referencia (390 px): por debajo, el titular del inicio baja un tamaño para caber a 360. */
+  --breakpoint-xs: 24.375rem;
+
   --tracking-label: 0.08em;
   --tracking-code: 0.3em;
 }

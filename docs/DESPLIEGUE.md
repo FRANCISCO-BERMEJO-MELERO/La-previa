@@ -22,7 +22,7 @@ npx supabase db push
 ```
 
 - El `ref` es la parte de la URL del proyecto: `https://supabase.com/dashboard/project/<ref>`.
-- `db push` pide la contraseña del paso 1.1 y aplica todas las migraciones de `supabase/migrations`: tablas con RLS, la única política de lectura de `rooms`, `rooms` en Realtime, las funciones de los cuatro juegos, las 200 palabras y las 230 preguntas. No hace falta activar ninguna extensión de Postgres.
+- `db push` pide la contraseña del paso 1.1 y aplica todas las migraciones de `supabase/migrations`: tablas con RLS, la única política de lectura de `rooms`, `rooms` en Realtime, las funciones de los siete juegos (Luna llena no trae contenido: solo sus tablas y funciones), el tiempo para votar, los avatares, las 300 palabras en 15 temáticas, las 230 preguntas, los 120 dilemas y las 150 tarjetas. No hace falta activar ninguna extensión de Postgres.
 - Comprueba que están todas: `npx supabase migration list` debe mostrar cada migración en las columnas _Local_ y _Remote_.
 
 **Nunca** ejecutes `npx supabase db reset --linked`: borra la base de datos de producción.
@@ -52,17 +52,20 @@ Cada `git push` a la rama principal publica de nuevo. Si un cambio trae migracio
 
 Con dos o tres móviles de verdad (o un móvil y ventanas de incógnito):
 
-1. Abre la web en el primero, **Crear sala**, tu nombre, **Abrir la sala**.
-2. En el segundo, entra con el código. En el tercero, escanea el QR (**Mostrar QR**). Los tres ven la lista actualizarse sola.
-3. **Empezar partida**: los jugadores normales ven la misma palabra; el impostor, solo la categoría.
-4. Vota, cierra la votación, sigue hasta el resultado y **Volver a jugar**.
-5. **Cambiar de juego** y juega una partida de 5 rondas de **¿Quién es más probable que…?**, **¿Quién lo dijo?** y **Una sola pista**. En esta última, quien adivina no ve la palabra hasta el final.
-6. Bloquea un móvil un minuto y desbloquéalo: vuelve a su pantalla sin pedir el nombre.
-7. Abre `https://<tu-dominio>/dev/componentes`: tiene que responder que la página no existe.
+1. Abre la web en el primero, **Crear sala**, tu nombre y un avatar, **Abrir la sala**.
+2. En el segundo, entra con el código. En el tercero, toca **Escanear QR** en el inicio y apunta al QR del primero (**Mostrar QR**): el navegador pide permiso para la cámara. Los tres ven la lista actualizarse sola.
+3. Abre **Cómo se juega** y pasa los pasos. Elige **30 s** de tiempo para votar y una temática.
+4. **Empezar partida**: los jugadores normales ven la misma palabra; el impostor, solo la temática. **Pasar a votación**: todos ven la cuenta atrás y, sin que nadie cierre, la votación se cierra sola al llegar a cero.
+5. Sigue hasta el resultado: la píldora dice **Fin de la partida** y el anfitrión ve **Volver a jugar** y **Cambiar de juego**.
+6. **Cambiar de juego** y juega una partida de 5 rondas de **¿Quién es más probable que…?**, **¿Quién lo dijo?**, **Una sola pista**, **¿Qué prefieres?** y **Palabras prohibidas**. En Una sola pista, quien adivina no ve la palabra hasta el final; en Palabras prohibidas, quien adivina no ve la tarjeta.
+7. Bloquea un móvil un minuto y desbloquéalo: vuelve a su pantalla sin pedir el nombre.
+8. Abre `https://<tu-dominio>/dev/componentes`: tiene que responder que la página no existe.
 
 ## Avisos
 
 - **Pausa del plan gratuito.** Supabase pausa los proyectos gratuitos tras 7 días sin actividad. Abre la web el día antes de la fiesta; si está pausado, se reactiva desde el panel de Supabase con **Restore project**.
 - **Salas abandonadas.** No se borran solas en esta versión (ver `docs/CONTEXTO.md` §10). Ocupan muy poco; si algún día hace falta, la vía prevista es una tarea `pg_cron` que borre salas con `last_activity_at` antiguo.
+- **Cámara.** Escanear el QR desde el inicio solo funciona con HTTPS (Vercel ya lo da) y con permiso de cámara en el navegador. Si alguien lo deniega, la app le pide escribir el código; para volver a darlo hay que ir a los ajustes del navegador.
 - **Palabras.** Para quitar o añadir palabras, crea una migración nueva (por ejemplo, `update public.words set active = false where word = '…'`) y aplícala con `npx supabase db push`. La lista legible está en `docs/PALABRAS.md`. Una sola pista usa las mismas palabras.
-- **Preguntas.** Igual con las de ¿Quién es más probable que…? y ¿Quién lo dijo? (tabla `public.prompts`): una migración nueva que las desactive o añada. La lista legible está en `docs/PREGUNTAS.md`.
+- **Preguntas.** Igual con las de ¿Quién es más probable que…?, ¿Quién lo dijo? y los dilemas de ¿Qué prefieres? (tabla `public.prompts`): una migración nueva que las desactive o añada. La lista legible está en `docs/PREGUNTAS.md`.
+- **Tarjetas.** Igual con las de Palabras prohibidas (tabla `public.taboo_cards`). La base de datos rechaza una tarjeta que no tenga cinco prohibidas distintas entre sí y de la palabra. La lista legible está en `docs/TARJETAS.md`.

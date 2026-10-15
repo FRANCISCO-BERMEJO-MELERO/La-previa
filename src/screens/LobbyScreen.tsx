@@ -1,22 +1,27 @@
-import type { ReactNode } from 'react';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Dialog } from '@/components/Dialog';
 import { OfflineNotice } from '@/components/OfflineNotice';
-import { PillButton } from '@/components/PillButton';
+import { HeaderAside } from '@/components/HeaderAside';
 import { PlayerChip } from '@/components/PlayerChip';
 import { QrCode } from '@/components/QrCode';
 import { Screen } from '@/components/Screen';
+import { Stepper } from '@/components/Stepper';
 import { WaitingBox } from '@/components/WaitingBox';
+import { configProblem, MIN_LUNA_PLAYERS, type LunaConfig } from '@/games/luna-llena/composition';
+import { LunaSettings } from '@/games/luna-llena/LunaSettings';
+import type { AvatarId } from '@/lib/avatars';
 import { copy } from '@/lib/copy';
 import { impostorLimits } from '@/games/impostor/impostors';
 import { isRoundGame, ROUND_OPTIONS } from '@/lib/rounds';
 import type { ShareOutcome } from '@/lib/share';
 import type { RoomPlayer, Snapshot } from '@/lib/snapshot';
+import { AvatarPicker } from './AvatarPicker';
+import { HowToPlayDialog } from './HowToPlayDialog';
 import { KickableChip } from './KickableChip';
 
 export const MAX_PLAYERS = 16;
-/** Los cuatro juegos piden al menos 3 jugadores (docs/JUEGOS.md §1). */
+/** Todos los juegos piden al menos 3 jugadores (docs/JUEGOS.md §1), salvo Luna llena, que pide 6. */
 export const MIN_PLAYERS = 3;
 
 type LobbyScreenProps = {
@@ -35,9 +40,28 @@ type LobbyScreenProps = {
   onShare: () => void;
   onShowQr: () => void;
   onCloseQr: () => void;
+  howToOpen: boolean;
+  avatarOpen: boolean;
+  onAvatarOpen: () => void;
+  onAvatarClose: () => void;
+  onAvatarChange: (avatar: AvatarId | null) => void;
+  onHowToOpen: () => void;
+  onHowToClose: () => void;
   onImpostorsChange: (count: number) => void;
+  voteSeconds: number | null;
+  onVoteSecondsChange: (seconds: number | null) => void;
+  /** Temáticas de El impostor que hay; vacío mientras llegan. */
+  categories: readonly string[];
+  chosenCategories: readonly string[];
+  topicsOpen: boolean;
+  onTopicsOpen: () => void;
+  onTopicsClose: () => void;
+  onCategoriesChange: (chosen: string[]) => void;
   rounds: number;
   onRoundsChange: (rounds: number) => void;
+  /** Composición de Luna llena: la recomendada mientras el anfitrión no la cambie. */
+  lunaConfig: LunaConfig;
+  onLunaConfigChange: (config: LunaConfig) => void;
   onStart: () => void;
   onKickRequest: (userId: string) => void;
 };
@@ -55,26 +79,51 @@ export function LobbyScreen({
   onShare,
   onShowQr,
   onCloseQr,
+  howToOpen,
+  avatarOpen,
+  onAvatarOpen,
+  onAvatarClose,
+  onAvatarChange,
+  onHowToOpen,
+  onHowToClose,
   onImpostorsChange,
+  voteSeconds,
+  onVoteSecondsChange,
+  categories,
+  chosenCategories,
+  topicsOpen,
+  onTopicsOpen,
+  onTopicsClose,
+  onCategoriesChange,
   rounds,
   onRoundsChange,
+  lunaConfig,
+  onLunaConfigChange,
   onStart,
   onKickRequest,
 }: LobbyScreenProps) {
   const { players, room, me } = snapshot;
   const hostName = players.find((player) => player.user_id === room.host_id)?.name ?? '';
-  const missing = Math.max(0, MIN_PLAYERS - players.length);
+  const minPlayers = room.game === 'luna_llena' ? MIN_LUNA_PLAYERS : MIN_PLAYERS;
+  const missing = Math.max(0, minPlayers - players.length);
+  const lunaProblem = room.game === 'luna_llena' ? configProblem(players.length, lunaConfig) : null;
+  // Por qué no se puede empezar todavía, si no se puede.
+  const startHint =
+    missing > 0
+      ? copy.lobby.needPlayers(minPlayers, missing)
+      : lunaProblem
+        ? copy.lunaLlena.lobby.problems[lunaProblem]
+        : null;
 
   return (
     <Screen
       brand={copy.brand}
       aside={
-        <PillButton
+        <HeaderAside
           tone="tomato"
           tilted
           label={copy.games[room.game].name}
-          hint={copy.room.leave}
-          onClick={onLeaveRequest}
+          onLeave={onLeaveRequest}
         />
       }
       notice={offline ? <OfflineNotice>{copy.errors.offline}</OfflineNotice> : null}
@@ -100,6 +149,9 @@ export function LobbyScreen({
           </p>
         ) : null}
       </Card>
+      <Button variant="accent" fullWidth aria-haspopup="dialog" onClick={onHowToOpen}>
+        {copy.howTo.button}
+      </Button>
 
       <div className="flex items-baseline justify-between">
         <h1 className="font-display text-lg uppercase">{copy.lobby.players}</h1>
@@ -111,6 +163,7 @@ export function LobbyScreen({
             <PlayerChip
               name={player.name}
               joinIndex={index}
+              avatar={player.avatar}
               muted={!player.connected}
               detail={playerDetail(player, room.host_id)}
             />
@@ -128,6 +181,17 @@ export function LobbyScreen({
                 >
                   {chip}
                 </KickableChip>
+              ) : player.user_id === me.user_id ? (
+                <button
+                  type="button"
+                  aria-label={copy.avatars.change}
+                  aria-haspopup="dialog"
+                  disabled={busy}
+                  onClick={onAvatarOpen}
+                  className="w-full rounded-chip text-left"
+                >
+                  {chip}
+                </button>
               ) : (
                 chip
               )}
@@ -145,24 +209,36 @@ export function LobbyScreen({
       <div className="mt-auto flex flex-col gap-5">
         {me.is_host ? (
           <>
-            {isRoundGame(room.game) ? (
+            {room.game === 'luna_llena' ? (
+              <LunaSettings
+                players={players.length}
+                config={lunaConfig}
+                onChange={onLunaConfigChange}
+              />
+            ) : isRoundGame(room.game) ? (
               <RoundsPicker value={rounds} onChange={onRoundsChange} />
             ) : (
-              <ImpostorStepper
-                value={impostors}
-                playerCount={players.length}
-                onChange={onImpostorsChange}
-              />
+              <>
+                <ImpostorStepper
+                  value={impostors}
+                  playerCount={players.length}
+                  onChange={onImpostorsChange}
+                />
+                <VoteTimePicker value={voteSeconds} onChange={onVoteSecondsChange} />
+                {categories.length > 0 ? (
+                  <TopicsRow chosen={chosenCategories} onOpen={onTopicsOpen} />
+                ) : null}
+              </>
             )}
-            {missing > 0 ? (
+            {startHint ? (
               <p id="start-hint" className="text-md font-bold">
-                {copy.lobby.needPlayers(missing)}
+                {startHint}
               </p>
             ) : null}
             <Button
               fullWidth
-              disabled={busy || missing > 0}
-              aria-describedby={missing > 0 ? 'start-hint' : undefined}
+              disabled={busy || startHint !== null}
+              aria-describedby={startHint ? 'start-hint' : undefined}
               onClick={onStart}
             >
               {copy.lobby.start}
@@ -172,6 +248,36 @@ export function LobbyScreen({
           <WaitingBox>{copy.lobby.waitingHost(hostName)}</WaitingBox>
         )}
       </div>
+
+      <Dialog
+        open={avatarOpen}
+        title={copy.avatars.legend}
+        closeLabel={copy.avatars.done}
+        onClose={onAvatarClose}
+      >
+        <AvatarPicker
+          name={me.name}
+          value={players.find((player) => player.user_id === me.user_id)?.avatar ?? null}
+          disabled={busy}
+          onChange={onAvatarChange}
+        />
+      </Dialog>
+
+      {/* Montado solo al abrirlo: cerrado, su título repetiría el nombre del juego en la página. */}
+      {howToOpen ? <HowToPlayDialog open game={room.game} onClose={onHowToClose} /> : null}
+
+      <Dialog
+        open={topicsOpen}
+        title={copy.lobby.topics}
+        closeLabel={copy.lobby.topicsDone}
+        onClose={onTopicsClose}
+      >
+        <TopicsPicker
+          categories={categories}
+          chosen={chosenCategories}
+          onChange={onCategoriesChange}
+        />
+      </Dialog>
 
       <Dialog
         open={qrOpen}
@@ -202,34 +308,141 @@ function ImpostorStepper({
 }) {
   const { min, max } = impostorLimits(playerCount);
   return (
-    <div className="flex items-center justify-between rounded-chip border-3 border-ink bg-paper px-3.5 py-2">
-      <p className="text-base font-bold" id="impostor-count-label">
-        {copy.lobby.impostors}
+    <Stepper
+      id="impostor-count"
+      label={copy.lobby.impostors}
+      value={value}
+      min={min}
+      max={max}
+      fewerLabel={copy.lobby.fewerImpostors}
+      moreLabel={copy.lobby.moreImpostors}
+      onChange={onChange}
+    />
+  );
+}
+
+const VOTE_TIME_OPTIONS = [null, 30, 60, 90] as const;
+
+function VoteTimePicker({
+  value,
+  onChange,
+}: {
+  value: number | null;
+  onChange: (seconds: number | null) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-2 rounded-chip border-3 border-ink bg-paper px-3.5 py-2.5">
+      <p className="text-base font-bold" id="vote-time-label">
+        {copy.lobby.voteTime}
       </p>
-      <div className="flex items-center gap-3.5">
-        <StepButton
-          label={copy.lobby.fewerImpostors}
-          disabled={value <= min}
-          onClick={() => {
-            onChange(value - 1);
-          }}
-        >
-          {copy.lobby.minus}
-        </StepButton>
-        <output aria-labelledby="impostor-count-label" className="font-display text-title">
-          {value}
-        </output>
-        <StepButton
-          label={copy.lobby.moreImpostors}
-          disabled={value >= max}
-          onClick={() => {
-            onChange(value + 1);
-          }}
-        >
-          {copy.lobby.plus}
-        </StepButton>
+      <div role="group" aria-labelledby="vote-time-label" className="grid grid-cols-4 gap-2">
+        {VOTE_TIME_OPTIONS.map((option) => (
+          <button
+            key={String(option)}
+            type="button"
+            aria-label={copy.lobby.voteTimeLabel(option)}
+            aria-pressed={option === value}
+            onClick={() => {
+              onChange(option);
+            }}
+            className={`flex h-11 items-center justify-center rounded-control border-3 border-ink font-display text-lg ${
+              option === value ? 'bg-ink text-paper' : 'bg-paper'
+            }`}
+          >
+            {copy.lobby.voteTimeOption(option)}
+          </button>
+        ))}
       </div>
     </div>
+  );
+}
+
+function TopicsRow({ chosen, onOpen }: { chosen: readonly string[]; onOpen: () => void }) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-chip border-3 border-ink bg-paper px-3.5 py-2">
+      <p className="flex min-w-0 flex-col">
+        <span className="text-base font-bold">{copy.lobby.topics}</span>
+        <span className="truncate text-sm font-medium">{copy.lobby.topicsSummary(chosen)}</span>
+      </p>
+      <button
+        type="button"
+        aria-label={copy.lobby.topicsChooseLabel}
+        aria-haspopup="dialog"
+        onClick={onOpen}
+        className="h-11 shrink-0 rounded-control border-3 border-ink bg-paper px-4 text-md font-bold"
+      >
+        {copy.lobby.topicsChoose}
+      </button>
+    </div>
+  );
+}
+
+/** Una ficha por temática; marcar ninguna es lo mismo que marcarlas todas. */
+function TopicsPicker({
+  categories,
+  chosen,
+  onChange,
+}: {
+  categories: readonly string[];
+  chosen: readonly string[];
+  onChange: (chosen: string[]) => void;
+}) {
+  const toggle = (category: string) => {
+    onChange(
+      chosen.includes(category)
+        ? chosen.filter((item) => item !== category)
+        : categories.filter((item) => item === category || chosen.includes(item)),
+    );
+  };
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="text-md font-medium">{copy.lobby.topicsHint}</p>
+      <ul className="flex flex-wrap gap-2">
+        <li>
+          <TopicChip
+            label={copy.lobby.topicsAll}
+            pressed={chosen.length === 0}
+            onClick={() => {
+              onChange([]);
+            }}
+          />
+        </li>
+        {categories.map((category) => (
+          <li key={category}>
+            <TopicChip
+              label={category}
+              pressed={chosen.includes(category)}
+              onClick={() => {
+                toggle(category);
+              }}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function TopicChip({
+  label,
+  pressed,
+  onClick,
+}: {
+  label: string;
+  pressed: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={pressed}
+      onClick={onClick}
+      className={`min-h-11 rounded-full border-3 border-ink px-3.5 text-md font-bold ${
+        pressed ? 'bg-ink text-paper' : 'bg-paper'
+      }`}
+    >
+      {label}
+    </button>
   );
 }
 
@@ -258,29 +471,5 @@ function RoundsPicker({ value, onChange }: { value: number; onChange: (rounds: n
         ))}
       </div>
     </div>
-  );
-}
-
-function StepButton({
-  label,
-  disabled,
-  onClick,
-  children,
-}: {
-  label: string;
-  disabled: boolean;
-  onClick: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      disabled={disabled}
-      onClick={onClick}
-      className="flex size-11 items-center justify-center rounded-control border-3 border-ink bg-paper text-2xl font-bold disabled:border-dashed disabled:bg-ground-soft"
-    >
-      {children}
-    </button>
   );
 }

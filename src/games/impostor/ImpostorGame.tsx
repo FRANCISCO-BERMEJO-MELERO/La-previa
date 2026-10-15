@@ -1,7 +1,7 @@
 'use client';
 
-import type { PillButtonTone } from '@/components/PillButton';
-import { useState, type ReactNode } from 'react';
+import type { HeaderTone } from '@/components/HeaderAside';
+import { useEffect, useEffectEvent, useState, type ReactNode } from 'react';
 import { WaitingBox } from '@/components/WaitingBox';
 import {
   backToLobby,
@@ -13,6 +13,7 @@ import {
   type ActionResult,
 } from '@/lib/actions';
 import { copy } from '@/lib/copy';
+import { useCountdown } from '@/lib/use-countdown';
 import type { ImpostorGameState, Snapshot } from '@/lib/snapshot';
 import { DealScreen } from './DealScreen';
 import {
@@ -34,11 +35,14 @@ import { viewFor } from './view';
 import { VoteScreen } from './VoteScreen';
 import { VoteWaitScreen } from './VoteWaitScreen';
 
+const CLOSE_RETRIES = 3;
+const CLOSE_RETRY_MS = 1500;
+
 type ImpostorGameProps = {
   snapshot: Snapshot;
   game: ImpostorGameState;
   /** Píldora de la cabecera que abre el diálogo de salir. */
-  pill: (label: string, tone?: PillButtonTone) => ReactNode;
+  pill: (label: string, tone?: HeaderTone) => ReactNode;
   notice: ReactNode;
   busy: boolean;
   error?: string;
@@ -46,6 +50,8 @@ type ImpostorGameProps = {
   run: (action: () => Promise<ActionResult<Snapshot>>) => Promise<boolean>;
   onKickRequest: (userId: string) => void;
   onChangeGame: () => void;
+  /** Temáticas elegidas en la sala de espera, para volver a jugar con las mismas. */
+  categories: readonly string[];
 };
 
 /** Partida de El impostor: acciones del juego y pantalla que toca según la foto. */
@@ -55,10 +61,37 @@ export function ImpostorGame({
   pill,
   run,
   onChangeGame,
+  categories,
   ...rest
 }: ImpostorGameProps) {
   const [voteTarget, setVoteTarget] = useState<string | null>(null);
   const roomId = snapshot.room.id;
+  const deadline = game.phase === 'voting' ? game.voting_deadline : null;
+  const timeLeft = useCountdown(deadline, snapshot.server_time);
+  const closeWhenDue = useEffectEvent(() => closeVoting(roomId));
+
+  // Al llegar a cero, cada móvil pide cerrar una vez: el primero lo consigue y la foto nueva llega
+  // a todos por la sincronización. Si la base de datos aún no ve pasada la hora (relojes un poco
+  // distintos), se reintenta. Los demás fallos (otro ya la cerró) no tienen nada que enseñar.
+  useEffect(() => {
+    if (deadline === null || timeLeft !== 0) return;
+    let cancelled = false;
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    const attempt = (triesLeft: number) => {
+      void closeWhenDue().then((result) => {
+        if (cancelled || result.ok || result.error !== 'not_host' || triesLeft === 0) return;
+        retry = setTimeout(() => {
+          attempt(triesLeft - 1);
+        }, CLOSE_RETRY_MS);
+      });
+    };
+    attempt(CLOSE_RETRIES);
+    return () => {
+      cancelled = true;
+      clearTimeout(retry);
+    };
+  }, [deadline, timeLeft]);
+
   const view = viewFor(snapshot);
   if (view === 'lobby') return null;
 
@@ -68,8 +101,15 @@ export function ImpostorGame({
       snapshot={snapshot}
       game={game}
       view={view}
-      roomPill={pill(copy.room.pill(snapshot.room.code))}
-      votePill={pill(copy.vote.pill, 'sky')}
+      roomPill={pill(
+        // A partir de la segunda ronda se dice, para que no parezca una partida nueva.
+        game.phase === 'finished'
+          ? copy.result.finished
+          : game.round > 1
+            ? copy.reveal.roundPill(game.round)
+            : copy.room.pill(snapshot.room.code),
+      )}
+      votePill={pill(timeLeft === null ? copy.vote.pill : copy.vote.pillTimed(timeLeft), 'sky')}
       outPill={pill(copy.out.pill, 'lilac')}
       voteTarget={voteTarget}
       onSelectTarget={setVoteTarget}
@@ -90,7 +130,11 @@ export function ImpostorGame({
       }}
       onPlayAgain={() => {
         void run(async () => {
-          const again = await startGame(roomId, game.impostor_count);
+          const again = await startGame(roomId, {
+            impostorCount: game.impostor_count,
+            categories,
+            voteSeconds: game.vote_seconds,
+          });
           // Si ya no vale (se ha ido gente), se vuelve a la sala de espera para ajustarlo.
           const noLongerValid =
             !again.ok &&
@@ -158,6 +202,7 @@ function GameView({
     userId: player.user_id,
     name: player.name,
     joinIndex: index,
+    avatar: player.avatar,
     muted: !player.connected,
   }));
 
@@ -228,6 +273,7 @@ function GameView({
           kind={outcome.type}
           name={outcome.name}
           joinIndex={who?.joinIndex ?? 0}
+          avatar={who?.avatar}
           wasImpostor={outcome.was_impostor}
           summary={
             game.game_over

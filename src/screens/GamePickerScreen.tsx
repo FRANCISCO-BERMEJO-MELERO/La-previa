@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 import { Button } from '@/components/Button';
 import { OfflineNotice } from '@/components/OfflineNotice';
-import { PillButton } from '@/components/PillButton';
+import { HeaderAside } from '@/components/HeaderAside';
 import { Screen } from '@/components/Screen';
+import { RoleArt } from '@/games/luna-llena/RoleArt';
 import { copy } from '@/lib/copy';
 import { gameIds, type GameId } from '@/lib/snapshot';
 
@@ -30,13 +31,7 @@ export function GamePickerScreen({
   return (
     <Screen
       brand={copy.brand}
-      aside={
-        <PillButton
-          label={copy.room.pill(roomCode)}
-          hint={copy.room.leave}
-          onClick={onLeaveRequest}
-        />
-      }
+      aside={<HeaderAside label={copy.room.pill(roomCode)} onLeave={onLeaveRequest} />}
       notice={offline ? <OfflineNotice>{copy.errors.offline}</OfflineNotice> : null}
     >
       <h1 className="font-display text-4xl uppercase">{copy.games.title}</h1>
@@ -60,20 +55,6 @@ export function GamePickerScreen({
                 <span className="text-label font-bold">{copy.games[game].players}</span>
               </span>
             </button>
-          </li>
-        ))}
-      </ul>
-      <h2 className="text-label font-bold uppercase tracking-label">{copy.games.soon}</h2>
-      <ul className="grid grid-cols-2 gap-3">
-        {upcoming.map(({ title, background, cover }) => (
-          <li key={title} className="overflow-hidden rounded-chip border-3 border-ink bg-paper">
-            <div
-              aria-hidden="true"
-              className={`flex h-17 items-center justify-center gap-2 border-b-3 border-ink ${background}`}
-            >
-              {cover}
-            </div>
-            <p className="px-2.5 py-2 text-sm font-bold">{title}</p>
           </li>
         ))}
       </ul>
@@ -114,6 +95,9 @@ const coverBackgrounds: Record<GameId, string> = {
   probable: 'bg-sky',
   quien_lo_dijo: 'bg-lilac',
   una_pista: 'bg-lime',
+  que_prefieres: 'bg-orange',
+  palabras_prohibidas: 'bg-lilac',
+  luna_llena: 'bg-ink',
 };
 
 function ImpostorFaces() {
@@ -172,11 +156,46 @@ function RepeatedClues() {
   );
 }
 
+/** Las dos fichas entre las que se elige. */
+function TwoOptions() {
+  return (
+    <>
+      <span className="flex size-19 -rotate-5 items-center justify-center rounded-control border-3 border-ink bg-paper font-display text-4xl">
+        {copy.games.covers.optionA}
+      </span>
+      <span className="flex size-19 rotate-5 items-center justify-center rounded-control border-3 border-ink bg-ink font-display text-4xl text-paper">
+        {copy.games.covers.optionB}
+      </span>
+    </>
+  );
+}
+
+/** La palabra que no se puede decir. */
+function BannedWord() {
+  return (
+    <span className="rotate-3 rounded-control border-3 border-ink bg-paper px-5 py-1 font-display text-4xl uppercase line-through decoration-4">
+      {copy.games.covers.banned}
+    </span>
+  );
+}
+
+/** La cabeza del lobo de la carta, sobre su color. */
+function WolfMoon() {
+  return (
+    <span className="w-40 -rotate-3 overflow-hidden rounded-control border-3 border-paper bg-tomato">
+      <RoleArt role="wolf" decorative />
+    </span>
+  );
+}
+
 const covers: Record<GameId, ReactNode> = {
   impostor: <ImpostorFaces />,
   probable: <ProbableFaces />,
   quien_lo_dijo: <QuienLoDijoBubble />,
   una_pista: <RepeatedClues />,
+  que_prefieres: <TwoOptions />,
+  palabras_prohibidas: <BannedWord />,
+  luna_llena: <WolfMoon />,
 };
 
 function Face() {
@@ -187,30 +206,3 @@ function Face() {
     </span>
   );
 }
-
-/** Juegos que aún no se pueden elegir, con su portada hecha con formas. */
-const upcoming = [
-  {
-    title: copy.games.upcoming.banned,
-    background: 'bg-lilac',
-    cover: (
-      <span className="rotate-3 rounded-control border-3 border-ink bg-paper px-2.5 py-0.5 font-display text-lg uppercase line-through decoration-4">
-        {copy.games.covers.banned}
-      </span>
-    ),
-  },
-  {
-    title: copy.games.upcoming.wouldYouRather,
-    background: 'bg-orange',
-    cover: (
-      <>
-        <span className="flex size-10 -rotate-5 items-center justify-center rounded-control border-3 border-ink bg-paper font-display text-xl">
-          {copy.games.covers.optionA}
-        </span>
-        <span className="flex size-10 rotate-5 items-center justify-center rounded-control border-3 border-ink bg-ink font-display text-xl text-paper">
-          {copy.games.covers.optionB}
-        </span>
-      </>
-    ),
-  },
-];

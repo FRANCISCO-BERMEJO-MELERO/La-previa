@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/Button';
-import { joinRoom } from '@/lib/actions';
+import { joinRoom, setAvatar } from '@/lib/actions';
+import type { AvatarId } from '@/lib/avatars';
 import { copy, errorMessage, type ActionError } from '@/lib/copy';
 import { nameErrorText } from '@/lib/name-error';
 import type { Snapshot } from '@/lib/snapshot';
@@ -34,6 +35,7 @@ export function RoomEntry({ code, fresh }: RoomEntryProps) {
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState<ActionError | null>(null);
   const [busy, setBusy] = useState(false);
+  const [avatar, setChosenAvatar] = useState<AvatarId | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -53,11 +55,18 @@ export function RoomEntry({ code, fresh }: RoomEntryProps) {
     setBusy(true);
     setNameError(null);
     const result = await joinRoom(code, name);
+    if (result.ok && avatar !== null) {
+      // Si no se guarda el avatar, se entra igual con la foto de unirse.
+      const withAvatar = await setAvatar(result.data.room.id, avatar);
+      setBusy(false);
+      setEntry({ kind: 'member', snapshot: withAvatar.ok ? withAvatar.data : result.data });
+      return;
+    }
     setBusy(false);
     if (result.ok) setEntry({ kind: 'member', snapshot: result.data });
     else if (result.error === 'room_not_found') setEntry({ kind: 'gone' });
     else setNameError(result.error);
-  }, [code, name]);
+  }, [code, name, avatar]);
 
   switch (entry.kind) {
     case 'checking':
@@ -93,6 +102,8 @@ export function RoomEntry({ code, fresh }: RoomEntryProps) {
             setName(value);
             setNameError(null);
           }}
+          avatar={avatar}
+          onAvatarChange={setChosenAvatar}
           onSubmit={() => {
             void join();
           }}

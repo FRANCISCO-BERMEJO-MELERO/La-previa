@@ -271,3 +271,145 @@ Migración: `supabase/migrations/20261009130100_quien_lo_dijo_prompts.sql`. Preg
 - ¿Qué película veríais todos juntos?
 - ¿Qué palabra describe mejor a este grupo?
 - ¿Qué canción no puede faltar en una fiesta del grupo?
+
+## ¿Qué prefieres? (120)
+
+Migración: `supabase/migrations/20261011100100_que_prefieres_prompts.sql`. Cada línea es un dilema: la opción A, un punto medio y la opción B. Se pintan como dos botones bajo "¿Qué prefieres?", así que ninguna pasa de 50 caracteres.
+
+### Fiesta (20)
+
+- Poner la música toda la noche · Elegir dónde se cena
+- Bailar en el centro de la pista · Hablar toda la noche en un rincón
+- Una fiesta de disfraces · Una fiesta en pijama
+- Un concierto en primera fila · Un concierto al fondo con sitio para bailar
+- Organizar la fiesta · Llegar cuando ya está montada
+- Karaoke con público · Karaoke solo con tu grupo
+- Fiesta en la playa · Fiesta en una azotea
+- Que suene siempre tu canción favorita · No volver a oír la canción que más odias
+- Una fiesta sorpresa para ti · Preparar una fiesta sorpresa a otra persona
+- Cenar en casa con amigos · Salir a cenar fuera
+- Una boda de día en el campo · Una boda de noche en la ciudad
+- Ser la última persona en irse · Ser la primera persona en llegar
+- Bailar sin saberte la coreografía · Saberte la coreografía y no poder bailarla
+- Un festival de tres días · Tres conciertos en tres noches
+- Juegos de mesa toda la noche · Discoteca toda la noche
+- Nochevieja en casa · Nochevieja en la plaza del pueblo
+- Hacer tú todas las fotos de la fiesta · Salir en todas las fotos de la fiesta
+- Ir con la misma ropa que otra persona · Ir con disfraz a una fiesta sin disfraces
+- Que te canten el cumpleaños en un restaurante · Que nadie se acuerde de tu cumpleaños
+- Elegir la película de la noche · Elegir la pizza de la noche
+
+### Viajes (20)
+
+- Vacaciones en la playa · Vacaciones en la montaña
+- Un viaje sin ningún plan · Un viaje con todo organizado
+- Viajar siempre en tren · Viajar siempre en avión
+- Dormir en una tienda de campaña · Dormir en un hotel sin ventanas
+- Recorrer Europa en furgoneta · Pasar un mes en una isla
+- Viajar con amigos · Viajar sin compañía
+- Diez ciudades en diez días · Diez días en una sola ciudad
+- Perder la maleta a la ida · Perder el móvil a la vuelta
+- Ir siempre en ventanilla · Ir siempre en pasillo
+- Un crucero · Una ruta en bici
+- Ver una aurora boreal · Ver un eclipse total
+- Un fin de semana en París · Un fin de semana en Roma
+- Vacaciones solo en invierno · Vacaciones solo en verano
+- Probar todo lo típico del sitio · Comer solo lo que ya conoces
+- Hacer el Camino de Santiago · Hacer una ruta en coche por la costa
+- Madrugar para ver el amanecer · Trasnochar para ver las estrellas
+- Perderte en una ciudad sin mapa · Seguir una guía minuto a minuto
+- Ir detrás todo el viaje · Conducir todo el viaje
+- Visitar Japón · Visitar México
+- Hacer fotos de todo · No sacar el móvil en todo el viaje
+
+### Comida (20)
+
+- Tortilla con cebolla · Tortilla sin cebolla
+- Pizza con piña · Pizza sin queso
+- Comer solo dulce · Comer solo salado
+- Desayunar churros · Desayunar tostadas
+- Paella todos los domingos · Cocido todos los domingos
+- Renunciar al chocolate · Renunciar al queso
+- Cocinar para todos · Fregar después
+- Comer siempre frío · Comer siempre picante
+- Croquetas de jamón · Croquetas de pollo
+- Helado en invierno · Sopa en verano
+- No volver a tomar café · No volver a comer pan
+- Comer siempre con palillos · Comer siempre con las manos
+- Probar insectos fritos · Probar una fruta que huele fatal
+- Un bocadillo perfecto · Un menú de diez platos normalito
+- Elegir siempre el postre · Elegir siempre el primer plato
+- Ketchup en todo · Mayonesa en todo
+- Brunch el domingo · Cena tardía el sábado
+- Una hamburguesa · Un kebab
+- Comer siempre tu plato favorito · Probar un plato nuevo cada día
+- Quedarte sin aceitunas para siempre · Quedarte sin patatas fritas para siempre
+
+### Vida cotidiana (20)
+
+- Madrugar siempre · Trasnochar siempre
+- Vivir sin música · Vivir sin series
+- Una semana sin móvil · Una semana sin agua caliente
+- Vivir en el centro · Vivir en el campo
+- Tener un perro · Tener un gato
+- Ducharte por la mañana · Ducharte por la noche
+- Saber el final de todas las películas · No ver nunca el final de ninguna
+- Trabajar desde casa · Trabajar en una oficina con amigos
+- Solo mensajes de voz · Solo mensajes escritos
+- Dormir con calor · Dormir con frío
+- Un vecino que toca la batería · Un vecino que hace obras sin parar
+- Lavar los platos · Tender la ropa
+- La batería siempre al cien · El wifi siempre rapidísimo
+- Ver una serie entera en un día · Ver un capítulo a la semana
+- Llegar siempre diez minutos antes · Llegar siempre cinco minutos tarde
+- Escuchar una sola canción toda la vida · Escuchar solo canciones que no conoces
+- Que lean tus mensajes en voz alta · Que vean tu historial de búsqueda
+- Domingo de sofá · Domingo de excursión
+- Un día sin móvil · Un día sin hablar
+- Hacer la cama todos los días · No hacerla nunca
+
+### Superpoderes (20)
+
+- Volar · Ser invisible
+- Leer mentes · Ver el futuro
+- Teletransportarte · Detener el tiempo
+- Hablar con los animales · Hablar todos los idiomas
+- No necesitar dormir · No necesitar comer
+- Respirar bajo el agua · Saltar diez metros
+- Recordarlo todo · Olvidar lo que quieras
+- Viajar al pasado · Viajar al futuro
+- Saber siempre dónde están tus llaves · Encontrar siempre aparcamiento
+- Controlar el clima · Controlar el fuego
+- Atravesar paredes · Mover cosas con la mente
+- Cantar como nadie · Bailar como nadie
+- Pausar una conversación para pensar · Rebobinar diez segundos
+- Saber cocinar cualquier plato · Saber tocar cualquier instrumento
+- Ver a través de las paredes · Oír lo que se dice en otra habitación
+- Un clon que vaya a clase o al trabajo · Dormir dos horas y descansar como ocho
+- Hacer reír a cualquiera · Convencer a cualquiera
+- Correr como un coche · Nadar como un delfín
+- Que no te piquen nunca los mosquitos · Que no te entre nunca sueño en el cine
+- Acertar siempre con los regalos · Acertar siempre con la película
+
+### Absurdos (20)
+
+- Ser invisible solo cuando nadie mira · Volar solo a un palmo del suelo
+- Que suene una trompeta al estornudar · Que suene un aplauso al reírte
+- Hablar siempre rimando · Hablar siempre cantando
+- Una banda sonora para tu vida · Un narrador que comenta lo que haces
+- Un gato que habla solo para quejarse · Un perro que habla solo para decir verdades
+- Llevar capa siempre · Llevar casco siempre
+- Que llueva queso una vez al año · Que nieve azúcar una vez al año
+- Vivir en una casa de chocolate · Vivir en un barco pirata
+- Andar siempre hacia atrás · Hablar siempre al revés
+- Que tu sombra tenga vida propia · Que tu reflejo te guiñe el ojo
+- Un dinosaurio del tamaño de un gato · Un gato del tamaño de un dinosaurio
+- Contestar siempre con una pregunta · Contestar siempre con un refrán
+- Que todas las puertas chirríen · Que todas las sillas cojeen
+- Bailar cada vez que suena un móvil · Aplaudir cada vez que oyes tu nombre
+- Comer sopa con tenedor · Comer helado con cuchillo
+- Ir a todas partes en patines · Ir a todas partes a caballo
+- Un móvil que solo escribe emojis · Un móvil que solo escribe en mayúsculas
+- Vivir en una película de miedo · Vivir en un musical
+- Una pelea de almohadas cada lunes · Una guerra de agua cada viernes
+- Una canción pegada en la cabeza un mes · Olvidar cada canción al terminar de oírla

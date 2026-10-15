@@ -15,7 +15,7 @@ export function Screen({ brand, aside, notice, bare = false, children }: ScreenP
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-5 px-6 pt-7 pb-6">
       {bare ? null : (
-        <header className="flex items-center justify-between gap-3">
+        <header className="flex flex-wrap items-center justify-between gap-3">
           <p className="font-display text-title uppercase">{brand}</p>
           {aside}
         </header>

@@ -9,7 +9,7 @@ import type { Player, RankingRow } from './game-view';
 type ResultScreenProps = GameScreenProps & {
   /** Píldora de la tarjeta, con el color de acento del juego. */
   pill: string;
-  accent: 'sky' | 'lilac' | 'lime';
+  accent: 'sky' | 'lilac' | 'lime' | 'orange' | 'tomato';
   /** Los de más puntos; vacío si nadie ha puntuado. */
   leaders: Player[];
   ranking: RankingRow[];
@@ -39,7 +39,11 @@ export function ResultScreen({ pill, accent, leaders, ranking, ...chrome }: Resu
             <span className="w-8 shrink-0 font-display text-lg">
               {copy.rounds.position(row.position)}
             </span>
-            <Avatar name={row.player.name} joinIndex={row.player.joinIndex} />
+            <Avatar
+              name={row.player.name}
+              joinIndex={row.player.joinIndex}
+              avatar={row.player.avatar}
+            />
             <span className="min-w-0 flex-1 truncate text-base font-bold">{row.player.name}</span>
             <span className="shrink-0 text-sm font-bold">{copy.rounds.points(row.score)}</span>
           </li>

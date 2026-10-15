@@ -102,6 +102,6 @@ test('10.9 · ¿Quién lo dijo? con 4 jugadores y 5 rondas, sin autor en la red 
     await expect(page.getByRole('heading', { name: 'Clasificación' })).toBeVisible();
   }
   await expect(pageOf(players, 'Lucía').getByRole('status')).toHaveText(
-    'Fran decide si se vuelve a jugar',
+    'Fran elige si jugáis otra o cambiáis de juego',
   );
 });

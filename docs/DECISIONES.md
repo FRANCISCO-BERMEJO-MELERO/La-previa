@@ -1,5 +1,294 @@
 # Decisiones
 
+## 2026-10-12 · D.2 · Luna llena sin veredicto
+
+Fran decide quitar la segunda votación del juicio (condenar o salvar) que pide `docs/PLAN-5.md` §3, porque la considera redundante con la acusación. El plan no se toca; esta entrada manda sobre él en este punto.
+
+- **Nuevo juicio.** El más votado en la acusación (contando doble al alcalde) va a la defensa, donde dice sus últimas palabras mientras todos ven quién votó a quién. Al pulsar el narrador "A la horca", sube a la horca. Con empate o sin votos no hay acusado y cae la noche, como antes.
+- **Ejecución.** Enseña al ahorcado con su carta y otra vez quién votó a quién en la acusación. Ya no existe el acusado que se salva, así que desaparecen la clave del guion `spared` y la frase de "condenar o salvar"; `announcement.spared` queda siempre nulo.
+- **Base de datos.** Migración nueva: sin fase `verdict`, sin `luna_llena_verdict` ni votos de veredicto (`luna_votes.condemn` desaparece). Continuar desde la defensa con acusado lo ahorca (`private.luna_hang`). El bufón ahorcado sigue ganando.
+- **Cliente.** Sin pantallas de veredicto ni del acusado esperando; `viewFor` ya no necesita saber quién mira. El código de error `is_accused` deja de usarse y sale del cliente. El guion de la defensa pasa a "tienes la palabra: son tus últimas palabras".
+- **Pruebas.** Las pgTAP, unitarias y e2e de Luna llena que usaban el veredicto se adaptan; en las pgTAP, el acusado de varias pruebas pasa a ser un aldeano para que ahorcarlo no acabe la partida. De paso, el ayudante `act()` de las e2e espera a que llegue cada acción de noche: una acción perdida dejó una vez la noche sin cerrar.
+
+## 2026-10-11 · 32.2 y 32.3 · Repaso de anchos y accesibilidad de Luna llena
+
+`accessibility-luna.spec.ts` juega con 16 jugadores de nombre de 14 caracteres y la composición recomendada (todos los roles). En la sala de espera, las cartas, la noche del lobo con las marcas de la manada, la de la vidente y la de quien sospecha, el amanecer con el aviso de los enamorados, el espectador, el alcalde, el debate con sus votos, la acusación, la defensa con quince votos, el veredicto (también el del acusado), la ejecución y el resultado comprueba, a 360, 390 y 430 px, que nada desborda, que todo lo pulsable mide 44 px o más y que hay un solo `h1`. Para llegar al final sin jugar tres días, los lobos se van de la sala, que también prueba el traspaso del narrador si el anfitrión era lobo. No hizo falta ningún cambio.
+
+## 2026-10-11 · 32.4 · Revisión contra el plan de Luna llena
+
+Repaso de las secciones 1 a 10 de `docs/PLAN-5.md`, una por una, y de su "Fuera de alcance".
+
+- **Corregido.** La §9 pide que la elección de alcalde tenga resultado público. La foto ya traía los votos en el debate de ese día, pero la pantalla no los enseñaba. Ahora el debate enseña "Así se eligió al alcalde", agrupado por votado y sin voto doble. La agrupación de la defensa y la del alcalde son la misma función (`voteGroups`).
+- **Añadido a la foto, sin estar en el plan.** `my.vote` (el voto propio en la votación en curso, para que quien recarga lo vea) y `my.chosen_lovers` (Cupido sabe a quién enlazó). Ninguno da información ajena.
+- **Ya anotado antes.** El ganador en `luna_state.winner` (27.3), `kind` y `resume` en el anuncio (28.4 y 29.6), la clave `left` del guion y los datos `lover` y `mayor` de la narración (29.1).
+- **Fuera de alcance.** No hay bruja ni otros roles, los enamorados no son un bando, no hay voz, sonidos, temporizadores, sucesor del alcalde, chats, estadísticas ni tema oscuro, y solo están las siete ilustraciones del anexo.
+
+## 2026-10-11 · 31.1 a 31.6 · Pantallas del día, el juicio y el final
+
+Ninguna tiene maqueta; se construyen con las piezas existentes y la tarjeta protagonista, como pide el plan.
+
+- **31.1 y 31.2 juntas.** Alcalde y acusación comparten la misma pantalla de votar, así que van en un commit.
+- **Distintivo del alcalde.** Píldora "Alcalde" en `lime` junto al nombre en las listas para elegir, y una línea con su nombre en la pantalla del debate. Un alcalde muerto deja de llevarlo.
+- **Mientras se vota.** Tras votar solo se ve el propio voto y cuántos faltan, nunca a quién han votado los demás.
+- **Ejecución por abandono.** El mismo marco que la ejecución de un juicio, con la píldora "Se ha ido" y sin votos.
+- **Espectador.** Los muertos ven su tarjeta de "Has muerto", el anuncio en curso, de noche lo que marca cada uno en directo, los enamorados y todos los roles. No ven el botón de volver a ver la carta. Si el narrador muere, su caja sigue al pie.
+- **Resultado.** El titular es "¡Has ganado!" o "Has perdido" según el bando: el pueblo gana con todos menos lobos y bufón; el bufón gana solo. Quien no jugaba ve el bando ganador como titular.
+- **Volver a jugar.** Se empieza otra con la misma composición. Si ya no vale para los que quedan, se usa la recomendada; si no hay jugadores bastantes, se vuelve a la sala de espera, como en los demás juegos.
+
+## 2026-10-11 · 30.4 · Sala de espera de Luna llena
+
+- **Recomendada hasta que se toque.** Mientras el anfitrión no cambie nada, la composición es la recomendada para los jugadores que haya y se recalcula sola si entra o sale alguien. En cuanto cambia los lobos o un rol, se queda con la suya; la línea de composición sigue recalculando los aldeanos. Al empezar, la recomendada se envía nula y la calcula la base de datos con los jugadores de ese momento.
+- **Solo la ve el anfitrión.** La composición vive en el estado de la pantalla del anfitrión, como el número de impostores, así que los demás no la ven hasta el reparto. Para que la vieran habría que guardarla en la sala, y eso pide una RPC y un campo nuevos que el plan no menciona.
+- **Aviso.** Si la composición no vale, el botón de empezar se desactiva y el motivo aparece encima, en el mismo sitio que "faltan jugadores". `needPlayers` recibe ahora el mínimo de cada juego (6 en Luna llena); el texto para 3 no cambia.
+- **Lo común.** El contador con "−" y "+" lo usan ya dos juegos (impostores y lobos), así que sale de la sala de espera a `src/components/Stepper.tsx`. Las pruebas de El impostor no cambian.
+- **Roles opcionales.** Cada uno es un botón con `aria-pressed`, su dibujo en pequeño y su nombre; apagado, con borde discontinuo.
+
+## 2026-10-11 · 30.3 y 32.1 · Esquema, acciones y el juego en el selector
+
+- **El selector se adelanta.** Al añadir `luna_llena` a la lista de juegos, los tipos obligan a darle textos, portada y pasos de "Cómo se juega" (`Record<GameId, …>`). Esa es la 32.1, que se hace aquí: portada con la cabeza del lobo sobre `tomato` en un fondo `ink`, "De 6 a 16 jugadores" y cuatro pasos con los dibujos de los roles en pequeño.
+- **Prueba del selector.** `GamePickerScreen.test.tsx` contaba seis juegos; ahora cuenta siete, con Luna llena la última, y comprueba su rango. Es el único cambio en una prueba existente, y lo exige el plan.
+- **No va por rondas.** `isRoundGame` excluye también a Luna llena.
+- **Arranque provisional.** Hasta que la sala de espera deje elegir la composición (30.4), "Empezar partida" envía la recomendada (`wolves` y `roles` nulos).
+- **Roles en el cliente.** La lista de roles vive en `src/games/luna-llena/roles.ts` y la foto la importa de ahí, como hace con los avatares.
+- **Tamaño del nombre en la carta.** El plan pide de 46 a 56 px "según quepa". No hay token entre 48 y 68 px y no se añaden tokens, así que el nombre usa `fitDisplay` con tope en `text-display-md` (48 px): "LOBO" sale a 48 px y "PROTECTOR" baja hasta caber a 360 px.
+
+## 2026-10-11 · 29.6 y 29.7 · Abandono y resto de la foto
+
+- **Abandono tras un juicio.** El plan dice que, si alguien se va de día, se vuelve al debate. Si se va durante la ejecución, o durante el disparo del cazador que la sigue, el juicio del día ya ha terminado; volver al debate permitiría un segundo juicio. En ese caso se sigue con la noche siguiente. El anuncio de tipo `left` guarda a dónde se vuelve en `resume` (`night`, `day` o `next_night`).
+- **Votos cancelados.** Al volver al debate se borran la acusación y el veredicto de ese día, y también la elección de alcalde si estaba en curso. Un alcalde ya elegido ese día se mantiene.
+- **Cazador muerto que se va.** Si aún no había disparado, pierde el disparo. Si estaba en su turno, se vuelve al anuncio sin disparo.
+- **29.7.** `public_votes`, `accused_id`, `mayor_id` y todas las claves de `narration` llegaron con la foto en la 28.6. Esta tarea añade las pruebas de las claves que faltaban.
+
+## 2026-10-11 · 29.2 y 29.3 · Alcalde y juicio
+
+Las dos votaciones comparten la función de votar, el cierre automático y el forzado, así que van juntas.
+
+- **Alcalde sin votos.** Si nadie vota, todos los vivos empatan a cero y el azar elige entre ellos, como en cualquier empate.
+- **Votos del alcalde a la vista.** Se ven durante el debate del día en que se eligió. En la acusación y el veredicto dejan de verse.
+- **Bufón ahorcado.** Al ahorcarlo se fija `luna_state.winner = 'jester'`, y la partida termina al continuar desde la ejecución, como pide el plan.
+- **Veredicto sin respuesta.** Un veredicto nulo lanza `invalid_option`, el código que ya existe para "elige una de las dos".
+
+## 2026-10-11 · 29.1, 29.4 y 29.5 · Continuar, cazador y victoria
+
+Continuar desde un anuncio necesita saber si dispara el cazador y si alguien ha ganado, así que las tres tareas van en un commit.
+
+- **Orden tras un anuncio.** Primero el disparo pendiente del cazador; al volver al anuncio, que ya incluye el disparo, el narrador continúa otra vez y entonces se comprueba la victoria. Así un cazador que muere en la última muerte también dispara.
+- **Vuelta del cazador.** El disparo se añade al anuncio en curso y la partida vuelve a `dawn` o `execution`. La narración pasa a `hunter_shot`.
+- **Narración compuesta.** `narration` es una clave y sus datos, pero algunas fases cuentan dos cosas. Si alguien muere de pena, los datos llevan `lover` y el narrador lee después la frase `lover_death`. Al empezar el debate del día en que se eligió alcalde, llevan `mayor` y se lee antes `mayor_elected`. El guion no tiene texto para quien se va de la sala; se añade la clave `left` ("{nombre} se ha ido del pueblo. Era {rol}.").
+
+## 2026-10-11 · 28.4 y 28.5 · La noche en un solo commit
+
+La 28.4 pide que la noche se cierre sola al actuar el último vivo, y eso es justo la resolución de la 28.5. Las dos van en un commit, con sus pruebas, para no dejar un cierre a medias entre ambos.
+
+- **Anuncio.** Además de `deaths` y `spared`, el anuncio lleva `kind` (`night`, `trial` o `left`), para saber qué contar y qué votos enseñar sin deducirlo de las causas.
+- **Día.** `luna_state.day` sube al resolver la noche: el amanecer ya es del día siguiente, y los votos de ese día van con su número.
+- **Protector sin actuar.** Si el protector no actúa, `last_protected_id` queda vacío y a la noche siguiente puede proteger a cualquiera.
+- **Sospechas.** Aldeano, cazador, bufón y Cupido desde la segunda noche marcan a otro jugador vivo, nunca a sí mismos. El protector sí puede protegerse.
+- **Errores.** `already_acted` y `same_as_last_night` llegan al cliente con su mensaje. El objetivo inválido, muerto o ajeno a la partida usa `invalid_target`, como en el resto de juegos.
+
+## 2026-10-11 · 27.3 · Diferencias entre el plan de Luna llena y el código
+
+`docs/PLAN-5.md` se escribió contando con que `develop` acababa en la fase 13. Antes de empezar se fusionaron en `develop` las ramas de los planes 3 y 4 (fases 14–26), así que:
+
+- **Numeración.** Las fases 14–19 del plan son aquí las 27–32, con la misma subnumeración: la tarea 15.3 del plan es la 28.3. El plan no se toca; la equivalencia queda en `docs/TAREAS.md`.
+- **Séptimo juego, no quinto.** El selector pasa a tener siete juegos elegibles, y "Cómo se juega" (fase 24) gana los pasos de Luna llena, porque la sala de espera ya muestra ese botón para todos los juegos.
+- **Avatares.** Las listas de jugadores de Luna llena pintan el avatar de la sala, como el resto de juegos (fase 25).
+- **Ganador.** `games.winner` solo admite los bandos de El impostor y su `check` obliga a que sea nulo en los demás juegos. El bando ganador de Luna llena (`village`, `wolves` o `jester`) se guarda en `luna_state.winner`, una columna más de las que lista el plan, en vez de relajar esa restricción.
+- **Quién ha actuado.** `game_players.has_voted` es de El impostor. En Luna llena `has_acted` se calcula con `luna_night_actions` y `luna_votes`, sin columna nueva.
+- **Vivo y activo.** En los demás juegos `game_players.alive` significa "participa". En Luna llena significa "vivo", y quien se va muere, así que el sentido coincide.
+- **Roles.** `game_roles.role` pasa a admitir los siete roles además de `player` e `impostor`. El aldeano es `villager` y no reutiliza `player`, para que el rol de cada juego se lea sin mirar el tipo de partida.
+- **Expulsión.** Se mantiene la regla de la plataforma: a media partida solo se puede echar a un desconectado. Al echarle se aplica el abandono de la sección 5 del plan.
+- **Entrar tarde.** Quien llega con la partida empezada no es participante (`my.is_participant` falso) y ve la pantalla de esperar, como en El impostor.
+- **Volver a la sala.** Al terminar se usa `back_to_lobby`, que ya vale para cualquier juego; "Volver a jugar" llama a `luna_llena_start` con la misma composición.
+
+## 2026-10-11 · 26.1 · Repaso de lo nuevo a 360, 390 y 430 px
+
+`accessibility-mejoras.spec.ts` recorre, en los tres anchos, el inicio con "Escanear QR", la pantalla de nombre con la galería de avatares, la sala de espera con "Salir", "Cómo se juega", el tiempo para votar y las temáticas, y los tres diálogos (temáticas, avatar y tutorial). En cada uno comprueba que no hay desborde horizontal y que todo lo pulsable mide 44 px o más. Otra prueba recorre el tutorial solo con el teclado, con el foco visible, y lo cierra con Escape.
+
+El repaso sacó un desborde que ya existía: a 360 px, "PREVIA" en el titular del inicio (`text-display-xl`, 84 px) ocupaba 14 px más que el ancho útil, y la página se podía desplazar en horizontal. Las pruebas anteriores miraban el inicio a 390, donde sí cabe. Se añade el punto de corte `xs` (390 px, el ancho de la referencia) en `globals.css` y el titular usa `text-display-lg` por debajo y el tamaño de la referencia desde ahí. Es el único cambio de tokens de esta tanda.
+Descartado: bajar el titular a `text-display-lg` en todos los anchos, que se aleja de la referencia a 390.
+
+## 2026-10-11 · 25.3 · Elegir y cambiar el avatar
+
+Debajo del nombre, en las dos pantallas donde se escribe (crear sala y entrar por enlace), aparece "Tu avatar" con la inicial y las 12 ilustraciones (botones de 56 px con `aria-pressed` y el nombre de cada dibujo para lectores de pantalla). Por defecto se queda la inicial. Tras crear la sala o unirse se llama a `set_avatar`; si esa llamada falla se entra igual, porque el avatar se puede volver a elegir en la sala. En la sala de espera, tu propia ficha es un botón ("Cambiar tu avatar") que abre el mismo selector en un diálogo; cada toque guarda el avatar al momento. Las pruebas existentes de la pantalla de nombre y de la sala de espera solo ganan las propiedades nuevas en sus ayudantes, y las de `Room`, `RoomEntry` y `HomeFlow`, el doble de `setAvatar`.
+
+## 2026-10-11 · 25.2 · Las 12 ilustraciones
+
+Aguacate con gafas de sol, huevo frito, fantasma, cactus, plátano, pizza, nube enfadada, tostada, pulpo, dónut, cohete y pingüino, en SVG dentro del propio componente (`avatar-art.tsx`): caja de 40 × 40, borde `ink` grueso y relleno con los colores de la paleta (`fill-*`), sin imágenes ni estilos en línea. `Avatar` las pinta sobre `paper` cuando el jugador tiene avatar y, si está desconectado, en gris; si no, la inicial sobre su color, como siempre. El avatar llega a todas las pantallas por los mismos datos que el color (`Player` y `ParticipantView` lo toman de la lista de jugadores de la sala), y en esos tipos es opcional: sin él se pinta la inicial.
+
+Se revisaron a 36 px y a 80 px en `/dev/componentes`; el plátano (demasiado fino, con los ojos fuera) y la sonrisa del aguacate (que se confundía con el hueso) se rehicieron. La prueba de `participants` de El impostor comparaba el objeto entero de cada participante y gana `avatar: null`.
+
+## 2026-10-11 · 25.1 · Avatar en la base de datos
+
+`room_players.avatar` guarda el nombre de una de las 12 ilustraciones de la galería (`private.avatar_ids()`, con un `check` que no admite otro) o nulo, que sigue enseñando la inicial. `public.set_avatar(sala, avatar)` lo elige, lo cambia o lo quita para quien llama, en cualquier momento; lanza `invalid_avatar` (código nuevo, añadido al cliente) si no es de la galería. La foto lleva `avatar` en cada jugador de la sala y el cliente lo valida con la misma lista (`src/lib/avatars.ts`). Las partidas no copian el avatar: las pantallas lo toman de la lista de jugadores de la sala, como ya hacían con el color.
+
+Se elige con su propia acción y no como parámetro de `create_room` o `join_room`, para no tocar dos funciones que usan casi todas las pruebas; entrar y elegir son dos llamadas seguidas. Las fixtures de las pruebas ganan `avatar: null` en cada jugador.
+
+## 2026-10-11 · 24.2 · Ilustraciones de los pasos
+
+Cada paso de "Cómo se juega" lleva una ilustración en una caja de color `ground`, hecha con cuatro piezas en el estilo de las portadas del selector: caras redondas (la del impostor o la de quien adivina, en `ink`), etiquetas con borde grueso (tachadas para lo que se anula o no se puede decir), bocadillos y el "+1". Usan solo los tokens de la paleta, y sus pocos textos ("Pizza", "Fuera", "¡Prohibida!"…) salen de `copy.howTo.art`. Son decorativas (`aria-hidden`): lo que hay que leer está en el título y la frase del paso. Un guion temporal abrió los 18 pasos a 360 px y comprobó que ninguna ilustración se sale de su caja; las capturas sacaron una (las tres pistas de Una sola pista no cabían en fila) y se apilaron las dos repetidas.
+
+## 2026-10-11 · 24.1 · Cómo se juega
+
+En la sala de espera, debajo de la tarjeta del código y para todos, un botón "Cómo se juega" abre un diálogo con tres pasos del juego elegido ("Paso 1 de 3", título y una frase), con "Anterior" y "Siguiente". Los textos de los seis juegos están en `copy.howTo` y resumen las reglas de `docs/CONTEXTO.md`, `docs/JUEGOS.md` y `docs/JUEGOS-2.md`. El diálogo solo se monta abierto: así empieza siempre por el primer paso y, cerrado, su título no repite el nombre del juego en la página (la e2e de accesibilidad encontraba dos textos iguales). Las ilustraciones de cada paso llegan en la 24.2.
+
+## 2026-10-11 · 23.3 · Votación que se cierra sola
+
+`vote-timer.spec.ts` juega con 3 jugadores y 30 segundos para votar: todos ven la cuenta atrás, vota uno solo y nadie pulsa "Cerrar votación"; al acabarse el tiempo, todos ven la expulsión. Tarda unos 40 s por la espera, así que tiene un límite de 2 minutos.
+
+Al cerrar la fase apareció un fallo intermitente en `38_impostor_categories` (de la 22.2): para comprobar que no se repite palabra dejaba activas "Tetris" y "Sonic", pero las partidas sin temáticas de antes en la misma prueba podían haber sacado una de ellas, y entonces repetir era lo correcto. Ahora deja activas dos de Videojuegos que aún no han salido en la sala. El código no cambia.
+
+## 2026-10-11 · 23.2 · Cuenta atrás y cierre al llegar a cero
+
+El anfitrión elige "Tiempo para votar" en la sala de espera (Sin, 30, 60 o 90 s; por defecto, sin). La cuenta atrás va en la píldora de la votación ("Votación · 0:23") y se calcula con la hora del servidor de la última foto (`useCountdown`), no con el reloj del móvil. Al llegar a cero, cada móvil pide `close_voting` una vez; si la base de datos responde `not_host` (aún no ve pasada la hora por desfase de reloj) se reintenta hasta tres veces cada 1,5 s, y cualquier otro fallo (otro móvil ya la cerró) no se enseña: la foto nueva llega por la sincronización. "Volver a jugar" usa el tiempo guardado en la partida.
+
+Se detectó y corrigió un fallo propio antes del commit: la cuenta de una votación anterior (en 0) se arrastraba a la siguiente hasta el primer tic, y el móvil del anfitrión cerraba la segunda votación nada más abrirla. Cada cuenta va ahora con su hora límite; una prueba de `Room` lo cubre y falla con la versión antigua. Pruebas existentes modificadas: las que esperaban los ajustes de `startGame`, el ayudante de la sala de espera y la fixture de El impostor, que ganan los campos del tiempo.
+
+## 2026-10-11 · 23.1 · Tiempo para votar en la base de datos
+
+- `games.vote_seconds` (nulo, 30, 60 o 90, solo en El impostor) se fija al empezar: `start_game` gana un cuarto parámetro con valor por defecto, como las temáticas en la 22.2. Fuera de esos valores lanza `invalid_vote_seconds`, que se añade al cliente.
+- `open_voting` guarda `games.voting_deadline` (ahora más el tiempo) y la foto la incluye solo durante la votación, con `vote_seconds`. La segunda votación de un empate vuelve a pasar por `open_voting`, así que el tiempo empieza de nuevo.
+- `close_voting`: el anfitrión cierra cuando quiere, como siempre. Cualquier otro miembro solo puede cerrar una votación de El impostor con hora límite ya pasada; si no, recibe `not_host`, como antes. Así la votación se cierra aunque el móvil del anfitrión esté bloqueado, y nadie puede adelantarse. Al cerrar se borra la hora límite.
+- La hora la decide la base de datos con `now()`: el móvil solo cuenta hacia atrás y pide cerrar al llegar a cero.
+- Quien no es miembro recibe ahora `not_member` en vez de `not_host` al intentar cerrar, porque se comprueba que sea miembro antes que la hora. Ninguna prueba existente dependía de eso.
+
+## 2026-10-11 · 22.3 · Selector de temáticas
+
+Las 15 temáticas no caben en la sala de espera sin alargarla mucho, así que debajo de "Impostores" hay una fila "Temáticas" con lo elegido ("Todas", "Fútbol" o "3 temáticas") y un botón "Elegir" que abre un diálogo con una ficha por temática (`aria-pressed`) y "Todas", que quita el filtro. Lo elegido vive en el estado de `Room`, como el número de impostores, y "Volver a jugar" usa las mismas temáticas; al recargar vuelven a ser todas. Solo el anfitrión de una sala de El impostor pide la lista (`useImpostorCategories`), y mientras no llega no se enseña la fila.
+
+`startGame` pasa a recibir un objeto con los ajustes de El impostor, para que el temporizador de la fase 23 no obligue a cambiar las llamadas otra vez. Las temáticas solo se envían si hay alguna elegida, así que la llamada a la base de datos sin temáticas es la misma de antes. Pruebas existentes modificadas: las que llamaban o esperaban `startGame(sala, 1)` (`actions` y `Room`), el ayudante de la prueba de la sala de espera, que gana las propiedades nuevas, y el doble de acciones de `Room`, que gana `impostorCategories`.
+
+## 2026-10-11 · 22.2 · Temáticas en `start_game`
+
+`start_game` gana un tercer parámetro, `categories text[] default null`; nulo o vacío es "todas". Como en Postgres una función con otro número de parámetros es otra función, se borra la de dos y se crea la de tres: la llamada de siempre, `start_game(sala, 1)`, sigue funcionando por el valor por defecto, y todas las pruebas de El impostor pasan sin tocarlas. `private.pick_word` gana el mismo parámetro y filtra solo si se le dan temáticas, así que Una sola pista la sigue llamando igual. Agotadas las palabras de las temáticas elegidas, se repite dentro de ellas antes que salirse.
+
+`public.impostor_categories()` devuelve las temáticas con alguna palabra activa, en orden alfabético, para que la lista no esté escrita en el cliente. No bloquea ninguna sala porque no lee estado de partida, solo la tabla de palabras.
+
+Código nuevo `invalid_categories` (`docs/MEJORAS.md` §9 no lo preveía): una temática que no existe o sin palabras activas se rechaza; si no, la partida intentaría crearse sin palabra y fallaría con un error técnico. Se añade también al cliente con su texto.
+
+## 2026-10-11 · 22.1 · Cinco temáticas nuevas
+
+Fútbol, Historia, Videojuegos, Ciencia y Geografía, con 20 palabras cada una, en una migración nueva. Ninguna repite una de las 200 primeras (la prueba de duplicados de `05_words` sigue pasando sobre las 300). Las temáticas son la columna `category` que ya existía, así que no hay tabla nueva. Una sola pista también las usa, porque saca sus palabras de la misma tabla.
+
+`05_words` contaba 200 palabras en 10 categorías en toda la tabla. Se limita a las diez categorías de `docs/CONTEXTO.md` §9, así que comprueba lo mismo que antes sobre esas palabras; lo nuevo lo prueba `37_more_words`.
+
+## 2026-10-11 · 21.2 · Escanear el QR desde el inicio
+
+En la tarjeta del código, debajo de "Unirse", hay un botón "Escanear QR" que abre un diálogo con la cámara trasera. Cada 250 ms se lee un fotograma (reducido a 640 px de lado como mucho) y se busca un QR con `jsqr`, que se carga al abrir el diálogo. Si es el enlace de una sala o cuatro letras válidas, se cierra el diálogo y se entra en la sala por su ruta, igual que al escribir el código. Si es otro QR, lo dice y sigue buscando. Sin permiso de cámara (`NotAllowedError`) pide darlo o escribir el código; cualquier otro fallo (sin cámara, sin `mediaDevices`) pide escribir el código. La cámara vive en un componente que solo existe con el diálogo abierto, así que cerrarlo la apaga siempre.
+
+La cámara, la lectura de fotogramas y el decodificador llegan como dependencias (`ScanDeps`), como las de las acciones, para probar el diálogo con dobles. Aparte se comprobó que `jsqr` lee el QR que dibuja `qrcode` con el enlace de una sala, y que en Chrome con una cámara simulada el vídeo arranca y el diálogo queda escaneando.
+Descartado: llamar a `video.play()`, cuya promesa puede fallar sin más; con `autoPlay`, `muted` y `playsInline` el navegador lo reproduce solo.
+
+## 2026-10-11 · 20.3 · Un final de partida que se ve
+
+Al terminar cualquier juego, la píldora de la cabecera dice "Fin de la partida" (antes, "Sala ABCD"). El anfitrión ve "Cambiar de juego" con la variante destacada (`accent`, 56 px, como un botón principal) en lugar del botón pequeño, encima de "Volver a jugar". Los demás leen "Fran elige si jugáis otra o cambiáis de juego". Los botones mantienen sus textos ("Volver a jugar" y "Cambiar de juego") en vez de "Otra de [juego]" y "Elegir otro juego" de `docs/MEJORAS.md` §4: se entienden igual y con nombres de juego largos "Otra de ¿Quién es más probable que…?" ocupaba dos líneas. Las pruebas que leían "Fran decide si se vuelve a jugar" (`HostControls` y las e2e de `probable`, `quien_lo_dijo` y `que_prefieres`) leen el texto nuevo.
+
+## 2026-10-11 · 20.2 · "Siguiente ronda" en El impostor
+
+El texto que explica que la partida sigue ("La partida sigue. Quedan 4 jugadores y 1 impostor entre ellos.") ya estaba en la revelación; lo que confundía era el botón "Seguir hablando" y que la pantalla siguiente era igual a la de una partida nueva. El botón pasa a "Siguiente ronda" y, desde la segunda ronda, la píldora dice "Ronda 2 de la partida" en lugar de "Sala ABCD". Al terminar vuelve a decir la sala. Las tres pruebas que pulsaban "Seguir hablando" (`Room`, `HostControls` y la e2e del empate) pulsan ahora "Siguiente ronda".
+
+## 2026-10-11 · 20.1 · Salir con un botón a la vista
+
+`PillButton` (la píldora que al tocarla abría el diálogo de salir) se sustituye por `HeaderAside`: un botón "Salir" con borde, de 44 px, a la derecha de "La Previa", y la píldora, que ya solo informa (sala, juego o ronda), en su propia fila bajo la cabecera. Con las dos cosas en la misma fila, a 360 px el nombre del juego más largo partía "La Previa" y la propia píldora en dos líneas. El botón se llama "Salir de la sala" para lectores de pantalla y sigue abriendo la confirmación de siempre.
+
+Pruebas existentes modificadas, porque buscaban la píldora como botón ("Ronda 3 de 10. Salir de la sala"): ahora buscan el texto de la píldora o pulsan "Salir de la sala". Son las de `Room`, el selector, la sala de espera, la del componente (que pasa a probar `HeaderAside`) y la e2e de `probable`, que comprobaba que la píldora decía el juego. Lo que comprueban no cambia.
+
+## 2026-10-11 · 19.2 · Lo que entra en alcance con las mejoras
+
+Fran y su grupo probaron los seis juegos y pidieron ocho mejoras, recogidas en `docs/MEJORAS.md` y ordenadas en `docs/PLAN-4.md`. Fran aprobó los dos documentos. Dos de ellas estaban en "Fuera de alcance" y entran porque las pide él:
+
+- **Temporizador**, solo para la votación de El impostor (`docs/JUEGOS.md` §11 y `docs/JUEGOS-2.md` §9 lo dejaban fuera para todos los juegos; en los juegos por rondas sigue fuera).
+- **Avatares con imagen** (`docs/CONTEXTO.md`, "Fuera de alcance"): una galería de ilustraciones dibujadas en el estilo de la app. Subir fotos sigue fuera.
+
+`CLAUDE.md` todavía no nombra `docs/MEJORAS.md` ni `docs/PLAN-4.md`, y no se modifica sin permiso de Fran. Hasta que los añada, manda lo que él ha aprobado.
+
+## 2026-10-11 · 19.2 · `jsqr` para leer el QR con la cámara
+
+Para escanear desde la web hay que decodificar el QR de los fotogramas de la cámara. `BarcodeDetector` es nativo en Chrome para Android, pero Safari en iPhone no lo tiene, y sin iPhone la mitad del grupo se quedaría fuera. `qrcode`, la que ya usamos, solo dibuja QR: no los lee. `jsqr` 1.4.0 lee QR de una imagen en JavaScript puro, sin dependencias, con licencia Apache-2.0 y con sus propios tipos. Entra en la lista permitida como "una librería de QR", y solo se carga al abrir el escáner, así que no pesa en la primera carga.
+Descartado: `html5-qrcode` y otras que traen su propia interfaz (habría que tapar sus estilos con los de Verbena) y escribir un decodificador propio.
+
+## 2026-10-11 · 17.4 · Sesión larga con los seis juegos
+
+`long-session.spec.ts` sigue en la misma sala de 4 jugadores tras Una sola pista con ¿Qué prefieres? y Palabras prohibidas, 5 rondas cada uno. En ¿Qué prefieres?, Álvaro recarga tras elegir mientras aún falta Marta y vuelve a ver su elección. En Palabras prohibidas, quien vigila recarga y sigue viendo la tarjeta, y quien adivina recarga y sigue sin verla. El título de la prueba pasa a decir seis juegos; lo que ya comprobaba no cambia. Las tres baterías pasaron tres veces seguidas sin fallos (535 unitarios, 811 pgTAP y 19 e2e en cada pasada). La primera vez que se lanzaron las tres pasadas seguidas en segundo plano, el sistema las paró por falta de memoria; se repitieron en primer plano, una batería detrás de otra.
+
+## 2026-10-11 · 18.3 · Revisión final contra JUEGOS-2
+
+Repasadas las secciones 0 a 9 de `docs/JUEGOS-2.md`. Se cumple lo que piden, con estas diferencias ya anotadas en su tarea:
+
+- La elección de ¿Qué prefieres? va en `answers`, como dice §4, y por eso `has_responded` y los abandonos miran `answers` también en la fase `voting` de este juego (14.3).
+- El turno de quien describe y el cálculo de quien vigila son auxiliares comunes con Una sola pista (`next_subject` y `next_active_after`), con las pruebas de Una sola pista intactas (16.3).
+- Si quien vigila cambia a media ronda, el nuevo pasa a ver la tarjeta: es lo que pide §3 al calcularlo en cada acción (14.3).
+- La tarjeta de una ronda anulada puede volver a salir, igual que la palabra en Una sola pista (16.3).
+- En la pantalla de quien adivina, el titular es "Adivina en voz alta" y no el nombre de quien describe, para que un nombre largo no se parta (17.2).
+
+Fuera de alcance: no hay temporizadores, cuentas atrás ni sonidos; no hay equipos; nada de lo que se dice en voz alta se comprueba por escrito; no hay dilemas ni tarjetas de los jugadores ni puntos entre partidas. No hay maquetas nuevas: las dos portadas son las fichas "A" y "B" y la palabra tachada que ya estaban dibujadas, a tamaño de portada grande, y `globals.css` no ha cambiado; `orange` y `tomato` se añaden como tonos de componentes con los tokens que ya existían.
+
+Comprobado además que ningún juego importa de la carpeta de otro, que no hay `TODO`, `console`, `as` fuera de `as const` ni `eslint-disable` en lo nuevo, que no hay políticas nuevas ni `service_role`, y que todas las funciones nuevas de `private` se usan.
+
+## 2026-10-11 · 17.3 · Accesibilidad de los dos juegos nuevos
+
+La e2e de accesibilidad de la 12.5 suma una prueba por juego, con 3 jugadores, que comprueba en cada pantalla visitada que todo lo pulsable mide 44 px o más y que hay un solo `h1`. En ¿Qué prefieres? se marca la opción con Tab y Enter (con el foco visible y `aria-pressed`) y se envía igual. En Palabras prohibidas se miran las tres pantallas a la vez (describir, vigilar y adivinar) y quien describe marca el acierto solo con el teclado. No hizo falta cambiar ninguna pantalla: las opciones y la lista de acertantes son `button` con `aria-pressed`, y las opciones llevan `aria-label` con su letra y su texto.
+
+## 2026-10-11 · 17.2 · Repaso con 16 jugadores a 360, 390 y 430 px
+
+Un guion temporal (fuera del repositorio, como en la 12.4) juega en una sala de 16 jugadores, repartidos entre los tres anchos y con nombres de 14 caracteres de letras anchas ("Mmmmmmmmmmmm01"), una ronda de ¿Qué prefieres? con el dilema más largo (45 caracteres por opción) y dos de Palabras prohibidas con las tarjetas más largas ("Extraterrestre" y "Fantasma" con "Casa encantada"). Hasta el resultado de cada juego comprueba en los 16 móviles que no hay desborde horizontal. No desborda nada. Las capturas sacaron dos defectos, que se arreglan:
+
+- En "Adivina en voz alta", el nombre de quien describe era el titular y catorce letras anchas se partían en dos líneas. El titular pasa a ser "Adivina en voz alta" y el nombre va en el texto, que corta por los espacios.
+- El tachado de las prohibidas tapaba las letras en la tarjeta oscura. Se quita; el rótulo "No se puede decir" ya dice lo que son, y quien describe y quien vigila tienen que leerlas de un vistazo.
+
+Visto y no cambiado: en el resultado común, que ya existía, catorce letras igual de anchas también parten el nombre del ganador. Con nombres reales de 14 letras cabe, porque `fitDisplay` está medido con palabras reales; cambiar sus umbrales movería también la palabra de El impostor.
+
+## 2026-10-11 · 16.7 · Pantallas de Palabras prohibidas
+
+Sin maqueta y con acento `tomato`, que va con la tarjeta oscura (`ink` con sombra `tomato`) que pide `docs/JUEGOS-2.md` §7; se añade como acento del resultado común, porque la píldora ya lo tenía.
+
+- **Quien describe** ve la tarjeta oscura con la palabra y las cinco prohibidas tachadas, "¿Quién ha acertado?" con la lista de los que adivinan (ni él ni quien vigila), "Ha acertado Marta" cuando marca a alguien y "Pasar". Se marca y luego se confirma, como el voto, porque el punto no se puede deshacer. `CandidateList` recibe la etiqueta del marcado ("Acierta"); por defecto sigue diciendo "Tu voto".
+- **Quien vigila** ve la misma tarjeta y el botón "¡Prohibida!".
+- **Quien adivina** ve "Adivina en voz alta" con el nombre de quien describe y de quien vigila, y espera a que se marque. El anfitrión, si adivina, también espera: en esta fase no le toca nada.
+- **La revelación** nombra la palabra y cómo ha acabado ("Lo acierta Marta" con "+1 para Marta y +1 para Lucía", "Se dijo una prohibida" o "Lucía ha pasado") y lista las prohibidas. El resultado usa la pantalla común con "Gana la partida".
+- No hay lista de quién falta, porque ninguna ronda espera a todos, y por eso tampoco se echa a nadie desde estas pantallas. Una ronda no se atasca: si quien describe se desconecta, quien vigila (que se calcula prefiriendo a los conectados) puede cerrarla con "¡Prohibida!".
+
+## 2026-10-11 · 16.6 · Palabras prohibidas elegible y sin "Próximamente"
+
+Con este juego ya no queda ninguno próximo, así que el bloque "Próximamente" del selector y sus textos (`games.soon`, `games.upcoming`) se quitan aquí mismo en vez de dejar una lista vacía o código sin usar hasta la 17.1. La portada es la palabra tachada que ya estaba dibujada, a tamaño de portada grande y sobre el mismo `lilac` de la referencia. La prueba existente del selector pasa a contar seis juegos y a comprobar que no aparece "Próximamente".
+
+## 2026-10-11 · 16.3 · Turnos y ronda anulada en Palabras prohibidas
+
+- `private.una_pista_next_guesser` pasa a ser `private.next_subject` y elige también a quien describe; `open_round` la usa para los dos juegos y guarda la tarjeta en `game_rounds.card_id` con `private.pick_card`, que no repite tarjeta en la sala.
+- `private.next_active_after(partida, X)` es el "siguiente activo por orden de entrada después de X, empezando por los conectados". Quien vigila es el siguiente después de quien describe, y el árbitro de Una sola pista, cuando al anfitrión le toca adivinar, el siguiente después del anfitrión. Las pruebas de Una sola pista pasan sin tocarlas.
+- Si se va quien describe antes de la revelación, la ronda se borra y se vuelve a abrir con el mismo número, como en Una sola pista. La tarjeta de la ronda borrada puede volver a salir, igual que allí la palabra.
+- Acertar, pasar y "¡Prohibida!" guardan el resultado y pasan a la revelación en la misma auxiliar. Acertar da un punto a quien acierta y otro a quien describe.
+- Los textos de `not_describer` y `not_watcher` dicen a cada uno lo que sí puede hacer.
+
+## 2026-10-11 · 15.8 · Más pasos de Tab en el selector
+
+La e2e de accesibilidad de la 7.1 llega a "Abrir la sala" con `tabTo`, que prueba como mucho 6 pulsaciones de Tab. Con cinco juegos elegibles el selector tiene 7 paradas (píldora, cinco juegos y el botón), y con seis tendrá 8, así que esa llamada pasa a admitir 10, igual que la de "Mostrar QR" en la misma prueba. Sigue comprobando lo mismo, que el botón se alcanza y se pulsa solo con el teclado; solo cambia cuántos elementos hay delante. La e2e nueva juega 5 rondas con 3 jugadores: mayorías de dos y de tres, y en la ronda 3 el anfitrión cierra con una A y una B, que empatan.
+
+## 2026-10-11 · 15.7 · Pantallas de ¿Qué prefieres?
+
+Sin maqueta, con los componentes de los otros juegos por rondas y acento `orange`, que se añade como tono de la píldora pulsable y del resultado común (el token ya existía, como el `lime` de la 11.5). El dilema es el titular "¿Qué prefieres?" y debajo las dos opciones como tarjetas-botón grandes con su ficha "A" o "B" y un "o" entre ellas. Tocar una la marca (`aria-pressed`) y el botón del pie dice "Elegir la A"; la elección se envía con ese botón, igual que el voto en `probable`, porque no se puede cambiar y un toque sin querer la gastaría. La espera es la común con "Han elegido 1 de 3" y "Tu elección: …". El reparto nombra la opción mayoritaria en la tarjeta protagonista (o "Empate" o "Nadie ha elegido") y lista las dos opciones con cuántos y quiénes, y el "+1" en la mayoritaria. El resultado usa la pantalla común con "Quien mejor conoce al grupo". La prueba de entrar tarde en `Room` suma el caso del juego nuevo. Este commit arregla también el formato de `copy.ts`, que se coló sin pasar Prettier en el de la 15.6.
+Descartado: elegir con un solo toque, que no deja corregir un toque sin querer.
+
+## 2026-10-11 · 15.6 · ¿Qué prefieres? pasa a elegible
+
+El selector lista cinco juegos elegibles y deja "Palabras prohibidas" como único próximo. La portada son las fichas "A" y "B" que ya estaban dibujadas, a tamaño de portada grande, sobre `orange`. La prueba existente del selector contaba cuatro juegos y dos próximos; se actualiza a cinco y uno, como se hizo en la 9.7 y la 10.8 al añadir cada juego. Elegir el juego y empezar con las rondas elegidas ya llama a `que_prefieres_start`; las pantallas de la partida llegan en la 15.7.
+
+## 2026-10-11 · 14.3 · Diferencias entre JUEGOS-2 y el código
+
+Lo que `docs/JUEGOS-2.md` nombra coincide con el código: `rooms.game`, `games.game_type`, `games.phase`, `prompts`, `answers`, `game_rounds.subject_id` y `result`, y las auxiliares comunes de la 10.3. Fran confirma las cuatro decisiones de su §0 y autoriza añadir a `CLAUDE.md` las referencias a `docs/JUEGOS-2.md` y `docs/PLAN-3.md`. Lo que el código pide resolver:
+
+- **`has_responded` en `voting`** mira `votes`, pero la elección de ¿Qué prefieres? va en `answers` (§4). Se añade un caso por juego: en `que_prefieres` cuenta la fila de `answers`.
+- **Irse a media ronda** solo borra `answers` en `writing`. En `que_prefieres` la elección también se borra en `voting`, como pide §2.
+- **Turno de quien describe:** es la misma regla que el adivino de Una sola pista, así que `private.una_pista_next_guesser` pasa a ser la auxiliar común `private.next_subject` en cuanto la usan dos juegos.
+- **Quien vigila:** es el mismo cálculo que el árbitro de Una sola pista cuando al anfitrión le toca adivinar ("el siguiente activo por orden de entrada después de X, prefiriendo a los conectados"). Se extrae `private.next_active_after(partida, X)` y `private.una_pista_arbiter` pasa a usarla; conserva su nombre porque lo usan sus pruebas.
+- **Si quien vigila cambia a media ronda** (se va o se desconecta), quien le sustituye pasa a ver la palabra: es consecuencia de calcularlo en cada acción, como manda §3. Quien deja de vigilar al reconectarse otro sigue sabiéndola; se acepta.
+- **Puntos y reparto de ¿Qué prefieres?** se guardan al cerrar la ronda en `game_rounds.result` (`{choices: {a, b}, majority}`), como el recuento de `probable` (9.3): lo que pase después no cambia lo ya enseñado.
+- **Resultado de Palabras prohibidas** en `game_rounds.result` con la forma que pide §6 para la foto (`{type: …}`).
+- **Acertante no válido** (quien describe, quien vigila, un inactivo o alguien de fuera) lanza `invalid_target`, ya existente. Los códigos nuevos son los tres de §5: `invalid_option`, `not_describer` y `not_watcher`, que se añaden también al cliente.
+- **`text_b`** sigue el límite de `text` (1 a 200 caracteres) y un `check` exige que exista si y solo si el juego es `que_prefieres`.
+- **Las prohibidas de una tarjeta** se comparan con `private.normalize_clue`, la misma normalización de Una sola pista (11.1).
+  Descartado: guardar quien vigila al abrir la ronda, que la dejaba atascada si se desconectaba (el mismo motivo de la 11.2).
+
 ## 2026-10-10 · Harness · Se adopta rsc y el flujo con ramas
 
 Fran pide instalar rsc-harness (`npx @ericrisco/rsc@3.0.13 onboard`, perfil técnico, software en crecimiento, solo Claude Code) y tomar sus reglas. Por eso, y solo con su autorización expresa, cambia `CLAUDE.md`:

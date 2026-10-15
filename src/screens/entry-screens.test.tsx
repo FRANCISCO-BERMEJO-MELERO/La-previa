@@ -10,6 +10,7 @@ function home(overrides: Partial<Parameters<typeof HomeScreen>[0]> = {}) {
     busy: false,
     onCodeChange: vi.fn(),
     onJoin: vi.fn(),
+    onScan: vi.fn(),
     onCreate: vi.fn(),
     ...overrides,
   };
@@ -44,6 +45,12 @@ describe('HomeScreen (01)', () => {
     expect(props.onJoin).toHaveBeenCalledTimes(1);
   });
 
+  it('escanear el QR está a la vista y avisa', () => {
+    const props = home();
+    fireEvent.click(screen.getByRole('button', { name: 'Escanear QR' }));
+    expect(props.onScan).toHaveBeenCalledTimes(1);
+  });
+
   it('crear sala avisa', () => {
     const props = home();
     fireEvent.click(screen.getByRole('button', { name: 'Crear sala' }));
@@ -62,6 +69,8 @@ function name(overrides: Partial<Parameters<typeof NameScreen>[0]> = {}) {
     name: '',
     busy: false,
     onNameChange: vi.fn(),
+    avatar: null,
+    onAvatarChange: vi.fn(),
     onSubmit: vi.fn(),
     ...overrides,
   };
@@ -70,6 +79,25 @@ function name(overrides: Partial<Parameters<typeof NameScreen>[0]> = {}) {
 }
 
 describe('NameScreen (02)', () => {
+  it('deja elegir avatar de la galería, empezando por la inicial', () => {
+    const props = name({ name: 'Lucía' });
+    expect(screen.getByRole('button', { name: 'Sin avatar: tu inicial' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Pulpo' }));
+    expect(props.onAvatarChange).toHaveBeenCalledWith('octopus');
+    expect(screen.getAllByRole('button', { pressed: false })).toHaveLength(12);
+  });
+
+  it('marca el avatar elegido', () => {
+    name({ name: 'Lucía', avatar: 'ghost' });
+    expect(screen.getByRole('button', { name: 'Fantasma' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
   it('pregunta el nombre con su etiqueta y su explicación', () => {
     name();
     expect(screen.getByRole('heading', { name: '¿Cómo te llamas?' })).toBeInTheDocument();

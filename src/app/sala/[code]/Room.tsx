@@ -3,19 +3,27 @@
 import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 import { OfflineNotice } from '@/components/OfflineNotice';
-import { PillButton, type PillButtonTone } from '@/components/PillButton';
+import { HeaderAside, type HeaderTone } from '@/components/HeaderAside';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
 import { clampImpostors } from '@/games/impostor/impostors';
+import { recommendedConfig, type LunaConfig } from '@/games/luna-llena/composition';
+import { LunaLlenaGame } from '@/games/luna-llena/LunaLlenaGame';
+import { PalabrasProhibidasGame } from '@/games/palabras-prohibidas/PalabrasProhibidasGame';
 import { ProbableGame } from '@/games/probable/ProbableGame';
+import { QuePrefieresGame } from '@/games/que-prefieres/QuePrefieresGame';
 import { QuienLoDijoGame } from '@/games/quien-lo-dijo/QuienLoDijoGame';
 import { UnaPistaGame } from '@/games/una-pista/UnaPistaGame';
 import {
   backToLobby,
   kickPlayer,
   leaveRoom,
+  lunaLlenaStart,
+  palabrasProhibidasStart,
   probableStart,
+  quePrefieresStart,
   quienLoDijoStart,
   unaPistaStart,
+  setAvatar,
   setGame,
   startGame,
   type ActionResult,
@@ -25,6 +33,7 @@ import { roomPath } from '@/lib/room-code';
 import { DEFAULT_ROUNDS } from '@/lib/rounds';
 import { shareRoomLink, type ShareOutcome } from '@/lib/share';
 import type { GameId, Snapshot } from '@/lib/snapshot';
+import { useImpostorCategories } from '@/lib/use-impostor-categories';
 import { useRoomSync } from '@/lib/use-room-sync';
 import { useWakeLock } from '@/lib/use-wake-lock';
 import { GamePickerScreen } from '@/screens/GamePickerScreen';
@@ -45,6 +54,13 @@ export function Room({ initial, fresh }: RoomProps) {
   const [picking, setPicking] = useState(fresh);
   const [impostors, setImpostors] = useState(1);
   const [rounds, setRounds] = useState(DEFAULT_ROUNDS);
+  // Composición de Luna llena elegida a mano; sin elegir, sigue a la recomendada.
+  const [lunaConfig, setLunaConfig] = useState<LunaConfig | null>(null);
+  const [chosenCategories, setChosenCategories] = useState<string[]>([]);
+  const [voteSeconds, setVoteSeconds] = useState<number | null>(null);
+  const [topicsOpen, setTopicsOpen] = useState(false);
+  const [howToOpen, setHowToOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const [pickedGame, setPickedGame] = useState<GameId | null>(null);
   const [error, setError] = useState<ActionError | null>(null);
   const [busy, setBusy] = useState(false);
@@ -54,6 +70,10 @@ export function Room({ initial, fresh }: RoomProps) {
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [leaveError, setLeaveError] = useState<ActionError | null>(null);
   useWakeLock(sync.status !== 'gone');
+  const lobbyGame = sync.snapshot ?? initial;
+  const categories = useImpostorCategories(
+    lobbyGame.me.is_host && lobbyGame.room.game === 'impostor' && lobbyGame.game === null,
+  );
 
   if (sync.status === 'gone') return <RoomGoneScreen />;
 
@@ -92,14 +112,8 @@ export function Room({ initial, fresh }: RoomProps) {
     setLeaveOpen(true);
   };
 
-  const pill = (label: string, tone: PillButtonTone = 'paper') => (
-    <PillButton
-      tone={tone}
-      tilted={tone !== 'paper'}
-      label={label}
-      hint={copy.room.leave}
-      onClick={openLeave}
-    />
+  const pill = (label: string, tone: HeaderTone = 'paper') => (
+    <HeaderAside tone={tone} tilted={tone !== 'paper'} label={label} onLeave={openLeave} />
   );
 
   const notice = sync.offline ? <OfflineNotice>{copy.errors.offline}</OfflineNotice> : null;
@@ -154,13 +168,21 @@ export function Room({ initial, fresh }: RoomProps) {
     };
     switch (game.type) {
       case 'impostor':
-        return withLeaveDialog(<ImpostorGame {...shared} game={game} />);
+        return withLeaveDialog(
+          <ImpostorGame {...shared} game={game} categories={chosenCategories} />,
+        );
       case 'probable':
         return withLeaveDialog(<ProbableGame {...shared} game={game} />);
       case 'quien_lo_dijo':
         return withLeaveDialog(<QuienLoDijoGame {...shared} game={game} />);
       case 'una_pista':
         return withLeaveDialog(<UnaPistaGame {...shared} game={game} />);
+      case 'que_prefieres':
+        return withLeaveDialog(<QuePrefieresGame {...shared} game={game} />);
+      case 'palabras_prohibidas':
+        return withLeaveDialog(<PalabrasProhibidasGame {...shared} game={game} />);
+      case 'luna_llena':
+        return withLeaveDialog(<LunaLlenaGame {...shared} game={game} />);
     }
   }
 
@@ -211,20 +233,61 @@ export function Room({ initial, fresh }: RoomProps) {
       onCloseQr={() => {
         setQrOpen(false);
       }}
+      howToOpen={howToOpen}
+      avatarOpen={avatarOpen}
+      onAvatarOpen={() => {
+        setAvatarOpen(true);
+      }}
+      onAvatarClose={() => {
+        setAvatarOpen(false);
+      }}
+      onAvatarChange={(avatar) => {
+        void run(() => setAvatar(roomId, avatar));
+      }}
+      onHowToOpen={() => {
+        setHowToOpen(true);
+      }}
+      onHowToClose={() => {
+        setHowToOpen(false);
+      }}
       onImpostorsChange={setImpostors}
+      voteSeconds={voteSeconds}
+      onVoteSecondsChange={setVoteSeconds}
+      categories={categories}
+      chosenCategories={chosenCategories}
+      topicsOpen={topicsOpen}
+      onTopicsOpen={() => {
+        setTopicsOpen(true);
+      }}
+      onTopicsClose={() => {
+        setTopicsOpen(false);
+      }}
+      onCategoriesChange={setChosenCategories}
       rounds={rounds}
       onRoundsChange={setRounds}
+      lunaConfig={lunaConfig ?? recommendedConfig(snapshot.players.length)}
+      onLunaConfigChange={setLunaConfig}
       onStart={() => {
         void run(() => {
           switch (snapshot.room.game) {
             case 'impostor':
-              return startGame(roomId, impostorCount);
+              return startGame(roomId, {
+                impostorCount,
+                categories: chosenCategories,
+                voteSeconds,
+              });
             case 'probable':
               return probableStart(roomId, rounds);
             case 'quien_lo_dijo':
               return quienLoDijoStart(roomId, rounds);
             case 'una_pista':
               return unaPistaStart(roomId, rounds);
+            case 'que_prefieres':
+              return quePrefieresStart(roomId, rounds);
+            case 'palabras_prohibidas':
+              return palabrasProhibidasStart(roomId, rounds);
+            case 'luna_llena':
+              return lunaLlenaStart(roomId, lunaConfig);
           }
         });
       }}

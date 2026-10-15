@@ -4,7 +4,9 @@ import { Card } from '@/components/Card';
 import { Pill } from '@/components/Pill';
 import { Screen } from '@/components/Screen';
 import { TextField } from '@/components/TextField';
+import type { AvatarId } from '@/lib/avatars';
 import { copy } from '@/lib/copy';
+import { AvatarPicker } from './AvatarPicker';
 
 export const NAME_MAX_LENGTH = 14;
 
@@ -15,6 +17,8 @@ type NameScreenProps = {
   error?: string;
   busy: boolean;
   onNameChange: (value: string) => void;
+  avatar: AvatarId | null;
+  onAvatarChange: (avatar: AvatarId | null) => void;
   onSubmit: () => void;
 };
 
@@ -24,6 +28,8 @@ export function NameScreen({
   error,
   busy,
   onNameChange,
+  avatar,
+  onAvatarChange,
   onSubmit,
 }: NameScreenProps) {
   const submit = (event: SubmitEvent<HTMLFormElement>) => {
@@ -50,6 +56,7 @@ export function NameScreen({
           />
         </Card>
         <p className="text-base font-medium">{copy.name.hint}</p>
+        <AvatarPicker name={name} value={avatar} disabled={busy} onChange={onAvatarChange} />
         <div className="mt-auto flex">
           <Button type="submit" fullWidth disabled={busy || name.trim() === ''}>
             {copy.name.submit}

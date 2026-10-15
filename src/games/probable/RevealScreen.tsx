@@ -35,7 +35,11 @@ export function RevealScreen({ prompt, tally, ...chrome }: RevealScreenProps) {
             key={row.player.userId}
             className={`flex items-center gap-3 rounded-chip border-3 border-ink p-2.5 ${row.winner ? 'bg-lime' : 'bg-paper'}`}
           >
-            <Avatar name={row.player.name} joinIndex={row.player.joinIndex} />
+            <Avatar
+              name={row.player.name}
+              joinIndex={row.player.joinIndex}
+              avatar={row.player.avatar}
+            />
             <div className="flex min-w-0 flex-1 flex-col">
               <span className="truncate text-base font-bold">{row.player.name}</span>
               <span className="text-xs font-medium">

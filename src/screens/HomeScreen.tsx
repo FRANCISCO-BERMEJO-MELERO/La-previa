@@ -12,10 +12,18 @@ type HomeScreenProps = {
   busy: boolean;
   onCodeChange: (value: string) => void;
   onJoin: () => void;
+  onScan: () => void;
   onCreate: () => void;
 };
 
-export function HomeScreen({ code, busy, onCodeChange, onJoin, onCreate }: HomeScreenProps) {
+export function HomeScreen({
+  code,
+  busy,
+  onCodeChange,
+  onJoin,
+  onScan,
+  onCreate,
+}: HomeScreenProps) {
   const submit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     onJoin();
@@ -27,7 +35,7 @@ export function HomeScreen({ code, busy, onCodeChange, onJoin, onCreate }: HomeS
         <Pill tone="tomato" tilted>
           {copy.home.tagline}
         </Pill>
-        <h1 className="font-display text-display-xl uppercase">
+        <h1 className="font-display text-display-lg uppercase xs:text-display-xl">
           {copy.home.title.split(' ').map((word) => (
             <span key={word} className="block">
               {word}
@@ -61,6 +69,9 @@ export function HomeScreen({ code, busy, onCodeChange, onJoin, onCreate }: HomeS
             {copy.home.join}
           </Button>
         </form>
+        <Button variant="secondary" fullWidth disabled={busy} onClick={onScan}>
+          {copy.home.scan}
+        </Button>
       </Card>
       <p className="text-center text-sm font-bold">{copy.home.or}</p>
       <Button fullWidth disabled={busy} onClick={onCreate}>

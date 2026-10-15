@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan 2 terminado · última actualización 2026-10-10
+Estado: plan 5 (Luna llena) terminado · última actualización 2026-10-11
 
 ## Fase 0 · Preparación
 
@@ -164,6 +164,176 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
+## Fase 14 · Preparación de la tercera tanda
+
+- [x] 14.1 Leer `docs/JUEGOS-2.md`, `docs/DECISIONES.md` (fases 8–13) e `docs/INFORME.md`; repasar las auxiliares de `private` para juegos por rondas y `src/games/rounds`
+- [x] 14.2 Comprobar que las tres baterías pasan antes de tocar nada (472 unitarios, 633 pgTAP, 15 e2e)
+- [x] 14.3 Anotar en `docs/DECISIONES.md` las diferencias entre `docs/JUEGOS-2.md` y el código, y cómo se resuelven
+- [x] 14.4 Añadir las fases 14–18 a `docs/TAREAS.md`
+
+Aceptación: las pruebas existentes pasan sin cambios.
+
+## Fase 15 · ¿Qué prefieres?
+
+- [x] 15.1 Migración: `rooms.game`, `games.game_type` y `games.phase` admiten `que_prefieres`; `prompts` admite el juego y gana `text_b`, obligatoria solo para él
+- [x] 15.2 Migración de datos con unos 120 dilemas; ampliar `docs/PREGUNTAS.md`
+- [x] 15.3 `set_game` acepta el juego; `que_prefieres_start`, `_choose`, `_close`, `_next` con las auxiliares comunes
+- [x] 15.4 Variante `que_prefieres` en `get_room_state`
+- [x] 15.5 Pruebas pgTAP de `que_prefieres`
+- [x] 15.6 Selector con el juego elegible y su portada (fichas "A" y "B")
+- [x] 15.7 Pantallas de `que_prefieres` y su `viewFor`, con tests unitarios
+- [x] 15.8 Prueba e2e: 5 rondas con 3 jugadores, con mayoría y con empate
+
+Aceptación: las tres baterías pasan.
+
+## Fase 16 · Palabras prohibidas
+
+- [x] 16.1 Migración: `rooms`, `games` y fases admiten el juego; tabla `taboo_cards` con RLS, sin políticas y con sus `check`; `game_rounds.card_id`
+- [x] 16.2 Migración de datos con unas 150 tarjetas y `docs/TARJETAS.md`
+- [x] 16.3 `palabras_prohibidas_start`, `_guessed`, `_pass`, `_forbidden`, `_next`; turno de quien describe, quien vigila y ronda anulada
+- [x] 16.4 Variante `palabras_prohibidas` en `get_room_state`
+- [x] 16.5 Pruebas pgTAP de `palabras_prohibidas`
+- [x] 16.6 Selector con el juego elegible y su portada (palabra tachada)
+- [x] 16.7 Pantallas de `palabras_prohibidas` y su `viewFor`, con tests unitarios
+- [x] 16.8 Prueba e2e: 5 rondas con 4 jugadores, con acierto, prohibida y pase, sin palabra en la red de quien adivina
+
+Aceptación: las tres baterías pasan.
+
+## Fase 17 · Selector y repaso conjunto (tercera tanda)
+
+- [x] 17.1 Selector definitivo: seis juegos elegibles y sin "Próximamente"
+- [x] 17.2 Repaso a 360, 390 y 430 px con 16 jugadores, nombres de 14 y los dilemas y tarjetas más largos
+- [x] 17.3 Repaso de accesibilidad de las pantallas nuevas en la e2e de accesibilidad de los juegos
+- [x] 17.4 Sesión larga con los seis juegos seguidos y una recarga a mitad de cada uno
+
+Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitentes.
+
+## Fase 18 · Cierre de la tercera tanda
+
+- [x] 18.1 `README.md` con los seis juegos
+- [x] 18.2 `docs/DESPLIEGUE.md` si las migraciones nuevas piden algún paso
+- [x] 18.3 Revisión final contra `docs/JUEGOS-2.md` y su "Fuera de alcance"
+- [x] 18.4 Ampliar `docs/INFORME.md` con esta tanda
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
+## Fase 19 · Preparación de las mejoras
+
+- [x] 19.1 Añadir las fases 19–26 a `docs/TAREAS.md`
+- [x] 19.2 Anotar en `docs/DECISIONES.md` lo que entra en alcance y justificar `jsqr`
+
+## Fase 20 · Salir y terminar partida
+
+- [x] 20.1 Botón "Salir" en la cabecera de la sala y de las partidas; la píldora deja de ser pulsable
+- [x] 20.2 "Siguiente ronda" y la explicación en la revelación de El impostor
+- [x] 20.3 Resultado de todos los juegos: "Fin de la partida", dos botones iguales y el texto para los demás
+
+## Fase 21 · Escanear el QR
+
+- [x] 21.1 Instalar `jsqr` y la función pura que reconoce un enlace o código de sala
+- [x] 21.2 Diálogo de cámara y botón "Escanear QR" en el inicio
+
+## Fase 22 · Temáticas y palabras
+
+- [x] 22.1 Migración con las 100 palabras nuevas y `docs/PALABRAS.md`
+- [x] 22.2 `impostor_categories` y temáticas en `start_game`, con pgTAP
+- [x] 22.3 Selector de temáticas en la sala de espera
+
+## Fase 23 · Temporizador
+
+- [x] 23.1 Migración: tiempo y hora límite; `start_game`, `open_voting` y `close_voting` con el tiempo, y pgTAP
+- [x] 23.2 Selector de tiempo, cuenta atrás y cierre al llegar a cero
+- [x] 23.3 Prueba e2e: votación que se cierra sola
+
+## Fase 24 · Cómo se juega
+
+- [x] 24.1 Componente de tutorial por pasos y botón en la sala de espera
+- [x] 24.2 Pasos e ilustraciones de los seis juegos
+
+## Fase 25 · Avatares
+
+- [x] 25.1 Migración `room_players.avatar`, `set_avatar` y foto, con pgTAP
+- [x] 25.2 Las 12 ilustraciones y el `Avatar` que las pinta
+- [x] 25.3 Elegir avatar al poner el nombre y cambiarlo en la sala de espera
+
+## Fase 26 · Repaso y cierre de las mejoras
+
+- [x] 26.1 Repaso a 360, 390 y 430 px y de accesibilidad de todo lo nuevo, ampliando las e2e
+- [x] 26.2 `README.md`, `docs/DESPLIEGUE.md` y `docs/INFORME.md`
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
+## Fase 27 · Preparación de Luna llena
+
+Plan: `docs/PLAN-5.md`. Sus fases 14–19 son aquí las 27–32 (ver DECISIONES 27.3).
+
+- [x] 27.1 Leer `docs/PLAN-5.md` entero, con el anexo; repasar El impostor (roles secretos, votación, eliminación) y la estructura por carpetas de juego
+- [x] 27.2 Comprobar que las tres baterías pasan antes de tocar nada (613 unitarios, 855 pgTAP, 24 e2e)
+- [x] 27.3 Anotar en `docs/DECISIONES.md` las diferencias entre el plan y el código
+- [x] 27.4 Añadir las fases 27–32 a `docs/TAREAS.md`
+
+Aceptación: baterías en verde; tareas y decisiones escritas.
+
+## Fase 28 · Luna llena: base de datos, reparto y noche
+
+- [x] 28.1 Migración: `rooms.game` y `games.phase` admiten `luna_llena`; `game_roles.role` admite los siete roles; tablas `luna_state`, `luna_night_actions` y `luna_votes`, con RLS y sin políticas
+- [x] 28.2 `set_game` acepta `luna_llena`; auxiliares que validan una composición y calculan la recomendada
+- [x] 28.3 `luna_llena_start`: validación, reparto aleatorio y estado inicial en `roles`
+- [x] 28.4 `luna_llena_night_action` para cada rol, con sus restricciones, y cierre automático de la noche
+- [x] 28.5 Resolución de la noche (`luna_llena_close_night` y su auxiliar) y paso a `dawn` con `announcement`
+- [x] 28.6 Variante `luna_llena` en `get_room_state` para `roles`, `night` y `dawn`, con `narration` y `spectator`
+- [x] 28.7 Pruebas pgTAP de composición, reparto, secreto y noche
+
+Aceptación: `npm run test:db` pasa desde cero, con las pruebas anteriores intactas.
+
+## Fase 29 · Luna llena: base de datos, día, juicio y final
+
+- [x] 29.1 `luna_llena_continue` con todas sus transiciones
+- [x] 29.2 Elección de alcalde
+- [x] 29.3 Juicio: acusación, veredicto, cierre forzado y voto doble del alcalde
+- [x] 29.4 Cazador: fase `hunter`, disparo y salto
+- [x] 29.5 Comprobación de victoria y `result` en la foto
+- [x] 29.6 Abandono y expulsión en cada fase
+- [x] 29.7 Resto de la foto: `public_votes`, `accused_id`, `mayor_id` y todas las claves de `narration`
+- [x] 29.8 Pruebas pgTAP de transiciones, juicio, cazador, bufón, victorias, abandonos, partidas completas y secreto de extremo a extremo
+
+Aceptación: `npm run test:db` pasa desde cero.
+
+## Fase 30 · Luna llena: cartas, sala y noche
+
+- [x] 30.1 Las siete ilustraciones SVG y la carta de rol, también en `/dev/componentes`
+- [x] 30.2 Textos del juego: roles, bandos, efectos y guion del narrador
+- [x] 30.3 Esquema `zod` de la variante, acciones, errores y `viewFor`, con tests unitarios
+- [x] 30.4 Sala de espera: lobos, roles opcionales, composición y aviso
+- [x] 30.5 Caja del narrador
+- [x] 30.6 Reparto con la carta y botón para volver a verla
+- [x] 30.7 Noche de cada rol, espera tras actuar, amanecer y aviso a los enamorados
+
+Aceptación: `npm run check` pasa; con seis navegadores se reparte, se juega una noche y se ve el amanecer.
+
+## Fase 31 · Luna llena: día, juicio y final
+
+- [x] 31.1 Elección de alcalde y su distintivo
+- [x] 31.2 Día, votación de acusación y defensa
+- [x] 31.3 Veredicto y ejecución
+- [x] 31.4 Turno del cazador
+- [x] 31.5 Vista de espectador
+- [x] 31.6 Resultado
+- [x] 31.7 Pruebas e2e con seis contextos y vista de móvil
+
+Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitentes.
+
+## Fase 32 · Cierre de Luna llena
+
+- [x] 32.1 Selector con Luna llena elegible, portada del lobo y rango de 6 a 16; pasos de "Cómo se juega"
+- [x] 32.2 Repaso a 360, 390 y 430 px con 16 jugadores y nombres de 14
+- [x] 32.3 Repaso de accesibilidad de las pantallas nuevas
+- [x] 32.4 Revisión final contra las secciones 1 a 10 del plan y su "Fuera de alcance"
+- [x] 32.5 `README.md` y, si hace falta, `docs/DESPLIEGUE.md`
+- [x] 32.6 Ampliar `docs/INFORME.md`
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
 ## Bloqueos
 
 - Ninguno. (Resuelto: Docker Desktop instalado. Su `docker.exe` está en `AppData\Local\Programs\DockerDesktop\resources\bin` y no en el PATH de Git Bash, pero la CLI de Supabase lo encuentra.)
@@ -171,3 +341,4 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 ## Descubierto por el camino
 
 - [x] D.1 (para 5.1 y 5.5) Ajustar el tamaño de la palabra y de los titulares a su longitud: a 360 px una palabra de 6 letras en `text-display-lg` ya no cabe en la tarjeta protagonista. La `Card` parte palabras para no desbordar, pero partir la palabra secreta queda mal.
+- [x] D.2 (Luna llena, a petición de Fran) Quitar la segunda votación del juicio: el acusado dice sus últimas palabras y el narrador lo ahorca

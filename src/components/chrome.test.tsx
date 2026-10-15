@@ -1,19 +1,21 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { OfflineNotice } from './OfflineNotice';
-import { PillButton } from './PillButton';
+import { HeaderAside } from './HeaderAside';
 import { Screen } from './Screen';
 
-describe('PillButton', () => {
-  it('es un botón con el texto visible y la explicación para lectores de pantalla', () => {
-    const onClick = vi.fn();
-    render(<PillButton label="Sala KTRM" hint="Salir de la sala" onClick={onClick} />);
+describe('HeaderAside', () => {
+  it('la píldora solo informa y salir es un botón a la vista que abre la confirmación', () => {
+    const onLeave = vi.fn();
+    render(<HeaderAside label="Sala KTRM" onLeave={onLeave} />);
     expect(screen.getByText('Sala KTRM')).toBeInTheDocument();
-    const button = screen.getByRole('button', { name: 'Sala KTRM. Salir de la sala' });
+    expect(screen.queryByRole('button', { name: /Sala KTRM/ })).not.toBeInTheDocument();
+    const button = screen.getByRole('button', { name: 'Salir de la sala' });
+    expect(button).toHaveTextContent('Salir');
     expect(button).toHaveAttribute('aria-haspopup', 'dialog');
     expect(button).toHaveClass('min-h-11');
     fireEvent.click(button);
-    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onLeave).toHaveBeenCalledTimes(1);
   });
 });
 

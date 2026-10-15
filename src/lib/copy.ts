@@ -27,6 +27,16 @@ export const errorCodes = [
   'invalid_clue',
   'not_arbiter',
   'is_guesser',
+  'invalid_option',
+  'not_describer',
+  'not_watcher',
+  'invalid_categories',
+  'invalid_vote_seconds',
+  'invalid_avatar',
+  'invalid_config',
+  'already_acted',
+  'same_as_last_night',
+  'not_hunter',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -59,6 +69,17 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
     'La pista tiene que ser una sola palabra de hasta 20 letras, y no puede ser la palabra secreta ni contenerla. Prueba con otra.',
   not_arbiter: 'Eso lo decide quien arbitra la ronda. Pídeselo a quien arbitra.',
   is_guesser: 'Esta ronda te toca adivinar, así que no das pista. Espera a ver las de los demás.',
+  invalid_option: 'Esa opción no existe. Elige una de las dos.',
+  not_describer: 'Eso lo decide quien describe esta ronda. Tú adivina en voz alta.',
+  invalid_avatar: 'Ese avatar no está en la galería. Elige otro.',
+  already_acted: 'Ya has hecho lo tuyo esta noche. Espera al amanecer.',
+  same_as_last_night: 'Anoche ya protegiste a esa persona. Esta noche elige a otra.',
+  not_hunter: 'Solo dispara el cazador. Espera a que elija.',
+  invalid_config:
+    'Con esa composición no se puede jugar. Ajusta los lobos o los roles hasta que quede al menos un aldeano.',
+  invalid_vote_seconds: 'El tiempo para votar es de 30, 60 o 90 segundos. Elige uno de esos.',
+  invalid_categories: 'Alguna temática ya no está disponible. Revisa las temáticas elegidas.',
+  not_watcher: 'Eso lo canta quien vigila las palabras prohibidas. Avísale si oyes una.',
   unknown: 'Algo ha fallado. Vuelve a intentarlo en un momento.',
   offline: 'Sin conexión. Seguimos intentándolo; no cierres la página.',
 };
@@ -77,8 +98,178 @@ export const copy = {
     intro: 'Para jugar en persona, cada uno con su móvil. Sin registro.',
     codeLabel: 'Código de la sala',
     join: 'Unirse',
+    scan: 'Escanear QR',
     or: 'o empieza tú',
     create: 'Crear sala',
+  },
+
+  avatars: {
+    legend: 'Tu avatar',
+    initial: 'Sin avatar: tu inicial',
+    // Inicial de ejemplo mientras aún no se ha escrito el nombre.
+    placeholder: '?',
+    change: 'Cambiar tu avatar',
+    done: 'Listo',
+    names: {
+      avocado: 'Aguacate con gafas',
+      egg: 'Huevo frito',
+      ghost: 'Fantasma',
+      cactus: 'Cactus',
+      banana: 'Plátano',
+      pizza: 'Pizza',
+      cloud: 'Nube enfadada',
+      toast: 'Tostada',
+      octopus: 'Pulpo',
+      donut: 'Dónut',
+      rocket: 'Cohete',
+      penguin: 'Pingüino',
+    },
+  },
+
+  howTo: {
+    button: 'Cómo se juega',
+    title: (game: string) => `Cómo se juega a ${game}`,
+    close: 'Cerrar',
+    previous: 'Anterior',
+    next: 'Siguiente',
+    progress: (step: number, total: number) => `Paso ${String(step)} de ${String(total)}`,
+    // Textos de las ilustraciones de los pasos.
+    art: {
+      word: 'Pizza',
+      secret: '?',
+      clue: 'Queso',
+      otherClue: 'Horno',
+      dots: '…',
+      out: 'Fuera',
+      who: '¿Quién…?',
+      answerA: 'Volar',
+      answerB: 'Siesta',
+      unknown: '¿?',
+      point: '+1',
+      optionA: 'A',
+      optionB: 'B',
+      or: 'o',
+      forbiddenA: 'Queso',
+      forbiddenB: 'Italia',
+      forbiddenCall: '¡Prohibida!',
+      shout: '¡Pizza!',
+      mayor: 'Alcalde',
+      double: '×2',
+    },
+    steps: {
+      impostor: [
+        {
+          title: 'Una palabra para todos',
+          text: 'Todos reciben la misma palabra menos el impostor, que solo sabe la temática.',
+        },
+        {
+          title: 'Pistas por turnos',
+          text: 'Por turnos, cada uno dice una palabra relacionada. El impostor escucha e intenta disimular.',
+        },
+        {
+          title: 'Votad y expulsad',
+          text: 'Votáis a quién expulsar. Si echáis a todos los impostores gana el grupo; si quedan tantos impostores como jugadores, ganan ellos.',
+        },
+      ],
+      probable: [
+        {
+          title: 'Sale una pregunta',
+          text: '«¿Quién es más probable que…?» y una situación. Sin pensarlo mucho.',
+        },
+        {
+          title: 'Señala a alguien',
+          text: 'Cada uno vota en secreto a quien más le pega. Puedes votarte a ti.',
+        },
+        {
+          title: 'Un punto al más votado',
+          text: 'El más votado de cada ronda suma un punto. Al final, gana el más probable de la noche.',
+        },
+      ],
+      quien_lo_dijo: [
+        {
+          title: 'Todos responden',
+          text: 'Sale una pregunta y cada uno escribe una respuesta corta.',
+        },
+        {
+          title: '¿De quién es?',
+          text: 'Sale una respuesta sin nombre y los demás votáis quién la escribió. Su autor disimula.',
+        },
+        {
+          title: 'Puntos',
+          text: 'Un punto por acertar el autor. El autor gana uno por cada uno que falle.',
+        },
+      ],
+      una_pista: [
+        {
+          title: 'A uno le toca adivinar',
+          text: 'Por turnos, uno adivina una palabra que todos los demás ven.',
+        },
+        {
+          title: 'Una pista cada uno',
+          text: 'Los demás escriben una sola palabra de pista. Las repetidas se anulan, así que pensad distinto.',
+        },
+        {
+          title: 'Todos en el mismo equipo',
+          text: 'Quien adivina ve las pistas que quedan y responde en voz alta. Cada acierto suma para el grupo.',
+        },
+      ],
+      que_prefieres: [
+        { title: 'Dos opciones', text: 'Sale un dilema: ¿esto o aquello?' },
+        {
+          title: 'Elige en secreto',
+          text: 'Cada uno elige la suya. Nadie ve qué ha elegido el resto hasta el reparto.',
+        },
+        {
+          title: 'Gana la mayoría',
+          text: 'Quien elige lo mismo que la mayoría se lleva un punto. Si empatan, nadie.',
+        },
+      ],
+      palabras_prohibidas: [
+        {
+          title: 'Uno describe',
+          text: 'A uno le toca describir una palabra sin decir ninguna de las cinco prohibidas.',
+        },
+        {
+          title: 'Otro vigila',
+          text: 'El siguiente ve la tarjeta y pulsa «¡Prohibida!» si se le escapa alguna.',
+        },
+        {
+          title: 'Los demás adivinan',
+          text: 'Decid la respuesta en voz alta. Quien acierta y quien describe se llevan un punto cada uno.',
+        },
+      ],
+      luna_llena: [
+        {
+          title: 'Cada uno, su carta',
+          text: 'Recibes un rol en secreto. Los lobos se conocen entre ellos; nadie más sabe nada de nadie.',
+        },
+        {
+          title: 'De noche, todos al móvil',
+          text: 'Todos tocan algo para que nadie se delate. Los lobos eligen víctima y los roles con poder lo usan.',
+        },
+        {
+          title: 'De día, a juicio',
+          text: 'Se anuncia quién ha muerto. Elegís alcalde, debatís con los móviles boca abajo y votáis a quién ahorcar.',
+        },
+        {
+          title: 'Quién gana',
+          text: 'El pueblo, si caen todos los lobos. Los lobos, si llegan a ser tantos como el resto. El bufón, si lo ahorcáis.',
+        },
+      ],
+    },
+  },
+
+  scan: {
+    title: 'Escanear QR',
+    close: 'Cerrar',
+    status: {
+      starting: 'Abriendo la cámara…',
+      scanning: 'Apunta al QR de la sala que te enseñan.',
+      not_room: 'Ese QR no es de una sala de La Previa. Prueba con otro.',
+      denied:
+        'No tenemos permiso para usar la cámara. Dáselo en los ajustes del navegador o escribe el código de la sala.',
+      unavailable: 'No podemos usar la cámara en este móvil. Escribe el código de la sala.',
+    },
   },
 
   name: {
@@ -92,6 +283,7 @@ export const copy = {
   room: {
     pill: (code: string) => `Sala ${code}`,
     leave: 'Salir de la sala',
+    leaveShort: 'Salir',
     leaveTitle: '¿Salir de la sala?',
     leaveText: 'Si estáis en mitad de una partida, contará como que te has ido.',
     leaveConfirm: 'Salir',
@@ -107,7 +299,6 @@ export const copy = {
   games: {
     title: '¿A qué jugamos?',
     chosen: 'Elegido',
-    soon: 'Próximamente',
     open: 'Abrir la sala',
     impostor: {
       name: 'El impostor',
@@ -129,7 +320,23 @@ export const copy = {
       description: 'Uno adivina la palabra con una pista de cada uno. Las repetidas no valen.',
       players: 'De 3 a 16 jugadores',
     },
-    upcoming: { banned: 'Palabras prohibidas', wouldYouRather: '¿Qué prefieres?' },
+    que_prefieres: {
+      name: '¿Qué prefieres?',
+      description:
+        'Sale un dilema y cada uno elige en secreto. Puntúa quien piensa como la mayoría.',
+      players: 'De 3 a 16 jugadores',
+    },
+    palabras_prohibidas: {
+      name: 'Palabras prohibidas',
+      description: 'Uno describe una palabra sin decir las cinco prohibidas. Los demás adivinan.',
+      players: 'De 3 a 16 jugadores',
+    },
+    luna_llena: {
+      name: 'Luna llena',
+      description:
+        'Un pueblo con lobos escondidos. De noche matan; de día se ahorca a un sospechoso.',
+      players: 'De 6 a 16 jugadores',
+    },
     covers: {
       quote: '¿?',
       banned: 'Palabra',
@@ -163,13 +370,31 @@ export const copy = {
     moreImpostors: 'Más impostores',
     minus: '−',
     plus: '+',
+    voteTime: 'Tiempo para votar',
+    voteTimeOption: (seconds: number | null) => (seconds === null ? 'Sin' : `${String(seconds)} s`),
+    voteTimeLabel: (seconds: number | null) =>
+      seconds === null
+        ? 'Sin tiempo: cierra el anfitrión'
+        : `${String(seconds)} segundos para votar`,
+    topics: 'Temáticas',
+    topicsSummary: (chosen: readonly string[]) =>
+      chosen.length === 0
+        ? 'Todas'
+        : chosen.length === 1
+          ? (chosen[0] ?? '')
+          : `${String(chosen.length)} temáticas`,
+    topicsChoose: 'Elegir',
+    topicsChooseLabel: 'Elegir temáticas',
+    topicsHint: 'Marca las que quieras. Sin marcar ninguna, la palabra sale de todas.',
+    topicsAll: 'Todas',
+    topicsDone: 'Listo',
     rounds: 'Rondas',
     roundsOption: (rounds: number) => `${String(rounds)} rondas`,
     start: 'Empezar partida',
-    needPlayers: (missing: number) =>
+    needPlayers: (min: number, missing: number) =>
       missing === 1
-        ? 'Hacen falta al menos 3 jugadores: falta 1. Comparte el código para que entre alguien más.'
-        : `Hacen falta al menos 3 jugadores: faltan ${String(missing)}. Comparte el código para que entren.`,
+        ? `Hacen falta al menos ${String(min)} jugadores: falta 1. Comparte el código para que entre alguien más.`
+        : `Hacen falta al menos ${String(min)} jugadores: faltan ${String(missing)}. Comparte el código para que entren.`,
     waitingHost: (host: string) => `${host} empezará la partida`,
   },
 
@@ -199,6 +424,8 @@ export const copy = {
 
   vote: {
     pill: 'Votación',
+    pillTimed: (seconds: number) =>
+      `Votación · ${String(Math.floor(seconds / 60))}:${String(seconds % 60).padStart(2, '0')}`,
     title: '¿Quién es el impostor?',
     yourVote: 'Tu voto',
     hint: (name: string) =>
@@ -225,7 +452,8 @@ export const copy = {
         impostors === 1 ? 'impostor' : 'impostores'
       } entre ellos.`,
     gameOver: 'Se acabó la partida.',
-    keepTalking: 'Seguir hablando',
+    nextRound: 'Siguiente ronda',
+    roundPill: (round: number) => `Ronda ${String(round)} de la partida`,
     seeResult: 'Ver resultado',
     waitingHost: (host: string) => `${host} decide cuándo seguir`,
   },
@@ -264,7 +492,7 @@ export const copy = {
     impostorsEqual: 'Quedaban tantos impostores como jugadores normales.',
     changeGame: 'Cambiar de juego',
     playAgain: 'Volver a jugar',
-    waitingHost: (host: string) => `${host} decide si se vuelve a jugar`,
+    waitingHost: (host: string) => `${host} elige si jugáis otra o cambiáis de juego`,
   },
 
   rounds: {
@@ -367,6 +595,324 @@ export const copy = {
     },
   },
 
+  quePrefieres: {
+    question: '¿Qué prefieres?',
+    or: 'o',
+    letter: (option: 'a' | 'b') => (option === 'a' ? 'A' : 'B'),
+    optionLabel: (option: 'a' | 'b', text: string) =>
+      `Opción ${option === 'a' ? 'A' : 'B'}: ${text}`,
+    chooseHint: 'Nadie ve lo que eliges hasta el reparto. Puntúa quien piensa como la mayoría.',
+    choose: 'Elige una opción',
+    submit: (option: 'a' | 'b') => `Elegir la ${option === 'a' ? 'A' : 'B'}`,
+    chosen: 'Han elegido',
+    chosenDetail: 'Ha elegido',
+    mine: (text: string) => `Tu elección: ${text}`,
+    closeHint: 'Puedes cerrar con las elecciones que haya.',
+    close: 'Cerrar elecciones',
+    waitingClose: (host: string) => `${host} cerrará las elecciones`,
+    majorityPill: 'Gana la mayoría',
+    tie: 'Empate',
+    tieText: 'Las dos opciones empatan: esta ronda nadie puntúa.',
+    nobody: 'Nadie ha elegido',
+    nobodyText: 'Esta ronda nadie se lleva el punto.',
+    count: (count: number) => (count === 1 ? '1 lo prefiere' : `${String(count)} lo prefieren`),
+    none: 'Nadie',
+    point: '+1',
+    resultPill: 'Quien mejor conoce al grupo',
+  },
+
+  palabrasProhibidas: {
+    describePill: 'Describes tú',
+    watchPill: 'Vigilas tú',
+    word: 'La palabra',
+    forbidden: 'No se puede decir',
+    describeHint: 'Descríbela sin decir ninguna de estas. Cuando alguien acierte, márcalo.',
+    whoGuessed: '¿Quién ha acertado?',
+    chooseGuesser: 'Toca a quien ha acertado',
+    guessed: (name: string) => `Ha acertado ${name}`,
+    picked: 'Acierta',
+    pass: 'Pasar',
+    watchHint: (describer: string) =>
+      `Si ${describer} dice alguna de estas palabras, pulsa el botón y la ronda acaba.`,
+    forbiddenButton: '¡Prohibida!',
+    guessPill: 'Te toca adivinar',
+    guessTitle: 'Adivina en voz alta',
+    guessText: (describer: string) =>
+      `${describer} describe una palabra. Grita la respuesta en cuanto la sepas.`,
+    watcherIs: (watcher: string) => `Vigila las prohibidas: ${watcher}`,
+    waitingMark: (describer: string) => `Esperando a que ${describer} marque quién acierta`,
+    guessedPill: (name: string) => `Lo acierta ${name}`,
+    guessedPoints: (guesser: string, describer: string) =>
+      `+1 para ${guesser} y +1 para ${describer}`,
+    forbiddenPill: 'Se dijo una prohibida',
+    passedPill: (describer: string) => `${describer} ha pasado`,
+    noPoints: 'Esta ronda nadie puntúa.',
+    resultPill: 'Gana la partida',
+  },
+
+  lunaLlena: {
+    roles: {
+      wolf: {
+        name: 'Lobo',
+        effect:
+          'Cada noche elegís entre los lobos a quién devorar. De día, disimula y que ahorquen a otro.',
+        art: 'Cabeza de lobo bajo la luna',
+      },
+      villager: {
+        name: 'Aldeano',
+        effect:
+          'No tienes poderes. Tu arma es hablar: descubre a los lobos y convence al resto de a quién ahorcar.',
+        art: 'Aldeano con sombrero de paja',
+      },
+      seer: {
+        name: 'Vidente',
+        effect:
+          'Cada noche eliges a un jugador y descubres si es lobo. Úsalo con cabeza: si te delatas, eres la siguiente cena.',
+        art: 'Bola de cristal con un ojo',
+      },
+      protector: {
+        name: 'Protector',
+        effect:
+          'Cada noche proteges a un jugador del ataque de los lobos. Puedes protegerte a ti, pero no a la misma persona dos noches seguidas.',
+        art: 'Escudo',
+      },
+      hunter: {
+        name: 'Cazador',
+        effect:
+          'Si mueres, de noche o en la horca, disparas antes de caer y te llevas contigo a quien elijas.',
+        art: 'Punto de mira',
+      },
+      jester: {
+        name: 'Bufón',
+        effect:
+          'Ganas tú, y solo tú, si el pueblo te ahorca. Hazte el sospechoso sin que se note. Si te matan los lobos, pierdes.',
+        art: 'Bufón con gorro de tres puntas',
+      },
+      cupid: {
+        name: 'Cupido',
+        effect:
+          'La primera noche eliges a dos enamorados. Si uno muere, el otro muere con él. Después eres un aldeano más.',
+        art: 'Corazón atravesado por una flecha',
+      },
+    },
+    // Cómo se nombra cada rol en el guion: "Era vidente".
+    spokenRoles: {
+      wolf: 'lobo',
+      villager: 'aldeano',
+      seer: 'vidente',
+      protector: 'protector',
+      hunter: 'cazador',
+      jester: 'bufón',
+      cupid: 'Cupido',
+    },
+    // Guion del narrador (docs/PLAN-5.md §4). Solo información pública.
+    script: {
+      roles:
+        'Bienvenidos al pueblo. Mirad vuestra carta sin que nadie la vea. Entre vosotros hay lobos.',
+      nightFirst:
+        'Cae la primera noche. Coged todos el móvil y seguid las instrucciones. Nada de mirar al de al lado.',
+      night: 'Cae la noche sobre el pueblo. Todos al móvil.',
+      dawnDeath: (name: string, role: string) => `Amanece. ${name} no ha despertado. Era ${role}.`,
+      dawnDeaths: (names: readonly string[]) =>
+        `Amanece con malas noticias. Han muerto ${joinNames(names)}.`,
+      dawnNone: 'Amanece y, por una vez, estáis todos. Alguien ha tenido suerte esta noche.',
+      hunter: (name: string) =>
+        `${name} era el cazador, y no piensa irse solo. Elige a quién te llevas.`,
+      hunterShot: (name: string, role: string) =>
+        `El cazador dispara. ${name} cae con él. Era ${role}.`,
+      loverDeath: (name: string, role: string) =>
+        `${name} no soporta la pérdida y muere de pena. Era ${role}.`,
+      left: (name: string, role: string) => `${name} se ha ido del pueblo. Era ${role}.`,
+      mayor: 'El pueblo necesita un alcalde. Su voto valdrá doble. Postulaos, convenced y votad.',
+      mayorElected: (name: string) => `${name} es vuestro alcalde.`,
+      day: 'Móviles boca abajo. Tenéis que decidir a quién acusáis. Hablad.',
+      voting: 'Se acabó la charla. Coged el móvil y votad a quién acusáis.',
+      defense: (name: string) =>
+        `El pueblo acusa a ${name}. ${name}, tienes la palabra: son tus últimas palabras.`,
+      noAccused: 'El pueblo no se pone de acuerdo. Hoy no se ahorca a nadie.',
+      executed: (name: string, role: string) =>
+        `El pueblo ha hablado. ${name} sube a la horca. Era ${role}.`,
+      winVillage: 'No queda ni un lobo. El pueblo puede dormir tranquilo.',
+      winWolves: 'Los lobos ya son mayoría. El pueblo ha caído.',
+      winJester: 'Habéis ahorcado al bufón, que es justo lo que quería. Gana él solo.',
+    },
+    teams: {
+      village: 'Bando del pueblo',
+      wolves: 'Bando de los lobos',
+      solo: 'Juegas solo',
+    },
+    card: {
+      youAre: 'Eres',
+      pack: 'Tu manada',
+      packNames: (names: readonly string[]) =>
+        names.length === 0 ? 'Cazas solo: no hay más lobos.' : joinNames(names),
+    },
+    deal: {
+      waiting: 'El narrador dará paso a la noche',
+      peek: 'Mantén para ver tu carta',
+      peekOpen: 'Suelta para ocultarla',
+    },
+    night: {
+      pill: (night: number) => `Noche ${String(night)}`,
+      titles: {
+        wolf: 'Elegid víctima',
+        seer: '¿A quién miras?',
+        protector: '¿A quién proteges?',
+        cupid: 'Elige a dos',
+        suspect: '¿De quién sospechas?',
+      },
+      hints: {
+        wolf: 'Marca a quién devoráis. Ves lo que marca tu manada y puedes cambiar hasta el amanecer.',
+        seer: 'Elige a alguien y sabrás al momento si es lobo.',
+        protector: 'Si los lobos van a por esa persona, esta noche no muere nadie.',
+        cupid: 'Serán los enamorados: si uno muere, el otro también. Puedes ser uno de ellos.',
+        suspect: 'Marca a quien te parezca sospechoso. Que nadie sepa qué eres.',
+      },
+      choose: 'Jugadores',
+      confirm: 'Confirmar',
+      changeMark: 'Cambiar la marca',
+      marks: (names: readonly string[]) => `Lo marca ${joinNames(names)}`,
+      mine: 'Elegido',
+      done: {
+        wolf: (name: string) => `Tu marca: ${name}`,
+        seer: (name: string) => `Has mirado a ${name}`,
+        protector: (name: string) => `Proteges a ${name}`,
+        cupid: (a: string, b: string) => `Has enamorado a ${a} y ${b}`,
+        suspect: (name: string) => `Sospechas de ${name}`,
+      },
+      waiting: 'Espera al amanecer',
+      pending: (count: number) =>
+        count === 0
+          ? 'Ya ha actuado todo el pueblo'
+          : count === 1
+            ? 'Falta 1 por actuar'
+            : `Faltan ${String(count)} por actuar`,
+      seerTitle: 'Lo que has visto',
+      seerResult: (night: number, name: string, isWolf: boolean) =>
+        `Noche ${String(night)} · ${name}: ${isWolf ? 'es lobo' : 'no es lobo'}`,
+    },
+    dawn: {
+      pill: 'Amanece',
+      quietTitle: 'Noche tranquila',
+      quietText: 'Esta noche no ha muerto nadie.',
+      deathsTitle: 'Esta noche',
+      causes: {
+        wolves: 'Devorado por los lobos',
+        hanged: 'Ahorcado',
+        hunter: 'Abatido por el cazador',
+        heartbreak: 'Muerto de pena',
+        left: 'Se ha ido del pueblo',
+      },
+      lover: (name: string) => `Estás enamorado de ${name}. Si uno muere, el otro también.`,
+      cupid: (a: string, b: string) => `Has enamorado a ${a} y ${b}. Nadie más lo sabe.`,
+    },
+    waitingNarrator: (host: string) => `Escucha a ${host}, que narra`,
+    mayorBadge: 'Alcalde',
+    vote: {
+      mayorPill: 'Alcalde',
+      mayorTitle: '¿Quién es el alcalde?',
+      mayorHint: 'Su voto valdrá doble al acusar. Puedes votarte a ti.',
+      accusePill: (day: number) => `Día ${String(day)}`,
+      accuseTitle: '¿A quién acusáis?',
+      accuseHint:
+        'El más votado dirá sus últimas palabras y subirá a la horca. Con empate, hoy no se ahorca a nadie.',
+      choose: 'Jugadores',
+      submit: (name: string) => `Votar a ${name}`,
+      choosePlayer: 'Elige a alguien',
+      voted: (name: string) => `Has votado a ${name}`,
+      pending: (count: number) =>
+        count === 0
+          ? 'Ya ha votado todo el pueblo'
+          : count === 1
+            ? 'Falta 1 por votar'
+            : `Faltan ${String(count)} por votar`,
+    },
+    day: {
+      pill: (day: number) => `Día ${String(day)}`,
+      title: 'Móviles boca abajo',
+      text: 'Hablad. Decidid a quién acusáis. El narrador abrirá la votación.',
+      mayor: (name: string) => `Alcalde: ${name}`,
+      noMayor: 'Sin alcalde',
+      mayorVotesTitle: 'Así se eligió al alcalde',
+    },
+    defense: {
+      pill: 'Defensa',
+      accused: (name: string) => `Acusado: ${name}`,
+      speak: (name: string) => `${name} dice sus últimas palabras.`,
+      youSpeak: 'Te acusan a ti. Di tus últimas palabras: después, a la horca.',
+      noAccused: 'Sin acusado',
+      noAccusedText: 'Empate o nadie ha votado. Hoy no se ahorca a nadie.',
+      votesTitle: 'Quién votó a quién',
+      votes: (count: number) => (count === 1 ? '1 voto' : `${String(count)} votos`),
+      double: '×2',
+      noVotes: 'Nadie ha votado.',
+    },
+    execution: {
+      pill: 'Ejecución',
+      hanged: 'A la horca',
+      left: 'Se ha ido',
+    },
+    hunter: {
+      pill: 'Cazador',
+      title: 'Dispara antes de caer',
+      hint: 'Elige a quién te llevas contigo.',
+      submit: (name: string) => `Disparar a ${name}`,
+      chooseTarget: 'Elige a quién',
+      waiting: (name: string) => `${name}, el cazador, elige a quién se lleva`,
+    },
+    spectator: {
+      pill: 'Has muerto',
+      title: 'Ahora lo ves todo',
+      text: 'No puedes hablar del juego ni dar pistas. Mira y disfruta.',
+      rolesTitle: 'Quién es quién',
+      lovers: (a: string, b: string) => `Enamorados: ${a} y ${b}`,
+      actionsTitle: 'Esta noche',
+      action: (who: string, target: string) => `${who} marca a ${target}`,
+      pair: (who: string, a: string, b: string) => `${who} enamora a ${a} y ${b}`,
+      noActions: 'Nadie ha actuado todavía.',
+      dead: 'Muerto',
+    },
+    result: {
+      winner: {
+        village: 'Gana el pueblo',
+        wolves: 'Ganan los lobos',
+        jester: 'Gana el bufón',
+      },
+      lovers: (a: string, b: string) => `Los enamorados eran ${a} y ${b}`,
+      rolesTitle: 'Todos los roles',
+      dead: 'Muerto',
+    },
+    narrator: {
+      title: 'Lee en voz alta',
+      startNight: 'Que caiga la noche',
+      forceDawn: 'Hacer que amanezca',
+      next: 'Continuar',
+      skipHunter: 'Seguir sin disparo',
+      closeVote: 'Cerrar la votación',
+      openVoting: 'Abrir votación',
+      toGallows: 'A la horca',
+    },
+    lobby: {
+      wolves: 'Lobos',
+      fewerWolves: 'Menos lobos',
+      moreWolves: 'Más lobos',
+      optionalRoles: 'Roles opcionales',
+      composition: 'Composición',
+      // "2 lobos · vidente · protector · cazador · 4 aldeanos"
+      compositionLine: (wolves: number, roles: readonly string[], villagers: number) =>
+        [
+          wolves === 1 ? '1 lobo' : `${String(wolves)} lobos`,
+          'vidente',
+          ...roles,
+          villagers === 1 ? '1 aldeano' : `${String(villagers)} aldeanos`,
+        ].join(' · '),
+      problems: {
+        too_many_wolves: 'Demasiados lobos: tienen que ser menos de la mitad. Quita alguno.',
+        no_villager: 'No queda ningún aldeano. Quita un rol opcional o un lobo.',
+      },
+    },
+  },
+
   // Solo para la página interna de componentes, que no existe en producción.
   dev: {
     title: 'Componentes',
@@ -379,6 +925,7 @@ export const copy = {
       waiting: 'Caja de espera',
       fields: 'Campos de texto',
       dialog: 'Diálogo',
+      lunaCards: 'Cartas de Luna llena',
     },
     disabled: 'Desactivado',
     openDialog: 'Abrir diálogo',

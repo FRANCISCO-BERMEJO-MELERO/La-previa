@@ -18,7 +18,7 @@ function renderPicker(overrides: Partial<Parameters<typeof GamePickerScreen>[0]>
 }
 
 describe('GamePickerScreen (03)', () => {
-  it('muestra los cuatro juegos elegibles con el elegido marcado y los dos próximos sin poder pulsarlos', () => {
+  it('muestra los seis juegos elegibles con el elegido marcado y nada próximamente', () => {
     renderPicker();
     expect(screen.getByRole('heading', { name: '¿A qué jugamos?' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /El impostor/ })).toHaveAttribute(
@@ -37,13 +37,41 @@ describe('GamePickerScreen (03)', () => {
       'aria-pressed',
       'false',
     );
-    expect(screen.getAllByText('De 3 a 16 jugadores')).toHaveLength(4);
+    expect(screen.getByRole('button', { name: /¿Qué prefieres\?/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(screen.getByRole('button', { name: /Palabras prohibidas/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(screen.getAllByText('De 3 a 16 jugadores')).toHaveLength(6);
     expect(screen.getAllByText('Elegido')).toHaveLength(1);
     expect(screen.queryByText('La bomba')).not.toBeInTheDocument();
-    for (const title of ['Palabras prohibidas', '¿Qué prefieres?']) {
-      expect(screen.getByText(title)).toBeInTheDocument();
-      expect(screen.queryByRole('button', { name: title })).not.toBeInTheDocument();
-    }
+    expect(screen.queryByText('Próximamente')).not.toBeInTheDocument();
+  });
+
+  it('lista los siete juegos, Luna llena la última, cada uno con su descripción', () => {
+    renderPicker();
+    const games = screen
+      .getAllByRole('button')
+      .filter((button) => button.hasAttribute('aria-pressed'));
+    const names = [
+      'El impostor',
+      '¿Quién es más probable que…?',
+      '¿Quién lo dijo?',
+      'Una sola pista',
+      '¿Qué prefieres?',
+      'Palabras prohibidas',
+      'Luna llena',
+    ];
+    expect(games).toHaveLength(names.length);
+    names.forEach((name, index) => {
+      expect(games[index]).toHaveTextContent(name);
+    });
+    expect(screen.getByText(/Sale un dilema y cada uno elige en secreto/)).toBeInTheDocument();
+    expect(screen.getByText(/sin decir las cinco prohibidas/)).toBeInTheDocument();
+    expect(screen.getByText('De 6 a 16 jugadores')).toBeInTheDocument();
   });
 
   it('elegir otro juego avisa de cuál', () => {
@@ -73,7 +101,7 @@ describe('GamePickerScreen (03)', () => {
 
   it('la píldora de la sala sirve para salir y avisa sin conexión', () => {
     const { onLeaveRequest } = renderPicker({ offline: true });
-    fireEvent.click(screen.getByRole('button', { name: 'Sala KTRM. Salir de la sala' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Salir de la sala' }));
     expect(onLeaveRequest).toHaveBeenCalledTimes(1);
     expect(
       screen.getByText('Sin conexión. Seguimos intentándolo; no cierres la página.'),
