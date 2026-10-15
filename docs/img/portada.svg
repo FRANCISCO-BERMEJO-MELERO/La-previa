@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" width="1200" height="460" role="img" aria-labelledby="t d">
+  <title id="t">La Previa</title>
+  <desc id="d">Juegos de fiesta para jugar en persona, cada uno con su móvil. Tres móviles muestran una palabra secreta, la carta del impostor y la carta del lobo.</desc>
+  <style>
+    .h { font-family: 'Arial Black', 'Archivo Black', Impact, Helvetica, Arial, sans-serif; font-weight: 900; }
+    .b { font-family: Helvetica, Arial, sans-serif; font-weight: 700; }
+    .r { font-family: Helvetica, Arial, sans-serif; }
+  </style>
+  <rect width="1200" height="460" fill="#ffd23f"/>
+  <!-- Confeti -->
+  <g stroke="#111" stroke-width="4">
+    <circle cx="520" cy="60" r="12" fill="#7fd8ff"/>
+    <rect x="1110" y="40" width="22" height="22" rx="4" fill="#b8f28a" transform="rotate(18 1121 51)"/>
+    <circle cx="1150" cy="400" r="10" fill="#ff6b5e"/>
+    <rect x="560" y="390" width="20" height="20" rx="4" fill="#d9b8ff" transform="rotate(-14 570 400)"/>
+  </g>
+
+  <!-- Marca -->
+  <g transform="rotate(-4 160 90)">
+    <rect x="66" y="66" width="230" height="52" rx="26" fill="#111"/>
+    <rect x="60" y="60" width="230" height="52" rx="26" fill="#ff6b5e" stroke="#111" stroke-width="5"/>
+    <text x="175" y="95" text-anchor="middle" class="b" font-size="22" fill="#111">Juegos de fiesta</text>
+  </g>
+  <text x="56" y="232" class="h" font-size="112" fill="#111" letter-spacing="2">LA</text>
+  <text x="56" y="338" class="h" font-size="112" fill="#111" letter-spacing="2">PREVIA</text>
+  <text x="60" y="392" class="r" font-size="22" fill="#111">Para jugar en persona, cada uno con su móvil.</text>
+  <text x="60" y="424" class="r" font-size="22" fill="#111">Sin registro. Siete juegos, de 3 a 16 jugadores.</text>
+
+  <!-- Móvil 1: palabra -->
+  <g transform="rotate(-8 700 240)">
+    <rect x="618" y="78" width="180" height="330" rx="30" fill="#111"/>
+    <rect x="610" y="70" width="180" height="330" rx="30" fill="#fff" stroke="#111" stroke-width="6"/>
+    <rect x="628" y="98" width="144" height="274" rx="14" fill="#ffd23f" stroke="#111" stroke-width="4"/>
+    <rect x="644" y="150" width="112" height="150" rx="12" fill="#fff" stroke="#111" stroke-width="4"/>
+    <rect x="654" y="162" width="72" height="20" rx="10" fill="#7fd8ff" stroke="#111" stroke-width="3"/>
+    <text x="690" y="177" text-anchor="middle" class="b" font-size="10" fill="#111">TU PALABRA</text>
+    <text x="700" y="240" text-anchor="middle" class="h" font-size="30" fill="#111">GATO</text>
+    <line x1="656" y1="268" x2="744" y2="268" stroke="#111" stroke-width="3"/>
+    <text x="700" y="288" text-anchor="middle" class="b" font-size="11" fill="#111">ANIMALES</text>
+    <rect x="644" y="320" width="112" height="34" rx="12" fill="#ff6b5e" stroke="#111" stroke-width="3"/>
+  </g>
+
+  <!-- Móvil 2: impostor -->
+  <g transform="rotate(3 900 220)">
+    <rect x="818" y="50" width="180" height="330" rx="30" fill="#111"/>
+    <rect x="810" y="42" width="180" height="330" rx="30" fill="#fff" stroke="#111" stroke-width="6"/>
+    <rect x="828" y="70" width="144" height="274" rx="14" fill="#ffd23f" stroke="#111" stroke-width="4"/>
+    <rect x="850" y="126" width="112" height="150" rx="12" fill="#ff6b5e"/>
+    <rect x="844" y="120" width="112" height="150" rx="12" fill="#111"/>
+    <rect x="854" y="132" width="56" height="20" rx="10" fill="#ff6b5e" stroke="#fff" stroke-width="2"/>
+    <text x="882" y="147" text-anchor="middle" class="b" font-size="10" fill="#111">ERES EL</text>
+    <text x="900" y="206" text-anchor="middle" class="h" font-size="15" fill="#ffd23f">IMPOSTOR</text>
+    <line x1="856" y1="236" x2="944" y2="236" stroke="#fff" stroke-width="3"/>
+    <text x="900" y="256" text-anchor="middle" class="b" font-size="11" fill="#fff">ANIMALES</text>
+    <rect x="844" y="292" width="112" height="34" rx="12" fill="#fff" stroke="#111" stroke-width="3" stroke-dasharray="6 4"/>
+  </g>
+
+  <!-- Móvil 3: lobo -->
+  <g transform="rotate(10 1080 250)">
+    <rect x="1008" y="96" width="160" height="300" rx="28" fill="#111"/>
+    <rect x="1000" y="88" width="160" height="300" rx="28" fill="#fff" stroke="#111" stroke-width="6"/>
+    <rect x="1016" y="114" width="128" height="248" rx="14" fill="#ffd23f" stroke="#111" stroke-width="4"/>
+    <rect x="1030" y="140" width="100" height="160" rx="12" fill="#111"/>
+    <rect x="1040" y="152" width="80" height="62" rx="8" fill="#ff6b5e" stroke="#fff" stroke-width="2"/>
+    <polygon points="1062,168 1070,186 1090,186 1098,168 1094,194 1080,208 1066,194" fill="#111"/>
+    <circle cx="1106" cy="166" r="8" fill="#ffd23f" stroke="#111" stroke-width="2"/>
+    <text x="1080" y="246" text-anchor="middle" class="h" font-size="22" fill="#ffd23f">LOBO</text>
+    <rect x="1046" y="260" width="68" height="18" rx="9" fill="#ff6b5e" stroke="#fff" stroke-width="2"/>
+  </g>
+</svg>
