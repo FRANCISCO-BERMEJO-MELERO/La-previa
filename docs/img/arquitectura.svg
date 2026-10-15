@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="1200" height="520" role="img" aria-labelledby="t d">
+  <title id="t">Arquitectura de La Previa</title>
+  <desc id="d">Los móviles cargan la web de Next.js desde Vercel. Toda acción es una llamada RPC a funciones de Postgres en Supabase, que comprueban quién llama, si puede y si la fase lo permite, y devuelven la foto del estado de ese jugador. Las tablas tienen RLS. Realtime avisa de que la sala ha cambiado y el móvil vuelve a pedir su foto; además la pide cada 10 segundos.</desc>
+  <style>
+    .h { font-family: 'Arial Black', 'Archivo Black', Impact, Helvetica, Arial, sans-serif; font-weight: 900; }
+    .b { font-family: Helvetica, Arial, sans-serif; font-weight: 700; }
+    .r { font-family: Helvetica, Arial, sans-serif; }
+    .m { font-family: Consolas, 'Courier New', monospace; font-weight: 700; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#111"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="520" rx="24" fill="#fff6d6"/>
+
+  <!-- Móviles -->
+  <g>
+    <rect x="48" y="78" width="250" height="380" rx="22" fill="#111"/>
+    <rect x="40" y="70" width="250" height="380" rx="22" fill="#ffd23f" stroke="#111" stroke-width="5"/>
+    <text x="64" y="112" class="h" font-size="22" fill="#111">MÓVILES</text>
+    <text x="64" y="138" class="r" font-size="15" fill="#111">Uno por jugador, sin registro</text>
+    <g stroke="#111" stroke-width="4">
+      <rect x="66" y="160" width="60" height="104" rx="12" fill="#fff"/>
+      <rect x="136" y="160" width="60" height="104" rx="12" fill="#fff"/>
+      <rect x="206" y="160" width="60" height="104" rx="12" fill="#111"/>
+    </g>
+    <text x="96" y="218" text-anchor="middle" class="h" font-size="12" fill="#111">GATO</text>
+    <text x="166" y="218" text-anchor="middle" class="h" font-size="12" fill="#111">GATO</text>
+    <text x="236" y="218" text-anchor="middle" class="h" font-size="18" fill="#ffd23f">?</text>
+    <rect x="64" y="290" width="202" height="136" rx="14" fill="#fff" stroke="#111" stroke-width="4"/>
+    <text x="80" y="318" class="b" font-size="15" fill="#111">vista = f(foto)</text>
+    <text x="80" y="342" class="r" font-size="14" fill="#111">La pantalla sale entera</text>
+    <text x="80" y="362" class="r" font-size="14" fill="#111">de la foto del estado,</text>
+    <text x="80" y="382" class="r" font-size="14" fill="#111">validada con zod.</text>
+    <text x="80" y="408" class="r" font-size="14" fill="#111">Sin lógica de juego.</text>
+  </g>
+
+  <!-- Vercel -->
+  <g>
+    <rect x="394" y="36" width="220" height="92" rx="18" fill="#111"/>
+    <rect x="388" y="30" width="220" height="92" rx="18" fill="#fff" stroke="#111" stroke-width="5"/>
+    <text x="408" y="66" class="h" font-size="20" fill="#111">VERCEL</text>
+    <text x="408" y="92" class="r" font-size="15" fill="#111">Next.js (App Router)</text>
+    <text x="408" y="112" class="r" font-size="15" fill="#111">sirve la interfaz</text>
+  </g>
+
+  <!-- Supabase -->
+  <g>
+    <rect x="708" y="78" width="452" height="380" rx="22" fill="#111"/>
+    <rect x="700" y="70" width="452" height="380" rx="22" fill="#b8f28a" stroke="#111" stroke-width="5"/>
+    <text x="724" y="112" class="h" font-size="22" fill="#111">SUPABASE</text>
+    <text x="724" y="138" class="r" font-size="15" fill="#111">La base de datos es la única autoridad</text>
+
+    <rect x="724" y="158" width="404" height="120" rx="14" fill="#fff" stroke="#111" stroke-width="4"/>
+    <text x="742" y="186" class="b" font-size="17" fill="#111">Funciones RPC</text>
+    <text x="742" y="210" class="r" font-size="14" fill="#111">1. ¿Quién llama? (auth.uid)</text>
+    <text x="742" y="230" class="r" font-size="14" fill="#111">2. Bloquea la sala y comprueba fase y permisos</text>
+    <text x="742" y="250" class="r" font-size="14" fill="#111">3. Cambia el estado y sube la versión</text>
+    <text x="742" y="270" class="r" font-size="14" fill="#111">4. Devuelve la foto de ese jugador</text>
+
+    <rect x="724" y="294" width="196" height="132" rx="14" fill="#fff" stroke="#111" stroke-width="4"/>
+    <text x="742" y="322" class="b" font-size="17" fill="#111">Tablas + RLS</text>
+    <text x="742" y="346" class="r" font-size="14" fill="#111">Nadie las lee</text>
+    <text x="742" y="366" class="r" font-size="14" fill="#111">directamente, salvo</text>
+    <text x="742" y="386" class="r" font-size="14" fill="#111">su propia fila de</text>
+    <text x="742" y="406" class="m" font-size="14" fill="#111">rooms</text>
+
+    <rect x="932" y="294" width="196" height="132" rx="14" fill="#7fd8ff" stroke="#111" stroke-width="4"/>
+    <text x="950" y="322" class="b" font-size="17" fill="#111">Realtime</text>
+    <text x="950" y="346" class="r" font-size="14" fill="#111">Solo avisa:</text>
+    <text x="950" y="366" class="r" font-size="14" fill="#111">"la sala ha</text>
+    <text x="950" y="386" class="r" font-size="14" fill="#111">cambiado". No</text>
+    <text x="950" y="406" class="r" font-size="14" fill="#111">lleva datos.</text>
+  </g>
+
+  <!-- Flechas -->
+  <g stroke="#111" stroke-width="5" fill="none">
+    <path d="M296 120 C 340 120, 340 76, 380 76" marker-end="url(#a)" stroke-dasharray="10 7"/>
+    <line x1="300" y1="200" x2="712" y2="200" marker-end="url(#a)"/>
+    <line x1="712" y1="250" x2="304" y2="250" marker-end="url(#a)"/>
+    <path d="M1030 430 C 1010 510, 420 500, 300 410" marker-end="url(#a)" stroke-dasharray="10 7"/>
+  </g>
+  <rect x="410" y="176" width="190" height="36" rx="18" fill="#ff6b5e" stroke="#111" stroke-width="4"/>
+  <text x="505" y="200" text-anchor="middle" class="m" font-size="16" fill="#111">rpc('vote', …)</text>
+  <rect x="380" y="238" width="250" height="36" rx="18" fill="#fff" stroke="#111" stroke-width="4"/>
+  <text x="505" y="262" text-anchor="middle" class="b" font-size="15" fill="#111">foto: solo lo que puedes ver</text>
+  <rect x="440" y="440" width="300" height="36" rx="18" fill="#7fd8ff" stroke="#111" stroke-width="4"/>
+  <text x="590" y="464" text-anchor="middle" class="b" font-size="15" fill="#111">aviso → se vuelve a pedir la foto</text>
+  <text x="330" y="330" class="r" font-size="14" fill="#111">También cada 10 s, al volver</text>
+  <text x="330" y="350" class="r" font-size="14" fill="#111">a la pestaña y al recuperar</text>
+  <text x="330" y="370" class="r" font-size="14" fill="#111">la conexión.</text>
+</svg>
