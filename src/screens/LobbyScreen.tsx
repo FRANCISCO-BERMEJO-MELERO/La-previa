@@ -21,7 +21,7 @@ import { HowToPlayDialog } from './HowToPlayDialog';
 import { KickableChip } from './KickableChip';
 
 export const MAX_PLAYERS = 16;
-/** Todos los juegos piden al menos 3 jugadores (docs/JUEGOS.md §1), salvo Luna llena, que pide 6. */
+/** Todos los juegos piden al menos 3 jugadores (docs/JUEGOS.md §1), salvo El lobo, que pide 4. */
 export const MIN_PLAYERS = 3;
 
 type LobbyScreenProps = {
@@ -64,6 +64,8 @@ type LobbyScreenProps = {
   onLunaConfigChange: (config: LunaConfig) => void;
   onStart: () => void;
   onKickRequest: (userId: string) => void;
+  /** El anfitrión abre el selector de juegos desde la píldora del juego. */
+  onChangeGame: () => void;
 };
 
 export function LobbyScreen({
@@ -101,6 +103,7 @@ export function LobbyScreen({
   onLunaConfigChange,
   onStart,
   onKickRequest,
+  onChangeGame,
 }: LobbyScreenProps) {
   const { players, room, me } = snapshot;
   const hostName = players.find((player) => player.user_id === room.host_id)?.name ?? '';
@@ -123,6 +126,7 @@ export function LobbyScreen({
           tone="tomato"
           tilted
           label={copy.games[room.game].name}
+          onChange={me.is_host ? onChangeGame : undefined}
           onLeave={onLeaveRequest}
         />
       }

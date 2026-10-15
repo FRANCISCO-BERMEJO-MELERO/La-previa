@@ -17,6 +17,16 @@ describe('HeaderAside', () => {
     fireEvent.click(button);
     expect(onLeave).toHaveBeenCalledTimes(1);
   });
+
+  it('con onChange la píldora es un botón con su etiqueta "Cambiar"', () => {
+    const onChange = vi.fn();
+    render(<HeaderAside label="El lobo" tone="tomato" onChange={onChange} onLeave={vi.fn()} />);
+    const pill = screen.getByRole('button', { name: 'Cambiar de juego. Ahora: El lobo' });
+    expect(pill).toHaveTextContent('El loboCambiar');
+    expect(pill).toHaveClass('bg-tomato', 'min-h-11');
+    fireEvent.click(pill);
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('OfflineNotice', () => {

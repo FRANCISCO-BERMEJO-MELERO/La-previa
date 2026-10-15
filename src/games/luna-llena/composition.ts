@@ -3,7 +3,7 @@ import { optionalRoles, type OptionalRole } from './roles';
 /** Cuántos lobos y qué roles opcionales hay en una partida (docs/PLAN-5.md §2). */
 export type LunaConfig = { wolves: number; roles: readonly OptionalRole[] };
 
-export const MIN_LUNA_PLAYERS = 6;
+export const MIN_LUNA_PLAYERS = 4;
 
 /** Reparto recomendado; el mismo que calcula la base de datos. */
 export function recommendedConfig(players: number): LunaConfig {

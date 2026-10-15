@@ -51,19 +51,19 @@ describe('GamePickerScreen (03)', () => {
     expect(screen.queryByText('Próximamente')).not.toBeInTheDocument();
   });
 
-  it('lista los siete juegos, Luna llena la última, cada uno con su descripción', () => {
+  it('lista los siete juegos, El lobo el primero, cada uno con su descripción', () => {
     renderPicker();
     const games = screen
       .getAllByRole('button')
       .filter((button) => button.hasAttribute('aria-pressed'));
     const names = [
+      'El lobo',
       'El impostor',
       '¿Quién es más probable que…?',
       '¿Quién lo dijo?',
       'Una sola pista',
       '¿Qué prefieres?',
       'Palabras prohibidas',
-      'Luna llena',
     ];
     expect(games).toHaveLength(names.length);
     names.forEach((name, index) => {
@@ -71,7 +71,7 @@ describe('GamePickerScreen (03)', () => {
     });
     expect(screen.getByText(/Sale un dilema y cada uno elige en secreto/)).toBeInTheDocument();
     expect(screen.getByText(/sin decir las cinco prohibidas/)).toBeInTheDocument();
-    expect(screen.getByText('De 6 a 16 jugadores')).toBeInTheDocument();
+    expect(screen.getByText('De 4 a 16 jugadores')).toBeInTheDocument();
   });
 
   it('elegir otro juego avisa de cuál', () => {

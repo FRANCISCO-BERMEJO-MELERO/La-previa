@@ -2,17 +2,17 @@
 
 Web gratuita de juegos de fiesta para jugar **en persona**, cada uno con su móvil. Sin registro: se crea una sala, los demás entran con un código de cuatro letras, un enlace o un QR, y el móvil reparte la información y lleva la cuenta mientras el juego ocurre hablando.
 
-Trae siete juegos. Seis son de 3 a 16 jugadores y Luna llena, de 6 a 16:
+Trae siete juegos. Seis son de 3 a 16 jugadores y El lobo, de 4 a 16:
 
+- **El lobo**: un pueblo con lobos escondidos. De noche todos tocan el móvil y los lobos eligen víctima; de día el pueblo elige alcalde, debate con los móviles boca abajo y ahorca a un sospechoso. El anfitrión narra leyendo lo que le marca su pantalla, y además juega. Hay vidente, protector, cazador, bufón y Cupido.
 - **El impostor**: todos conocen la palabra menos uno, que solo sabe la categoría y tiene que disimular. Se vota a quién expulsar hasta que se descubre o gana.
 - **¿Quién es más probable que…?**: sale una pregunta y todos señalan a alguien a la vez; el más votado se lleva el punto.
 - **¿Quién lo dijo?**: todos escriben una respuesta corta, sale una sin autor y el grupo adivina de quién es.
 - **Una sola pista**: uno adivina una palabra con una pista de una palabra de cada uno; las pistas repetidas se anulan. Es cooperativo.
 - **¿Qué prefieres?**: sale un dilema con dos opciones, cada uno elige en secreto y puntúa quien coincide con la mayoría.
 - **Palabras prohibidas**: uno describe una palabra sin decir las cinco prohibidas, otro vigila que no se le escape ninguna y los demás adivinan en voz alta.
-- **Luna llena**: un pueblo con lobos escondidos. De noche todos tocan el móvil y los lobos eligen víctima; de día el pueblo elige alcalde, debate con los móviles boca abajo y ahorca a un sospechoso. El anfitrión narra leyendo lo que le marca su pantalla, y además juega. Hay vidente, protector, cazador, bufón y Cupido.
 
-Todos menos El impostor y Luna llena van por rondas (5, 10 o 15) y llevan la cuenta de puntos durante la partida. En El impostor, el anfitrión elige las temáticas de la palabra (300 palabras en 15 temáticas) y si la votación tiene tiempo (30, 60 o 90 segundos) o se cierra a mano. En Luna llena elige cuántos lobos hay y qué roles opcionales entran; por defecto, el reparto recomendado para los que sois.
+Todos menos El impostor y El lobo van por rondas (5, 10 o 15) y llevan la cuenta de puntos durante la partida. En El impostor, el anfitrión elige las temáticas de la palabra (300 palabras en 15 temáticas) y si la votación tiene tiempo (30, 60 o 90 segundos) o se cierra a mano. En El lobo elige cuántos lobos hay y qué roles opcionales entran; por defecto, el reparto recomendado para los que sois. En la sala de espera, el anfitrión cambia de juego pulsando la píldora con su nombre.
 
 Además: se entra en una sala escaneando su QR desde el inicio, cada jugador puede elegir un avatar de una galería de ilustraciones, y la sala de espera explica cada juego en unos pocos pasos ilustrados.
 

@@ -63,21 +63,21 @@ create function pg_temp.roles() returns jsonb language sql stable as $$
   ) counts
 $$;
 
--- Sala de 5 (u1 anfitrión) --------------------------------------------------------------------
+-- Sala de 3 (u1 anfitrión) --------------------------------------------------------------------
 
 insert into ctx select 'room', pg_temp.call(1, $$select public.create_room('Jugador 1')$$) -> 'room' -> 'id';
 insert into ctx select 'code', to_jsonb((select code from public.rooms where id = pg_temp.room()));
 select pg_temp.call(n, format('select public.join_room(%L, %L)', pg_temp.code(), format('Jugador %s', n)))
-from generate_series(2, 5) as n;
+from generate_series(2, 3) as n;
 
 select pg_temp.as_user(1);
 select throws_ok(pg_temp.start('null', 'null'), 'P0001', 'invalid_game', 'no se empieza si la sala eligió otro juego');
 select lives_ok(format('select public.set_game(%L, %L)', pg_temp.room(), 'luna_llena'), 'se elige Luna llena');
-select throws_ok(pg_temp.start('null', 'null'), 'P0001', 'not_enough_players', 'con 5 jugadores no se empieza');
+select throws_ok(pg_temp.start('null', 'null'), 'P0001', 'not_enough_players', 'con 3 jugadores no se empieza');
 select pg_temp.as_admin();
 
 select pg_temp.call(n, format('select public.join_room(%L, %L)', pg_temp.code(), format('Jugador %s', n)))
-from generate_series(6, 9) as n;
+from generate_series(4, 9) as n;
 
 select pg_temp.as_user(2);
 select throws_ok(pg_temp.start('null', 'null'), 'P0001', 'not_host', 'solo empieza el anfitrión');

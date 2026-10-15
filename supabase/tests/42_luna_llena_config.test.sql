@@ -1,12 +1,13 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(17);
+select plan(18);
 
 -- Composición ---------------------------------------------------------------------------------
 
-select throws_ok($$select private.luna_config(5, 1, array[]::text[])$$, 'P0001', 'not_enough_players', 'con menos de 6 jugadores no se juega');
-select throws_ok($$select private.luna_config(5, null, null)$$, 'P0001', 'not_enough_players', 'ni con la recomendada');
+select throws_ok($$select private.luna_config(3, 1, array[]::text[])$$, 'P0001', 'not_enough_players', 'con menos de 4 jugadores no se juega');
+select lives_ok($$select private.luna_config(4, 1, array[]::text[])$$, 'con 4 sí');
+select throws_ok($$select private.luna_config(3, null, null)$$, 'P0001', 'not_enough_players', 'ni con la recomendada');
 select throws_ok($$select private.luna_config(8, 0, array[]::text[])$$, 'P0001', 'invalid_config', 'hace falta al menos un lobo');
 select throws_ok($$select private.luna_config(8, 4, array[]::text[])$$, 'P0001', 'invalid_config', 'los lobos no pueden ser la mitad o más');
 select lives_ok($$select private.luna_config(9, 4, array[]::text[])$$, 'cuatro lobos con nueve jugadores sí');
@@ -29,7 +30,7 @@ select is(private.luna_config(10, null, null), '{"wolves": 2, "roles": ["protect
 select is(
   (
     select array_agg(p order by p)
-    from generate_series(6, 16) p
+    from generate_series(4, 16) p
     cross join lateral (select private.luna_recommended_config(p) as c) rec
     where private.luna_config(
       p,
@@ -37,8 +38,8 @@ select is(
       array(select jsonb_array_elements_text(rec.c -> 'roles'))
     ) = rec.c
   ),
-  array(select generate_series(6, 16)),
-  'la recomendada es válida de 6 a 16 jugadores'
+  array(select generate_series(4, 16)),
+  'la recomendada es válida de 4 a 16 jugadores'
 );
 
 -- set_game ------------------------------------------------------------------------------------
