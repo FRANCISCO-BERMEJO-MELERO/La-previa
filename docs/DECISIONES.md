@@ -1,5 +1,14 @@
 # Decisiones
 
+## 2026-10-15 · D.4 · Avatares con imagen
+
+Fran pide usar los 11 avatares de `public/avatars/` (generados aparte y recortados a un círculo de 256 px) en lugar de los 12 dibujados con formas de `docs/MEJORAS.md` §8 y la referencia.
+
+- **Sustituyen a los antiguos.** La galería tiene solo los 11 nuevos y `avatar-art.tsx` desaparece. Los identificadores van en inglés (`olive`, `churro`, `croquette`, `dice`, `watermelon`, `lemon`, `omelette`, `popcorn`, `lantern`, `flip_flop`, `moon`) y `avatarImages` dice el archivo de cada uno.
+- **Migración nueva.** Redefine `private.avatar_ids()`. Antes deja sin avatar a quien tenga uno antiguo en una sala abierta, porque la foto con un avatar desconocido no pasaría la validación del cliente y la sala dejaría de verse. Esos jugadores vuelven a su inicial y pueden elegir otro.
+- **`next/image` sin optimizar.** Las imágenes ya vienen a 256 px y por debajo de 20 KB; optimizarlas en Vercel no ahorraría nada.
+- **Pruebas.** Las que elegían un avatar antiguo pasan a uno nuevo (la regla que comprueban no cambia), y se añade que un avatar de la galería antigua se rechaza en la base de datos y en el cliente.
+
 ## 2026-10-15 · D.3 · El lobo, desde 4 jugadores y cambiar de juego en la sala
 
 Fran pide, tras probar Luna llena, cuatro cambios. Contradicen a `docs/PLAN-5.md` §1 y §2 (nombre "Luna llena", de 6 a 16 jugadores) y a la referencia (la píldora del juego solo informa). El plan no se toca; esta entrada manda sobre él en estos puntos.

@@ -24,13 +24,13 @@ describe('datos de los juegos por rondas', () => {
       {},
       {
         players: base.players.map((player) =>
-          player.user_id === ids.lucia ? { ...player, avatar: 'octopus' as const } : player,
+          player.user_id === ids.lucia ? { ...player, avatar: 'dice' as const } : player,
         ),
       },
     );
     expect(players(snapshot, probableState()).map((p) => p.avatar)).toEqual([
       null,
-      'octopus',
+      'dice',
       null,
     ]);
   });

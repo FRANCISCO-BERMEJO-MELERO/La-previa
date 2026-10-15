@@ -38,7 +38,7 @@ describe('RoomEntry', () => {
     mocks.joinRoom.mockResolvedValueOnce({ ok: false, error: 'name_invalid' });
     render(<RoomEntry code="KTRM" fresh={false} />);
     fireEvent.change(await screen.findByLabelText('Tu nombre'), { target: { value: 'Lucía' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Fantasma' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Palomita' }));
     const joined = lobbySnapshot();
     mocks.joinRoom.mockResolvedValueOnce({ ok: true, data: joined });
     mocks.setAvatar.mockResolvedValueOnce({
@@ -47,7 +47,7 @@ describe('RoomEntry', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Entrar' }));
     expect(await screen.findByText('dentro como Lucía')).toBeInTheDocument();
-    expect(mocks.setAvatar).toHaveBeenCalledWith(joined.room.id, 'ghost');
+    expect(mocks.setAvatar).toHaveBeenCalledWith(joined.room.id, 'popcorn');
   });
 
   it('si no era miembro pide el nombre y se une con él', async () => {

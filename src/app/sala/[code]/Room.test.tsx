@@ -390,8 +390,8 @@ describe('Room', () => {
     mocks.setAvatar.mockResolvedValue({ ok: true, data: lobbySnapshot() });
     render(<Room initial={lobbySnapshot()} fresh={false} />);
     fireEvent.click(screen.getByRole('button', { name: 'Cambiar tu avatar' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Pingüino' }));
-    expect(mocks.setAvatar).toHaveBeenCalledWith(ids.room, 'penguin');
+    fireEvent.click(screen.getByRole('button', { name: 'Luna con antifaz' }));
+    expect(mocks.setAvatar).toHaveBeenCalledWith(ids.room, 'moon');
     await waitFor(() => {
       expect(mocks.apply).toHaveBeenCalledTimes(1);
     });

@@ -41,7 +41,7 @@ for (const width of [360, 390, 430]) {
 
     await page.getByRole('button', { name: 'Crear sala' }).click();
     await page.getByLabel('Tu nombre').fill('Mmmmmmmmmmmm01');
-    await page.getByRole('button', { name: 'Nube enfadada' }).click();
+    await page.getByRole('button', { name: 'Luna con antifaz' }).click();
     await check(page, 'main');
     await page.getByRole('button', { name: 'Entrar' }).click();
     await page.getByRole('button', { name: 'Abrir la sala' }).click();
