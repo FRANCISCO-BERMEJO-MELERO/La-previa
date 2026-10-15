@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="1200" height="420" role="img" aria-labelledby="t d">
+  <title id="t">Recorrido de una partida</title>
+  <desc id="d">Crear sala y elegir juego, compartir el código, enlace o QR, sala de espera, partida, resultado, y volver a jugar o cambiar de juego en la misma sala.</desc>
+  <style>
+    .h { font-family: 'Arial Black', 'Archivo Black', Impact, Helvetica, Arial, sans-serif; font-weight: 900; }
+    .b { font-family: Helvetica, Arial, sans-serif; font-weight: 700; }
+    .r { font-family: Helvetica, Arial, sans-serif; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#111"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="420" rx="24" fill="#ffd23f"/>
+  <text x="40" y="58" class="h" font-size="30" fill="#111">UNA NOCHE EN LA PREVIA</text>
+
+  <!-- Paso 1 -->
+  <g>
+    <rect x="46" y="106" width="190" height="170" rx="18" fill="#111"/>
+    <rect x="40" y="100" width="190" height="170" rx="18" fill="#fff" stroke="#111" stroke-width="5"/>
+    <circle cx="74" cy="132" r="20" fill="#ff6b5e" stroke="#111" stroke-width="4"/>
+    <text x="74" y="140" text-anchor="middle" class="h" font-size="20" fill="#111">1</text>
+    <text x="58" y="190" class="h" font-size="20" fill="#111">CREAR SALA</text>
+    <text x="58" y="220" class="r" font-size="16" fill="#111">Nombre, avatar</text>
+    <text x="58" y="242" class="r" font-size="16" fill="#111">y a qué jugáis.</text>
+  </g>
+  <!-- Paso 2 -->
+  <g>
+    <rect x="286" y="106" width="190" height="170" rx="18" fill="#111"/>
+    <rect x="280" y="100" width="190" height="170" rx="18" fill="#7fd8ff" stroke="#111" stroke-width="5"/>
+    <circle cx="314" cy="132" r="20" fill="#fff" stroke="#111" stroke-width="4"/>
+    <text x="314" y="140" text-anchor="middle" class="h" font-size="20" fill="#111">2</text>
+    <text x="298" y="190" class="h" font-size="20" fill="#111">BNKY</text>
+    <text x="298" y="220" class="r" font-size="16" fill="#111">Código, enlace</text>
+    <text x="298" y="242" class="r" font-size="16" fill="#111">o QR para entrar.</text>
+    <g transform="translate(408 166)" fill="#111">
+      <rect x="0" y="0" width="40" height="40" fill="#fff" stroke="#111" stroke-width="3"/>
+      <rect x="5" y="5" width="10" height="10"/><rect x="25" y="5" width="10" height="10"/>
+      <rect x="5" y="25" width="10" height="10"/><rect x="22" y="22" width="5" height="5"/>
+      <rect x="29" y="29" width="6" height="6"/>
+    </g>
+  </g>
+  <!-- Paso 3 -->
+  <g>
+    <rect x="526" y="106" width="190" height="170" rx="18" fill="#111"/>
+    <rect x="520" y="100" width="190" height="170" rx="18" fill="#b8f28a" stroke="#111" stroke-width="5"/>
+    <circle cx="554" cy="132" r="20" fill="#fff" stroke="#111" stroke-width="4"/>
+    <text x="554" y="140" text-anchor="middle" class="h" font-size="20" fill="#111">3</text>
+    <text x="538" y="190" class="h" font-size="20" fill="#111">SALA DE</text>
+    <text x="538" y="214" class="h" font-size="20" fill="#111">ESPERA</text>
+    <text x="538" y="242" class="r" font-size="16" fill="#111">Ajustes y reglas.</text>
+    <g stroke="#111" stroke-width="3">
+      <circle cx="604" cy="132" r="11" fill="#d9b8ff"/><circle cx="628" cy="132" r="11" fill="#ffb36b"/>
+      <circle cx="652" cy="132" r="11" fill="#7fd8ff"/><circle cx="676" cy="132" r="11" fill="#ff6b5e"/>
+    </g>
+  </g>
+  <!-- Paso 4 -->
+  <g>
+    <rect x="766" y="106" width="190" height="170" rx="18" fill="#ff6b5e"/>
+    <rect x="760" y="100" width="190" height="170" rx="18" fill="#111" stroke="#111" stroke-width="5"/>
+    <circle cx="794" cy="132" r="20" fill="#ffd23f" stroke="#fff" stroke-width="4"/>
+    <text x="794" y="140" text-anchor="middle" class="h" font-size="20" fill="#111">4</text>
+    <text x="778" y="190" class="h" font-size="20" fill="#ffd23f">PARTIDA</text>
+    <text x="778" y="220" class="r" font-size="16" fill="#fff">Se juega hablando;</text>
+    <text x="778" y="242" class="r" font-size="16" fill="#fff">el móvil reparte.</text>
+  </g>
+  <!-- Paso 5 -->
+  <g>
+    <rect x="1006" y="106" width="160" height="170" rx="18" fill="#111"/>
+    <rect x="1000" y="100" width="160" height="170" rx="18" fill="#d9b8ff" stroke="#111" stroke-width="5"/>
+    <circle cx="1034" cy="132" r="20" fill="#fff" stroke="#111" stroke-width="4"/>
+    <text x="1034" y="140" text-anchor="middle" class="h" font-size="20" fill="#111">5</text>
+    <text x="1018" y="190" class="h" font-size="20" fill="#111">RESULTADO</text>
+    <text x="1018" y="220" class="r" font-size="16" fill="#111">Quién gana</text>
+    <text x="1018" y="242" class="r" font-size="16" fill="#111">y la cuenta.</text>
+  </g>
+
+  <g stroke="#111" stroke-width="5" fill="none" marker-end="url(#a)">
+    <line x1="236" y1="185" x2="274" y2="185"/>
+    <line x1="476" y1="185" x2="514" y2="185"/>
+    <line x1="716" y1="185" x2="754" y2="185"/>
+    <line x1="956" y1="185" x2="994" y2="185"/>
+    <path d="M1080 282 C1080 360 1000 372 860 372 L 630 372 C 615 372 615 340 615 290"/>
+  </g>
+  <rect x="740" y="352" width="290" height="40" rx="20" fill="#fff" stroke="#111" stroke-width="4"/>
+  <text x="885" y="378" text-anchor="middle" class="b" font-size="17" fill="#111">Volver a jugar o cambiar de juego</text>
+  <text x="40" y="384" class="r" font-size="16" fill="#111">Misma sala, mismo código,</text>
+  <text x="40" y="404" class="r" font-size="16" fill="#111">misma gente.</text>
+</svg>

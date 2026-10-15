@@ -344,3 +344,4 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 - [x] D.2 (Luna llena, a petición de Fran) Quitar la segunda votación del juicio: el acusado dice sus últimas palabras y el narrador lo ahorca
 - [x] D.3 (a petición de Fran) Luna llena pasa a llamarse El lobo, se juega desde 4 jugadores y sale la primera en el selector; en la sala de espera, el anfitrión cambia de juego pulsando la píldora, que ahora parece un botón
 - [x] D.4 (a petición de Fran) Los avatares pasan a ser las 11 imágenes de `public/avatars/` en lugar de los 12 dibujos con formas
+- [x] D.5 (a petición de Fran) README de cierre de la primera versión, con capturas reales de cada juego e ilustraciones de recorrido, arquitectura y secreto
