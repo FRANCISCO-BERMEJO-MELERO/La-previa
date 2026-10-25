@@ -1,5 +1,16 @@
 # Decisiones
 
+## 2026-10-25 · 38 · A dados en el servidor
+
+`docs/PLAN-7.md` §2 a §5. Donde el código manda sobre los nombres del plan:
+
+- **La columna se llama `column_index` y va de 0 a 2.** `column` es palabra reservada de SQL y obligaría a entrecomillar el parámetro en cada uso. Una columna fuera de rango (o ninguna) da `invalid_column`, código nuevo con su texto en el cliente: no es una columna llena, así que `column_full` diría algo falso.
+- **El bando va en `game_players.side`**, como sugiere el plan, y solo los jugadores tienen fila en `game_players`. Espectador es quien está en la sala y no en la partida, igual que quien entra tarde en los otros juegos. Al irse un jugador, su fila se queda, así que el resultado conserva su nombre.
+- **El estado va en `dados_state`**, con los campos del plan y uno más, `left_user_id`, para el texto del resultado por abandono («Fran se ha ido…»). La foto lo da en `result.left` (`user_id` y `name`, o nulo). La función de la foto se llama `private.dados_game_state` para no confundirla con la tabla.
+- **`turn_order` es la secuencia completa** (`A1, B1, A2, B2` o la que empiece por B) y `turn_index` apunta al turno actual; al terminar no le toca a nadie y no hay dado pendiente.
+- **Volver a jugar es otra llamada a `dados_start`** con los mismos equipos. Si falta alguno, da `invalid_teams` y el cliente vuelve a la sala de espera, como hacen los juegos por rondas con `not_enough_players`.
+- **Pruebas.** La partida de 2 contra 2 se simula entera en la base de datos con dados reales: en cada turno se comprueba que coloca quien toca y que los otros tres y el espectador reciben `not_your_turn`. El sorteo del bando que abre y del orden dentro del equipo se comprueba con 40 partidas (la probabilidad de un falso fallo es de 2⁻³⁹).
+
 ## 2026-10-25 · D.6 · Next 16.4.3 por seguridad
 
 Next 16.4.0 tiene vulnerabilidades conocidas (entre ellas GHSA-2464-fhr4-w9xw, ejecución remota de código en la optimización de imágenes con SVG, crítica, que afecta a `>=16.0.0 <=16.4.0`). `next dev` y `next build` se paraban para recomendar actualizar. Se sube `next` y `eslint-config-next` a la 16.4.3, la última del 16.4, con versiones exactas como el resto. Es un parche de la misma versión menor: no cambia ninguna API que use el proyecto.

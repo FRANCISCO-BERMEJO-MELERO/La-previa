@@ -379,8 +379,8 @@ Aceptación: A dados se elige en el selector; los demás juegos funcionan igual.
 
 ## Fase 38 · A dados: servidor
 
-- [ ] 38.1 Migración: estado, bandos, puntuación, `dados_start`, `dados_place`, final, empate, abandono y foto
-- [ ] 38.2 Pruebas pgTAP de puntuación, ataque, turnos, columna llena, final, salidas, volver a jugar y entrada tardía
+- [x] 38.1 Migración: estado, bandos, puntuación, `dados_start`, `dados_place`, final, empate, abandono y foto
+- [x] 38.2 Pruebas pgTAP de puntuación, ataque, turnos, columna llena, final, salidas, volver a jugar y entrada tardía
 
 Aceptación: `npm run test:db` pasa desde cero.
 
