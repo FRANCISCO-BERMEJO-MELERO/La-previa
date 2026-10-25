@@ -1,5 +1,11 @@
 # Decisiones
 
+## 2026-10-25 · D.6 · Next 16.4.3 por seguridad
+
+Next 16.4.0 tiene vulnerabilidades conocidas (entre ellas GHSA-2464-fhr4-w9xw, ejecución remota de código en la optimización de imágenes con SVG, crítica, que afecta a `>=16.0.0 <=16.4.0`). `next dev` y `next build` se paraban para recomendar actualizar. Se sube `next` y `eslint-config-next` a la 16.4.3, la última del 16.4, con versiones exactas como el resto. Es un parche de la misma versión menor: no cambia ninguna API que use el proyecto.
+
+- `npm audit` ya no avisa de `next`. Siguen dos avisos ajenos: `undici` 8.11.2, que solo llega a través de `jsdom` en los tests, y `zod` 4.6.5, que pide `--force`. Quedan fuera de este cambio.
+
 ## 2026-10-15 · D.4 · Avatares con imagen
 
 Fran pide usar los 11 avatares de `public/avatars/` (generados aparte y recortados a un círculo de 256 px) en lugar de los 12 dibujados con formas de `docs/MEJORAS.md` §8 y la referencia.
