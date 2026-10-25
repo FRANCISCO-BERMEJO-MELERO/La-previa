@@ -138,7 +138,7 @@ select pg_temp.next();
 select is(pg_temp.phase(), 'hunter', 'tras el anuncio, el turno del cazador');
 select is((pg_temp.state()).return_phase, 'dawn', 'que vuelve al amanecer');
 select is(pg_temp.view(6) -> 'narration', '{"key": "hunter", "params": {"name": "Jugador 4"}}'::jsonb, 'el narrador lo anuncia');
-select is(pg_temp.view(6) -> 'announcement' -> 'deaths' -> 0 ->> 'cause', 'wolves', 'y el anuncio sigue a la vista');
+select is(pg_temp.view(6) -> 'announcement' -> 'deaths' -> 0 ->> 'cause', 'night', 'y el anuncio sigue a la vista');
 
 select pg_temp.as_user(6);
 select throws_ok(pg_temp.shot_sql(7), 'P0001', 'not_hunter', 'solo dispara el cazador');

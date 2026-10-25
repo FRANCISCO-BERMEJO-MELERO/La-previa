@@ -155,10 +155,10 @@ select is(pg_temp.view(4) ->> 'phase', 'dawn', 'amanece');
 select is(
   pg_temp.view(4) -> 'announcement',
   jsonb_build_object('kind', 'night', 'spared', null, 'deaths', jsonb_build_array(
-    jsonb_build_object('user_id', pg_temp.u(10), 'name', 'Jugador 10', 'role', 'villager', 'cause', 'wolves'),
+    jsonb_build_object('user_id', pg_temp.u(10), 'name', 'Jugador 10', 'role', 'villager', 'cause', 'night'),
     jsonb_build_object('user_id', pg_temp.u(9), 'name', 'Jugador 9', 'role', 'villager', 'cause', 'heartbreak')
   )),
-  'el anuncio dice quién ha muerto, su rol y por qué'
+  'el anuncio dice quién ha muerto, su rol y, de noche, solo que ha sido de noche'
 );
 select is(
   pg_temp.view(4) -> 'narration',

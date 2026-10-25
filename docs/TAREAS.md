@@ -345,8 +345,8 @@ Aceptación: la app funciona igual con los roles de siempre y acepta composicion
 
 ## Fase 34 · El lobo: bruja y asesino en el servidor
 
-- [ ] 34.1 Migración: pociones, acción de la bruja, asesino, resolución de la noche, victoria, proyección privada y abandono
-- [ ] 34.2 Pruebas pgTAP de bruja, asesino, victoria, secreto y partidas completas
+- [x] 34.1 Migración: pociones, acción de la bruja, asesino, resolución de la noche, victoria, proyección privada y abandono
+- [x] 34.2 Pruebas pgTAP de bruja, asesino, victoria, secreto y partidas completas
 
 Aceptación: `npm run test:db` pasa desde cero.
 
