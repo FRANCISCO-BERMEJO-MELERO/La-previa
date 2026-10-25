@@ -343,7 +343,8 @@ test('31.7 · un aldeano vivo no recibe por la red el rol de nadie vivo', async 
   const received = await collect();
   expect(received, 'la captura funciona').toContain('"fellow_wolves"');
   expect(received, 've su propio rol con ese formato').toContain('"role": "villager"');
-  for (const secret of ['"wolf"', '"seer"', '"wolf_marks": [{', '"seer_results": [{']) {
+  // La vidente sale en la composición pública; lo secreto es a quién le ha tocado.
+  for (const secret of ['"wolf"', '"role": "seer"', '"wolf_marks": [{', '"seer_results": [{']) {
     expect(received, `no recibe ${secret}`).not.toContain(secret);
   }
 });

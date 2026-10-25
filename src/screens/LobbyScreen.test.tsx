@@ -21,7 +21,7 @@ function withPlayers(count: number): Snapshot {
   });
 }
 
-const defaultLunaConfig: LunaConfig = { wolves: 1, roles: [] };
+const defaultLunaConfig: LunaConfig = { wolves: 1, roles: ['seer'] };
 
 function renderLobby(overrides: Partial<Parameters<typeof LobbyScreen>[0]> = {}) {
   const props = {
@@ -336,10 +336,10 @@ describe('LobbyScreen: El lobo', () => {
     expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
   });
 
-  it('enseña los lobos, los roles opcionales y la composición', () => {
+  it('enseña los lobos, los roles especiales y la composición', () => {
     renderLobby({
       snapshot: inLunaLobby(9),
-      lunaConfig: { wolves: 2, roles: ['protector', 'hunter'] },
+      lunaConfig: { wolves: 2, roles: ['seer', 'protector', 'hunter'] },
     });
     expect(
       screen.getByText('2 lobos · vidente · protector · cazador · 4 aldeanos'),
@@ -351,41 +351,86 @@ describe('LobbyScreen: El lobo', () => {
     expect(screen.getByRole('button', { name: /Bufón/ })).toHaveAttribute('aria-pressed', 'false');
     expect(screen.queryByRole('button', { name: 'Más impostores' })).not.toBeInTheDocument();
     expect(screen.queryByRole('group', { name: 'Rondas' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/vidente, el pueblo|lobos de lo habitual/)).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeEnabled();
   });
 
   it('cambiar lobos o roles avisa con la composición nueva', () => {
     const props = renderLobby({
       snapshot: inLunaLobby(9),
-      lunaConfig: { wolves: 2, roles: ['protector', 'hunter'] },
+      lunaConfig: { wolves: 2, roles: ['seer', 'protector', 'hunter'] },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Más lobos' }));
     expect(props.onLunaConfigChange).toHaveBeenLastCalledWith({
       wolves: 3,
-      roles: ['protector', 'hunter'],
+      roles: ['seer', 'protector', 'hunter'],
     });
     fireEvent.click(screen.getByRole('button', { name: /Cupido/ }));
     expect(props.onLunaConfigChange).toHaveBeenLastCalledWith({
       wolves: 2,
-      roles: ['protector', 'hunter', 'cupid'],
+      roles: ['seer', 'protector', 'hunter', 'cupid'],
     });
-    fireEvent.click(screen.getByRole('button', { name: /Protector/ }));
-    expect(props.onLunaConfigChange).toHaveBeenLastCalledWith({ wolves: 2, roles: ['hunter'] });
+    fireEvent.click(screen.getByRole('button', { name: /Vidente/ }));
+    expect(props.onLunaConfigChange).toHaveBeenLastCalledWith({
+      wolves: 2,
+      roles: ['protector', 'hunter'],
+    });
   });
 
-  it('los lobos no llegan a la mitad', () => {
-    renderLobby({ snapshot: inLunaLobby(6), lunaConfig: { wolves: 2, roles: [] } });
+  it('se pueden pedir todos los lobos menos uno, y con mayoría se avisa sin bloquear', () => {
+    renderLobby({ snapshot: inLunaLobby(5), lunaConfig: { wolves: 4, roles: ['seer'] } });
     expect(screen.getByRole('button', { name: 'Más lobos' })).toBeDisabled();
+    expect(screen.getByText('4 lobos · vidente')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Hay 4 lobos para 5 jugadores. Ya son mayoría: la partida terminará en cuanto amanezca. Podéis jugar igualmente.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeEnabled();
   });
 
-  it('sin hueco para un aldeano no se puede empezar y se dice por qué', () => {
+  it('sin vidente ni aldeanos se puede empezar, con el aviso de la vidente', () => {
+    renderLobby({
+      snapshot: inLunaLobby(5),
+      lunaConfig: { wolves: 1, roles: ['protector', 'hunter', 'jester', 'cupid'] },
+    });
+    expect(screen.getByText('1 lobo · protector · cazador · bufón · Cupido')).toBeInTheDocument();
+    expect(screen.getByText('Sin vidente, el pueblo juega a ciegas.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeEnabled();
+  });
+
+  it('con más lobos de lo habitual se avisa', () => {
+    renderLobby({ snapshot: inLunaLobby(9), lunaConfig: { wolves: 3, roles: ['seer'] } });
+    expect(
+      screen.getByText('Hay más lobos de lo habitual. Lo va a tener difícil el pueblo.'),
+    ).toBeInTheDocument();
+  });
+
+  it('con más roles que jugadores no se puede empezar y se dice por qué', () => {
     renderLobby({
       snapshot: inLunaLobby(6),
-      lunaConfig: { wolves: 2, roles: ['protector', 'hunter', 'jester'] },
+      lunaConfig: { wolves: 2, roles: ['seer', 'protector', 'hunter', 'jester', 'cupid'] },
     });
-    expect(
-      screen.getByText('No queda ningún aldeano. Quita un rol opcional o un lobo.'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Hay más roles que jugadores. Quita alguno.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
+  });
+
+  it('sin lobos no se puede empezar', () => {
+    renderLobby({ snapshot: inLunaLobby(6), lunaConfig: { wolves: 0, roles: ['seer'] } });
+    expect(screen.getByRole('button', { name: 'Menos lobos' })).toBeDisabled();
+    expect(screen.getByText('Sin lobos no hay partida. Pon al menos uno.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
+  });
+
+  it('el botón de la recomendada pone la de ese número de jugadores', () => {
+    const props = renderLobby({
+      snapshot: inLunaLobby(9),
+      lunaConfig: { wolves: 5, roles: [] },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Usar la recomendada' }));
+    expect(props.onLunaConfigChange).toHaveBeenLastCalledWith({
+      wolves: 2,
+      roles: ['seer', 'protector', 'hunter'],
+    });
   });
 });

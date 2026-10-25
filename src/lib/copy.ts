@@ -897,19 +897,28 @@ export const copy = {
       wolves: 'Lobos',
       fewerWolves: 'Menos lobos',
       moreWolves: 'Más lobos',
-      optionalRoles: 'Roles opcionales',
+      optionalRoles: 'Roles especiales',
       composition: 'Composición',
-      // "2 lobos · vidente · protector · cazador · 4 aldeanos"
+      // "2 lobos · vidente · protector · cazador · 4 aldeanos". Lo que no hay no se nombra.
       compositionLine: (wolves: number, roles: readonly string[], villagers: number) =>
         [
-          wolves === 1 ? '1 lobo' : `${String(wolves)} lobos`,
-          'vidente',
+          ...(wolves === 0 ? [] : [wolves === 1 ? '1 lobo' : `${String(wolves)} lobos`]),
           ...roles,
-          villagers === 1 ? '1 aldeano' : `${String(villagers)} aldeanos`,
+          ...(villagers === 0
+            ? []
+            : [villagers === 1 ? '1 aldeano' : `${String(villagers)} aldeanos`]),
         ].join(' · '),
+      useRecommended: 'Usar la recomendada',
       problems: {
-        too_many_wolves: 'Demasiados lobos: tienen que ser menos de la mitad. Quita alguno.',
-        no_villager: 'No queda ningún aldeano. Quita un rol opcional o un lobo.',
+        no_threat: 'Sin lobos no hay partida. Pon al menos uno.',
+        all_wolves: 'No pueden ser todos lobos. Quita alguno.',
+        too_many_roles: 'Hay más roles que jugadores. Quita alguno.',
+      },
+      warnings: {
+        wolves_majority: (wolves: number, players: number) =>
+          `Hay ${String(wolves)} lobos para ${String(players)} jugadores. Ya son mayoría: la partida terminará en cuanto amanezca. Podéis jugar igualmente.`,
+        wolves_above_recommended: 'Hay más lobos de lo habitual. Lo va a tener difícil el pueblo.',
+        no_seer: 'Sin vidente, el pueblo juega a ciegas.',
       },
     },
   },

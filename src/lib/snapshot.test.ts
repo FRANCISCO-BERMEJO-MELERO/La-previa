@@ -323,7 +323,8 @@ describe('parseSnapshot de Luna llena', () => {
     expect(parseSnapshot(broken({ my: { ...lunaMy(), role: 'witch' } }))).toBeNull();
     expect(parseSnapshot(broken({ phase: 'reveal' }))).toBeNull();
     expect(parseSnapshot(broken({ narration: { key: 'chat', params: {} } }))).toBeNull();
-    expect(parseSnapshot(inLuna({ config: { wolves: 0, roles: [] } }))).toBeNull();
+    expect(parseSnapshot(inLuna({ config: { wolves: -1, roles: [] } }))).toBeNull();
+    expect(parseSnapshot(inLuna({ config: { wolves: 0, roles: ['seer'] } }))).not.toBeNull();
   });
 });
 

@@ -204,7 +204,7 @@ const lunaLlenaGameSchema = z.object({
   day: z.int().nonnegative(),
   mayor_id: id.nullable(),
   accused_id: id.nullable(),
-  config: z.object({ wolves: z.int().positive(), roles: z.array(z.enum(optionalRoles)) }),
+  config: z.object({ wolves: z.int().nonnegative(), roles: z.array(z.enum(optionalRoles)) }),
   participants: z.array(
     z.object({
       user_id: id,

@@ -339,7 +339,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 Plan: `docs/PLAN-6.md` (issue #13).
 
 - [x] 33.1 Migración: vidente opcional, bruja y asesino como roles, validación de integridad y reparto exacto, con pgTAP
-- [ ] 33.2 Cliente: composición, avisos de equilibrio, selector sin tope de equilibrio y "Usar la recomendada", con tests
+- [x] 33.2 Cliente: composición, avisos de equilibrio, selector sin tope de equilibrio y "Usar la recomendada", con tests
 
 Aceptación: la app funciona igual con los roles de siempre y acepta composiciones antes prohibidas.
 

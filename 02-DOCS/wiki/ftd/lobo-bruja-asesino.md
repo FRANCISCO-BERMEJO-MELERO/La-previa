@@ -18,8 +18,8 @@ Issue #13. El anfitrión configura los roles con libertad y recibe avisos de equ
 
 ## Lista
 
-- [ ] 33.1 Composición libre en la base de datos — prueba: `npm run test:db` tras `supabase db reset`
-- [ ] 33.2 Composición libre en el cliente — prueba: `npm run check`
+- [x] 33.1 Composición libre en la base de datos — prueba: `npm run test:db` tras `supabase db reset`
+- [x] 33.2 Composición libre en el cliente — prueba: `npm run check`
 - [ ] 34.1–34.2 Bruja y asesino en el servidor — prueba: `npm run test:db`
 - [ ] 35.1–35.4 Bruja y asesino en el cliente — prueba: `npm run check`
 - [ ] 36.1–36.3 E2E, repaso móvil y accesibilidad, documentación — prueba: `npm run test:e2e` y `npm run build`
@@ -28,6 +28,9 @@ Issue #13. El anfitrión configura los roles con libertad y recibe avisos de equ
 
 - Antes de empezar: `npm run check` 745 unitarios en verde; `npm run test:db` 1161 pgTAP en verde.
 
+- 33.1: `npm run test:db` 1180 pgTAP en verde tras `supabase db reset`.
+- 33.2: `npm run check` 753 unitarios en verde; `npm run test:e2e` 32 en verde (la 31.7 de secreto, adaptada).
+
 ## Siguiente
 
-Terminar 33.1 y adaptar las pruebas pgTAP de composición y reparto.
+Fase 34: migración de bruja y asesino y sus pruebas pgTAP.

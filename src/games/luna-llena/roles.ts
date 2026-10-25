@@ -12,7 +12,7 @@ export const lunaRoles = [
 export type LunaRole = (typeof lunaRoles)[number];
 
 /** Los que el anfitrión activa o no, en el orden en que se enumeran siempre. */
-export const optionalRoles = ['protector', 'hunter', 'jester', 'cupid'] as const;
+export const optionalRoles = ['seer', 'protector', 'hunter', 'jester', 'cupid'] as const;
 
 export type OptionalRole = (typeof optionalRoles)[number];
 
