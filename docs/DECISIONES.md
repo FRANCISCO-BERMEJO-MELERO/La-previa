@@ -1,5 +1,19 @@
 # Decisiones
 
+## 2026-10-25 · 35 · Bruja y asesino en el cliente
+
+- **Un solo commit para 35.1 a 35.4.** Esquema, textos, cartas y pantallas dependen unos de otros: el esquema con las causas públicas no compila sin las pantallas que las pintan.
+- **Pantalla de la bruja.** La misma tarjeta oscura de la noche que el resto, para que de reojo se parezca a las demás. Encima de la lista, a quién van a devorar (o que los lobos aún no se han decidido) y un botón que se marca y desmarca para la poción de vida (`aria-pressed`). La lista sirve para elegir a quién envenenar; tocar al elegido lo quita. "Confirmar" está siempre activo, porque no usar nada también vale. Con una poción gastada, su botón o su lista dicen que ya no queda. Sin ninguna, la bruja sospecha como un aldeano.
+- **Avisos del amanecer.** `DawnScreen` recibe una lista de avisos privados en lugar de uno, porque la bruja puede ser también enamorada la primera noche.
+- **Causas.** Los vivos leen "Ha muerto esta noche". La vista de espectador cambia la causa de cada muerte por la real (`spectator.causes`) y añade una línea con las pociones que le quedan a la bruja.
+- **Colores.** La carta de la bruja tiene el bloque en `field` y la del asesino en `ground`, como dice el plan. La píldora "Eres" no tiene esos tonos, así que usa el más cercano de los que existen (`lime` para la bruja y `ground-soft` para el asesino) en lugar de añadir tonos a `Pill`. El resultado con victoria del asesino va en `lilac`, como el bufón, que también juega solo.
+- **"Cómo se juega".** Los pasos de la noche y de la victoria nombran a la bruja y al asesino, y sus dibujos añaden las dos cartas.
+
+Pruebas que cambian, porque la sección 6 manda que un vivo no sepa la causa de una muerte nocturna:
+
+- `game.test.tsx` y `snapshot.test.ts`: los anuncios de ejemplo llevan la causa pública `night` en lugar de `wolves`, y `snapshot.test.ts` añade que una causa real en el anuncio de un vivo se rechaza. El rol inexistente de ejemplo era `witch` y pasa a `wizard`.
+- `e2e/luna-llena.spec.ts` (30): los vivos ven "Ha muerto esta noche" en lugar de "Devorado por los lobos"; se añade que la vidente muerta sí ve la causa real.
+
 ## 2026-10-25 · 34 · Bruja y asesino en el servidor
 
 `docs/PLAN-6.md` §2 a §7. Nombres y forma, siguiendo el código:

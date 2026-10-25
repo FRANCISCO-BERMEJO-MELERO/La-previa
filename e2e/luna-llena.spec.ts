@@ -94,13 +94,14 @@ test('30 · seis jugadores: reparto, una noche y el amanecer', async ({ browser 
     await act(pageOf(players, name), name === others[0] ? (others[1] ?? '') : (others[0] ?? ''));
   }
 
-  // La vidente ya está muerta y pasa a verlo todo como espectadora.
+  // Los vivos solo saben que ha muerto de noche; la vidente, ya espectadora, sabe que fue el lobo.
   for (const name of six.filter((player) => player !== seer)) {
     const page = pageOf(players, name);
     await expect(page.getByText('Amanece', { exact: true })).toBeVisible();
-    await expect(page.getByText('Devorado por los lobos')).toBeVisible();
+    await expect(page.getByText('Ha muerto esta noche')).toBeVisible();
     await expect(page.getByText(seer, { exact: true }).first()).toBeVisible();
   }
+  await expect(pageOf(players, seer).getByText('Devorado por los lobos')).toBeVisible();
   await expect(host.getByText(`Amanece. ${seer} no ha despertado. Era vidente.`)).toBeVisible();
 });
 

@@ -2,8 +2,8 @@ import type { ReactNode } from 'react';
 import { copy } from '@/lib/copy';
 import type { LunaRole } from './roles';
 
-// Las siete ilustraciones del anexo de docs/PLAN-5.md, con sus mismas formas en un lienzo de
-// 300 × 220. Los colores y el trazo salen de los tokens de Verbena.
+// Las siete ilustraciones del anexo de docs/PLAN-5.md y las dos de docs/PLAN-6.md §8, con sus
+// mismas formas en un lienzo de 300 × 220. Los colores y el trazo salen de los tokens de Verbena.
 
 const shapes: Record<LunaRole, ReactNode> = {
   wolf: (
@@ -83,6 +83,35 @@ const shapes: Record<LunaRole, ReactNode> = {
       <polygon points="262,42 228,44 248,74" className="fill-ink" />
       <polygon points="44,178 36,150 62,166" className="fill-paper" />
       <polygon points="44,178 72,188 62,166" className="fill-paper" />
+    </>
+  ),
+  witch: (
+    <>
+      <line x1={100} y1={186} x2={92} y2={206} />
+      <line x1={200} y1={186} x2={208} y2={206} />
+      <path d="M72 112 L228 112 Q236 190 150 194 Q64 190 72 112 Z" className="fill-ink" />
+      <ellipse cx={150} cy={112} rx={82} ry={15} className="fill-lime" />
+      <circle cx={128} cy={82} r={10} className="fill-lime" />
+      <circle cx={168} cy={66} r={7} className="fill-lime" />
+      <circle cx={146} cy={42} r={5} className="fill-lime" />
+      <rect x={28} y={116} width={16} height={22} className="fill-paper" />
+      <rect x={26} y={106} width={20} height={12} className="fill-ground" />
+      <circle cx={36} cy={164} r={24} className="fill-lime" />
+      <rect x={256} y={116} width={16} height={22} className="fill-paper" />
+      <rect x={254} y={106} width={20} height={12} className="fill-ground" />
+      <circle cx={264} cy={164} r={24} className="fill-tomato" />
+    </>
+  ),
+  killer: (
+    <>
+      <ellipse cx={150} cy={112} rx={70} ry={90} className="fill-paper" />
+      <polyline points="124,50 150,64 176,50" className="fill-none" />
+      <polygon points="110,96 140,104 136,122 108,114" className="fill-ink" />
+      <polygon points="190,96 160,104 164,122 192,114" className="fill-ink" />
+      <circle cx={136} cy={160} r={5} className="fill-ink stroke-none" />
+      <circle cx={150} cy={168} r={5} className="fill-ink stroke-none" />
+      <circle cx={164} cy={160} r={5} className="fill-ink stroke-none" />
+      <path d="M200 140 L214 152" className="fill-none stroke-tomato" />
     </>
   ),
 };

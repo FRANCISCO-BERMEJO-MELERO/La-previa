@@ -7,6 +7,9 @@ import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 import type { LunaPlayer, NightMode } from './game-view';
 import { PlayerList } from './PlayerList';
 
+/** La poción de vida de la bruja: si le queda, y si la ha marcado para esta noche. */
+type LifePotion = { available: boolean; active: boolean; onToggle: () => void };
+
 type NightScreenProps = GameScreenProps & {
   night: number;
   mode: NightMode;
@@ -24,6 +27,9 @@ type NightScreenProps = GameScreenProps & {
   marks: ReadonlyMap<string, string>;
   /** Lo que ha visto la vidente, noche a noche. */
   seerResults: readonly string[];
+  /** Solo para la bruja: a quién van a devorar y su poción de vida. */
+  victimLine?: string | null;
+  lifePotion?: LifePotion | null;
   pending: number;
 };
 
@@ -44,11 +50,14 @@ export function NightScreen({
   done,
   marks,
   seerResults,
+  victimLine = null,
+  lifePotion = null,
   pending,
   ...chrome
 }: NightScreenProps) {
   const texts = copy.lunaLlena.night;
   const choosing = done === null || mode === 'wolf';
+  const witch = mode === 'witch';
   return (
     <GameScreen {...chrome}>
       <Card variant="dark" tilt="right">
@@ -57,8 +66,27 @@ export function NightScreen({
         </Pill>
         <h1 className="font-display text-display-xs text-ground uppercase">{texts.titles[mode]}</h1>
         <p className="text-base font-medium">{texts.hints[mode]}</p>
+        {victimLine ? <p className="font-display text-lg uppercase">{victimLine}</p> : null}
         {done ? <p className="font-display text-lg uppercase">{done}</p> : null}
-        {choosing ? (
+        {choosing && lifePotion ? (
+          <button
+            type="button"
+            aria-pressed={lifePotion.active}
+            disabled={!lifePotion.available}
+            onClick={lifePotion.onToggle}
+            className={`min-h-12 rounded-control border-3 border-paper px-3 py-2 text-md font-bold disabled:cursor-not-allowed disabled:border-dashed ${
+              lifePotion.active ? 'bg-lime text-ink' : 'bg-ink text-paper'
+            }`}
+          >
+            {lifePotion.available ? texts.witch.life : texts.witch.lifeUsed}
+          </button>
+        ) : null}
+        {choosing && witch ? (
+          <p className="text-md font-bold">
+            {candidates.length > 0 ? texts.witch.poisonTitle : texts.witch.poisonUsed}
+          </p>
+        ) : null}
+        {choosing && candidates.length > 0 ? (
           <PlayerList
             label={texts.choose}
             players={candidates}

@@ -23,7 +23,7 @@ export type ConfigProblem = 'no_threat' | 'all_wolves' | 'too_many_roles';
 
 /** Por qué no se puede jugar esta composición, si no se puede. El equilibrio no cuenta. */
 export function configProblem(players: number, config: LunaConfig): ConfigProblem | null {
-  if (config.wolves === 0) return 'no_threat';
+  if (config.wolves === 0 && !config.roles.includes('killer')) return 'no_threat';
   if (config.wolves >= players) return 'all_wolves';
   if (villagerCount(players, config) < 0) return 'too_many_roles';
   return null;

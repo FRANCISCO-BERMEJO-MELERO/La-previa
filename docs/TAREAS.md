@@ -352,10 +352,10 @@ Aceptación: `npm run test:db` pasa desde cero.
 
 ## Fase 35 · El lobo: bruja y asesino en el cliente
 
-- [ ] 35.1 Esquemas `zod`, acción de la bruja, errores nuevos, `viewFor` y funciones de vista, con tests
-- [ ] 35.2 Cartas e ilustraciones de bruja y asesino, también en `/dev/componentes`
-- [ ] 35.3 Noche de bruja y asesino, aviso privado de la bruja, causas públicas, espectador, resultado y `win_killer`
-- [ ] 35.4 "Cómo se juega" con los roles nuevos
+- [x] 35.1 Esquemas `zod`, acción de la bruja, errores nuevos, `viewFor` y funciones de vista, con tests
+- [x] 35.2 Cartas e ilustraciones de bruja y asesino, también en `/dev/componentes`
+- [x] 35.3 Noche de bruja y asesino, aviso privado de la bruja, causas públicas, espectador, resultado y `win_killer`
+- [x] 35.4 "Cómo se juega" con los roles nuevos
 
 Aceptación: `npm run check` pasa.
 

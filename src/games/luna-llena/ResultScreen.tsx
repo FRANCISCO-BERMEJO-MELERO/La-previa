@@ -5,7 +5,7 @@ import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 import type { RoleRow } from './game-view';
 import { RolesList } from './RolesList';
 
-type Winner = 'village' | 'wolves' | 'jester';
+type Winner = 'village' | 'wolves' | 'jester' | 'killer';
 
 type ResultScreenProps = GameScreenProps & {
   winner: Winner;
@@ -15,7 +15,8 @@ type ResultScreenProps = GameScreenProps & {
   lovers: readonly [string, string] | null;
 };
 
-const winnerTone = { village: 'lime', wolves: 'tomato', jester: 'lilac' } as const;
+// Los que juegan solos, en el color de su píldora de bando.
+const winnerTone = { village: 'lime', wolves: 'tomato', jester: 'lilac', killer: 'lilac' } as const;
 
 /** El final: bando ganador, el titular de cada uno y todos los roles. */
 export function ResultScreen({ winner, won, rows, lovers, ...chrome }: ResultScreenProps) {

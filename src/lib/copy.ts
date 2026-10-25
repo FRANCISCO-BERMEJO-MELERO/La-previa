@@ -37,6 +37,8 @@ export const errorCodes = [
   'already_acted',
   'same_as_last_night',
   'not_hunter',
+  'not_witch',
+  'potion_used',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -75,8 +77,10 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
   already_acted: 'Ya has hecho lo tuyo esta noche. Espera al amanecer.',
   same_as_last_night: 'Anoche ya protegiste a esa persona. Esta noche elige a otra.',
   not_hunter: 'Solo dispara el cazador. Espera a que elija.',
+  not_witch: 'Las pociones son cosa de la bruja. Haz lo tuyo esta noche.',
+  potion_used: 'Esa poción ya la has gastado. Solo servía una vez.',
   invalid_config:
-    'Con esa composición no se puede jugar. Ajusta los lobos o los roles hasta que quede al menos un aldeano.',
+    'Con esa composición no se puede jugar. Revisa los lobos y los roles: tiene que haber alguna amenaza, algún jugador que no sea lobo y sitio para todos los roles.',
   invalid_vote_seconds: 'El tiempo para votar es de 30, 60 o 90 segundos. Elige uno de esos.',
   invalid_categories: 'Alguna temática ya no está disponible. Revisa las temáticas elegidas.',
   not_watcher: 'Eso lo canta quien vigila las palabras prohibidas. Avísale si oyes una.',
@@ -244,7 +248,7 @@ export const copy = {
         },
         {
           title: 'De noche, todos al móvil',
-          text: 'Todos tocan algo para que nadie se delate. Los lobos eligen víctima y los roles con poder lo usan.',
+          text: 'Todos tocan algo para que nadie se delate. Los lobos eligen víctima, el asesino también, y los roles con poder lo usan: la bruja tiene una poción de vida y otra de muerte.',
         },
         {
           title: 'De día, a juicio',
@@ -252,7 +256,7 @@ export const copy = {
         },
         {
           title: 'Quién gana',
-          text: 'El pueblo, si caen todos los lobos. Los lobos, si llegan a ser tantos como el resto. El bufón, si lo ahorcáis.',
+          text: 'El pueblo, si caen los lobos y el asesino. Los lobos, si llegan a ser tantos como el resto y no queda asesino. El asesino, si queda solo. El bufón, si lo ahorcáis.',
         },
       ],
     },
@@ -695,6 +699,18 @@ export const copy = {
           'La primera noche eliges a dos enamorados. Si uno muere, el otro muere con él. Después eres un aldeano más.',
         art: 'Corazón atravesado por una flecha',
       },
+      witch: {
+        name: 'Bruja',
+        effect:
+          'Tienes dos pociones para toda la partida. La de vida salva a quien vayan a devorar los lobos esta noche; la de muerte se lleva a quien tú elijas. Cada una sirve una sola vez.',
+        art: 'Caldero entre dos pociones',
+      },
+      killer: {
+        name: 'Asesino',
+        effect:
+          'No estás con nadie. Cada noche eliges a quién matar. Ganas si al final eres el único que queda en pie.',
+        art: 'Máscara blanca',
+      },
     },
     // Cómo se nombra cada rol en el guion: "Era vidente".
     spokenRoles: {
@@ -705,6 +721,8 @@ export const copy = {
       hunter: 'cazador',
       jester: 'bufón',
       cupid: 'Cupido',
+      witch: 'bruja',
+      killer: 'asesino',
     },
     // Guion del narrador (docs/PLAN-5.md §4). Solo información pública.
     script: {
@@ -736,6 +754,7 @@ export const copy = {
       winVillage: 'No queda ni un lobo. El pueblo puede dormir tranquilo.',
       winWolves: 'Los lobos ya son mayoría. El pueblo ha caído.',
       winJester: 'Habéis ahorcado al bufón, que es justo lo que quería. Gana él solo.',
+      winKiller: 'Solo queda uno en pie, y no es precisamente un vecino ejemplar. Gana el asesino.',
     },
     teams: {
       village: 'Bando del pueblo',
@@ -760,9 +779,14 @@ export const copy = {
         seer: '¿A quién miras?',
         protector: '¿A quién proteges?',
         cupid: 'Elige a dos',
+        witch: 'Tus pociones',
+        killer: '¿A quién matas?',
         suspect: '¿De quién sospechas?',
       },
       hints: {
+        witch:
+          'Usa la de vida para salvar a la víctima de los lobos, elige a quién envenenar, las dos o ninguna.',
+        killer: 'Elige a quién matas esta noche. Nadie sabrá que has sido tú.',
         wolf: 'Marca a quién devoráis. Ves lo que marca tu manada y puedes cambiar hasta el amanecer.',
         seer: 'Elige a alguien y sabrás al momento si es lobo.',
         protector: 'Si los lobos van a por esa persona, esta noche no muere nadie.',
@@ -779,7 +803,24 @@ export const copy = {
         seer: (name: string) => `Has mirado a ${name}`,
         protector: (name: string) => `Proteges a ${name}`,
         cupid: (a: string, b: string) => `Has enamorado a ${a} y ${b}`,
+        killer: (name: string) => `Vas a por ${name}`,
         suspect: (name: string) => `Sospechas de ${name}`,
+      },
+      witch: {
+        victim: (name: string) => `Los lobos van a por ${name}`,
+        undecided: 'Los lobos aún no se han decidido',
+        life: 'Usar la poción de vida',
+        lifeUsed: 'Ya no te queda la poción de vida',
+        poisonTitle: 'Poción de muerte: elige a quién, o a nadie',
+        poisonUsed: 'Ya no te queda la poción de muerte',
+        done: (life: boolean, poisoned: string | null) =>
+          life && poisoned
+            ? `Usas la poción de vida y envenenas a ${poisoned}`
+            : life
+              ? 'Usas la poción de vida'
+              : poisoned
+                ? `Envenenas a ${poisoned}`
+                : 'Esta noche no usas ninguna poción',
       },
       waiting: 'Espera al amanecer',
       pending: (count: number) =>
@@ -797,13 +838,27 @@ export const copy = {
       quietTitle: 'Noche tranquila',
       quietText: 'Esta noche no ha muerto nadie.',
       deathsTitle: 'Esta noche',
+      // Los vivos solo saben que alguien ha muerto de noche; los muertos, por qué.
       causes: {
+        night: 'Ha muerto esta noche',
         wolves: 'Devorado por los lobos',
+        killer: 'Asesinado',
+        poison: 'Envenenado',
         hanged: 'Ahorcado',
         hunter: 'Abatido por el cazador',
         heartbreak: 'Muerto de pena',
         left: 'Se ha ido del pueblo',
       },
+      witchSaved: (name: string) => `Tu poción de vida ha salvado a ${name}.`,
+      witchPoisoned: (name: string) => `Tu poción de muerte ha caído sobre ${name}.`,
+      potionsLeft: (life: boolean, poison: boolean) =>
+        life && poison
+          ? 'Te quedan las dos pociones.'
+          : life
+            ? 'Te queda la poción de vida.'
+            : poison
+              ? 'Te queda la poción de muerte.'
+              : 'Ya no te quedan pociones.',
       lover: (name: string) => `Estás enamorado de ${name}. Si uno muere, el otro también.`,
       cupid: (a: string, b: string) => `Has enamorado a ${a} y ${b}. Nadie más lo sabe.`,
     },
@@ -870,6 +925,22 @@ export const copy = {
       actionsTitle: 'Esta noche',
       action: (who: string, target: string) => `${who} marca a ${target}`,
       pair: (who: string, a: string, b: string) => `${who} enamora a ${a} y ${b}`,
+      witch: (who: string, life: boolean, poisoned: string | null) =>
+        life && poisoned
+          ? `${who} usa la poción de vida y envenena a ${poisoned}`
+          : life
+            ? `${who} usa la poción de vida`
+            : poisoned
+              ? `${who} envenena a ${poisoned}`
+              : `${who} no usa pociones`,
+      potions: (life: boolean, poison: boolean) =>
+        life && poison
+          ? 'A la bruja le quedan las dos pociones'
+          : life
+            ? 'A la bruja le queda la poción de vida'
+            : poison
+              ? 'A la bruja le queda la poción de muerte'
+              : 'A la bruja no le quedan pociones',
       noActions: 'Nadie ha actuado todavía.',
       dead: 'Muerto',
     },
@@ -878,6 +949,7 @@ export const copy = {
         village: 'Gana el pueblo',
         wolves: 'Ganan los lobos',
         jester: 'Gana el bufón',
+        killer: 'Gana el asesino',
       },
       lovers: (a: string, b: string) => `Los enamorados eran ${a} y ${b}`,
       rolesTitle: 'Todos los roles',
@@ -910,7 +982,7 @@ export const copy = {
         ].join(' · '),
       useRecommended: 'Usar la recomendada',
       problems: {
-        no_threat: 'Sin lobos no hay partida. Pon al menos uno.',
+        no_threat: 'Sin lobos ni asesino no hay partida. Pon al menos uno.',
         all_wolves: 'No pueden ser todos lobos. Quita alguno.',
         too_many_roles: 'Hay más roles que jugadores. Quita alguno.',
       },

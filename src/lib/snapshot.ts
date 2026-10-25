@@ -180,9 +180,34 @@ export const lunaNarrationKeys = [
   'win_village',
   'win_wolves',
   'win_jester',
+  'win_killer',
 ] as const;
 
 const lunaRoleOf = z.object({ user_id: id, role: lunaRole });
+
+/** Causas que ve un vivo: de noche no se dice quién ha matado (docs/PLAN-6.md §6). */
+export const lunaPublicCauses = ['night', 'hanged', 'hunter', 'heartbreak', 'left'] as const;
+/** Causas reales, que solo ven los muertos. */
+export const lunaRealCauses = [
+  'wolves',
+  'killer',
+  'poison',
+  'hanged',
+  'hunter',
+  'heartbreak',
+  'left',
+] as const;
+
+export type LunaCause = (typeof lunaPublicCauses)[number] | (typeof lunaRealCauses)[number];
+
+const lunaPotions = z.object({ life: z.boolean(), poison: z.boolean() });
+
+/** Una acción de la noche. La de la bruja con pociones lleva `use_life` y quizá ningún objetivo. */
+const lunaAction = z.object({
+  target_id: id.nullable(),
+  target2_id: id.nullable(),
+  use_life: z.boolean().optional(),
+});
 
 /** Luna llena (docs/PLAN-5.md §8). Lo secreto llega nulo o vacío a quien no debe verlo. */
 const lunaLlenaGameSchema = z.object({
@@ -220,7 +245,7 @@ const lunaLlenaGameSchema = z.object({
     alive: z.boolean(),
     role: lunaRole.nullable(),
     fellow_wolves: z.array(id),
-    action: z.object({ target_id: id, target2_id: id.nullable() }).nullable(),
+    action: lunaAction.nullable(),
     wolf_marks: z.array(z.object({ user_id: id, target_id: id })),
     seer_results: z.array(
       z.object({ night: z.int().positive(), user_id: id, is_wolf: z.boolean() }),
@@ -228,6 +253,10 @@ const lunaLlenaGameSchema = z.object({
     lover_id: id.nullable(),
     chosen_lovers: z.array(id).nullable(),
     last_protected_id: id.nullable(),
+    // Solo para la bruja: lo que le queda, a quién van a devorar y qué hicieron sus pociones.
+    potions: lunaPotions.nullable(),
+    wolf_victim: id.nullable(),
+    witch_report: z.object({ saved_id: id.nullable(), poisoned_id: id.nullable() }).nullable(),
     vote: z.object({ target_id: id }).nullable(),
   }),
   announcement: z
@@ -238,7 +267,7 @@ const lunaLlenaGameSchema = z.object({
           user_id: id,
           name: z.string(),
           role: lunaRole,
-          cause: z.enum(['wolves', 'hanged', 'hunter', 'heartbreak', 'left']),
+          cause: z.enum(lunaPublicCauses),
         }),
       ),
       spared: z.string().nullable(),
@@ -264,12 +293,14 @@ const lunaLlenaGameSchema = z.object({
     .object({
       roles: z.array(lunaRoleOf),
       lovers: z.array(id).nullable(),
-      actions: z.array(z.object({ user_id: id, target_id: id, target2_id: id.nullable() })),
+      actions: z.array(lunaAction.extend({ user_id: id })),
+      causes: z.array(z.object({ user_id: id, cause: z.enum(lunaRealCauses) })).nullable(),
+      potions: lunaPotions.nullable(),
     })
     .nullable(),
   result: z
     .object({
-      winner: z.enum(['village', 'wolves', 'jester']),
+      winner: z.enum(['village', 'wolves', 'jester', 'killer']),
       roles: z.array(lunaRoleOf),
       lovers: z.array(id).nullable(),
     })

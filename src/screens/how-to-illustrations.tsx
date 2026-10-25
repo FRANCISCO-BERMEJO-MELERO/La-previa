@@ -198,6 +198,7 @@ export const howToIllustrations: Record<GameId, readonly ReactNode[]> = {
     </>,
     <>
       <MiniCard role="wolf" />
+      <MiniCard role="witch" />
       <MiniCard role="protector" />
     </>,
     <>
@@ -209,6 +210,7 @@ export const howToIllustrations: Record<GameId, readonly ReactNode[]> = {
     </>,
     <>
       <MiniCard role="villager" />
+      <MiniCard role="killer" />
       <MiniCard role="jester" />
     </>,
   ],

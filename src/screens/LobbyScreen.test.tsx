@@ -415,11 +415,21 @@ describe('LobbyScreen: El lobo', () => {
     expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
   });
 
-  it('sin lobos no se puede empezar', () => {
+  it('sin lobos ni asesino no se puede empezar', () => {
     renderLobby({ snapshot: inLunaLobby(6), lunaConfig: { wolves: 0, roles: ['seer'] } });
     expect(screen.getByRole('button', { name: 'Menos lobos' })).toBeDisabled();
-    expect(screen.getByText('Sin lobos no hay partida. Pon al menos uno.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Sin lobos ni asesino no hay partida. Pon al menos uno.'),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
+  });
+
+  it('sin lobos y con el asesino sí, y se ofrecen la bruja y el asesino', () => {
+    renderLobby({ snapshot: inLunaLobby(6), lunaConfig: { wolves: 0, roles: ['killer'] } });
+    expect(screen.getByRole('button', { name: /Bruja/ })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: /Asesino/ })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByText('asesino · 5 aldeanos')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeEnabled();
   });
 
   it('el botón de la recomendada pone la de ese número de jugadores', () => {

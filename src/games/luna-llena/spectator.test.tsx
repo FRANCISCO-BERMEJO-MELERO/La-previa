@@ -63,7 +63,42 @@ describe('espectador', () => {
       { user_id: ids.lucia, target_id: ids.alvaro, target2_id: null },
       { user_id: ids.marta, target_id: ids.dani, target2_id: ids.paula },
     ],
+    causes: null,
+    potions: null,
   };
+
+  it('ve la acción de la bruja, sus pociones y la causa real de cada muerte', () => {
+    renderGame({
+      phase: 'dawn',
+      participants: dead,
+      my: lunaMy({ alive: false }),
+      announcement: {
+        kind: 'night',
+        deaths: [{ user_id: ids.fran, name: 'Fran', role: 'villager', cause: 'night' }],
+        spared: null,
+      },
+      spectator: {
+        ...spectator,
+        causes: [{ user_id: ids.fran, cause: 'poison' }],
+        potions: { life: true, poison: false },
+      },
+    });
+    expect(screen.getByText(texts.dawn.causes.poison)).toBeInTheDocument();
+    expect(screen.queryByText(texts.dawn.causes.night)).not.toBeInTheDocument();
+    expect(screen.getByText(texts.spectator.potions(true, false))).toBeInTheDocument();
+  });
+
+  it('de noche ve lo que hace la bruja', () => {
+    renderGame({
+      participants: dead,
+      my: lunaMy({ alive: false }),
+      spectator: {
+        ...spectator,
+        actions: [{ user_id: ids.dani, target_id: ids.lucia, target2_id: null, use_life: true }],
+      },
+    });
+    expect(screen.getByText(texts.spectator.witch('Dani', true, 'Lucía'))).toBeInTheDocument();
+  });
 
   it('de noche ve todos los roles, los enamorados y lo que marca cada uno', () => {
     renderGame({ participants: dead, my: lunaMy({ alive: false }), spectator });

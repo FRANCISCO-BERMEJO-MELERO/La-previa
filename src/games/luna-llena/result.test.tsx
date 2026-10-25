@@ -57,8 +57,8 @@ describe('resultado', () => {
     { user_id: ids.paula, role: 'villager' as const },
   ];
   const finished = (
-    winner: 'village' | 'wolves' | 'jester',
-    role: (typeof roles)[number]['role'],
+    winner: 'village' | 'wolves' | 'jester' | 'killer',
+    role: (typeof roles)[number]['role'] | 'killer' | 'witch',
   ) =>
     lunaState({
       phase: 'finished',
@@ -74,6 +74,12 @@ describe('resultado', () => {
     expect(hasWon(finished('wolves', 'wolf'))).toBe(true);
     expect(hasWon(finished('jester', 'jester'))).toBe(true);
     expect(hasWon(finished('jester', 'villager'))).toBe(false);
+    expect(hasWon(finished('killer', 'killer'))).toBe(true);
+    expect(hasWon(finished('killer', 'witch'))).toBe(false);
+    expect(hasWon(finished('killer', 'wolf'))).toBe(false);
+    expect(hasWon(finished('village', 'witch'))).toBe(true);
+    expect(hasWon(finished('village', 'killer'))).toBe(false);
+    expect(hasWon(finished('wolves', 'killer'))).toBe(false);
     expect(
       hasWon({
         ...finished('village', 'villager'),

@@ -209,6 +209,20 @@ export function lunaLlenaNightAction(
   });
 }
 
+/** La bruja: si usa la poción de vida y a quién envenena, si a alguien. */
+export function lunaLlenaWitchAction(
+  roomId: string,
+  useLife: boolean,
+  poisonTargetId: string | null,
+  deps = defaultDeps,
+) {
+  return callForSnapshot(deps, 'luna_llena_witch_action', {
+    room_id: roomId,
+    use_life: useLife,
+    poison_target_id: poisonTargetId,
+  });
+}
+
 export function lunaLlenaCloseNight(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'luna_llena_close_night', { room_id: roomId });
 }

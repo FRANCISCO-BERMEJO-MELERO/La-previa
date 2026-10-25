@@ -38,6 +38,13 @@ describe('composición de El lobo', () => {
 
   it('solo rechaza lo que no se puede jugar', () => {
     expect(configProblem(8, { wolves: 0, roles: ['seer'] })).toBe('no_threat');
+    expect(configProblem(8, { wolves: 0, roles: ['seer', 'killer'] })).toBeNull();
+    expect(
+      configProblem(8, {
+        wolves: 1,
+        roles: ['seer', 'protector', 'hunter', 'jester', 'cupid', 'witch', 'killer'],
+      }),
+    ).toBeNull();
     expect(configProblem(5, { wolves: 5, roles: [] })).toBe('all_wolves');
     expect(
       configProblem(6, { wolves: 2, roles: ['seer', 'protector', 'hunter', 'jester', 'cupid'] }),
