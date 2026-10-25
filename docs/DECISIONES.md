@@ -1,5 +1,26 @@
 # Decisiones
 
+## 2026-10-25 · 33 · El lobo con composición libre
+
+Issue #13 y `docs/PLAN-6.md` §1. Contradice a `docs/PLAN-5.md` §2 (vidente obligatoria, `2 × lobos < jugadores`, al menos un aldeano); manda `docs/PLAN-6.md`.
+
+- **La vidente va en la lista de roles.** `private.luna_optional_roles` empieza por `seer` y el reparto ya no la añade por su cuenta. La recomendada la lleva de forma explícita (`{"wolves": 1, "roles": ["seer"]}` para 6), así que reparte lo mismo que antes. La composición guardada en `luna_state.config` y la de la foto también la nombran.
+- **Bruja y asesino ya existen en la base de datos** desde la 33.1 (rol y opcional), aunque el cliente no los ofrece hasta la fase 35. Así la validación se escribe una vez.
+- **Lobos de 0 a todos menos uno.** El selector va de 0 a `jugadores − 1`. Con 0 lobos y sin asesino el botón de empezar se desactiva y se dice por qué; lo mismo con más roles que jugadores. Si baja el número de jugadores y la composición deja de caber, pasa lo mismo.
+- **Línea de composición.** Lo que no hay no se nombra: sin aldeanos, la línea termina en el último rol ("4 lobos · vidente").
+- **Avisos.** Lista con el mismo aspecto que el aviso de conexión (`orange`, borde discontinuo), debajo de la línea de composición. No usan `role="status"` porque no son un cambio de estado de la conexión.
+- **"Roles especiales".** El rótulo de los interruptores deja de decir "opcionales", porque ahora la vidente también lo es.
+
+Pruebas que cambian, porque la regla que comprobaban es la que se retira:
+
+- `41_luna_llena_schema`: el rol inventado de ejemplo era `witch`, que ahora existe; pasa a ser `wizard`, y se añade que la bruja y el asesino caben.
+- `42_luna_llena_config`: "los lobos no pueden ser la mitad o más" y "tiene que quedar al menos un aldeano" pasan a comprobar que esas composiciones se aceptan; "la vidente no es opcional" pasa a "la vidente es opcional"; el rol desconocido de ejemplo era `witch`, que ahora existe, y pasa a ser `wizard`. "Hace falta al menos un lobo" sigue rechazando lo mismo con la descripción nueva ("sin lobos ni asesino no hay amenaza"). Las composiciones esperadas llevan `seer`.
+- `43_luna_llena_start`: la composición inválida de ejemplo (5 lobos de 9) ya es válida y pasa a ser 9 de 9; el reparto con vidente la pide explícitamente.
+- `44` a `51`: las partidas que empiezan con roles explícitos añaden `seer` a la lista, para repartir exactamente lo mismo que antes. `45` espera la composición pública con `seer`.
+- `LobbyScreen.test.tsx`: "los lobos no llegan a la mitad" pasa a "se pueden pedir todos los lobos menos uno, y con mayoría se avisa sin bloquear"; "sin hueco para un aldeano" pasa a comprobar que se puede empezar sin aldeanos, y el bloqueo se comprueba con más roles que jugadores. Las composiciones llevan `seer`.
+- `snapshot.test.ts`: la composición con 0 lobos ya es válida en la foto; el caso rechazado pasa a ser un número negativo y se añade que 0 se acepta.
+- `composition.test.ts`: la recomendada lleva `seer`, los aldeanos ya no descuentan una vidente implícita y el máximo de lobos es todos menos uno.
+
 ## 2026-10-15 · D.4 · Avatares con imagen
 
 Fran pide usar los 11 avatares de `public/avatars/` (generados aparte y recortados a un círculo de 256 px) en lugar de los 12 dibujados con formas de `docs/MEJORAS.md` §8 y la referencia.

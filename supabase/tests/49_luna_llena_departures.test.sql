@@ -98,7 +98,7 @@ insert into ctx select 'code', to_jsonb((select code from public.rooms where id 
 select pg_temp.call(n, format('select public.join_room(%L, %L)', pg_temp.code(), format('Jugador %s', n)))
 from generate_series(2, 12) as n;
 select pg_temp.call(1, format('select public.set_game(%L, %L)', pg_temp.room(), 'luna_llena'));
-select pg_temp.call(1, format('select public.luna_llena_start(%L, 2, %L)', pg_temp.room(), array['hunter', 'cupid']));
+select pg_temp.call(1, format('select public.luna_llena_start(%L, 2, %L)', pg_temp.room(), array['seer', 'hunter', 'cupid']));
 update public.game_roles gr
 set role = (array['wolf', 'wolf', 'seer', 'hunter', 'cupid', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager'])[right(gr.user_id::text, 2)::integer]
 where gr.game_id = (pg_temp.game()).id;
