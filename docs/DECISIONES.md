@@ -1,5 +1,11 @@
 # Decisiones
 
+## 2026-10-25 · D.6 · Next 16.4.3 por seguridad
+
+Next 16.4.0 tiene vulnerabilidades conocidas (entre ellas GHSA-2464-fhr4-w9xw, ejecución remota de código en la optimización de imágenes con SVG, crítica, que afecta a `>=16.0.0 <=16.4.0`). `next dev` y `next build` se paraban para recomendar actualizar. Se sube `next` y `eslint-config-next` a la 16.4.3, la última del 16.4, con versiones exactas como el resto. Es un parche de la misma versión menor: no cambia ninguna API que use el proyecto.
+
+- `npm audit` ya no avisa de `next`. Siguen dos avisos ajenos: `undici` 8.11.2, que solo llega a través de `jsdom` en los tests, y `zod` 4.6.5, que pide `--force`. Quedan fuera de este cambio.
+
 ## 2026-10-25 · 35 · Bruja y asesino en el cliente
 
 - **Un solo commit para 35.1 a 35.4.** Esquema, textos, cartas y pantallas dependen unos de otros: el esquema con las causas públicas no compila sin las pantallas que las pintan.
