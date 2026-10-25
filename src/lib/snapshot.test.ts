@@ -259,7 +259,7 @@ describe('parseSnapshot de Luna llena', () => {
 
   it('acepta un amanecer con muertes, un muerto con su vista y un final', () => {
     const deaths = [
-      { user_id: lunaIds.marta, name: 'Marta', role: 'seer', cause: 'wolves' },
+      { user_id: lunaIds.marta, name: 'Marta', role: 'seer', cause: 'night' },
       { user_id: lunaIds.dani, name: 'Dani', role: 'cupid', cause: 'heartbreak' },
     ] as const;
     expect(
@@ -282,6 +282,8 @@ describe('parseSnapshot de Luna llena', () => {
             roles: [{ user_id: lunaIds.fran, role: 'wolf' }],
             lovers: [lunaIds.marta, lunaIds.dani],
             actions: [{ user_id: lunaIds.fran, target_id: lunaIds.lucia, target2_id: null }],
+            causes: [{ user_id: lunaIds.marta, cause: 'wolves' }],
+            potions: null,
           },
         }),
       ),
@@ -296,6 +298,56 @@ describe('parseSnapshot de Luna llena', () => {
             lovers: null,
           },
           narration: { key: 'win_jester', params: {} },
+        }),
+      ),
+    ).not.toBeNull();
+    expect(
+      parseSnapshot(
+        inLuna({
+          phase: 'finished',
+          result: {
+            winner: 'killer',
+            roles: [{ user_id: lunaIds.fran, role: 'killer' }],
+            lovers: null,
+          },
+          narration: { key: 'win_killer', params: {} },
+        }),
+      ),
+    ).not.toBeNull();
+  });
+
+  it('acepta lo que recibe la bruja y lo que ven los muertos de ella', () => {
+    expect(
+      parseSnapshot(
+        inLuna({
+          my: lunaMy({
+            role: 'witch',
+            action: { target_id: null, target2_id: null, use_life: true },
+            potions: { life: true, poison: false },
+            wolf_victim: lunaIds.marta,
+            witch_report: { saved_id: null, poisoned_id: lunaIds.dani },
+          }),
+        }),
+      ),
+    ).not.toBeNull();
+    expect(
+      parseSnapshot(
+        inLuna({
+          my: lunaMy({ alive: false }),
+          spectator: {
+            roles: [{ user_id: lunaIds.fran, role: 'witch' }],
+            lovers: null,
+            actions: [
+              {
+                user_id: lunaIds.fran,
+                target_id: lunaIds.lucia,
+                target2_id: null,
+                use_life: false,
+              },
+            ],
+            causes: [{ user_id: lunaIds.marta, cause: 'killer' }],
+            potions: { life: false, poison: false },
+          },
         }),
       ),
     ).not.toBeNull();
@@ -320,10 +372,24 @@ describe('parseSnapshot de Luna llena', () => {
       ...inLuna(),
       game: { ...lunaState(), ...game },
     });
-    expect(parseSnapshot(broken({ my: { ...lunaMy(), role: 'witch' } }))).toBeNull();
+    expect(parseSnapshot(broken({ my: { ...lunaMy(), role: 'wizard' } }))).toBeNull();
     expect(parseSnapshot(broken({ phase: 'reveal' }))).toBeNull();
+    // Un vivo nunca recibe la causa real de una muerte nocturna.
+    expect(
+      parseSnapshot(
+        broken({
+          phase: 'dawn',
+          announcement: {
+            kind: 'night',
+            deaths: [{ user_id: lunaIds.marta, name: 'Marta', role: 'seer', cause: 'poison' }],
+            spared: null,
+          },
+        }),
+      ),
+    ).toBeNull();
     expect(parseSnapshot(broken({ narration: { key: 'chat', params: {} } }))).toBeNull();
-    expect(parseSnapshot(inLuna({ config: { wolves: 0, roles: [] } }))).toBeNull();
+    expect(parseSnapshot(inLuna({ config: { wolves: -1, roles: [] } }))).toBeNull();
+    expect(parseSnapshot(inLuna({ config: { wolves: 0, roles: ['seer'] } }))).not.toBeNull();
   });
 });
 

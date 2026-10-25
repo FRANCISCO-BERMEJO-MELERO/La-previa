@@ -14,8 +14,10 @@ type SpectatorScreenProps = GameScreenProps & {
   lovers: readonly [string, string] | null;
   /** Lo que marca cada uno esta noche, en directo; nulo de día. */
   actions: readonly string[] | null;
-  /** El anuncio en curso, si lo hay. */
+  /** El anuncio en curso, si lo hay, con las causas reales. */
   deaths: readonly Death[];
+  /** Las pociones que le quedan a la bruja, si hay bruja. */
+  potions: string | null;
 };
 
 /** Los muertos lo ven todo, pero no pueden hablar del juego. */
@@ -24,6 +26,7 @@ export function SpectatorScreen({
   lovers,
   actions,
   deaths,
+  potions,
   ...chrome
 }: SpectatorScreenProps) {
   return (
@@ -67,6 +70,7 @@ export function SpectatorScreen({
           {texts.rolesTitle}
         </h2>
         {lovers ? <p className="text-md font-bold">{texts.lovers(lovers[0], lovers[1])}</p> : null}
+        {potions ? <p className="text-md font-bold">{potions}</p> : null}
         <RolesList rows={rows} />
       </section>
     </GameScreen>

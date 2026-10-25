@@ -334,6 +334,39 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
+## Fase 33 · El lobo: composición libre
+
+Plan: `docs/PLAN-6.md` (issue #13).
+
+- [x] 33.1 Migración: vidente opcional, bruja y asesino como roles, validación de integridad y reparto exacto, con pgTAP
+- [x] 33.2 Cliente: composición, avisos de equilibrio, selector sin tope de equilibrio y "Usar la recomendada", con tests
+
+Aceptación: la app funciona igual con los roles de siempre y acepta composiciones antes prohibidas.
+
+## Fase 34 · El lobo: bruja y asesino en el servidor
+
+- [x] 34.1 Migración: pociones, acción de la bruja, asesino, resolución de la noche, victoria, proyección privada y abandono
+- [x] 34.2 Pruebas pgTAP de bruja, asesino, victoria, secreto y partidas completas
+
+Aceptación: `npm run test:db` pasa desde cero.
+
+## Fase 35 · El lobo: bruja y asesino en el cliente
+
+- [x] 35.1 Esquemas `zod`, acción de la bruja, errores nuevos, `viewFor` y funciones de vista, con tests
+- [x] 35.2 Cartas e ilustraciones de bruja y asesino, también en `/dev/componentes`
+- [x] 35.3 Noche de bruja y asesino, aviso privado de la bruja, causas públicas, espectador, resultado y `win_killer`
+- [x] 35.4 "Cómo se juega" con los roles nuevos
+
+Aceptación: `npm run check` pasa.
+
+## Fase 36 · El lobo: validación y cierre
+
+- [x] 36.1 E2E: sin vidente ni aldeanos, 4 lobos de 5, bruja y asesino hasta el final, recarga de la bruja y secreto en red
+- [x] 36.2 Repaso a 360, 390 y 430 px y de accesibilidad
+- [x] 36.3 `docs/DECISIONES.md`, `docs/INFORME.md` y `README.md`
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
 ## Bloqueos
 
 - Ninguno. (Resuelto: Docker Desktop instalado. Su `docker.exe` está en `AppData\Local\Programs\DockerDesktop\resources\bin` y no en el PATH de Git Bash, pero la CLI de Supabase lo encuentra.)

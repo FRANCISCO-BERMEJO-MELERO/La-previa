@@ -308,6 +308,9 @@ export function lunaMy(
     lover_id: null,
     chosen_lovers: null,
     last_protected_id: null,
+    potions: null,
+    wolf_victim: null,
+    witch_report: null,
     vote: null,
     ...overrides,
   };

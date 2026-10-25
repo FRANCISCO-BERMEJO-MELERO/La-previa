@@ -12,6 +12,8 @@ const roleNames = {
   Cazador: 'hunter',
   Bufón: 'jester',
   Cupido: 'cupid',
+  Bruja: 'witch',
+  Asesino: 'killer',
 } as const;
 
 type Role = (typeof roleNames)[keyof typeof roleNames];
@@ -20,10 +22,21 @@ function isRoleName(text: string): text is keyof typeof roleNames {
   return text in roleNames;
 }
 
-/** Sala de Luna llena con estos jugadores; el primero es el anfitrión y narrador. */
-async function lunaRoom(browser: Browser, names: readonly string[]) {
+/**
+ * Sala de Luna llena con estos jugadores; el primero es el anfitrión y narrador. Si se pasa
+ * `traffic`, guarda ahí cómo leer lo que recibe cada uno por la red.
+ */
+async function lunaRoom(
+  browser: Browser,
+  names: readonly string[],
+  traffic?: Map<string, () => Promise<string>>,
+) {
   const players: Players = {};
-  for (const name of names) players[name] = await newPlayer(browser);
+  for (const name of names) {
+    const page = await newPlayer(browser);
+    traffic?.set(name, recordTraffic(page));
+    players[name] = page;
+  }
   const host = pageOf(players, names[0] ?? '');
   await host.goto('/');
   await host.getByRole('button', { name: 'Crear sala' }).click();
@@ -94,13 +107,14 @@ test('30 · seis jugadores: reparto, una noche y el amanecer', async ({ browser 
     await act(pageOf(players, name), name === others[0] ? (others[1] ?? '') : (others[0] ?? ''));
   }
 
-  // La vidente ya está muerta y pasa a verlo todo como espectadora.
+  // Los vivos solo saben que ha muerto de noche; la vidente, ya espectadora, sabe que fue el lobo.
   for (const name of six.filter((player) => player !== seer)) {
     const page = pageOf(players, name);
     await expect(page.getByText('Amanece', { exact: true })).toBeVisible();
-    await expect(page.getByText('Devorado por los lobos')).toBeVisible();
+    await expect(page.getByText('Ha muerto esta noche')).toBeVisible();
     await expect(page.getByText(seer, { exact: true }).first()).toBeVisible();
   }
+  await expect(pageOf(players, seer).getByText('Devorado por los lobos')).toBeVisible();
   await expect(host.getByText(`Amanece. ${seer} no ha despertado. Era vidente.`)).toBeVisible();
 });
 
@@ -343,7 +357,144 @@ test('31.7 · un aldeano vivo no recibe por la red el rol de nadie vivo', async 
   const received = await collect();
   expect(received, 'la captura funciona').toContain('"fellow_wolves"');
   expect(received, 've su propio rol con ese formato').toContain('"role": "villager"');
-  for (const secret of ['"wolf"', '"seer"', '"wolf_marks": [{', '"seer_results": [{']) {
+  // La vidente sale en la composición pública; lo secreto es a quién le ha tocado.
+  for (const secret of ['"wolf"', '"role": "seer"', '"wolf_marks": [{', '"seer_results": [{']) {
     expect(received, `no recibe ${secret}`).not.toContain(secret);
   }
+});
+
+const five = ['Fran', 'Lucía', 'Álvaro', 'Marta', 'Dani'];
+
+/** Activa o desactiva un rol especial en la sala de espera. */
+async function toggleRole(host: Page, name: string): Promise<void> {
+  await host.getByRole('button', { name: new RegExp(`^${name}$`) }).click();
+}
+
+test('36.1 · sin vidente y sin aldeanos', async ({ browser }) => {
+  const { players, host } = await lunaRoom(browser, five);
+  await toggleRole(host, 'Vidente');
+  for (const role of ['Protector', 'Cazador', 'Bufón', 'Cupido']) await toggleRole(host, role);
+  await expect(host.getByText('1 lobo · protector · cazador · bufón · Cupido')).toBeVisible();
+  await expect(host.getByText('Sin vidente, el pueblo juega a ciegas.')).toBeVisible();
+  await host.getByRole('button', { name: 'Empezar partida' }).click();
+
+  const roles = await rolesOf(players);
+  expect(withRole(roles, 'seer')).toEqual([]);
+  expect(withRole(roles, 'villager')).toEqual([]);
+  expect(Object.values(roles).sort()).toEqual(['cupid', 'hunter', 'jester', 'protector', 'wolf']);
+});
+
+test('36.1 · cuatro lobos de cinco: se avisa, se juega y acaba al primer amanecer', async ({
+  browser,
+}) => {
+  const { players, host } = await lunaRoom(browser, five);
+  for (let i = 0; i < 3; i += 1) await host.getByRole('button', { name: 'Más lobos' }).click();
+  await expect(host.getByText('4 lobos · vidente')).toBeVisible();
+  await expect(
+    host.getByText(
+      'Hay 4 lobos para 5 jugadores. Ya son mayoría: la partida terminará en cuanto amanezca. Podéis jugar igualmente.',
+    ),
+  ).toBeVisible();
+  await expect(host.getByRole('button', { name: 'Más lobos' })).toBeDisabled();
+  await host.getByRole('button', { name: 'Empezar partida' }).click();
+
+  const roles = await rolesOf(players);
+  const wolves = withRole(roles, 'wolf');
+  const [seer] = withRole(roles, 'seer');
+  if (wolves.length !== 4 || !seer) throw new Error('Reparto inesperado');
+
+  await narrate(host, 'Que caiga la noche');
+  await allSee(players, five, 'Noche 1');
+  for (const wolf of wolves) await act(pageOf(players, wolf), seer);
+  await act(pageOf(players, seer), wolves[0] ?? '');
+  await allSee(players, wolves, 'Amanece');
+  await narrate(host, 'Continuar');
+
+  for (const wolf of wolves) {
+    await expect(
+      pageOf(players, wolf).getByRole('heading', { name: '¡Has ganado!' }),
+    ).toBeVisible();
+  }
+  await expect(host.getByText('Ganan los lobos').first()).toBeVisible();
+});
+
+test('36.1 · bruja y asesino hasta el final, con recarga y sin secretos en la red', async ({
+  browser,
+}) => {
+  const traffic = new Map<string, () => Promise<string>>();
+  const { players, host } = await lunaRoom(browser, five, traffic);
+  await toggleRole(host, 'Vidente');
+  await toggleRole(host, 'Bruja');
+  await toggleRole(host, 'Asesino');
+  await expect(host.getByText('1 lobo · bruja · asesino · 2 aldeanos')).toBeVisible();
+  await host.getByRole('button', { name: 'Empezar partida' }).click();
+
+  const roles = await rolesOf(players);
+  const [wolf] = withRole(roles, 'wolf');
+  const [witch] = withRole(roles, 'witch');
+  const [killer] = withRole(roles, 'killer');
+  const [saved, hanged] = withRole(roles, 'villager');
+  if (!wolf || !witch || !killer || !saved || !hanged) throw new Error('Reparto inesperado');
+  const witchPage = pageOf(players, witch);
+
+  // Noche 1: el lobo va a por un aldeano, la bruja lo salva y el asesino mata al lobo.
+  await narrate(host, 'Que caiga la noche');
+  await allSee(players, five, 'Noche 1');
+  await act(pageOf(players, wolf), saved);
+  await expect(witchPage.getByText(`Los lobos van a por ${saved}`)).toBeVisible();
+  await witchPage.getByRole('button', { name: 'Usar la poción de vida' }).click();
+  await witchPage.getByRole('button', { name: 'Confirmar' }).click();
+  await expect(witchPage.getByText('Usas la poción de vida')).toBeVisible();
+  await act(pageOf(players, killer), wolf);
+  await act(pageOf(players, saved), wolf);
+  await act(pageOf(players, hanged), wolf);
+
+  const alive = [witch, killer, saved, hanged];
+  await allSee(players, alive, 'Amanece');
+  await expect(pageOf(players, saved).getByText('Ha muerto esta noche')).toBeVisible();
+  await expect(witchPage.getByText(`Tu poción de vida ha salvado a ${saved}.`)).toBeVisible();
+  await expect(witchPage.getByText('Te queda la poción de muerte.')).toBeVisible();
+  await expect(pageOf(players, wolf).getByText('Asesinado')).toBeVisible();
+
+  // Sin lobos, con el asesino vivo, la partida sigue.
+  await narrate(host, 'Continuar');
+  await hang(players, host, alive, witch, hanged);
+  await narrate(host, 'Continuar');
+  await allSee(players, [witch, killer, saved], 'Noche 2');
+
+  const collect = traffic.get(saved);
+  if (!collect) throw new Error('Sin tráfico');
+  const received = await collect();
+  expect(received, 'la captura funciona').toContain('"cause": "night"');
+  for (const secret of [
+    '"use_life"',
+    '"potions": {',
+    '"wolf_victim": "',
+    '"witch_report": {',
+    '"cause": "wolves"',
+    '"cause": "killer"',
+    '"cause": "poison"',
+    '"role": "witch"',
+    '"role": "killer"',
+  ]) {
+    expect(received, `un aldeano vivo no recibe ${secret}`).not.toContain(secret);
+  }
+
+  // La bruja recarga: la poción de vida sigue gastada.
+  await witchPage.reload();
+  await expect(witchPage.getByText('Noche 2')).toBeVisible();
+  await expect(
+    witchPage.getByRole('button', { name: 'Ya no te queda la poción de vida' }),
+  ).toBeDisabled();
+
+  // Noche 2: el asesino mata al aldeano y la bruja envenena al asesino.
+  await act(pageOf(players, saved), killer);
+  await act(pageOf(players, killer), saved);
+  await act(witchPage, killer);
+  await expect(witchPage.getByText('Amanece', { exact: true })).toBeVisible();
+  await narrate(host, 'Continuar');
+
+  await expect(witchPage.getByRole('heading', { name: '¡Has ganado!' })).toBeVisible();
+  await expect(pageOf(players, killer).getByRole('heading', { name: 'Has perdido' })).toBeVisible();
+  await expect(host.getByText('Gana el pueblo').first()).toBeVisible();
 });

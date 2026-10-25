@@ -134,7 +134,7 @@ select pg_temp.call(n, format('select public.join_room(%L, %L)', pg_temp.code(),
 from generate_series(2, 10) as n;
 select pg_temp.call(1, format('select public.set_game(%L, %L)', pg_temp.room(), 'luna_llena'));
 select pg_temp.call(1, format(
-  'select public.luna_llena_start(%L, 3, %L)', pg_temp.room(), array['protector', 'hunter', 'jester', 'cupid']
+  'select public.luna_llena_start(%L, 3, %L)', pg_temp.room(), array['seer', 'protector', 'hunter', 'jester', 'cupid']
 ));
 update public.game_roles gr
 set role = (array['wolf', 'wolf', 'wolf', 'seer', 'protector', 'hunter', 'jester', 'cupid', 'villager', 'villager'])[right(gr.user_id::text, 2)::integer]

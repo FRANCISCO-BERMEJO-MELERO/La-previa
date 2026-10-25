@@ -96,7 +96,7 @@ $$;
 
 -- Lobos u1 y u2; vidente u3; cazador u4; bufón u5; aldeanos u6, u7 y u8.
 create function pg_temp.new_game() returns void language sql as $$
-  select pg_temp.call(1, format('select public.luna_llena_start(%L, 2, %L)', pg_temp.room(), array['hunter', 'jester']));
+  select pg_temp.call(1, format('select public.luna_llena_start(%L, 2, %L)', pg_temp.room(), array['seer', 'hunter', 'jester']));
   update public.game_roles gr
   set role = (array['wolf', 'wolf', 'seer', 'hunter', 'jester', 'villager', 'villager', 'villager'])[right(gr.user_id::text, 2)::integer]
   where gr.game_id = (pg_temp.game()).id;
@@ -138,7 +138,7 @@ select pg_temp.next();
 select is(pg_temp.phase(), 'hunter', 'tras el anuncio, el turno del cazador');
 select is((pg_temp.state()).return_phase, 'dawn', 'que vuelve al amanecer');
 select is(pg_temp.view(6) -> 'narration', '{"key": "hunter", "params": {"name": "Jugador 4"}}'::jsonb, 'el narrador lo anuncia');
-select is(pg_temp.view(6) -> 'announcement' -> 'deaths' -> 0 ->> 'cause', 'wolves', 'y el anuncio sigue a la vista');
+select is(pg_temp.view(6) -> 'announcement' -> 'deaths' -> 0 ->> 'cause', 'night', 'y el anuncio sigue a la vista');
 
 select pg_temp.as_user(6);
 select throws_ok(pg_temp.shot_sql(7), 'P0001', 'not_hunter', 'solo dispara el cazador');

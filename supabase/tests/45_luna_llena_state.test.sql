@@ -78,7 +78,7 @@ select pg_temp.call(n, format('select public.join_room(%L, %L)', pg_temp.code(),
 from generate_series(2, 10) as n;
 select pg_temp.call(1, format('select public.set_game(%L, %L)', pg_temp.room(), 'luna_llena'));
 select pg_temp.call(1, format(
-  'select public.luna_llena_start(%L, 3, %L)', pg_temp.room(), array['protector', 'hunter', 'jester', 'cupid']
+  'select public.luna_llena_start(%L, 3, %L)', pg_temp.room(), array['seer', 'protector', 'hunter', 'jester', 'cupid']
 ));
 update public.game_roles gr
 set role = (array['wolf', 'wolf', 'wolf', 'seer', 'protector', 'hunter', 'jester', 'cupid', 'villager', 'villager'])[right(gr.user_id::text, 2)::integer]
@@ -89,7 +89,7 @@ select pg_temp.call(11, format('select public.join_room(%L, %L)', pg_temp.code()
 
 select is(pg_temp.view(9) ->> 'type', 'luna_llena', 'la foto dice que es Luna llena');
 select is(pg_temp.view(9) ->> 'phase', 'roles', 'en el reparto');
-select is(pg_temp.view(9) -> 'config', '{"wolves": 3, "roles": ["protector", "hunter", "jester", "cupid"]}'::jsonb, 'con la composición pública');
+select is(pg_temp.view(9) -> 'config', '{"wolves": 3, "roles": ["seer", "protector", "hunter", "jester", "cupid"]}'::jsonb, 'con la composición pública');
 select is(jsonb_array_length(pg_temp.view(9) -> 'participants'), 10, 'con los diez participantes');
 select is(
   (select array_agg(p ->> 'name' order by o) from jsonb_array_elements(pg_temp.view(9) -> 'participants') with ordinality e(p, o)),
@@ -155,10 +155,10 @@ select is(pg_temp.view(4) ->> 'phase', 'dawn', 'amanece');
 select is(
   pg_temp.view(4) -> 'announcement',
   jsonb_build_object('kind', 'night', 'spared', null, 'deaths', jsonb_build_array(
-    jsonb_build_object('user_id', pg_temp.u(10), 'name', 'Jugador 10', 'role', 'villager', 'cause', 'wolves'),
+    jsonb_build_object('user_id', pg_temp.u(10), 'name', 'Jugador 10', 'role', 'villager', 'cause', 'night'),
     jsonb_build_object('user_id', pg_temp.u(9), 'name', 'Jugador 9', 'role', 'villager', 'cause', 'heartbreak')
   )),
-  'el anuncio dice quién ha muerto, su rol y por qué'
+  'el anuncio dice quién ha muerto, su rol y, de noche, solo que ha sido de noche'
 );
 select is(
   pg_temp.view(4) -> 'narration',

@@ -6,12 +6,15 @@ import { DeathCard, type Death } from './DeathCard';
 
 type DawnScreenProps = GameScreenProps & {
   deaths: readonly Death[];
-  /** Aviso privado de la primera noche: a quién amas o a quién has enamorado. */
-  secret: string | null;
+  /**
+   * Avisos privados: a quién amas o a quién has enamorado, la primera noche, y qué han hecho
+   * tus pociones, si eres la bruja.
+   */
+  secrets: readonly string[];
 };
 
 /** El amanecer: quién ha muerto y qué era, o que la noche ha sido tranquila. */
-export function DawnScreen({ deaths, secret, ...chrome }: DawnScreenProps) {
+export function DawnScreen({ deaths, secrets, ...chrome }: DawnScreenProps) {
   const texts = copy.lunaLlena.dawn;
   return (
     <GameScreen {...chrome}>
@@ -37,11 +40,14 @@ export function DawnScreen({ deaths, secret, ...chrome }: DawnScreenProps) {
           </>
         )}
       </Card>
-      {secret ? (
-        <p className="rounded-chip border-3 border-ink bg-field-error p-3.5 text-base font-bold">
+      {secrets.map((secret) => (
+        <p
+          key={secret}
+          className="rounded-chip border-3 border-ink bg-field-error p-3.5 text-base font-bold"
+        >
           {secret}
         </p>
-      ) : null}
+      ))}
     </GameScreen>
   );
 }

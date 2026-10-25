@@ -17,6 +17,19 @@ describe('narrationLines', () => {
     }
   });
 
+  it('anuncia la victoria del asesino', () => {
+    expect(narrationLines({ key: 'win_killer', params: {} })).toEqual([
+      'Solo queda uno en pie, y no es precisamente un vecino ejemplar. Gana el asesino.',
+    ]);
+  });
+
+  it('ningún texto del guion dice cómo ha muerto alguien de noche', () => {
+    const lines = lunaNarrationKeys.flatMap((key) =>
+      narrationLines({ key, params: { name: 'Marta', role: 'seer', names: ['Marta', 'Luis'] } }),
+    );
+    expect(lines.some((line) => /veneno|envenen|asesinad|devorad/i.test(line))).toBe(false);
+  });
+
   it('nombra al muerto y su rol', () => {
     expect(narrationLines({ key: 'dawn_death', params: { name: 'Marta', role: 'seer' } })).toEqual([
       'Amanece. Marta no ha despertado. Era vidente.',

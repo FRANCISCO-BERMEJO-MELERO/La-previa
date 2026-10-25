@@ -92,7 +92,7 @@ $$;
 -- Lobos u1 y u2; vidente u3; protector u4; cazador u5; bufón u6; Cupido u7; aldeanos u8, u9 y u10.
 create function pg_temp.new_game() returns void language sql as $$
   select pg_temp.call(1, format(
-    'select public.luna_llena_start(%L, 2, %L)', pg_temp.room(), array['protector', 'hunter', 'jester', 'cupid']
+    'select public.luna_llena_start(%L, 2, %L)', pg_temp.room(), array['seer', 'protector', 'hunter', 'jester', 'cupid']
   ));
   update public.game_roles gr
   set role = (array['wolf', 'wolf', 'seer', 'protector', 'hunter', 'jester', 'cupid', 'villager', 'villager', 'villager'])[right(gr.user_id::text, 2)::integer]

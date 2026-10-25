@@ -13,6 +13,9 @@ const youAreTone = {
   hunter: 'lime',
   jester: 'ground-soft',
   cupid: 'field-error',
+  // La píldora no tiene tonos `field` ni `ground`: se usa el más cercano.
+  witch: 'lime',
+  killer: 'ground-soft',
 } as const satisfies Record<LunaRole, string>;
 
 const teamTone = {

@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   lunaLlenaCloseVote: vi.fn<Action>(),
   lunaLlenaSkipHunter: vi.fn<Action>(),
   lunaLlenaNightAction: vi.fn<Action>(),
+  lunaLlenaWitchAction: vi.fn<Action>(),
 }));
 
 vi.mock('@/lib/actions', () => mocks);
@@ -87,6 +88,68 @@ describe('LunaLlenaGame: noche', () => {
     await waitFor(() => {
       expect(mocks.lunaLlenaNightAction).toHaveBeenCalledWith(inLuna().room.id, ids.marta, null);
     });
+  });
+
+  it('el asesino elige a quién mata', async () => {
+    renderGame({ my: lunaMy({ role: 'killer' }) });
+    expect(screen.getByRole('heading', { name: texts.night.titles.killer })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Lucía/ }));
+    fireEvent.click(screen.getByRole('button', { name: texts.night.confirm }));
+    await waitFor(() => {
+      expect(mocks.lunaLlenaNightAction).toHaveBeenCalledWith(inLuna().room.id, ids.lucia, null);
+    });
+  });
+
+  it('la bruja ve a la víctima, puede usar las dos pociones a la vez', async () => {
+    renderGame({
+      my: lunaMy({ role: 'witch', potions: { life: true, poison: true }, wolf_victim: ids.marta }),
+    });
+    expect(screen.getByRole('heading', { name: texts.night.titles.witch })).toBeInTheDocument();
+    expect(screen.getByText(texts.night.witch.victim('Marta'))).toBeInTheDocument();
+    const life = screen.getByRole('button', { name: texts.night.witch.life });
+    expect(life).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(life);
+    expect(life).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(screen.getByRole('button', { name: /Dani/ }));
+    fireEvent.click(screen.getByRole('button', { name: texts.night.confirm }));
+    await waitFor(() => {
+      expect(mocks.lunaLlenaWitchAction).toHaveBeenCalledWith(inLuna().room.id, true, ids.dani);
+    });
+  });
+
+  it('la bruja puede no usar nada', async () => {
+    renderGame({ my: lunaMy({ role: 'witch', potions: { life: true, poison: true } }) });
+    expect(screen.getByText(texts.night.witch.undecided)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: texts.night.confirm }));
+    await waitFor(() => {
+      expect(mocks.lunaLlenaWitchAction).toHaveBeenCalledWith(inLuna().room.id, false, null);
+    });
+  });
+
+  it('con la de vida gastada no la puede usar ni ve a la víctima', () => {
+    renderGame({
+      my: lunaMy({ role: 'witch', potions: { life: false, poison: true }, wolf_victim: null }),
+    });
+    expect(screen.getByRole('button', { name: texts.night.witch.lifeUsed })).toBeDisabled();
+    expect(screen.queryByText(texts.night.witch.undecided)).not.toBeInTheDocument();
+  });
+
+  it('tras usar sus pociones, la bruja espera y ve lo que ha hecho', () => {
+    renderGame({
+      my: lunaMy({
+        role: 'witch',
+        potions: { life: true, poison: true },
+        action: { target_id: ids.dani, target2_id: null, use_life: false },
+      }),
+    });
+    expect(screen.getByText(texts.night.witch.done(false, 'Dani'))).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: texts.night.confirm })).not.toBeInTheDocument();
+  });
+
+  it('un aldeano no ve nada de la bruja', () => {
+    renderGame({ my: lunaMy({ wolf_victim: null }) });
+    expect(screen.queryByRole('button', { name: texts.night.witch.life })).not.toBeInTheDocument();
+    expect(screen.queryByText(texts.night.witch.undecided)).not.toBeInTheDocument();
   });
 
   it('tras actuar espera al amanecer y ve cuántos faltan', () => {
@@ -167,7 +230,7 @@ describe('LunaLlenaGame: noche', () => {
 
 describe('LunaLlenaGame: amanecer', () => {
   const deaths = [
-    { user_id: ids.marta, name: 'Marta', role: 'seer', cause: 'wolves' },
+    { user_id: ids.marta, name: 'Marta', role: 'seer', cause: 'night' },
     { user_id: ids.dani, name: 'Dani', role: 'villager', cause: 'heartbreak' },
   ] as const;
 
@@ -178,8 +241,33 @@ describe('LunaLlenaGame: amanecer', () => {
       my: lunaMy({ lover_id: ids.paula }),
     });
     expect(screen.getByText('Marta')).toBeInTheDocument();
+    expect(screen.getByText(texts.dawn.causes.night)).toBeInTheDocument();
     expect(screen.getByText(texts.dawn.causes.heartbreak)).toBeInTheDocument();
     expect(screen.getByText(texts.dawn.lover('Paula'))).toBeInTheDocument();
+  });
+
+  it('la bruja ve en privado qué han hecho sus pociones y cuáles le quedan', () => {
+    renderGame({
+      phase: 'dawn',
+      night: 2,
+      announcement: { kind: 'night', deaths: [...deaths], spared: null },
+      my: lunaMy({
+        role: 'witch',
+        potions: { life: false, poison: true },
+        witch_report: { saved_id: ids.paula, poisoned_id: null },
+      }),
+    });
+    expect(screen.getByText(texts.dawn.witchSaved('Paula'))).toBeInTheDocument();
+    expect(screen.getByText(texts.dawn.potionsLeft(false, true))).toBeInTheDocument();
+  });
+
+  it('quien no es la bruja no recibe aviso de pociones', () => {
+    renderGame({
+      phase: 'dawn',
+      night: 2,
+      announcement: { kind: 'night', deaths: [...deaths], spared: null },
+    });
+    expect(screen.queryByText(/poción|pociones/)).not.toBeInTheDocument();
   });
 
   it('Cupido sabe a quién enlazó y, sin muertes, la noche es tranquila', () => {

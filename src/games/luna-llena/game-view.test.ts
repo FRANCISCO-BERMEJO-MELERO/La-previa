@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest';
+import { copy } from '@/lib/copy';
 import { inLuna, lunaIds, lunaMy, lunaState } from '@/test/fixtures';
 import {
+  actionLines,
   lunaPlayers,
   nameOf,
   nightCandidates,
   nightMode,
   packMarks,
   pendingCount,
+  realDeaths,
+  witchReportLines,
+  wolfVictimLine,
 } from './game-view';
 
 const ids = lunaIds;
@@ -109,5 +114,103 @@ describe('la noche según el rol', () => {
       }),
     });
     expect(packMarks(game, players).get(ids.marta)).toEqual(['Fran', 'Lucía']);
+  });
+
+  it('el asesino elige a cualquier vivo menos a sí mismo', () => {
+    const { game, players } = setup({ my: lunaMy({ role: 'killer' }) });
+    expect(nightMode(game)).toBe('killer');
+    expect(namesIn(nightCandidates(game, players, ids.fran))).not.toContain('Fran');
+    expect(nightCandidates(game, players, ids.fran)).toHaveLength(5);
+  });
+
+  it('la bruja usa pociones mientras le quede alguna, y envenena a otro', () => {
+    const both = setup({ my: lunaMy({ role: 'witch', potions: { life: true, poison: true } }) });
+    expect(nightMode(both.game)).toBe('witch');
+    expect(namesIn(nightCandidates(both.game, both.players, ids.fran))).not.toContain('Fran');
+    const lifeOnly = setup({
+      my: lunaMy({ role: 'witch', potions: { life: true, poison: false } }),
+    });
+    expect(nightMode(lifeOnly.game)).toBe('witch');
+    expect(nightCandidates(lifeOnly.game, lifeOnly.players, ids.fran)).toEqual([]);
+    const none = setup({ my: lunaMy({ role: 'witch', potions: { life: false, poison: false } }) });
+    expect(nightMode(none.game)).toBe('suspect');
+    expect(nightCandidates(none.game, none.players, ids.fran)).toHaveLength(5);
+  });
+
+  it('la bruja ve a quién van a devorar solo mientras tiene la poción de vida', () => {
+    const marked = setup({
+      my: lunaMy({ role: 'witch', potions: { life: true, poison: true }, wolf_victim: ids.marta }),
+    });
+    expect(wolfVictimLine(marked.game, marked.players)).toBe(
+      copy.lunaLlena.night.witch.victim('Marta'),
+    );
+    const undecided = setup({
+      my: lunaMy({ role: 'witch', potions: { life: true, poison: true } }),
+    });
+    expect(wolfVictimLine(undecided.game, undecided.players)).toBe(
+      copy.lunaLlena.night.witch.undecided,
+    );
+    const spent = setup({ my: lunaMy({ role: 'witch', potions: { life: false, poison: true } }) });
+    expect(wolfVictimLine(spent.game, spent.players)).toBeNull();
+  });
+});
+
+describe('la bruja y los muertos', () => {
+  it('el aviso de la bruja dice qué han hecho sus pociones y cuáles quedan', () => {
+    const { game, players } = setup({
+      phase: 'dawn',
+      my: lunaMy({
+        role: 'witch',
+        potions: { life: false, poison: false },
+        witch_report: { saved_id: ids.marta, poisoned_id: ids.dani },
+      }),
+    });
+    expect(witchReportLines(game, players)).toEqual([
+      copy.lunaLlena.dawn.witchSaved('Marta'),
+      copy.lunaLlena.dawn.witchPoisoned('Dani'),
+      copy.lunaLlena.dawn.potionsLeft(false, false),
+    ]);
+    const quiet = setup({ phase: 'dawn', my: lunaMy({ role: 'witch' }) });
+    expect(witchReportLines(quiet.game, quiet.players)).toEqual([]);
+  });
+
+  it('los muertos leen cada acción de la bruja', () => {
+    const { players } = setup();
+    expect(
+      actionLines(players, [
+        { user_id: ids.marta, target_id: ids.dani, target2_id: null, use_life: true },
+        { user_id: ids.marta, target_id: null, target2_id: null, use_life: false },
+        { user_id: ids.lucia, target_id: ids.dani, target2_id: null },
+      ]),
+    ).toEqual([
+      copy.lunaLlena.spectator.witch('Marta', true, 'Dani'),
+      copy.lunaLlena.spectator.witch('Marta', false, null),
+      copy.lunaLlena.spectator.action('Lucía', 'Dani'),
+    ]);
+  });
+
+  it('los muertos ven la causa real de cada muerte; los vivos, solo la pública', () => {
+    const announcement = {
+      kind: 'night' as const,
+      deaths: [
+        { user_id: ids.marta, name: 'Marta', role: 'seer' as const, cause: 'night' as const },
+      ],
+      spared: null,
+    };
+    const alive = setup({ phase: 'dawn', announcement });
+    expect(realDeaths(alive.game).map((death) => death.cause)).toEqual(['night']);
+    const dead = setup({
+      phase: 'dawn',
+      announcement,
+      my: lunaMy({ alive: false }),
+      spectator: {
+        roles: [],
+        lovers: null,
+        actions: [],
+        causes: [{ user_id: ids.marta, cause: 'killer' }],
+        potions: null,
+      },
+    });
+    expect(realDeaths(dead.game).map((death) => death.cause)).toEqual(['killer']);
   });
 });

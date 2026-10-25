@@ -6,6 +6,60 @@ Next 16.4.0 tiene vulnerabilidades conocidas (entre ellas GHSA-2464-fhr4-w9xw, e
 
 - `npm audit` ya no avisa de `next`. Siguen dos avisos ajenos: `undici` 8.11.2, que solo llega a través de `jsdom` en los tests, y `zod` 4.6.5, que pide `--force`. Quedan fuera de este cambio.
 
+## 2026-10-25 · 35 · Bruja y asesino en el cliente
+
+- **Un solo commit para 35.1 a 35.4.** Esquema, textos, cartas y pantallas dependen unos de otros: el esquema con las causas públicas no compila sin las pantallas que las pintan.
+- **Pantalla de la bruja.** La misma tarjeta oscura de la noche que el resto, para que de reojo se parezca a las demás. Encima de la lista, a quién van a devorar (o que los lobos aún no se han decidido) y un botón que se marca y desmarca para la poción de vida (`aria-pressed`). La lista sirve para elegir a quién envenenar; tocar al elegido lo quita. "Confirmar" está siempre activo, porque no usar nada también vale. Con una poción gastada, su botón o su lista dicen que ya no queda. Sin ninguna, la bruja sospecha como un aldeano.
+- **Avisos del amanecer.** `DawnScreen` recibe una lista de avisos privados en lugar de uno, porque la bruja puede ser también enamorada la primera noche.
+- **Causas.** Los vivos leen "Ha muerto esta noche". La vista de espectador cambia la causa de cada muerte por la real (`spectator.causes`) y añade una línea con las pociones que le quedan a la bruja.
+- **Colores.** La carta de la bruja tiene el bloque en `field` y la del asesino en `ground`, como dice el plan. La píldora "Eres" no tiene esos tonos, así que usa el más cercano de los que existen (`lime` para la bruja y `ground-soft` para el asesino) en lugar de añadir tonos a `Pill`. El resultado con victoria del asesino va en `lilac`, como el bufón, que también juega solo.
+- **"Cómo se juega".** Los pasos de la noche y de la victoria nombran a la bruja y al asesino, y sus dibujos añaden las dos cartas.
+
+Pruebas que cambian, porque la sección 6 manda que un vivo no sepa la causa de una muerte nocturna:
+
+- `game.test.tsx` y `snapshot.test.ts`: los anuncios de ejemplo llevan la causa pública `night` en lugar de `wolves`, y `snapshot.test.ts` añade que una causa real en el anuncio de un vivo se rechaza. El rol inexistente de ejemplo era `witch` y pasa a `wizard`.
+- `e2e/luna-llena.spec.ts` (30): los vivos ven "Ha muerto esta noche" en lugar de "Devorado por los lobos"; se añade que la vidente muerta sí ve la causa real.
+
+## 2026-10-25 · 34 · Bruja y asesino en el servidor
+
+`docs/PLAN-6.md` §2 a §7. Nombres y forma, siguiendo el código:
+
+- **La acción de la bruja va en `luna_night_actions`**, como las demás: la poción de muerte en `target_id` (que pasa a admitir nulo) y la de vida en una columna nueva `use_life`. Una restricción exige que haya al menos una de las dos. Así el cierre automático, "ha actuado" y el reinicio de la noche al irse alguien funcionan sin cambios.
+- **Sin pociones, la bruja actúa con `luna_llena_night_action`**, como un aldeano: su fila no lleva `use_life` y no tiene efecto. Si le queda alguna, el cliente usa `luna_llena_witch_action`; si aun así llama a la acción normal, se toma como una sospecha (no usar nada). No hace falta un error para ese caso.
+- **Las pociones se gastan al resolver la noche**, no al enviar. Si alguien se va de noche, la noche se repite desde cero y la bruja no pierde la poción que había elegido. Enviar dos veces la misma noche da `already_acted`; pedir una poción gastada, `potion_used`. Quien no es la bruja y llama a su función recibe `not_witch`, código nuevo.
+- **Estado de las pociones** en `luna_state.witch_life_used` y `witch_poison_used`, y lo que hicieron la última noche en `witch_report` (`saved_id`, `poisoned_id`). La bruja lo recibe en `my.witch_report` al amanecer de esa noche (y durante el disparo del cazador que lo siga); `my.potions` dice cuáles le quedan; `my.wolf_victim`, a quién van a devorar ahora mismo, solo de noche y mientras tenga la de vida.
+- **Muertes de la noche a la vez.** `luna_kill` se parte en `luna_mark_dead` (mata y anuncia) y `luna_heartbreak` (arrastra a la pareja). La noche mata primero a todas sus víctimas y después a las parejas, así que dos enamorados que mueren la misma noche lo hacen cada uno por su causa. Si dos ataques coinciden, se guarda una causa por orden: lobos, asesino, veneno. Las víctimas se anuncian en orden al azar para que el orden no delate quién ha matado a quién.
+- **Causa pública.** La foto anuncia `wolves`, `killer` y `poison` como `night`. La causa real sigue en `luna_state.announcement` y los muertos la reciben en `spectator.causes`; también ven `spectator.potions` (si hay bruja) y `use_life` en las acciones de la noche. `use_life` solo aparece en la acción de una bruja con pociones; las demás acciones conservan su forma de siempre.
+- **34.1 y 34.2 van en un mismo commit**: la migración no se entrega sin sus pruebas pgTAP.
+- **Victoria** con el asesino: si está vivo, ni el pueblo gana por quedarse sin lobos ni los lobos por paridad.
+
+Pruebas que cambian, porque la sección 6 manda que un vivo no sepa la causa de una muerte nocturna:
+
+- `45_luna_llena_state`: el anuncio del amanecer visto por un vivo dice `night` en lugar de `wolves`.
+- `47_luna_llena_continue`: lo mismo en el anuncio que sigue a la vista durante el turno del cazador.
+
+## 2026-10-25 · 33 · El lobo con composición libre
+
+Issue #13 y `docs/PLAN-6.md` §1. Contradice a `docs/PLAN-5.md` §2 (vidente obligatoria, `2 × lobos < jugadores`, al menos un aldeano); manda `docs/PLAN-6.md`.
+
+- **La vidente va en la lista de roles.** `private.luna_optional_roles` empieza por `seer` y el reparto ya no la añade por su cuenta. La recomendada la lleva de forma explícita (`{"wolves": 1, "roles": ["seer"]}` para 6), así que reparte lo mismo que antes. La composición guardada en `luna_state.config` y la de la foto también la nombran.
+- **Bruja y asesino ya existen en la base de datos** desde la 33.1 (rol y opcional), aunque el cliente no los ofrece hasta la fase 35. Así la validación se escribe una vez.
+- **Lobos de 0 a todos menos uno.** El selector va de 0 a `jugadores − 1`. Con 0 lobos y sin asesino el botón de empezar se desactiva y se dice por qué; lo mismo con más roles que jugadores. Si baja el número de jugadores y la composición deja de caber, pasa lo mismo.
+- **Línea de composición.** Lo que no hay no se nombra: sin aldeanos, la línea termina en el último rol ("4 lobos · vidente").
+- **Avisos.** Lista con el mismo aspecto que el aviso de conexión (`orange`, borde discontinuo), debajo de la línea de composición. No usan `role="status"` porque no son un cambio de estado de la conexión.
+- **"Roles especiales".** El rótulo de los interruptores deja de decir "opcionales", porque ahora la vidente también lo es.
+
+Pruebas que cambian, porque la regla que comprobaban es la que se retira:
+
+- `41_luna_llena_schema`: el rol inventado de ejemplo era `witch`, que ahora existe; pasa a ser `wizard`, y se añade que la bruja y el asesino caben.
+- `42_luna_llena_config`: "los lobos no pueden ser la mitad o más" y "tiene que quedar al menos un aldeano" pasan a comprobar que esas composiciones se aceptan; "la vidente no es opcional" pasa a "la vidente es opcional"; el rol desconocido de ejemplo era `witch`, que ahora existe, y pasa a ser `wizard`. "Hace falta al menos un lobo" sigue rechazando lo mismo con la descripción nueva ("sin lobos ni asesino no hay amenaza"). Las composiciones esperadas llevan `seer`.
+- `43_luna_llena_start`: la composición inválida de ejemplo (5 lobos de 9) ya es válida y pasa a ser 9 de 9; el reparto con vidente la pide explícitamente.
+- `44` a `51`: las partidas que empiezan con roles explícitos añaden `seer` a la lista, para repartir exactamente lo mismo que antes. `45` espera la composición pública con `seer`.
+- `LobbyScreen.test.tsx`: "los lobos no llegan a la mitad" pasa a "se pueden pedir todos los lobos menos uno, y con mayoría se avisa sin bloquear"; "sin hueco para un aldeano" pasa a comprobar que se puede empezar sin aldeanos, y el bloqueo se comprueba con más roles que jugadores. Las composiciones llevan `seer`.
+- `snapshot.test.ts`: la composición con 0 lobos ya es válida en la foto; el caso rechazado pasa a ser un número negativo y se añade que 0 se acepta.
+- `e2e/luna-llena.spec.ts` (31.7, secreto en red): buscaba la cadena `"seer"` suelta, que ahora aparece en la composición pública (`"roles": ["seer"]`). Pasa a buscar `"role": "seer"`, que es el rol asignado a alguien; lo que protege no cambia.
+- `composition.test.ts`: la recomendada lleva `seer`, los aldeanos ya no descuentan una vidente implícita y el máximo de lobos es todos menos uno.
+
 ## 2026-10-15 · D.4 · Avatares con imagen
 
 Fran pide usar los 11 avatares de `public/avatars/` (generados aparte y recortados a un círculo de 256 px) en lugar de los 12 dibujados con formas de `docs/MEJORAS.md` §8 y la referencia.
