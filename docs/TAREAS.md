@@ -363,7 +363,7 @@ Aceptación: `npm run check` pasa.
 
 - [x] 36.1 E2E: sin vidente ni aldeanos, 4 lobos de 5, bruja y asesino hasta el final, recarga de la bruja y secreto en red
 - [x] 36.2 Repaso a 360, 390 y 430 px y de accesibilidad
-- [ ] 36.3 `docs/DECISIONES.md`, `docs/INFORME.md` y `README.md`
+- [x] 36.3 `docs/DECISIONES.md`, `docs/INFORME.md` y `README.md`
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 

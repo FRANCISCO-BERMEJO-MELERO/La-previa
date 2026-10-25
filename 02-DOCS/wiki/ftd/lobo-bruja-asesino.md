@@ -1,7 +1,7 @@
 ---
 author: FRANCISCO-BERMEJO-MELERO
 branch: feat/lobo-bruja-asesino
-status: in-progress
+status: done
 ---
 
 # El lobo: configuración libre, bruja y asesino en serie
@@ -22,7 +22,7 @@ Issue #13. El anfitrión configura los roles con libertad y recibe avisos de equ
 - [x] 33.2 Composición libre en el cliente — prueba: `npm run check`
 - [x] 34.1–34.2 Bruja y asesino en el servidor — prueba: `npm run test:db`
 - [x] 35.1–35.4 Bruja y asesino en el cliente — prueba: `npm run check`
-- [ ] 36.1–36.3 E2E, repaso móvil y accesibilidad, documentación — prueba: `npm run test:e2e` y `npm run build`
+- [x] 36.1–36.3 E2E, repaso móvil y accesibilidad, documentación — prueba: `npm run test:e2e` y `npm run build`
 
 ## Evidencia
 
@@ -31,7 +31,8 @@ Issue #13. El anfitrión configura los roles con libertad y recibe avisos de equ
 - 33.2: `npm run check` 753 unitarios en verde; `npm run test:e2e` 32 en verde (la 31.7 de secreto, adaptada).
 - 34: `npm run test:db` 1288 pgTAP en verde tras `supabase db reset` (52 y 53 nuevas; la 53 comprueba que su detector de fugas salta con la foto de la bruja).
 - 35: `npm run check` 781 unitarios en verde; `npm run test:e2e` 32 en verde contra la base con bruja y asesino.
+- 36: `npm run test:e2e` 36 en verde (cuatro nuevas); `npm run check` 781; `npm run test:db` 1288 tras `supabase db reset`; `npm run build` sin avisos.
 
 ## Siguiente
 
-Fase 36: e2e nuevas, repaso móvil y accesibilidad, documentación.
+Revisión de Fran en persona (ver `docs/INFORME.md`) y PR a `develop` con «Closes #13» cuando la pida.

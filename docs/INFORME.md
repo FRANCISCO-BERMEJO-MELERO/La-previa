@@ -1,5 +1,45 @@
 # Informe final
 
+## El lobo: composición libre, bruja y asesino (fases 33 a 36)
+
+Estado al cerrar `docs/PLAN-6.md` (issue #13), el 25 de octubre de 2026.
+
+### Resumen
+
+El anfitrión configura El lobo con libertad: de 0 lobos a todos menos uno, y cada rol especial (ahora también la vidente) activado o no. Solo se impide lo que no se puede jugar. Si la composición está desequilibrada, la sala lo avisa en naranja sin bloquear, y "Usar la recomendada" vuelve al reparto de siempre. Llegan dos roles: la **bruja**, con una poción de vida y otra de muerte de un solo uso en toda la partida, y el **asesino**, que juega solo, mata cada noche y gana si queda el último. Para los vivos, las muertes de la noche ya no dicen quién ha matado.
+
+Todo está en la rama `feat/lobo-bruja-asesino`, que sale de `develop`, en un commit por tarea (las tareas que no se pueden separar van juntas y está anotado en `docs/DECISIONES.md`). No se ha subido la rama ni abierto la PR.
+
+| Comprobación                               | Resultado                            |
+| ------------------------------------------ | ------------------------------------ |
+| `npm run check` (lint, tipos, unitarios)   | 781 tests en 67 archivos, sin avisos |
+| `npm run test:db` tras `supabase db reset` | 1288 pruebas pgTAP en 53 archivos    |
+| `npm run test:e2e`                         | 36 pruebas                           |
+| `npm run build`                            | Sin avisos                           |
+
+Dos migraciones nuevas, que se aplican con `npx supabase db push` como siempre. No traen contenido que revisar.
+
+### Qué está hecho
+
+- **Composición libre** en la base de datos y en la sala de espera, con los tres avisos de equilibrio del plan y el botón de la recomendada. La recomendada reparte lo mismo que antes; ahora nombra la vidente de forma explícita.
+- **Bruja**: su acción (`luna_llena_witch_action`), la víctima provisional en directo solo para ella, el aviso privado del amanecer y las pociones que se gastan al resolver la noche, nunca dos veces. La de vida solo se gasta si salva a alguien de verdad.
+- **Asesino**: mata con la acción de siempre, el protector lo frena, y mientras vive ni el pueblo ni los lobos ganan.
+- **Noche** en el orden del plan: todas las víctimas mueren a la vez y después sus parejas, sin muertes duplicadas, y en orden al azar para que el anuncio no delate a nadie.
+- **Privacidad**: ningún vivo recibe las pociones, la víctima provisional, el objetivo del asesino ni la causa real de una muerte nocturna; los muertos lo ven todo. Lo comprueban pgTAP en cada fase de dos partidas completas, con un detector de fugas que se ha visto saltar con la foto de la bruja, y una e2e que lee lo que recibe por la red un aldeano vivo.
+- **Cartas** de la bruja y del asesino con las ilustraciones del plan (también en `/dev/componentes`), pantallas de noche, espectador, resultado, narración `win_killer` y "Cómo se juega".
+
+### Incidencias
+
+- **Next avisa de una vulnerabilidad en la versión instalada (16.4.0).** `next dev` y `next build` se paran una vez sí y otra no para recomendar actualizarla, y siguen al repetir el comando. No es de este trabajo y no se ha actualizado nada. Para las e2e se arrancó `next dev` a mano y Playwright lo reutilizó; el build pasó a la segunda. Conviene hacer la actualización aparte, en su propia rama.
+- Una vuelta completa de las e2e falló una vez en la accesibilidad de "¿Quién es más probable…?", que no se ha tocado: se agotó el tiempo esperando la primera compilación de la pantalla de elegir juego. Pasó sola y en la vuelta completa siguiente.
+
+### Qué revisar primero
+
+1. **Las pantallas nuevas, que no tienen maqueta**: la noche de la bruja (víctima, botón de la poción de vida y lista para envenenar), su aviso al amanecer, la noche del asesino y el espectador con las causas reales y las pociones.
+2. **El aviso de 4 lobos de 5**: se puede empezar y la partida acaba en el primer amanecer con victoria de los lobos, como manda el plan. Ver si el texto lo deja claro antes de pulsar "Empezar partida".
+3. **Los textos de las cartas nuevas**, leídos en voz alta en la mesa, y "Ha muerto esta noche", que sustituye a "Devorado por los lobos" para los vivos.
+4. **Los colores**: la píldora "Eres" de la bruja va en `lime` y la del asesino en `ground-soft`, porque la píldora no tiene los tonos de sus bloques (`field` y `ground`).
+
 ## Luna llena (fases 27 a 32)
 
 Estado al cerrar `docs/PLAN-5.md`, el 11 de octubre de 2026.

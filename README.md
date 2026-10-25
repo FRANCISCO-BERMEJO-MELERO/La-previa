@@ -88,11 +88,11 @@ Cinco juegos son **por rondas** (5, 10 o 15, a elegir): ¿Quién es más probabl
 
 Un pueblo con lobos escondidos. El anfitrión hace de **narrador** y además juega: su pantalla le marca qué leer en voz alta y cuándo avanzar.
 
-- **Noche.** Todos tocan el móvil a la vez, para que nadie se delate por ser el único que lo usa. Los lobos eligen a quién devorar; la vidente descubre si alguien es lobo; el protector salva a uno; los demás marcan de quién sospechan.
-- **Día.** Se anuncia quién ha muerto. Si no hay alcalde vivo, se elige uno (su voto vale doble). El pueblo debate con los móviles boca abajo, vota a quién acusar, el acusado tiene sus últimas palabras y se le ahorca.
-- **Roles.** Lobo, aldeano y vidente siempre. Opcionales: **protector** (no puede proteger a la misma persona dos noches seguidas), **cazador** (al morir se lleva a alguien), **bufón** (gana él solo si el pueblo lo ahorca) y **Cupido** (une a dos enamorados que mueren juntos).
-- **Victoria.** El pueblo gana si no quedan lobos; los lobos, si igualan en número al resto; el bufón, si lo ahorcan.
-- **Reparto recomendado.** Hasta 6 jugadores, 1 lobo; de 7 a 8, 2 lobos y protector; de 9 a 11, se suma el cazador; de 12 a 13, 3 lobos y el bufón; desde 14, todos los roles. El anfitrión puede cambiarlo.
+- **Noche.** Todos tocan el móvil a la vez, para que nadie se delate por ser el único que lo usa. Los lobos eligen a quién devorar; el asesino, a quién matar; la vidente descubre si alguien es lobo; el protector salva a uno; la bruja ve a quién van a devorar y decide si gasta sus pociones; los demás marcan de quién sospechan.
+- **Día.** Se anuncia quién ha muerto, sin decir cómo: para los vivos, "ha muerto esta noche". Si no hay alcalde vivo, se elige uno (su voto vale doble). El pueblo debate con los móviles boca abajo, vota a quién acusar, el acusado tiene sus últimas palabras y se le ahorca.
+- **Roles.** Lobos y aldeanos, y como mucho uno de cada especial: **vidente**, **protector** (no puede proteger a la misma persona dos noches seguidas), **cazador** (al morir se lleva a alguien), **bufón** (gana él solo si el pueblo lo ahorca), **Cupido** (une a dos enamorados que mueren juntos), **bruja** (una poción de vida y otra de muerte, de un solo uso cada una en toda la partida) y **asesino** (juega solo y mata cada noche).
+- **Victoria.** El asesino gana si queda solo. Mientras siga vivo, nadie más gana. Sin él, el pueblo gana si no quedan lobos y los lobos, si igualan en número al resto. El bufón, si lo ahorcan.
+- **Composición libre.** El anfitrión elige cuántos lobos y qué roles. Solo se impide lo que no se puede jugar (sin lobos ni asesino, todos lobos o más roles que jugadores); si está desequilibrada, la sala lo avisa sin bloquear. El reparto recomendado sigue a un toque: hasta 6 jugadores, 1 lobo y la vidente; de 7 a 8, 2 lobos y protector; de 9 a 11, se suma el cazador; de 12 a 13, 3 lobos y el bufón; desde 14, también Cupido.
 
 <table>
   <tr>
@@ -182,7 +182,7 @@ En una fiesta, los móviles se bloquean, cambian de wifi a datos y alguien abre 
   <img src="docs/img/secreto.svg" alt="La base de datos sabe la palabra y quién es el impostor, pero cada jugador recibe solo su parte" width="100%">
 </p>
 
-Como cada foto se calcula para quien la pide, abrir las herramientas del navegador no sirve de nada: no se puede averiguar al impostor, ver votos ajenos o el recuento antes de tiempo, saber de quién es una respuesta, ver la palabra si te toca adivinar ni, en El lobo, el rol de nadie vivo. Las pruebas pgTAP y las e2e lo comprueban leyendo lo que llega por la red. (La foto real es un JSON validado con `zod` en `src/lib/snapshot.ts`; el dibujo la simplifica.)
+Como cada foto se calcula para quien la pide, abrir las herramientas del navegador no sirve de nada: no se puede averiguar al impostor, ver votos ajenos o el recuento antes de tiempo, saber de quién es una respuesta, ver la palabra si te toca adivinar ni, en El lobo, el rol de nadie vivo, las pociones de la bruja, a quién va el asesino o cómo ha muerto alguien de noche. Las pruebas pgTAP y las e2e lo comprueban leyendo lo que llega por la red. (La foto real es un JSON validado con `zod` en `src/lib/snapshot.ts`; el dibujo la simplifica.)
 
 ## Pruebas
 
