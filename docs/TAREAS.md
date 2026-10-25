@@ -372,7 +372,7 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 Plan: `docs/PLAN-7.md` (issue #12).
 
 - [x] 37.1 `isRoundGame` con la lista explícita de juegos por rondas, con test
-- [ ] 37.2 Migración: `rooms.game`, `games.game_type` y `games.phase` admiten `dados`; `set_game` acepta `dados`, con pgTAP
+- [x] 37.2 Migración: `rooms.game`, `games.game_type` y `games.phase` admiten `dados`; `set_game` acepta `dados`, con pgTAP
 - [ ] 37.3 Cliente: `dados` en el selector con su portada, descripción y «2 o 4»
 
 Aceptación: A dados se elige en el selector; los demás juegos funcionan igual.
