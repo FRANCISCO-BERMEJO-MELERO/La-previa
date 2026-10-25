@@ -307,6 +307,43 @@ const lunaLlenaGameSchema = z.object({
     .nullable(),
 });
 
+export const dadosSides = ['A', 'B'] as const;
+const dadosSide = z.enum(dadosSides);
+const dadosDie = z.int().min(1).max(6);
+const dadosColumn = z.array(dadosDie).max(3);
+
+const dadosSideSchema = z.object({
+  side: dadosSide,
+  members: z.array(z.object({ user_id: id, name: z.string() })),
+  // Cada columna con sus dados en el orden en que se colocaron.
+  board: z.tuple([dadosColumn, dadosColumn, dadosColumn]),
+  column_scores: z.tuple([z.int().nonnegative(), z.int().nonnegative(), z.int().nonnegative()]),
+  total: z.int().nonnegative(),
+});
+
+/** A dados (docs/PLAN-7.md §5). No hay nada secreto: todos ven lo mismo. */
+const dadosGameSchema = z.object({
+  type: z.literal('dados'),
+  id,
+  phase: z.enum(['playing', 'finished']),
+  mode: z.enum(['1v1', '2v2']),
+  sides: z.tuple([
+    dadosSideSchema.extend({ side: z.literal('A') }),
+    dadosSideSchema.extend({ side: z.literal('B') }),
+  ]),
+  turn_order: z.array(id),
+  turn: z.object({ user_id: id, side: dadosSide }).nullable(),
+  pending_die: dadosDie.nullable(),
+  my: z.object({ side: dadosSide.nullable(), is_spectator: z.boolean(), is_my_turn: z.boolean() }),
+  result: z
+    .object({
+      winner: dadosSide.nullable(),
+      reason: z.enum(['board_full', 'forfeit']),
+      left: z.object({ user_id: id, name: z.string() }).nullable(),
+    })
+    .nullable(),
+});
+
 /** La partida en curso, con la forma propia de cada juego (docs/JUEGOS.md §8, JUEGOS-2 §6). */
 const gameSchema = z.discriminatedUnion('type', [
   impostorGameSchema,
@@ -316,6 +353,7 @@ const gameSchema = z.discriminatedUnion('type', [
   quePrefieresGameSchema,
   palabrasProhibidasGameSchema,
   lunaLlenaGameSchema,
+  dadosGameSchema,
 ]);
 
 export const gameIds = [
@@ -326,6 +364,7 @@ export const gameIds = [
   'una_pista',
   'que_prefieres',
   'palabras_prohibidas',
+  'dados',
 ] as const;
 
 export const snapshotSchema = z.object({
@@ -361,6 +400,10 @@ export type QuePrefieresGameState = z.infer<typeof quePrefieresGameSchema>;
 export type QuePrefieresOption = z.infer<typeof option>;
 export type PalabrasProhibidasGameState = z.infer<typeof palabrasProhibidasGameSchema>;
 export type LunaLlenaGameState = z.infer<typeof lunaLlenaGameSchema>;
+export type DadosGameState = z.infer<typeof dadosGameSchema>;
+export type DadosSide = (typeof dadosSides)[number];
+export type DadosMode = DadosGameState['mode'];
+export type DadosSideState = DadosGameState['sides'][number];
 export type LunaNarration = LunaLlenaGameState['narration'];
 /** Lo que comparten las partidas de los juegos por rondas. */
 export type RoundGameState = z.infer<z.ZodObject<typeof roundGameShape>>;

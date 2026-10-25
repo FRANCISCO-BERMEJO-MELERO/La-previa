@@ -1,5 +1,19 @@
 # Decisiones
 
+## 2026-10-25 · 37.3 y 39 · A dados en el cliente
+
+- **Un solo commit para 37.3 y 39.1 a 39.5.** En cuanto `dados` entra en `gameIds`, TypeScript exige su portada, sus pasos de «Cómo se juega», su caso al empezar y su pantalla de partida: ninguna parte compila sin las demás.
+- **Sala de espera.** Se conserva la sala de siempre (código, QR y jugadores) y los ajustes de A dados van donde los de los otros juegos, al pie y solo para el anfitrión. La referencia de diseño quita la tarjeta del código, pero sin ella no hay forma de invitar. La modalidad por defecto es 1 contra 1; al cambiarla, las elecciones vuelven al reparto por defecto. Quien entra después juega o mira según su puesto de llegada, salvo que el anfitrión lo cambie. El mínimo para empezar es 2.
+- **Textos sin género.** «Le toca a Marta. Decide dónde va el 3.» en lugar de «Decide ella», como el resto de la app (decisión de 1.6).
+- **El resultado** sigue la referencia: «Fin de la partida», el titular y una línea con el marcador («Fran y Marta se llevan la mesa: 91 a 18.»), «Empate a 18 puntos.» o, por abandono, «Lucía se ha ido. Gana Fran por abandono.». En 2 contra 2, quien mira lee «Gana el equipo A».
+- **Partida esperando a un desconectado.** Si a quien le toca se le cae la conexión, el anfitrión ve «Echar a…» en la caja de espera, con la regla de expulsión de siempre. Así la partida no queda bloqueada.
+- **`Card` admite el tono `tomato`**, para la tarjeta «Te toca» que pide el plan. Es un token que ya existe.
+- **Portada.** Es decorativa (`aria-hidden`), como las demás del selector, porque el botón ya dice el nombre del juego.
+
+Pruebas que cambian:
+
+- `GamePickerScreen.test.tsx`: «lista los siete juegos» pasa a «los ocho», con A dados al final, y comprueba su descripción y su «2 o 4». Añadir un juego al selector cambia por fuerza el número de juegos.
+
 ## 2026-10-25 · 38 · A dados en el servidor
 
 `docs/PLAN-7.md` §2 a §5. Donde el código manda sobre los nombres del plan:

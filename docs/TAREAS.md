@@ -373,7 +373,7 @@ Plan: `docs/PLAN-7.md` (issue #12).
 
 - [x] 37.1 `isRoundGame` con la lista explícita de juegos por rondas, con test
 - [x] 37.2 Migración: `rooms.game`, `games.game_type` y `games.phase` admiten `dados`; `set_game` acepta `dados`, con pgTAP
-- [ ] 37.3 Cliente: `dados` en el selector con su portada, descripción y «2 o 4»
+- [x] 37.3 Cliente: `dados` en el selector con su portada, descripción y «2 o 4»
 
 Aceptación: A dados se elige en el selector; los demás juegos funcionan igual.
 
@@ -386,11 +386,11 @@ Aceptación: `npm run test:db` pasa desde cero.
 
 ## Fase 39 · A dados: cliente
 
-- [ ] 39.1 Esquema `zod` de la variante, acciones, errores y `viewFor`, con tests
-- [ ] 39.2 Sala de espera: modalidad, «Quién juega» y validación de equipos
-- [ ] 39.3 Partida: dados, tableros, turno propio, espera y espectador
-- [ ] 39.4 Resultado y «Volver a jugar»
-- [ ] 39.5 «Cómo se juega»
+- [x] 39.1 Esquema `zod` de la variante, acciones, errores y `viewFor`, con tests
+- [x] 39.2 Sala de espera: modalidad, «Quién juega» y validación de equipos
+- [x] 39.3 Partida: dados, tableros, turno propio, espera y espectador
+- [x] 39.4 Resultado y «Volver a jugar»
+- [x] 39.5 «Cómo se juega»
 
 Aceptación: `npm run check` pasa.
 

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { OptionalRole } from '@/games/luna-llena/roles';
 import type { AvatarId } from './avatars';
 import { isErrorCode, type ActionError } from './copy';
-import { parseSnapshot, type Snapshot } from './snapshot';
+import { parseSnapshot, type DadosMode, type Snapshot } from './snapshot';
 import { ensureSession, getSupabase } from './supabase';
 
 export type ActionResult<T> = { ok: true; data: T } | { ok: false; error: ActionError };
@@ -241,6 +241,23 @@ export function lunaLlenaHunterShot(roomId: string, targetId: string, deps = def
 
 export function lunaLlenaSkipHunter(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'luna_llena_skip_hunter', { room_id: roomId });
+}
+
+/** Equipos de A dados: quién juega en cada bando. */
+export type DadosTeams = { A: readonly string[]; B: readonly string[] };
+
+export function dadosStart(roomId: string, mode: DadosMode, teams: DadosTeams, deps = defaultDeps) {
+  return callForSnapshot(deps, 'dados_start', {
+    room_id: roomId,
+    mode,
+    team_a: teams.A,
+    team_b: teams.B,
+  });
+}
+
+/** Coloca el dado pendiente en una columna, contada desde cero. */
+export function dadosPlace(roomId: string, columnIndex: number, deps = defaultDeps) {
+  return callForSnapshot(deps, 'dados_place', { room_id: roomId, column_index: columnIndex });
 }
 
 export function openVoting(roomId: string, deps = defaultDeps) {

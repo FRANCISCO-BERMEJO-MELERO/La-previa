@@ -444,3 +444,46 @@ describe('LobbyScreen: El lobo', () => {
     });
   });
 });
+
+describe('LobbyScreen con A dados', () => {
+  function dados(count: number): Snapshot {
+    const snapshot = withPlayers(count);
+    return lobbySnapshot({ ...snapshot, room: { ...snapshot.room, game: 'dados' } });
+  }
+
+  it('no hereda el selector de rondas ni los ajustes de El impostor', () => {
+    renderLobby({ snapshot: dados(2) });
+    expect(screen.queryByRole('group', { name: 'Rondas' })).not.toBeInTheDocument();
+    expect(screen.queryByText('Impostores')).not.toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Modalidad' })).toBeInTheDocument();
+  });
+
+  it('con dos se puede empezar un 1 contra 1', () => {
+    const props = renderLobby({ snapshot: dados(2) });
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(props.onStart).toHaveBeenCalledTimes(1);
+  });
+
+  it('con uno solo faltan jugadores', () => {
+    renderLobby({ snapshot: dados(1) });
+    expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
+    expect(screen.getByText(/Hacen falta al menos 2 jugadores: falta 1/)).toBeInTheDocument();
+  });
+
+  it('si los equipos no cuadran, avisa y no deja empezar', () => {
+    renderLobby({ snapshot: dados(3), dadosMode: '2v2' });
+    expect(screen.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
+    expect(
+      screen.getByText('En 2 contra 2 van dos personas en cada equipo. El resto mira.'),
+    ).toBeInTheDocument();
+  });
+
+  it('quien no lleva la sala ve la caja de espera de siempre', () => {
+    const snapshot = dados(4);
+    renderLobby({
+      snapshot: { ...snapshot, me: { ...snapshot.me, user_id: 'otro', is_host: false } },
+    });
+    expect(screen.queryByRole('group', { name: 'Modalidad' })).not.toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent('empezará la partida');
+  });
+});

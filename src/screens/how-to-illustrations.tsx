@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { copy } from '@/lib/copy';
+import { Die, EmptySlot } from '@/games/dados/Die';
 import { RoleArt } from '@/games/luna-llena/RoleArt';
 import { roleBackground, type LunaRole } from '@/games/luna-llena/roles';
 import type { GameId } from '@/lib/snapshot';
@@ -212,6 +213,40 @@ export const howToIllustrations: Record<GameId, readonly ReactNode[]> = {
       <MiniCard role="villager" />
       <MiniCard role="killer" />
       <MiniCard role="jester" />
+    </>,
+  ],
+  dados: [
+    <>
+      <Die value={4} size="lg" />
+      <span className="flex gap-2">
+        <EmptySlot />
+        <EmptySlot />
+        <EmptySlot />
+      </span>
+    </>,
+    <>
+      <Column>
+        <Die value={6} tone="pair" />
+        <Die value={6} tone="pair" />
+      </Column>
+      <Tag tilt="rotate-3">{art.dadosScore}</Tag>
+    </>,
+    <>
+      <Die value={5} size="lg" />
+      <Tag tone="tomato" tilt="-rotate-4">
+        {art.out}
+      </Tag>
+      <Column>
+        <Die value={5} tone="pair" />
+        <Die value={5} tone="pair" />
+      </Column>
+    </>,
+    <>
+      {art.dadosOrder.map((step, index) => (
+        <Tag key={step} tone={index % 2 === 0 ? 'sky' : 'lilac'}>
+          {step}
+        </Tag>
+      ))}
     </>,
   ],
 };

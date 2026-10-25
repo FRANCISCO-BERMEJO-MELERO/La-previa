@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 import { OfflineNotice } from '@/components/OfflineNotice';
 import { HeaderAside, type HeaderTone } from '@/components/HeaderAside';
+import { DadosGame } from '@/games/dados/DadosGame';
+import { choicesFor, teamsFrom, type DadosAssignment } from '@/games/dados/teams';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
 import { clampImpostors } from '@/games/impostor/impostors';
 import { recommendedConfig, type LunaConfig } from '@/games/luna-llena/composition';
@@ -15,6 +17,7 @@ import { QuienLoDijoGame } from '@/games/quien-lo-dijo/QuienLoDijoGame';
 import { UnaPistaGame } from '@/games/una-pista/UnaPistaGame';
 import {
   backToLobby,
+  dadosStart,
   kickPlayer,
   leaveRoom,
   lunaLlenaStart,
@@ -32,7 +35,7 @@ import { copy, errorMessage, type ActionError } from '@/lib/copy';
 import { roomPath } from '@/lib/room-code';
 import { DEFAULT_ROUNDS } from '@/lib/rounds';
 import { shareRoomLink, type ShareOutcome } from '@/lib/share';
-import type { GameId, Snapshot } from '@/lib/snapshot';
+import type { DadosMode, GameId, Snapshot } from '@/lib/snapshot';
 import { useImpostorCategories } from '@/lib/use-impostor-categories';
 import { useRoomSync } from '@/lib/use-room-sync';
 import { useWakeLock } from '@/lib/use-wake-lock';
@@ -56,6 +59,9 @@ export function Room({ initial, fresh }: RoomProps) {
   const [rounds, setRounds] = useState(DEFAULT_ROUNDS);
   // Composición de Luna llena elegida a mano; sin elegir, sigue a la recomendada.
   const [lunaConfig, setLunaConfig] = useState<LunaConfig | null>(null);
+  // A dados: modalidad y equipos que monta el anfitrión; sin tocar, el reparto por defecto.
+  const [dadosMode, setDadosMode] = useState<DadosMode>('1v1');
+  const [dadosAssignment, setDadosAssignment] = useState<DadosAssignment>({});
   const [chosenCategories, setChosenCategories] = useState<string[]>([]);
   const [voteSeconds, setVoteSeconds] = useState<number | null>(null);
   const [topicsOpen, setTopicsOpen] = useState(false);
@@ -183,6 +189,8 @@ export function Room({ initial, fresh }: RoomProps) {
         return withLeaveDialog(<PalabrasProhibidasGame {...shared} game={game} />);
       case 'luna_llena':
         return withLeaveDialog(<LunaLlenaGame {...shared} game={game} />);
+      case 'dados':
+        return withLeaveDialog(<DadosGame {...shared} game={game} />);
     }
   }
 
@@ -267,6 +275,15 @@ export function Room({ initial, fresh }: RoomProps) {
       onRoundsChange={setRounds}
       lunaConfig={lunaConfig ?? recommendedConfig(snapshot.players.length)}
       onLunaConfigChange={setLunaConfig}
+      dadosMode={dadosMode}
+      dadosAssignment={dadosAssignment}
+      onDadosModeChange={(mode) => {
+        setDadosMode(mode);
+        setDadosAssignment({});
+      }}
+      onDadosChoose={(userId, choice) => {
+        setDadosAssignment({ ...dadosAssignment, [userId]: choice });
+      }}
       onStart={() => {
         void run(() => {
           switch (snapshot.room.game) {
@@ -288,6 +305,15 @@ export function Room({ initial, fresh }: RoomProps) {
               return palabrasProhibidasStart(roomId, rounds);
             case 'luna_llena':
               return lunaLlenaStart(roomId, lunaConfig);
+            case 'dados':
+              return dadosStart(
+                roomId,
+                dadosMode,
+                teamsFrom(
+                  snapshot.players,
+                  choicesFor(snapshot.players, dadosMode, dadosAssignment),
+                ),
+              );
           }
         });
       }}
