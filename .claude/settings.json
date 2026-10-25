@@ -88,6 +88,17 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/rsc-bootstrap.mjs\" \"quiet\" \"${CLAUDE_PROJECT_DIR}\" \"${CLAUDE_PROJECT_DIR}/.rsc/copy-guard.mjs\" \"${CLAUDE_PROJECT_DIR}\"",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }
