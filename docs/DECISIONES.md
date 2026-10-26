@@ -1,5 +1,13 @@
 # Decisiones
 
+## 2026-10-26 · 40 · A dados: validación y cierre
+
+- **Un solo commit para 40.1 y 40.2.** La e2e de 2 contra 2 busca los tableros por «Tablero del equipo B», el rótulo que corrige la 40.2, así que ninguna de las dos pasa sin la otra.
+- **Los dados se apilan hacia el centro**, como en la referencia: el primero que coloca el rival queda abajo en su tablero (pegado al mío) y el primero mío queda arriba. Estaba al revés desde la 39.3. Una prueba de `screens.test.tsx` lo comprueba.
+- **La pantalla de partida tiene un `h1` oculto** con el nombre del juego. La cabecera lo muestra como píldora y la revisión de accesibilidad pide un encabezado principal.
+- **En 2 contra 2, quien juega lee «Tablero del equipo B»** (y «Puntos por columna del equipo B») en el tablero rival, en lugar de «Tablero de Equipo B». Quien mira sigue leyendo los nombres de cada bando.
+- **Las e2e juegan con dados reales.** Cada turno leen el dado y eligen columna: atacan si pueden; si no, colocan donde el rival aún tiene hueco, para dejarle ocasión de atacar. Con «la primera columna libre», una simulación de 300 000 partidas daba un 1,5 % sin ningún ataque, y la prueba de 1 contra 1, que exige ver uno, habría fallado en falso una vez de cada 67. Con la regla nueva baja al 0,07 %, a cambio de partidas más largas (mediana de 31 turnos y 72 en el 99,9 %, lejos del tope de 120).
+
 ## 2026-10-25 · 37.3 y 39 · A dados en el cliente
 
 - **Un solo commit para 37.3 y 39.1 a 39.5.** En cuanto `dados` entra en `gameIds`, TypeScript exige su portada, sus pasos de «Cómo se juega», su caso al empezar y su pantalla de partida: ninguna parte compila sin las demás.

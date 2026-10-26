@@ -1054,6 +1054,8 @@ export const copy = {
     yourTeam: 'Tu equipo',
     names: (names: readonly string[]) => joinNames(names),
     board: (label: string) => `Tablero de ${label}`,
+    teamBoard: (side: 'A' | 'B') => `Tablero del equipo ${side}`,
+    teamScores: (side: 'A' | 'B') => `Puntos por columna del equipo ${side}`,
     myBoard: { '1v1': 'Tu tablero', '2v2': 'Tablero de tu equipo' },
     myScores: { '1v1': 'Tus puntos por columna', '2v2': 'Puntos por columna de tu equipo' },
     total: (label: string, points: number) => `${label}: ${String(points)} puntos`,

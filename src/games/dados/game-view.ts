@@ -42,6 +42,9 @@ export function sideRegions(
   if (game.my.side === side.side) {
     return { board: copy.dados.myBoard[game.mode], scores: copy.dados.myScores[game.mode] };
   }
+  if (game.mode === '2v2' && !game.my.is_spectator) {
+    return { board: copy.dados.teamBoard(side.side), scores: copy.dados.teamScores(side.side) };
+  }
   const label = sideLabel(game, side);
   return { board: copy.dados.board(label), scores: copy.dados.scores(label) };
 }

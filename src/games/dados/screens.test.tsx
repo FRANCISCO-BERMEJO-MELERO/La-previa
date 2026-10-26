@@ -29,7 +29,8 @@ function renderGame(game: DadosGameState, rest: Partial<Snapshot> = {}) {
 describe('partida de A dados', () => {
   it('si te toca, cada columna es un botón y la llena está desactivada', () => {
     const { run } = renderGame(dadosState());
-    expect(screen.getByText('A dados')).toBeInTheDocument();
+    expect(screen.getByText('A dados', { selector: 'span' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'A dados' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Te toca' })).toBeInTheDocument();
     expect(
       screen.getByText('Te ha salido un 5. Toca la columna donde lo quieres.'),
@@ -173,5 +174,16 @@ describe('sala de espera de A dados', () => {
     expect(screen.getByLabelText('Equipo A: 2 de 2')).toHaveTextContent('A · 2/2');
     fireEvent.click(screen.getByRole('button', { name: 'Marta mira' }));
     expect(onChoose).toHaveBeenCalledWith(ids.marta, 'watch');
+  });
+});
+
+describe('apilado de los dados', () => {
+  it('el primero colocado queda junto al centro: abajo en el rival y arriba en el propio', () => {
+    renderGame(dadosState());
+    const columnOf = (name: string) =>
+      screen.getByRole('region', { name }).querySelector('[data-stack]');
+    expect(columnOf('Tablero de Lucía')).toHaveClass('flex-col-reverse');
+    expect(columnOf('Tu tablero')).toHaveClass('flex-col');
+    expect(columnOf('Tu tablero')).not.toHaveClass('flex-col-reverse');
   });
 });

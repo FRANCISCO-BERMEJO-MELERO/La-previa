@@ -7,6 +7,7 @@ import {
   resultSummary,
   resultTitle,
   sideLabel,
+  sideRegions,
   turnName,
   turnSteps,
 } from './game-view';
@@ -85,6 +86,15 @@ describe('tableros', () => {
     const teams = dadosTeamsState();
     expect(sideLabel(teams, teams.sides[0])).toBe('Tu equipo');
     expect(sideLabel(teams, teams.sides[1])).toBe('Equipo B');
+  });
+
+  it('cada tablero tiene su nombre accesible', () => {
+    const teams = dadosTeamsState();
+    expect(sideRegions(teams, teams.sides[0]).board).toBe('Tablero de tu equipo');
+    expect(sideRegions(teams, teams.sides[1]).board).toBe('Tablero del equipo B');
+    const solo = dadosState();
+    expect(sideRegions(solo, solo.sides[0]).scores).toBe('Tus puntos por columna');
+    expect(sideRegions(solo, solo.sides[1]).board).toBe('Tablero de Lucía');
   });
 
   it('quien mira ve los nombres de cada bando y ningún "Tú"', () => {

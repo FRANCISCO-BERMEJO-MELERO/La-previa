@@ -49,7 +49,8 @@ function SideRow({ side }: { side: SideView }) {
 function ColumnDice({ column, toCenter }: { column: readonly number[]; toCenter: 'up' | 'down' }) {
   return (
     <span
-      className={`flex items-center gap-2 ${toCenter === 'up' ? 'flex-col-reverse' : 'flex-col'}`}
+      data-stack={toCenter}
+      className={`flex items-center gap-2 ${toCenter === 'down' ? 'flex-col-reverse' : 'flex-col'}`}
     >
       {SLOTS.map((slot) => {
         const value = column[slot];
@@ -214,6 +215,7 @@ type PlayScreenProps = GameScreenProps & {
 export function PlayScreen({ top, bottom, onPlace, busy, error, ...chrome }: PlayScreenProps) {
   return (
     <GameScreen {...chrome}>
+      <h1 className="sr-only">{copy.games.dados.name}</h1>
       <div className="flex flex-col gap-3">
         <SideRow side={top} />
         <Board side={top} toCenter="down" />
