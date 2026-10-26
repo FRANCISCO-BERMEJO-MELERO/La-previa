@@ -398,7 +398,7 @@ Aceptación: `npm run check` pasa.
 
 - [x] 40.1 E2E de 1 contra 1 y de 2 contra 2 con espectador
 - [x] 40.2 Repaso a 360, 390 y 430 px y de accesibilidad
-- [ ] 40.3 `docs/DECISIONES.md`, `docs/INFORME.md` y `README.md`
+- [x] 40.3 `docs/DECISIONES.md`, `docs/INFORME.md` y `README.md`
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
