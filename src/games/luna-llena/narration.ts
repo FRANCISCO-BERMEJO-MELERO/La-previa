@@ -53,5 +53,7 @@ export function narrationLines({ key, params }: LunaNarration): string[] {
       return [script.winWolves];
     case 'win_jester':
       return [script.winJester];
+    case 'win_killer':
+      return [script.winKiller];
   }
 }

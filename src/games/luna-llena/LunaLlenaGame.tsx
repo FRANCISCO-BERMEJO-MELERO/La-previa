@@ -14,6 +14,7 @@ import {
   lunaLlenaSkipHunter,
   lunaLlenaStart,
   lunaLlenaVote,
+  lunaLlenaWitchAction,
   type ActionResult,
 } from '@/lib/actions';
 import { copy } from '@/lib/copy';
@@ -35,8 +36,11 @@ import {
   hasWon,
   pairNames,
   pendingCount,
+  realDeaths,
   voteGroups,
   roleRows,
+  witchReportLines,
+  wolfVictimLine,
   type LunaPlayer,
   type NightMode,
 } from './game-view';
@@ -91,8 +95,14 @@ export function LunaLlenaGame({
 }: LunaLlenaGameProps) {
   // Lo elegido vale solo para el momento en que se eligió: al cambiar de fase se olvida.
   const moment = `${game.phase}-${String(game.night)}-${String(game.day)}`;
-  const [choice, setChoice] = useState<{ moment: string; ids: string[] }>({ moment, ids: [] });
+  // `life` es la poción de vida que la bruja ha marcado y aún no ha enviado.
+  const [choice, setChoice] = useState<{ moment: string; ids: string[]; life: boolean }>({
+    moment,
+    ids: [],
+    life: false,
+  });
   const chosen = choice.moment === moment ? choice.ids : [];
+  const lifeChosen = choice.moment === moment && choice.life;
   const roomId = snapshot.room.id;
   const myId = snapshot.me.user_id;
   const players = lunaPlayers(snapshot, game);
@@ -103,8 +113,8 @@ export function LunaLlenaGame({
   // El error del narrador sale en su caja; el de los demás, en su pantalla.
   const playerError = snapshot.me.is_host ? undefined : error;
 
-  const choose = (ids: string[]) => {
-    setChoice({ moment, ids });
+  const choose = (ids: string[], life = lifeChosen) => {
+    setChoice({ moment, ids, life });
   };
 
   const narrator = snapshot.me.is_host ? (
@@ -171,8 +181,9 @@ export function LunaLlenaGame({
     case 'night': {
       const mode = nightMode(game);
       const current = game.my.action;
+      const witch = mode === 'witch';
       // Un lobo ve marcado a quien ya marcó mientras no elija a otro.
-      const selected = chosen.length > 0 || !current ? chosen : [current.target_id];
+      const selected = chosen.length > 0 || !current?.target_id ? chosen : [current.target_id];
       return (
         <NightScreen
           {...chrome}
@@ -181,15 +192,23 @@ export function LunaLlenaGame({
           candidates={nightCandidates(game, players, myId)}
           selected={selected}
           ready={
-            mode === 'cupid'
+            // A la bruja le vale no usar nada.
+            witch ||
+            (mode === 'cupid'
               ? chosen.length === 2
-              : chosen.length === 1 && chosen[0] !== current?.target_id
+              : chosen.length === 1 && chosen[0] !== current?.target_id)
           }
           onToggle={(userId) => {
             choose(toggleChoice(mode, chosen, userId));
           }}
           onConfirm={() => {
-            const [target, target2 = null] = chosen;
+            const [target = null, target2 = null] = chosen;
+            if (witch) {
+              void run(() => lunaLlenaWitchAction(roomId, lifeChosen, target)).then((ok) => {
+                if (ok) choose([], false);
+              });
+              return;
+            }
             if (!target) return;
             void run(() => lunaLlenaNightAction(roomId, target, target2)).then((ok) => {
               if (ok) choose([]);
@@ -198,6 +217,18 @@ export function LunaLlenaGame({
           busy={busy}
           error={playerError}
           done={current ? doneText(mode, players, current) : null}
+          victimLine={witch ? wolfVictimLine(game, players) : null}
+          lifePotion={
+            witch
+              ? {
+                  available: game.my.potions?.life ?? false,
+                  active: lifeChosen,
+                  onToggle: () => {
+                    choose(chosen, !lifeChosen);
+                  },
+                }
+              : null
+          }
           marks={
             new Map(
               [...packMarks(game, players)].map(([target, names]) => [
@@ -222,7 +253,12 @@ export function LunaLlenaGame({
         <DawnScreen
           {...chrome}
           deaths={game.announcement?.deaths ?? []}
-          secret={game.night === 1 ? loverSecret(game, players) : null}
+          secrets={[
+            ...(game.night === 1 ? [loverSecret(game, players)] : []).filter(
+              (line) => line !== null,
+            ),
+            ...witchReportLines(game, players),
+          ]}
         />
       );
     case 'mayor':
@@ -323,7 +359,12 @@ export function LunaLlenaGame({
           actions={
             game.phase === 'night' ? actionLines(players, game.spectator?.actions ?? []) : null
           }
-          deaths={game.announcement?.deaths ?? []}
+          deaths={realDeaths(game)}
+          potions={
+            game.spectator?.potions
+              ? texts.spectator.potions(game.spectator.potions.life, game.spectator.potions.poison)
+              : null
+          }
         />
       );
     case 'result': {
@@ -372,6 +413,12 @@ function doneText(
   const done = copy.lunaLlena.night.done;
   const target = nameOf(players, action.target_id);
   if (mode === 'cupid') return done.cupid(target, nameOf(players, action.target2_id));
+  if (mode === 'witch') {
+    return copy.lunaLlena.night.witch.done(
+      action.use_life ?? false,
+      action.target_id ? target : null,
+    );
+  }
   return done[mode](target);
 }
 

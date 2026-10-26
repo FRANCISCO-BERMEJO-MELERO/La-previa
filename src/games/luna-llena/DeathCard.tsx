@@ -1,9 +1,12 @@
 import { copy } from '@/lib/copy';
-import type { LunaLlenaGameState } from '@/lib/snapshot';
+import type { LunaCause, LunaLlenaGameState } from '@/lib/snapshot';
 import { RoleArt } from './RoleArt';
 import { roleBackground } from './roles';
 
-export type Death = NonNullable<LunaLlenaGameState['announcement']>['deaths'][number];
+type AnnouncedDeath = NonNullable<LunaLlenaGameState['announcement']>['deaths'][number];
+
+/** Una muerte anunciada. Los vivos la reciben con la causa pública; los muertos, con la real. */
+export type Death = Omit<AnnouncedDeath, 'cause'> & { cause: LunaCause };
 
 /** Un muerto, con el dibujo de su rol, su nombre, su rol y por qué ha muerto. */
 export function DeathCard({ death }: { death: Death }) {

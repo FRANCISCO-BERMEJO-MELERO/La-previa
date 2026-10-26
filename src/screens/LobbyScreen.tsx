@@ -10,18 +10,27 @@ import { Stepper } from '@/components/Stepper';
 import { WaitingBox } from '@/components/WaitingBox';
 import { configProblem, MIN_LUNA_PLAYERS, type LunaConfig } from '@/games/luna-llena/composition';
 import { LunaSettings } from '@/games/luna-llena/LunaSettings';
+import { DadosSettings } from '@/games/dados/DadosSettings';
+import {
+  choicesFor,
+  MIN_DADOS_PLAYERS,
+  teamsFrom,
+  teamsReady,
+  type DadosAssignment,
+  type DadosChoice,
+} from '@/games/dados/teams';
 import type { AvatarId } from '@/lib/avatars';
 import { copy } from '@/lib/copy';
 import { impostorLimits } from '@/games/impostor/impostors';
 import { isRoundGame, ROUND_OPTIONS } from '@/lib/rounds';
 import type { ShareOutcome } from '@/lib/share';
-import type { RoomPlayer, Snapshot } from '@/lib/snapshot';
+import type { DadosMode, RoomPlayer, Snapshot } from '@/lib/snapshot';
 import { AvatarPicker } from './AvatarPicker';
 import { HowToPlayDialog } from './HowToPlayDialog';
 import { KickableChip } from './KickableChip';
 
 export const MAX_PLAYERS = 16;
-/** Todos los juegos piden al menos 3 jugadores (docs/JUEGOS.md §1), salvo El lobo, que pide 4. */
+/** Todos los juegos piden al menos 3 jugadores (docs/JUEGOS.md §1), salvo El lobo, que pide 4, y A dados, 2. */
 export const MIN_PLAYERS = 3;
 
 type LobbyScreenProps = {
@@ -62,6 +71,11 @@ type LobbyScreenProps = {
   /** Composición de Luna llena: la recomendada mientras el anfitrión no la cambie. */
   lunaConfig: LunaConfig;
   onLunaConfigChange: (config: LunaConfig) => void;
+  /** A dados: modalidad y elecciones que ha cambiado el anfitrión. */
+  dadosMode?: DadosMode;
+  dadosAssignment?: DadosAssignment;
+  onDadosModeChange?: (mode: DadosMode) => void;
+  onDadosChoose?: (userId: string, choice: DadosChoice) => void;
   onStart: () => void;
   onKickRequest: (userId: string) => void;
   /** El anfitrión abre el selector de juegos desde la píldora del juego. */
@@ -101,22 +115,36 @@ export function LobbyScreen({
   onRoundsChange,
   lunaConfig,
   onLunaConfigChange,
+  dadosMode = '1v1',
+  dadosAssignment = noAssignment,
+  onDadosModeChange = ignore,
+  onDadosChoose = ignore,
   onStart,
   onKickRequest,
   onChangeGame,
 }: LobbyScreenProps) {
   const { players, room, me } = snapshot;
   const hostName = players.find((player) => player.user_id === room.host_id)?.name ?? '';
-  const minPlayers = room.game === 'luna_llena' ? MIN_LUNA_PLAYERS : MIN_PLAYERS;
+  const minPlayers =
+    room.game === 'luna_llena'
+      ? MIN_LUNA_PLAYERS
+      : room.game === 'dados'
+        ? MIN_DADOS_PLAYERS
+        : MIN_PLAYERS;
   const missing = Math.max(0, minPlayers - players.length);
   const lunaProblem = room.game === 'luna_llena' ? configProblem(players.length, lunaConfig) : null;
+  const dadosChoices = choicesFor(players, dadosMode, dadosAssignment);
+  const dadosProblem =
+    room.game === 'dados' && !teamsReady(dadosMode, teamsFrom(players, dadosChoices));
   // Por qué no se puede empezar todavía, si no se puede.
   const startHint =
     missing > 0
       ? copy.lobby.needPlayers(minPlayers, missing)
       : lunaProblem
         ? copy.lunaLlena.lobby.problems[lunaProblem]
-        : null;
+        : dadosProblem
+          ? copy.dados.lobby.mismatch[dadosMode]
+          : null;
 
   return (
     <Screen
@@ -219,6 +247,14 @@ export function LobbyScreen({
                 config={lunaConfig}
                 onChange={onLunaConfigChange}
               />
+            ) : room.game === 'dados' ? (
+              <DadosSettings
+                players={players}
+                mode={dadosMode}
+                choices={dadosChoices}
+                onModeChange={onDadosModeChange}
+                onChoose={onDadosChoose}
+              />
             ) : isRoundGame(room.game) ? (
               <RoundsPicker value={rounds} onChange={onRoundsChange} />
             ) : (
@@ -235,7 +271,10 @@ export function LobbyScreen({
               </>
             )}
             {startHint ? (
-              <p id="start-hint" className="text-md font-bold">
+              <p
+                id="start-hint"
+                className={`text-md font-bold ${dadosProblem && missing === 0 ? 'rounded-chip border-3 border-ink bg-orange px-3.5 py-2.5' : ''}`}
+              >
                 {startHint}
               </p>
             ) : null}
@@ -294,6 +333,12 @@ export function LobbyScreen({
       </Dialog>
     </Screen>
   );
+}
+
+const noAssignment: DadosAssignment = {};
+
+function ignore() {
+  return undefined;
 }
 
 function playerDetail(player: RoomPlayer, hostId: string): string | undefined {

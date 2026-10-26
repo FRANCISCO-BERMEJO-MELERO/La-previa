@@ -1,7 +1,8 @@
 import type { AvatarId } from '@/lib/avatars';
 import { copy } from '@/lib/copy';
 import type { LunaLlenaGameState, Snapshot } from '@/lib/snapshot';
-import type { LunaRole } from './roles';
+import type { Death } from './DeathCard';
+import { teamOf, type LunaRole } from './roles';
 
 /** Datos de Luna llena que necesitan las pantallas, deducidos de la foto. */
 
@@ -48,17 +49,23 @@ export function pendingCount(players: readonly LunaPlayer[]): number {
   return players.filter((player) => player.alive && !player.hasActed).length;
 }
 
-/** Qué hace cada uno de noche: Cupido enlaza solo la primera; luego sospecha como el resto. */
-export type NightMode = 'wolf' | 'seer' | 'protector' | 'cupid' | 'suspect';
+/**
+ * Qué hace cada uno de noche: Cupido enlaza solo la primera y la bruja usa pociones mientras le
+ * quede alguna; después sospechan como el resto.
+ */
+export type NightMode = 'wolf' | 'seer' | 'protector' | 'cupid' | 'witch' | 'killer' | 'suspect';
 
 export function nightMode(game: LunaLlenaGameState): NightMode {
   switch (game.my.role) {
     case 'wolf':
     case 'seer':
     case 'protector':
+    case 'killer':
       return game.my.role;
     case 'cupid':
       return game.night === 1 ? 'cupid' : 'suspect';
+    case 'witch':
+      return game.my.potions?.life || game.my.potions?.poison ? 'witch' : 'suspect';
     default:
       return 'suspect';
   }
@@ -80,10 +87,39 @@ export function nightCandidates(
       return alive.filter((player) => player.userId !== game.my.last_protected_id);
     case 'cupid':
       return alive;
+    case 'witch':
+      return game.my.potions?.poison ? alive.filter((player) => player.userId !== myId) : [];
     case 'seer':
+    case 'killer':
     case 'suspect':
       return alive.filter((player) => player.userId !== myId);
   }
+}
+
+/** Lo que ve la bruja de noche: a quién van a devorar, mientras pueda salvarlo. */
+export function wolfVictimLine(
+  game: LunaLlenaGameState,
+  players: readonly LunaPlayer[],
+): string | null {
+  const texts = copy.lunaLlena.night.witch;
+  if (!game.my.potions?.life) return null;
+  return game.my.wolf_victim ? texts.victim(nameOf(players, game.my.wolf_victim)) : texts.undecided;
+}
+
+/** El aviso privado de la bruja al amanecer: qué han hecho sus pociones y cuáles le quedan. */
+export function witchReportLines(
+  game: LunaLlenaGameState,
+  players: readonly LunaPlayer[],
+): string[] {
+  const report = game.my.witch_report;
+  const potions = game.my.potions;
+  if (!report || !potions) return [];
+  const texts = copy.lunaLlena.dawn;
+  return [
+    ...(report.saved_id ? [texts.witchSaved(nameOf(players, report.saved_id))] : []),
+    ...(report.poisoned_id ? [texts.witchPoisoned(nameOf(players, report.poisoned_id))] : []),
+    texts.potionsLeft(potions.life, potions.poison),
+  ];
 }
 
 /** Para un lobo: qué lobos marcan a cada jugador, por nombre. */
@@ -166,27 +202,39 @@ export function pairNames(
   return a && b ? [nameOf(players, a), nameOf(players, b)] : null;
 }
 
-/** Lo que ha marcado cada uno esta noche, en frases. */
+type SpectatorAction = NonNullable<LunaLlenaGameState['spectator']>['actions'][number];
+
+/** Lo que ha hecho cada uno esta noche, en frases. */
 export function actionLines(
   players: readonly LunaPlayer[],
-  actions: readonly { user_id: string; target_id: string; target2_id: string | null }[],
+  actions: readonly SpectatorAction[],
 ): string[] {
   const texts = copy.lunaLlena.spectator;
   return actions.map((action) => {
     const who = nameOf(players, action.user_id);
-    const target = nameOf(players, action.target_id);
-    return action.target2_id
-      ? texts.pair(who, target, nameOf(players, action.target2_id))
-      : texts.action(who, target);
+    const target = action.target_id ? nameOf(players, action.target_id) : null;
+    if (action.use_life !== undefined) return texts.witch(who, action.use_life, target);
+    if (action.target2_id) return texts.pair(who, target ?? '', nameOf(players, action.target2_id));
+    return texts.action(who, target ?? '');
   });
 }
 
-/** Si quien mira ha ganado: su bando, o él solo si es el bufón. Nulo si no jugaba. */
+/** Si quien mira ha ganado: su bando, o él solo si es el bufón o el asesino. Nulo si no jugaba. */
 export function hasWon(game: LunaLlenaGameState): boolean | null {
   const winner = game.result?.winner;
   const role = game.my.role;
   if (!winner || !role || !game.my.is_participant) return null;
   if (winner === 'jester') return role === 'jester';
+  if (winner === 'killer') return role === 'killer';
   if (winner === 'wolves') return role === 'wolf';
-  return role !== 'wolf' && role !== 'jester';
+  return teamOf(role) === 'village';
+}
+
+/** Para los muertos, cada muerte del anuncio con su causa real. */
+export function realDeaths(game: LunaLlenaGameState): Death[] {
+  const causes = game.spectator?.causes ?? [];
+  return (game.announcement?.deaths ?? []).map((death) => ({
+    ...death,
+    cause: causes.find((item) => item.user_id === death.user_id)?.cause ?? death.cause,
+  }));
 }

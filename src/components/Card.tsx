@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 type CardVariant = 'normal' | 'hero' | 'dark';
-type CardTone = 'paper' | 'lime';
+type CardTone = 'paper' | 'lime' | 'tomato';
 type CardTilt = 'left' | 'right';
 
 type CardProps = {
@@ -24,6 +24,7 @@ const variantClasses: Record<CardVariant, string> = {
 const toneClasses: Record<CardTone, string> = {
   paper: 'bg-paper',
   lime: 'bg-lime',
+  tomato: 'bg-tomato',
 };
 
 const tiltClasses: Record<CardTilt, string> = {

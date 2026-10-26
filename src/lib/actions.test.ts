@@ -24,6 +24,7 @@ import {
   lunaLlenaSkipHunter,
   lunaLlenaStart,
   lunaLlenaVote,
+  lunaLlenaWitchAction,
   palabrasProhibidasForbidden,
   palabrasProhibidasGuessed,
   palabrasProhibidasNext,
@@ -156,6 +157,8 @@ describe('acciones', () => {
     await lunaLlenaCloseVote('sala', d);
     await lunaLlenaHunterShot('sala', 'u5', d);
     await lunaLlenaSkipHunter('sala', d);
+    await lunaLlenaWitchAction('sala', true, null, d);
+    await lunaLlenaWitchAction('sala', false, 'u6', d);
     expect(d.rpc.mock.calls).toEqual([
       ['luna_llena_start', { room_id: 'sala', wolves: null, roles: null }],
       ['luna_llena_start', { room_id: 'sala', wolves: 2, roles: ['protector', 'hunter'] }],
@@ -167,6 +170,8 @@ describe('acciones', () => {
       ['luna_llena_close_vote', { room_id: 'sala' }],
       ['luna_llena_hunter_shot', { room_id: 'sala', target_id: 'u5' }],
       ['luna_llena_skip_hunter', { room_id: 'sala' }],
+      ['luna_llena_witch_action', { room_id: 'sala', use_life: true, poison_target_id: null }],
+      ['luna_llena_witch_action', { room_id: 'sala', use_life: false, poison_target_id: 'u6' }],
     ]);
   });
 
@@ -176,6 +181,8 @@ describe('acciones', () => {
       'already_acted',
       'not_hunter',
       'same_as_last_night',
+      'not_witch',
+      'potion_used',
     ] as const) {
       const d = deps({ data: null, error: { message: code } });
       expect(await lunaLlenaContinue('sala', d)).toEqual({ ok: false, error: code });

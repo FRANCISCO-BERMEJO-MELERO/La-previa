@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(24);
+select plan(26);
 
 insert into auth.users (id) values ('00000000-0000-0000-0000-000000000001'), ('00000000-0000-0000-0000-000000000002');
 select lives_ok(
@@ -34,8 +34,16 @@ select lives_ok(
   'los roles de Luna llena caben en game_roles'
 );
 select throws_ok(
-  $$update public.game_roles set role = 'witch' where user_id = '00000000-0000-0000-0000-000000000002'$$,
+  $$update public.game_roles set role = 'wizard' where user_id = '00000000-0000-0000-0000-000000000002'$$,
   '23514', null, 'y uno inventado no'
+);
+select lives_ok(
+  $$update public.game_roles set role = 'witch' where user_id = '00000000-0000-0000-0000-000000000002'$$,
+  'la bruja cabe'
+);
+select lives_ok(
+  $$update public.game_roles set role = 'killer' where user_id = '00000000-0000-0000-0000-000000000002'$$,
+  'y el asesino'
 );
 
 -- Tablas propias ----------------------------------------------------------------------------

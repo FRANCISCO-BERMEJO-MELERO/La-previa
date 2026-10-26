@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan 5 (Luna llena) terminado · última actualización 2026-10-11
+Estado: plan 7 (A dados) en curso · última actualización 2026-10-25
 
 ## Fase 0 · Preparación
 
@@ -334,6 +334,74 @@ Aceptación: las tres baterías pasan tres veces seguidas sin fallos intermitent
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
+## Fase 33 · El lobo: composición libre
+
+Plan: `docs/PLAN-6.md` (issue #13).
+
+- [x] 33.1 Migración: vidente opcional, bruja y asesino como roles, validación de integridad y reparto exacto, con pgTAP
+- [x] 33.2 Cliente: composición, avisos de equilibrio, selector sin tope de equilibrio y "Usar la recomendada", con tests
+
+Aceptación: la app funciona igual con los roles de siempre y acepta composiciones antes prohibidas.
+
+## Fase 34 · El lobo: bruja y asesino en el servidor
+
+- [x] 34.1 Migración: pociones, acción de la bruja, asesino, resolución de la noche, victoria, proyección privada y abandono
+- [x] 34.2 Pruebas pgTAP de bruja, asesino, victoria, secreto y partidas completas
+
+Aceptación: `npm run test:db` pasa desde cero.
+
+## Fase 35 · El lobo: bruja y asesino en el cliente
+
+- [x] 35.1 Esquemas `zod`, acción de la bruja, errores nuevos, `viewFor` y funciones de vista, con tests
+- [x] 35.2 Cartas e ilustraciones de bruja y asesino, también en `/dev/componentes`
+- [x] 35.3 Noche de bruja y asesino, aviso privado de la bruja, causas públicas, espectador, resultado y `win_killer`
+- [x] 35.4 "Cómo se juega" con los roles nuevos
+
+Aceptación: `npm run check` pasa.
+
+## Fase 36 · El lobo: validación y cierre
+
+- [x] 36.1 E2E: sin vidente ni aldeanos, 4 lobos de 5, bruja y asesino hasta el final, recarga de la bruja y secreto en red
+- [x] 36.2 Repaso a 360, 390 y 430 px y de accesibilidad
+- [x] 36.3 `docs/DECISIONES.md`, `docs/INFORME.md` y `README.md`
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
+## Fase 37 · A dados: integración en la plataforma
+
+Plan: `docs/PLAN-7.md` (issue #12).
+
+- [x] 37.1 `isRoundGame` con la lista explícita de juegos por rondas, con test
+- [x] 37.2 Migración: `rooms.game`, `games.game_type` y `games.phase` admiten `dados`; `set_game` acepta `dados`, con pgTAP
+- [x] 37.3 Cliente: `dados` en el selector con su portada, descripción y «2 o 4»
+
+Aceptación: A dados se elige en el selector; los demás juegos funcionan igual.
+
+## Fase 38 · A dados: servidor
+
+- [x] 38.1 Migración: estado, bandos, puntuación, `dados_start`, `dados_place`, final, empate, abandono y foto
+- [x] 38.2 Pruebas pgTAP de puntuación, ataque, turnos, columna llena, final, salidas, volver a jugar y entrada tardía
+
+Aceptación: `npm run test:db` pasa desde cero.
+
+## Fase 39 · A dados: cliente
+
+- [x] 39.1 Esquema `zod` de la variante, acciones, errores y `viewFor`, con tests
+- [x] 39.2 Sala de espera: modalidad, «Quién juega» y validación de equipos
+- [x] 39.3 Partida: dados, tableros, turno propio, espera y espectador
+- [x] 39.4 Resultado y «Volver a jugar»
+- [x] 39.5 «Cómo se juega»
+
+Aceptación: `npm run check` pasa.
+
+## Fase 40 · A dados: validación y cierre
+
+- [x] 40.1 E2E de 1 contra 1 y de 2 contra 2 con espectador
+- [x] 40.2 Repaso a 360, 390 y 430 px y de accesibilidad
+- [x] 40.3 `docs/DECISIONES.md`, `docs/INFORME.md` y `README.md`
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
 ## Bloqueos
 
 - Ninguno. (Resuelto: Docker Desktop instalado. Su `docker.exe` está en `AppData\Local\Programs\DockerDesktop\resources\bin` y no en el PATH de Git Bash, pero la CLI de Supabase lo encuentra.)
@@ -345,3 +413,4 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 - [x] D.3 (a petición de Fran) Luna llena pasa a llamarse El lobo, se juega desde 4 jugadores y sale la primera en el selector; en la sala de espera, el anfitrión cambia de juego pulsando la píldora, que ahora parece un botón
 - [x] D.4 (a petición de Fran) Los avatares pasan a ser las 11 imágenes de `public/avatars/` en lugar de los 12 dibujos con formas
 - [x] D.5 (a petición de Fran) README de cierre de la primera versión, con capturas reales de cada juego e ilustraciones de recorrido, arquitectura y secreto
+- [x] D.6 (a petición de Fran) Subir Next a 16.4.3 por las vulnerabilidades de la 16.4.0

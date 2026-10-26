@@ -1,6 +1,15 @@
+import { Button } from '@/components/Button';
 import { Stepper } from '@/components/Stepper';
 import { copy } from '@/lib/copy';
-import { maxWolves, toggleRole, villagerCount, type LunaConfig } from './composition';
+import {
+  balanceWarnings,
+  maxWolves,
+  recommendedConfig,
+  toggleRole,
+  villagerCount,
+  type BalanceWarning,
+  type LunaConfig,
+} from './composition';
 import { RoleArt } from './RoleArt';
 import { optionalRoles, roleBackground } from './roles';
 
@@ -10,17 +19,21 @@ type LunaSettingsProps = {
   onChange: (config: LunaConfig) => void;
 };
 
-/** Ajustes del anfitrión en la sala de espera: lobos, roles opcionales y la composición. */
+/**
+ * Ajustes del anfitrión en la sala de espera: lobos, roles especiales, la composición y los
+ * avisos de equilibrio, que aconsejan sin impedir empezar.
+ */
 export function LunaSettings({ players, config, onChange }: LunaSettingsProps) {
   const texts = copy.lunaLlena.lobby;
   const roleNames = config.roles.map((role) => copy.lunaLlena.spokenRoles[role]);
+  const warnings = balanceWarnings(players, config);
   return (
     <>
       <Stepper
         id="luna-wolves"
         label={texts.wolves}
         value={config.wolves}
-        min={1}
+        min={0}
         max={maxWolves(players)}
         fewerLabel={texts.fewerWolves}
         moreLabel={texts.moreWolves}
@@ -68,6 +81,34 @@ export function LunaSettings({ players, config, onChange }: LunaSettingsProps) {
           )}
         </span>
       </p>
+      {warnings.length > 0 ? (
+        <ul className="flex flex-col gap-2">
+          {warnings.map((warning) => (
+            <li
+              key={warning}
+              className="rounded-chip border-3 border-dashed border-ink bg-orange px-3.5 py-2 text-sm font-bold"
+            >
+              {warningText(warning, players, config)}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      <Button
+        variant="secondary"
+        fullWidth
+        onClick={() => {
+          onChange(recommendedConfig(players));
+        }}
+      >
+        {texts.useRecommended}
+      </Button>
     </>
   );
+}
+
+function warningText(warning: BalanceWarning, players: number, config: LunaConfig): string {
+  const texts = copy.lunaLlena.lobby.warnings;
+  return warning === 'wolves_majority'
+    ? texts.wolves_majority(config.wolves, players)
+    : texts[warning];
 }

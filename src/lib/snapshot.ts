@@ -180,9 +180,34 @@ export const lunaNarrationKeys = [
   'win_village',
   'win_wolves',
   'win_jester',
+  'win_killer',
 ] as const;
 
 const lunaRoleOf = z.object({ user_id: id, role: lunaRole });
+
+/** Causas que ve un vivo: de noche no se dice quién ha matado (docs/PLAN-6.md §6). */
+export const lunaPublicCauses = ['night', 'hanged', 'hunter', 'heartbreak', 'left'] as const;
+/** Causas reales, que solo ven los muertos. */
+export const lunaRealCauses = [
+  'wolves',
+  'killer',
+  'poison',
+  'hanged',
+  'hunter',
+  'heartbreak',
+  'left',
+] as const;
+
+export type LunaCause = (typeof lunaPublicCauses)[number] | (typeof lunaRealCauses)[number];
+
+const lunaPotions = z.object({ life: z.boolean(), poison: z.boolean() });
+
+/** Una acción de la noche. La de la bruja con pociones lleva `use_life` y quizá ningún objetivo. */
+const lunaAction = z.object({
+  target_id: id.nullable(),
+  target2_id: id.nullable(),
+  use_life: z.boolean().optional(),
+});
 
 /** Luna llena (docs/PLAN-5.md §8). Lo secreto llega nulo o vacío a quien no debe verlo. */
 const lunaLlenaGameSchema = z.object({
@@ -204,7 +229,7 @@ const lunaLlenaGameSchema = z.object({
   day: z.int().nonnegative(),
   mayor_id: id.nullable(),
   accused_id: id.nullable(),
-  config: z.object({ wolves: z.int().positive(), roles: z.array(z.enum(optionalRoles)) }),
+  config: z.object({ wolves: z.int().nonnegative(), roles: z.array(z.enum(optionalRoles)) }),
   participants: z.array(
     z.object({
       user_id: id,
@@ -220,7 +245,7 @@ const lunaLlenaGameSchema = z.object({
     alive: z.boolean(),
     role: lunaRole.nullable(),
     fellow_wolves: z.array(id),
-    action: z.object({ target_id: id, target2_id: id.nullable() }).nullable(),
+    action: lunaAction.nullable(),
     wolf_marks: z.array(z.object({ user_id: id, target_id: id })),
     seer_results: z.array(
       z.object({ night: z.int().positive(), user_id: id, is_wolf: z.boolean() }),
@@ -228,6 +253,10 @@ const lunaLlenaGameSchema = z.object({
     lover_id: id.nullable(),
     chosen_lovers: z.array(id).nullable(),
     last_protected_id: id.nullable(),
+    // Solo para la bruja: lo que le queda, a quién van a devorar y qué hicieron sus pociones.
+    potions: lunaPotions.nullable(),
+    wolf_victim: id.nullable(),
+    witch_report: z.object({ saved_id: id.nullable(), poisoned_id: id.nullable() }).nullable(),
     vote: z.object({ target_id: id }).nullable(),
   }),
   announcement: z
@@ -238,7 +267,7 @@ const lunaLlenaGameSchema = z.object({
           user_id: id,
           name: z.string(),
           role: lunaRole,
-          cause: z.enum(['wolves', 'hanged', 'hunter', 'heartbreak', 'left']),
+          cause: z.enum(lunaPublicCauses),
         }),
       ),
       spared: z.string().nullable(),
@@ -264,14 +293,53 @@ const lunaLlenaGameSchema = z.object({
     .object({
       roles: z.array(lunaRoleOf),
       lovers: z.array(id).nullable(),
-      actions: z.array(z.object({ user_id: id, target_id: id, target2_id: id.nullable() })),
+      actions: z.array(lunaAction.extend({ user_id: id })),
+      causes: z.array(z.object({ user_id: id, cause: z.enum(lunaRealCauses) })).nullable(),
+      potions: lunaPotions.nullable(),
     })
     .nullable(),
   result: z
     .object({
-      winner: z.enum(['village', 'wolves', 'jester']),
+      winner: z.enum(['village', 'wolves', 'jester', 'killer']),
       roles: z.array(lunaRoleOf),
       lovers: z.array(id).nullable(),
+    })
+    .nullable(),
+});
+
+export const dadosSides = ['A', 'B'] as const;
+const dadosSide = z.enum(dadosSides);
+const dadosDie = z.int().min(1).max(6);
+const dadosColumn = z.array(dadosDie).max(3);
+
+const dadosSideSchema = z.object({
+  side: dadosSide,
+  members: z.array(z.object({ user_id: id, name: z.string() })),
+  // Cada columna con sus dados en el orden en que se colocaron.
+  board: z.tuple([dadosColumn, dadosColumn, dadosColumn]),
+  column_scores: z.tuple([z.int().nonnegative(), z.int().nonnegative(), z.int().nonnegative()]),
+  total: z.int().nonnegative(),
+});
+
+/** A dados (docs/PLAN-7.md §5). No hay nada secreto: todos ven lo mismo. */
+const dadosGameSchema = z.object({
+  type: z.literal('dados'),
+  id,
+  phase: z.enum(['playing', 'finished']),
+  mode: z.enum(['1v1', '2v2']),
+  sides: z.tuple([
+    dadosSideSchema.extend({ side: z.literal('A') }),
+    dadosSideSchema.extend({ side: z.literal('B') }),
+  ]),
+  turn_order: z.array(id),
+  turn: z.object({ user_id: id, side: dadosSide }).nullable(),
+  pending_die: dadosDie.nullable(),
+  my: z.object({ side: dadosSide.nullable(), is_spectator: z.boolean(), is_my_turn: z.boolean() }),
+  result: z
+    .object({
+      winner: dadosSide.nullable(),
+      reason: z.enum(['board_full', 'forfeit']),
+      left: z.object({ user_id: id, name: z.string() }).nullable(),
     })
     .nullable(),
 });
@@ -285,6 +353,7 @@ const gameSchema = z.discriminatedUnion('type', [
   quePrefieresGameSchema,
   palabrasProhibidasGameSchema,
   lunaLlenaGameSchema,
+  dadosGameSchema,
 ]);
 
 export const gameIds = [
@@ -295,6 +364,7 @@ export const gameIds = [
   'una_pista',
   'que_prefieres',
   'palabras_prohibidas',
+  'dados',
 ] as const;
 
 export const snapshotSchema = z.object({
@@ -330,6 +400,10 @@ export type QuePrefieresGameState = z.infer<typeof quePrefieresGameSchema>;
 export type QuePrefieresOption = z.infer<typeof option>;
 export type PalabrasProhibidasGameState = z.infer<typeof palabrasProhibidasGameSchema>;
 export type LunaLlenaGameState = z.infer<typeof lunaLlenaGameSchema>;
+export type DadosGameState = z.infer<typeof dadosGameSchema>;
+export type DadosSide = (typeof dadosSides)[number];
+export type DadosMode = DadosGameState['mode'];
+export type DadosSideState = DadosGameState['sides'][number];
 export type LunaNarration = LunaLlenaGameState['narration'];
 /** Lo que comparten las partidas de los juegos por rondas. */
 export type RoundGameState = z.infer<z.ZodObject<typeof roundGameShape>>;

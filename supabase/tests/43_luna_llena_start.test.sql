@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(18);
+select plan(24);
 
 -- Utilidades ------------------------------------------------------------------------------
 
@@ -82,13 +82,13 @@ from generate_series(4, 9) as n;
 select pg_temp.as_user(2);
 select throws_ok(pg_temp.start('null', 'null'), 'P0001', 'not_host', 'solo empieza el anfitrión');
 select pg_temp.as_user(1);
-select throws_ok(pg_temp.start('5', 'array[]::text[]'), 'P0001', 'invalid_config', 'una composición inválida no empieza');
+select throws_ok(pg_temp.start('9', 'array[]::text[]'), 'P0001', 'invalid_config', 'una composición inválida no empieza');
 select pg_temp.as_admin();
 select is((pg_temp.game()).id, null::uuid, 'y no crea partida');
 
 -- Reparto ------------------------------------------------------------------------------------
 
-select pg_temp.call(1, pg_temp.start('3', $$array['cupid', 'jester']$$));
+select pg_temp.call(1, pg_temp.start('3', $$array['cupid', 'jester', 'seer']$$));
 select is((pg_temp.game()).phase, 'roles', 'empieza en el reparto');
 select is((pg_temp.game()).game_type, 'luna_llena', 'de Luna llena');
 select is(
@@ -103,7 +103,7 @@ select is(
 );
 select is(
   (select config from public.luna_state where game_id = (pg_temp.game()).id),
-  '{"wolves": 3, "roles": ["jester", "cupid"]}'::jsonb,
+  '{"wolves": 3, "roles": ["seer", "jester", "cupid"]}'::jsonb,
   'y la composición queda guardada'
 );
 select is(
@@ -128,6 +128,37 @@ select is(
   '{"wolf": 2, "seer": 1, "protector": 1, "hunter": 1, "villager": 4}'::jsonb,
   'sin composición, la recomendada para 9'
 );
+
+-- Composiciones libres --------------------------------------------------------------------------
+
+create function pg_temp.restart(wolves text, roles text) returns jsonb language plpgsql as $$
+begin
+  update public.games set phase = 'finished', finished_at = now() where id = (pg_temp.game()).id;
+  return pg_temp.call(1, pg_temp.start(wolves, roles));
+end;
+$$;
+
+select pg_temp.restart('2', $$array['protector']$$);
+select is(pg_temp.roles(), '{"wolf": 2, "protector": 1, "villager": 6}'::jsonb, 'sin vidente pedida, se reparte sin vidente');
+select is(
+  (select count(*) from public.game_roles where game_id = (pg_temp.game()).id and role = 'seer'),
+  0::bigint,
+  'y no aparece ninguna'
+);
+
+select pg_temp.restart('2', $$array['seer', 'protector', 'hunter', 'jester', 'cupid', 'witch', 'killer']$$);
+select is(
+  pg_temp.roles(),
+  '{"wolf": 2, "seer": 1, "protector": 1, "hunter": 1, "jester": 1, "cupid": 1, "witch": 1, "killer": 1}'::jsonb,
+  'todos los especiales y ningún aldeano'
+);
+
+select pg_temp.restart('0', $$array['killer']$$);
+select is(pg_temp.roles(), '{"killer": 1, "villager": 8}'::jsonb, 'sin lobos, con el asesino');
+
+select pg_temp.restart('8', 'array[]::text[]');
+select is(pg_temp.roles(), '{"wolf": 8, "villager": 1}'::jsonb, 'ocho lobos de nueve');
+select is((pg_temp.game()).phase, 'roles', 'y la partida empieza');
 
 -- Entra tarde y se va ----------------------------------------------------------------------------
 

@@ -6,7 +6,7 @@
 
 Web gratuita de juegos de fiesta para jugar **en persona**, cada uno con su móvil. Sin registro y sin instalar nada: alguien crea una sala, los demás entran con un código de cuatro letras, un enlace o un QR, y el móvil reparte la información secreta y lleva la cuenta mientras el juego ocurre hablando.
 
-Trae **siete juegos**. Seis son de 3 a 16 jugadores; El lobo, de 4 a 16.
+Trae **ocho juegos**. Seis son de 3 a 16 jugadores; El lobo, de 4 a 16, y A dados, de 2 o 4 (el resto de la sala mira).
 
 | Juego                                                      | Jugadores | En una frase                                                                      |
 | ---------------------------------------------------------- | --------- | --------------------------------------------------------------------------------- |
@@ -17,6 +17,7 @@ Trae **siete juegos**. Seis son de 3 a 16 jugadores; El lobo, de 4 a 16.
 | [Una sola pista](#una-sola-pista)                          | 3–16      | Uno adivina la palabra con una pista de cada uno. Las repetidas no valen.         |
 | [¿Qué prefieres?](#qué-prefieres)                          | 3–16      | Sale un dilema, cada uno elige en secreto y puntúa quien piensa como la mayoría.  |
 | [Palabras prohibidas](#palabras-prohibidas)                | 3–16      | Uno describe una palabra sin decir las cinco prohibidas. Los demás adivinan.      |
+| [A dados](#a-dados)                                        | 2 o 4     | Coloca dados en tus columnas y rompe los del rival.                               |
 
 ## Índice
 
@@ -66,7 +67,7 @@ Trae **siete juegos**. Seis son de 3 a 16 jugadores; El lobo, de 4 a 16.
 Lo que puede hacer el anfitrión:
 
 - **Elegir y cambiar el juego.** Antes de abrir la sala, y después desde la píldora con el nombre del juego en la sala de espera o desde el resultado.
-- **Ajustar la partida.** Número de rondas en los juegos por rondas; impostores, temáticas y tiempo para votar en El impostor; lobos y roles en El lobo.
+- **Ajustar la partida.** Número de rondas en los juegos por rondas; impostores, temáticas y tiempo para votar en El impostor; lobos y roles en El lobo; modalidad y equipos en A dados.
 - **Expulsar.** En la sala de espera, a cualquiera; durante la partida, solo a quien se ha desconectado.
 
 En una sala caben hasta **16 jugadores**. Los nombres tienen de 1 a 14 caracteres y no se repiten dentro de la sala.
@@ -88,11 +89,11 @@ Cinco juegos son **por rondas** (5, 10 o 15, a elegir): ¿Quién es más probabl
 
 Un pueblo con lobos escondidos. El anfitrión hace de **narrador** y además juega: su pantalla le marca qué leer en voz alta y cuándo avanzar.
 
-- **Noche.** Todos tocan el móvil a la vez, para que nadie se delate por ser el único que lo usa. Los lobos eligen a quién devorar; la vidente descubre si alguien es lobo; el protector salva a uno; los demás marcan de quién sospechan.
-- **Día.** Se anuncia quién ha muerto. Si no hay alcalde vivo, se elige uno (su voto vale doble). El pueblo debate con los móviles boca abajo, vota a quién acusar, el acusado tiene sus últimas palabras y se le ahorca.
-- **Roles.** Lobo, aldeano y vidente siempre. Opcionales: **protector** (no puede proteger a la misma persona dos noches seguidas), **cazador** (al morir se lleva a alguien), **bufón** (gana él solo si el pueblo lo ahorca) y **Cupido** (une a dos enamorados que mueren juntos).
-- **Victoria.** El pueblo gana si no quedan lobos; los lobos, si igualan en número al resto; el bufón, si lo ahorcan.
-- **Reparto recomendado.** Hasta 6 jugadores, 1 lobo; de 7 a 8, 2 lobos y protector; de 9 a 11, se suma el cazador; de 12 a 13, 3 lobos y el bufón; desde 14, todos los roles. El anfitrión puede cambiarlo.
+- **Noche.** Todos tocan el móvil a la vez, para que nadie se delate por ser el único que lo usa. Los lobos eligen a quién devorar; el asesino, a quién matar; la vidente descubre si alguien es lobo; el protector salva a uno; la bruja ve a quién van a devorar y decide si gasta sus pociones; los demás marcan de quién sospechan.
+- **Día.** Se anuncia quién ha muerto, sin decir cómo: para los vivos, "ha muerto esta noche". Si no hay alcalde vivo, se elige uno (su voto vale doble). El pueblo debate con los móviles boca abajo, vota a quién acusar, el acusado tiene sus últimas palabras y se le ahorca.
+- **Roles.** Lobos y aldeanos, y como mucho uno de cada especial: **vidente**, **protector** (no puede proteger a la misma persona dos noches seguidas), **cazador** (al morir se lleva a alguien), **bufón** (gana él solo si el pueblo lo ahorca), **Cupido** (une a dos enamorados que mueren juntos), **bruja** (una poción de vida y otra de muerte, de un solo uso cada una en toda la partida) y **asesino** (juega solo y mata cada noche).
+- **Victoria.** El asesino gana si queda solo. Mientras siga vivo, nadie más gana. Sin él, el pueblo gana si no quedan lobos y los lobos, si igualan en número al resto. El bufón, si lo ahorcan.
+- **Composición libre.** El anfitrión elige cuántos lobos y qué roles. Solo se impide lo que no se puede jugar (sin lobos ni asesino, todos lobos o más roles que jugadores); si está desequilibrada, la sala lo avisa sin bloquear. El reparto recomendado sigue a un toque: hasta 6 jugadores, 1 lobo y la vidente; de 7 a 8, 2 lobos y protector; de 9 a 11, se suma el cazador; de 12 a 13, 3 lobos y el bufón; desde 14, también Cupido.
 
 <table>
   <tr>
@@ -153,6 +154,12 @@ Sale un dilema con dos opciones y cada uno elige en secreto. Puntúa quien coinc
 
 Uno describe una palabra sin decir ninguna de las cinco prohibidas. Otro **vigila** con la misma tarjeta y pulsa «¡Prohibida!» si se le escapa una. Los demás adivinan en voz alta. Cuando alguien acierta, quien describe lo toca en la lista y se llevan un punto cada uno. Hay 150 tarjetas; quien adivina no recibe la tarjeta hasta la revelación.
 
+### A dados
+
+Un duelo de dados en 1 contra 1 o 2 contra 2. Cada bando tiene un tablero de tres columnas con tres huecos. En cada turno el servidor tira el dado y quien juega solo elige en qué columna va. Los dados **iguales de una misma columna multiplican**: un grupo de `n` dados de valor `v` vale `v × n²` (dos 6 valen 24; tres, 54), y se ven en azul si son pareja y en verde si son trío. Al colocar un dado se **rompen todos los del mismo valor** que el rival tenga en esa columna. La partida acaba cuando un tablero se llena y gana quien tenga más puntos, haya llenado o no; con los mismos puntos es empate.
+
+En 2 contra 2 cada equipo comparte tablero y marcador, y los turnos van uno de cada equipo, alternando también dentro del equipo. El anfitrión elige la modalidad y quién juega en cada equipo; los demás miran la partida en directo. Si un jugador se va, gana el otro bando por abandono.
+
 ## Pensada para una fiesta de verdad
 
 En una fiesta, los móviles se bloquean, cambian de wifi a datos y alguien abre WhatsApp a mitad de ronda. Eso es lo normal, no la excepción:
@@ -182,7 +189,7 @@ En una fiesta, los móviles se bloquean, cambian de wifi a datos y alguien abre 
   <img src="docs/img/secreto.svg" alt="La base de datos sabe la palabra y quién es el impostor, pero cada jugador recibe solo su parte" width="100%">
 </p>
 
-Como cada foto se calcula para quien la pide, abrir las herramientas del navegador no sirve de nada: no se puede averiguar al impostor, ver votos ajenos o el recuento antes de tiempo, saber de quién es una respuesta, ver la palabra si te toca adivinar ni, en El lobo, el rol de nadie vivo. Las pruebas pgTAP y las e2e lo comprueban leyendo lo que llega por la red. (La foto real es un JSON validado con `zod` en `src/lib/snapshot.ts`; el dibujo la simplifica.)
+Como cada foto se calcula para quien la pide, abrir las herramientas del navegador no sirve de nada: no se puede averiguar al impostor, ver votos ajenos o el recuento antes de tiempo, saber de quién es una respuesta, ver la palabra si te toca adivinar ni, en El lobo, el rol de nadie vivo, las pociones de la bruja, a quién va el asesino o cómo ha muerto alguien de noche. Las pruebas pgTAP y las e2e lo comprueban leyendo lo que llega por la red. (La foto real es un JSON validado con `zod` en `src/lib/snapshot.ts`; el dibujo la simplifica.)
 
 ## Pruebas
 
@@ -251,6 +258,7 @@ src/
     palabras-prohibidas/  Palabras prohibidas
     luna-llena/      El lobo (Luna llena en el código): roles, cartas e ilustraciones,
                        composición, guion del narrador y pantallas de cada fase
+    dados/           A dados: equipos de la sala, dados, tableros y resultado
     rounds/          Lo que comparten los juegos por rondas: espera de respuestas, lista para
                        votar, resultado con clasificación y controles de quien lleva la fase
   screens/         Pantallas de la plataforma (inicio, nombre, selector, sala de espera, entrar
@@ -269,7 +277,7 @@ supabase/
   migrations/      Esquema, seguridad (RLS), funciones, palabras, preguntas y tarjetas. Nunca se editan: se
                      añaden nuevas. Las funciones de cada juego llevan su prefijo
                      (probable_, quien_lo_dijo_, una_pista_, que_prefieres_,
-                     palabras_prohibidas_, luna_llena_; las auxiliares de Luna llena,
+                     palabras_prohibidas_, luna_llena_, dados_; las auxiliares de Luna llena,
                      luna_); lo común de los juegos por rondas
                      vive en el esquema private (open_round, round_departure, round_state,
                      next_subject…)
@@ -282,8 +290,8 @@ public/avatars/    Imágenes de los avatares
 
 ## Documentación
 
-- **Qué se construye y por qué:** [`docs/CONTEXTO.md`](docs/CONTEXTO.md) (plataforma y El impostor), [`docs/JUEGOS.md`](docs/JUEGOS.md) (¿Quién es más probable que…?, ¿Quién lo dijo? y Una sola pista), [`docs/JUEGOS-2.md`](docs/JUEGOS-2.md) (¿Qué prefieres? y Palabras prohibidas), [`docs/MEJORAS.md`](docs/MEJORAS.md) (lo que se añadió tras probarla en grupo) y [`docs/PLAN-5.md`](docs/PLAN-5.md) (El lobo, con las ilustraciones de sus cartas).
-- **En qué orden se hizo:** [`docs/PLAN.md`](docs/PLAN.md) a [`docs/PLAN-5.md`](docs/PLAN-5.md), con el estado en [`docs/TAREAS.md`](docs/TAREAS.md).
+- **Qué se construye y por qué:** [`docs/CONTEXTO.md`](docs/CONTEXTO.md) (plataforma y El impostor), [`docs/JUEGOS.md`](docs/JUEGOS.md) (¿Quién es más probable que…?, ¿Quién lo dijo? y Una sola pista), [`docs/JUEGOS-2.md`](docs/JUEGOS-2.md) (¿Qué prefieres? y Palabras prohibidas), [`docs/MEJORAS.md`](docs/MEJORAS.md) (lo que se añadió tras probarla en grupo), [`docs/PLAN-5.md`](docs/PLAN-5.md) (El lobo, con las ilustraciones de sus cartas) y [`docs/PLAN-7.md`](docs/PLAN-7.md) (A dados).
+- **En qué orden se hizo:** [`docs/PLAN.md`](docs/PLAN.md) a [`docs/PLAN-7.md`](docs/PLAN-7.md), con el estado en [`docs/TAREAS.md`](docs/TAREAS.md).
 - **Contenido para revisar:** [`docs/PALABRAS.md`](docs/PALABRAS.md), [`docs/PREGUNTAS.md`](docs/PREGUNTAS.md) (preguntas y dilemas) y [`docs/TARJETAS.md`](docs/TARJETAS.md).
 - **Aspecto:** [`docs/referencia-pantallas.html`](docs/referencia-pantallas.html), la referencia visual del sistema Verbena.
 - **Cómo publicarla:** [`docs/DESPLIEGUE.md`](docs/DESPLIEGUE.md).

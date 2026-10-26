@@ -1,5 +1,98 @@
 # Decisiones
 
+## 2026-10-26 · 40 · A dados: validación y cierre
+
+- **Un solo commit para 40.1 y 40.2.** La e2e de 2 contra 2 busca los tableros por «Tablero del equipo B», el rótulo que corrige la 40.2, así que ninguna de las dos pasa sin la otra.
+- **Los dados se apilan hacia el centro**, como en la referencia: el primero que coloca el rival queda abajo en su tablero (pegado al mío) y el primero mío queda arriba. Estaba al revés desde la 39.3. Una prueba de `screens.test.tsx` lo comprueba.
+- **La pantalla de partida tiene un `h1` oculto** con el nombre del juego. La cabecera lo muestra como píldora y la revisión de accesibilidad pide un encabezado principal.
+- **En 2 contra 2, quien juega lee «Tablero del equipo B»** (y «Puntos por columna del equipo B») en el tablero rival, en lugar de «Tablero de Equipo B». Quien mira sigue leyendo los nombres de cada bando.
+- **Las e2e juegan con dados reales.** Cada turno leen el dado y eligen columna: atacan si pueden; si no, colocan donde el rival aún tiene hueco, para dejarle ocasión de atacar. Con «la primera columna libre», una simulación de 300 000 partidas daba un 1,5 % sin ningún ataque, y la prueba de 1 contra 1, que exige ver uno, habría fallado en falso una vez de cada 67. Con la regla nueva baja al 0,07 %, a cambio de partidas más largas (mediana de 31 turnos y 72 en el 99,9 %, lejos del tope de 120).
+
+## 2026-10-25 · 37.3 y 39 · A dados en el cliente
+
+- **Un solo commit para 37.3 y 39.1 a 39.5.** En cuanto `dados` entra en `gameIds`, TypeScript exige su portada, sus pasos de «Cómo se juega», su caso al empezar y su pantalla de partida: ninguna parte compila sin las demás.
+- **Sala de espera.** Se conserva la sala de siempre (código, QR y jugadores) y los ajustes de A dados van donde los de los otros juegos, al pie y solo para el anfitrión. La referencia de diseño quita la tarjeta del código, pero sin ella no hay forma de invitar. La modalidad por defecto es 1 contra 1; al cambiarla, las elecciones vuelven al reparto por defecto. Quien entra después juega o mira según su puesto de llegada, salvo que el anfitrión lo cambie. El mínimo para empezar es 2.
+- **Textos sin género.** «Le toca a Marta. Decide dónde va el 3.» en lugar de «Decide ella», como el resto de la app (decisión de 1.6).
+- **El resultado** sigue la referencia: «Fin de la partida», el titular y una línea con el marcador («Fran y Marta se llevan la mesa: 91 a 18.»), «Empate a 18 puntos.» o, por abandono, «Lucía se ha ido. Gana Fran por abandono.». En 2 contra 2, quien mira lee «Gana el equipo A».
+- **Partida esperando a un desconectado.** Si a quien le toca se le cae la conexión, el anfitrión ve «Echar a…» en la caja de espera, con la regla de expulsión de siempre. Así la partida no queda bloqueada.
+- **`Card` admite el tono `tomato`**, para la tarjeta «Te toca» que pide el plan. Es un token que ya existe.
+- **Portada.** Es decorativa (`aria-hidden`), como las demás del selector, porque el botón ya dice el nombre del juego.
+
+Pruebas que cambian:
+
+- `GamePickerScreen.test.tsx`: «lista los siete juegos» pasa a «los ocho», con A dados al final, y comprueba su descripción y su «2 o 4». Añadir un juego al selector cambia por fuerza el número de juegos.
+
+## 2026-10-25 · 38 · A dados en el servidor
+
+`docs/PLAN-7.md` §2 a §5. Donde el código manda sobre los nombres del plan:
+
+- **La columna se llama `column_index` y va de 0 a 2.** `column` es palabra reservada de SQL y obligaría a entrecomillar el parámetro en cada uso. Una columna fuera de rango (o ninguna) da `invalid_column`, código nuevo con su texto en el cliente: no es una columna llena, así que `column_full` diría algo falso.
+- **El bando va en `game_players.side`**, como sugiere el plan, y solo los jugadores tienen fila en `game_players`. Espectador es quien está en la sala y no en la partida, igual que quien entra tarde en los otros juegos. Al irse un jugador, su fila se queda, así que el resultado conserva su nombre.
+- **El estado va en `dados_state`**, con los campos del plan y uno más, `left_user_id`, para el texto del resultado por abandono («Fran se ha ido…»). La foto lo da en `result.left` (`user_id` y `name`, o nulo). La función de la foto se llama `private.dados_game_state` para no confundirla con la tabla.
+- **`turn_order` es la secuencia completa** (`A1, B1, A2, B2` o la que empiece por B) y `turn_index` apunta al turno actual; al terminar no le toca a nadie y no hay dado pendiente.
+- **Volver a jugar es otra llamada a `dados_start`** con los mismos equipos. Si falta alguno, da `invalid_teams` y el cliente vuelve a la sala de espera, como hacen los juegos por rondas con `not_enough_players`.
+- **Pruebas.** La partida de 2 contra 2 se simula entera en la base de datos con dados reales: en cada turno se comprueba que coloca quien toca y que los otros tres y el espectador reciben `not_your_turn`. El sorteo del bando que abre y del orden dentro del equipo se comprueba con 40 partidas (la probabilidad de un falso fallo es de 2⁻³⁹).
+
+## 2026-10-25 · D.6 · Next 16.4.3 por seguridad
+
+Next 16.4.0 tiene vulnerabilidades conocidas (entre ellas GHSA-2464-fhr4-w9xw, ejecución remota de código en la optimización de imágenes con SVG, crítica, que afecta a `>=16.0.0 <=16.4.0`). `next dev` y `next build` se paraban para recomendar actualizar. Se sube `next` y `eslint-config-next` a la 16.4.3, la última del 16.4, con versiones exactas como el resto. Es un parche de la misma versión menor: no cambia ninguna API que use el proyecto.
+
+- `npm audit` ya no avisa de `next`. Siguen dos avisos ajenos: `undici` 8.11.2, que solo llega a través de `jsdom` en los tests, y `zod` 4.6.5, que pide `--force`. Quedan fuera de este cambio.
+
+## 2026-10-25 · 35 · Bruja y asesino en el cliente
+
+- **Un solo commit para 35.1 a 35.4.** Esquema, textos, cartas y pantallas dependen unos de otros: el esquema con las causas públicas no compila sin las pantallas que las pintan.
+- **Pantalla de la bruja.** La misma tarjeta oscura de la noche que el resto, para que de reojo se parezca a las demás. Encima de la lista, a quién van a devorar (o que los lobos aún no se han decidido) y un botón que se marca y desmarca para la poción de vida (`aria-pressed`). La lista sirve para elegir a quién envenenar; tocar al elegido lo quita. "Confirmar" está siempre activo, porque no usar nada también vale. Con una poción gastada, su botón o su lista dicen que ya no queda. Sin ninguna, la bruja sospecha como un aldeano.
+- **Avisos del amanecer.** `DawnScreen` recibe una lista de avisos privados en lugar de uno, porque la bruja puede ser también enamorada la primera noche.
+- **Causas.** Los vivos leen "Ha muerto esta noche". La vista de espectador cambia la causa de cada muerte por la real (`spectator.causes`) y añade una línea con las pociones que le quedan a la bruja.
+- **Colores.** La carta de la bruja tiene el bloque en `field` y la del asesino en `ground`, como dice el plan. La píldora "Eres" no tiene esos tonos, así que usa el más cercano de los que existen (`lime` para la bruja y `ground-soft` para el asesino) en lugar de añadir tonos a `Pill`. El resultado con victoria del asesino va en `lilac`, como el bufón, que también juega solo.
+- **"Cómo se juega".** Los pasos de la noche y de la victoria nombran a la bruja y al asesino, y sus dibujos añaden las dos cartas.
+
+Pruebas que cambian, porque la sección 6 manda que un vivo no sepa la causa de una muerte nocturna:
+
+- `game.test.tsx` y `snapshot.test.ts`: los anuncios de ejemplo llevan la causa pública `night` en lugar de `wolves`, y `snapshot.test.ts` añade que una causa real en el anuncio de un vivo se rechaza. El rol inexistente de ejemplo era `witch` y pasa a `wizard`.
+- `e2e/luna-llena.spec.ts` (30): los vivos ven "Ha muerto esta noche" en lugar de "Devorado por los lobos"; se añade que la vidente muerta sí ve la causa real.
+
+## 2026-10-25 · 34 · Bruja y asesino en el servidor
+
+`docs/PLAN-6.md` §2 a §7. Nombres y forma, siguiendo el código:
+
+- **La acción de la bruja va en `luna_night_actions`**, como las demás: la poción de muerte en `target_id` (que pasa a admitir nulo) y la de vida en una columna nueva `use_life`. Una restricción exige que haya al menos una de las dos. Así el cierre automático, "ha actuado" y el reinicio de la noche al irse alguien funcionan sin cambios.
+- **Sin pociones, la bruja actúa con `luna_llena_night_action`**, como un aldeano: su fila no lleva `use_life` y no tiene efecto. Si le queda alguna, el cliente usa `luna_llena_witch_action`; si aun así llama a la acción normal, se toma como una sospecha (no usar nada). No hace falta un error para ese caso.
+- **Las pociones se gastan al resolver la noche**, no al enviar. Si alguien se va de noche, la noche se repite desde cero y la bruja no pierde la poción que había elegido. Enviar dos veces la misma noche da `already_acted`; pedir una poción gastada, `potion_used`. Quien no es la bruja y llama a su función recibe `not_witch`, código nuevo.
+- **Estado de las pociones** en `luna_state.witch_life_used` y `witch_poison_used`, y lo que hicieron la última noche en `witch_report` (`saved_id`, `poisoned_id`). La bruja lo recibe en `my.witch_report` al amanecer de esa noche (y durante el disparo del cazador que lo siga); `my.potions` dice cuáles le quedan; `my.wolf_victim`, a quién van a devorar ahora mismo, solo de noche y mientras tenga la de vida.
+- **Muertes de la noche a la vez.** `luna_kill` se parte en `luna_mark_dead` (mata y anuncia) y `luna_heartbreak` (arrastra a la pareja). La noche mata primero a todas sus víctimas y después a las parejas, así que dos enamorados que mueren la misma noche lo hacen cada uno por su causa. Si dos ataques coinciden, se guarda una causa por orden: lobos, asesino, veneno. Las víctimas se anuncian en orden al azar para que el orden no delate quién ha matado a quién.
+- **Causa pública.** La foto anuncia `wolves`, `killer` y `poison` como `night`. La causa real sigue en `luna_state.announcement` y los muertos la reciben en `spectator.causes`; también ven `spectator.potions` (si hay bruja) y `use_life` en las acciones de la noche. `use_life` solo aparece en la acción de una bruja con pociones; las demás acciones conservan su forma de siempre.
+- **34.1 y 34.2 van en un mismo commit**: la migración no se entrega sin sus pruebas pgTAP.
+- **Victoria** con el asesino: si está vivo, ni el pueblo gana por quedarse sin lobos ni los lobos por paridad.
+
+Pruebas que cambian, porque la sección 6 manda que un vivo no sepa la causa de una muerte nocturna:
+
+- `45_luna_llena_state`: el anuncio del amanecer visto por un vivo dice `night` en lugar de `wolves`.
+- `47_luna_llena_continue`: lo mismo en el anuncio que sigue a la vista durante el turno del cazador.
+
+## 2026-10-25 · 33 · El lobo con composición libre
+
+Issue #13 y `docs/PLAN-6.md` §1. Contradice a `docs/PLAN-5.md` §2 (vidente obligatoria, `2 × lobos < jugadores`, al menos un aldeano); manda `docs/PLAN-6.md`.
+
+- **La vidente va en la lista de roles.** `private.luna_optional_roles` empieza por `seer` y el reparto ya no la añade por su cuenta. La recomendada la lleva de forma explícita (`{"wolves": 1, "roles": ["seer"]}` para 6), así que reparte lo mismo que antes. La composición guardada en `luna_state.config` y la de la foto también la nombran.
+- **Bruja y asesino ya existen en la base de datos** desde la 33.1 (rol y opcional), aunque el cliente no los ofrece hasta la fase 35. Así la validación se escribe una vez.
+- **Lobos de 0 a todos menos uno.** El selector va de 0 a `jugadores − 1`. Con 0 lobos y sin asesino el botón de empezar se desactiva y se dice por qué; lo mismo con más roles que jugadores. Si baja el número de jugadores y la composición deja de caber, pasa lo mismo.
+- **Línea de composición.** Lo que no hay no se nombra: sin aldeanos, la línea termina en el último rol ("4 lobos · vidente").
+- **Avisos.** Lista con el mismo aspecto que el aviso de conexión (`orange`, borde discontinuo), debajo de la línea de composición. No usan `role="status"` porque no son un cambio de estado de la conexión.
+- **"Roles especiales".** El rótulo de los interruptores deja de decir "opcionales", porque ahora la vidente también lo es.
+
+Pruebas que cambian, porque la regla que comprobaban es la que se retira:
+
+- `41_luna_llena_schema`: el rol inventado de ejemplo era `witch`, que ahora existe; pasa a ser `wizard`, y se añade que la bruja y el asesino caben.
+- `42_luna_llena_config`: "los lobos no pueden ser la mitad o más" y "tiene que quedar al menos un aldeano" pasan a comprobar que esas composiciones se aceptan; "la vidente no es opcional" pasa a "la vidente es opcional"; el rol desconocido de ejemplo era `witch`, que ahora existe, y pasa a ser `wizard`. "Hace falta al menos un lobo" sigue rechazando lo mismo con la descripción nueva ("sin lobos ni asesino no hay amenaza"). Las composiciones esperadas llevan `seer`.
+- `43_luna_llena_start`: la composición inválida de ejemplo (5 lobos de 9) ya es válida y pasa a ser 9 de 9; el reparto con vidente la pide explícitamente.
+- `44` a `51`: las partidas que empiezan con roles explícitos añaden `seer` a la lista, para repartir exactamente lo mismo que antes. `45` espera la composición pública con `seer`.
+- `LobbyScreen.test.tsx`: "los lobos no llegan a la mitad" pasa a "se pueden pedir todos los lobos menos uno, y con mayoría se avisa sin bloquear"; "sin hueco para un aldeano" pasa a comprobar que se puede empezar sin aldeanos, y el bloqueo se comprueba con más roles que jugadores. Las composiciones llevan `seer`.
+- `snapshot.test.ts`: la composición con 0 lobos ya es válida en la foto; el caso rechazado pasa a ser un número negativo y se añade que 0 se acepta.
+- `e2e/luna-llena.spec.ts` (31.7, secreto en red): buscaba la cadena `"seer"` suelta, que ahora aparece en la composición pública (`"roles": ["seer"]`). Pasa a buscar `"role": "seer"`, que es el rol asignado a alguien; lo que protege no cambia.
+- `composition.test.ts`: la recomendada lleva `seer`, los aldeanos ya no descuentan una vidente implícita y el máximo de lobos es todos menos uno.
+
 ## 2026-10-15 · D.4 · Avatares con imagen
 
 Fran pide usar los 11 avatares de `public/avatars/` (generados aparte y recortados a un círculo de 256 px) en lugar de los 12 dibujados con formas de `docs/MEJORAS.md` §8 y la referencia.

@@ -3,6 +3,7 @@ import { Button } from '@/components/Button';
 import { OfflineNotice } from '@/components/OfflineNotice';
 import { HeaderAside } from '@/components/HeaderAside';
 import { Screen } from '@/components/Screen';
+import { DiceArt } from '@/games/dados/DiceArt';
 import { RoleArt } from '@/games/luna-llena/RoleArt';
 import { copy } from '@/lib/copy';
 import { gameIds, type GameId } from '@/lib/snapshot';
@@ -98,6 +99,7 @@ const coverBackgrounds: Record<GameId, string> = {
   que_prefieres: 'bg-orange',
   palabras_prohibidas: 'bg-lilac',
   luna_llena: 'bg-ink',
+  dados: 'bg-orange',
 };
 
 function ImpostorFaces() {
@@ -188,6 +190,15 @@ function WolfMoon() {
   );
 }
 
+/** Los tres dados de la portada. */
+function ThreeDice() {
+  return (
+    <span className="w-48">
+      <DiceArt />
+    </span>
+  );
+}
+
 const covers: Record<GameId, ReactNode> = {
   impostor: <ImpostorFaces />,
   probable: <ProbableFaces />,
@@ -196,6 +207,7 @@ const covers: Record<GameId, ReactNode> = {
   que_prefieres: <TwoOptions />,
   palabras_prohibidas: <BannedWord />,
   luna_llena: <WolfMoon />,
+  dados: <ThreeDice />,
 };
 
 function Face() {

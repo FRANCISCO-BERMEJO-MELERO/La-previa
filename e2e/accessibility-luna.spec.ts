@@ -178,3 +178,74 @@ test('32.2 y 32.3 · Luna llena con 16 jugadores y nombres de 14 a 360, 390 y 43
   await fits(pageOf(players, v1), 'resultado');
   await fits(narrator, 'resultado del narrador');
 });
+
+test('36.2 · bruja y asesino con 16 jugadores y nombres de 14 a 360, 390 y 430 px', async ({
+  browser,
+}) => {
+  test.setTimeout(600_000);
+  const players: Players = {};
+  for (const name of names) players[name] = await newPlayer(browser);
+  const hostName = names[0] ?? '';
+  const host = pageOf(players, hostName);
+  await host.goto('/');
+  await host.getByRole('button', { name: 'Crear sala' }).click();
+  await host.getByLabel('Tu nombre').fill(hostName);
+  await host.getByRole('button', { name: 'Entrar' }).click();
+  await host.getByRole('button', { name: /El lobo/ }).click();
+  await host.getByRole('button', { name: 'Abrir la sala' }).click();
+  const code = /\/sala\/([A-Z]{4})/.exec(host.url())?.[1] ?? '';
+  for (const name of names.slice(1)) await joinByLink(pageOf(players, name), code, name);
+  await expect(host.getByText('16 de 16')).toBeVisible();
+
+  // Con los avisos a la vista, la sala de espera también cabe.
+  await host.getByRole('button', { name: /^Vidente$/ }).click();
+  for (let i = 0; i < 6; i += 1) await host.getByRole('button', { name: 'Más lobos' }).click();
+  await expect(host.getByText('Sin vidente, el pueblo juega a ciegas.')).toBeVisible();
+  await expect(host.getByText(/Hay 9 lobos para 16 jugadores/)).toBeVisible();
+  await fits(host, 'sala de espera con avisos');
+  await host.getByRole('button', { name: 'Usar la recomendada' }).click();
+  await host.getByRole('button', { name: /^Bruja$/ }).click();
+  await host.getByRole('button', { name: /^Asesino$/ }).click();
+  await expect(
+    host.getByText(
+      '3 lobos · vidente · protector · cazador · bufón · Cupido · bruja · asesino · 6 aldeanos',
+    ),
+  ).toBeVisible();
+  await fits(host, 'sala de espera con todos los roles');
+  await host.getByRole('button', { name: 'Empezar partida' }).click();
+
+  const roles: Record<string, string> = {};
+  for (const name of names) {
+    const page = pageOf(players, name);
+    await expect(page.getByText('Eres', { exact: true })).toBeVisible();
+    roles[name] = (await page.getByRole('heading', { level: 1 }).textContent()) ?? '';
+  }
+  const withRole = (role: string) => names.filter((name) => roles[name] === role);
+  const wolves = withRole('Lobo');
+  const [witch] = withRole('Bruja');
+  const [killer] = withRole('Asesino');
+  const [v1, v2, v3] = withRole('Aldeano');
+  if (!witch || !killer || !v1 || !v2 || !v3) throw new Error('Reparto inesperado');
+  await fits(pageOf(players, witch), 'carta de la bruja');
+  await fits(pageOf(players, killer), 'carta del asesino');
+
+  // Noche 1: los lobos van a por v1; la bruja lo salva y envenena a v2; el asesino, a por v3.
+  await host.getByRole('button', { name: 'Que caiga la noche' }).click();
+  for (const wolf of wolves) await act(pageOf(players, wolf), v1);
+  const witchPage = pageOf(players, witch);
+  await expect(witchPage.getByText(`Los lobos van a por ${v1}`)).toBeVisible();
+  await fits(witchPage, 'noche de la bruja');
+  await witchPage.getByRole('button', { name: 'Usar la poción de vida' }).click();
+  await act(witchPage, v2);
+  await fits(witchPage, 'la bruja tras usar sus pociones');
+  await fits(pageOf(players, killer), 'noche del asesino');
+  await act(pageOf(players, killer), v3);
+
+  await host.getByRole('button', { name: 'Hacer que amanezca' }).click();
+  await expect(witchPage.getByText(`Tu poción de vida ha salvado a ${v1}.`)).toBeVisible();
+  await fits(witchPage, 'amanecer de la bruja con su aviso');
+  await expect(pageOf(players, v1).getByText('Ha muerto esta noche').first()).toBeVisible();
+  await fits(pageOf(players, v1), 'amanecer con muertes de la noche');
+  await expect(pageOf(players, v2).getByText('Envenenado')).toBeVisible();
+  await fits(pageOf(players, v2), 'espectador con las causas reales y las pociones');
+});

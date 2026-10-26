@@ -12,6 +12,7 @@
     "debug",
     "decision-challenge",
     "deprecation",
+    "design",
     "fable-operator",
     "ftd",
     "harness",
@@ -47,7 +48,7 @@
     "refuter-tests"
   ],
   "ownSkills": [],
-  "catalogVersion": "3.0.13",
+  "catalogVersion": "3.3.1",
   "tier": null,
   "optOuts": [
     "knowledge-sync",
