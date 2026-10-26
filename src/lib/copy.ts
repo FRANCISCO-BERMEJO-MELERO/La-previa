@@ -39,6 +39,11 @@ export const errorCodes = [
   'not_hunter',
   'not_witch',
   'potion_used',
+  'invalid_mode',
+  'invalid_teams',
+  'not_your_turn',
+  'column_full',
+  'invalid_column',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -79,6 +84,12 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
   not_hunter: 'Solo dispara el cazador. Espera a que elija.',
   not_witch: 'Las pociones son cosa de la bruja. Haz lo tuyo esta noche.',
   potion_used: 'Esa poción ya la has gastado. Solo servía una vez.',
+  invalid_mode: 'Esa modalidad no existe. Elige 1 contra 1 o 2 contra 2.',
+  invalid_teams:
+    'Los equipos no cuadran: en 1 contra 1 va una persona por equipo y en 2 contra 2, dos, todas de la sala. Revisa quién juega.',
+  not_your_turn: 'Ahora no te toca. Espera a que sea tu turno.',
+  column_full: 'Esa columna ya está llena. Elige otra.',
+  invalid_column: 'Esa columna no existe. Elige una de las tres.',
   invalid_config:
     'Con esa composición no se puede jugar. Revisa los lobos y los roles: tiene que haber alguna amenaza, algún jugador que no sea lobo y sitio para todos los roles.',
   invalid_vote_seconds: 'El tiempo para votar es de 30, 60 o 90 segundos. Elige uno de esos.',
@@ -158,6 +169,8 @@ export const copy = {
       shout: '¡Pizza!',
       mayor: 'Alcalde',
       double: '×2',
+      dadosScore: '24',
+      dadosOrder: ['A1', 'B1', 'A2', 'B2'],
     },
     steps: {
       impostor: [
@@ -259,6 +272,24 @@ export const copy = {
           text: 'El pueblo, si caen los lobos y el asesino. Los lobos, si llegan a ser tantos como el resto y no queda asesino. El asesino, si queda solo. El bufón, si lo ahorcáis.',
         },
       ],
+      dados: [
+        {
+          title: 'Un dado en cada turno',
+          text: 'Cuando te toca, el dado ya está tirado. Tú solo eliges en cuál de tus tres columnas va.',
+        },
+        {
+          title: 'Los iguales multiplican',
+          text: 'Los dados iguales de una misma columna multiplican: un 6 vale 6; dos, 24, y tres, 54. Una columna con 5, 5 y 4 vale 24, y con 2, 3 y 6, 11. Las parejas se ven en azul y los tríos, en verde.',
+        },
+        {
+          title: 'Rompe los del rival',
+          text: 'Al poner un dado, se rompen todos los del mismo número que el rival tenga en esa columna. Sus otras columnas no se tocan.',
+        },
+        {
+          title: 'Final y equipos',
+          text: 'Se acaba cuando un tablero se llena, y gana quien tenga más puntos. En 2 contra 2 cada equipo comparte tablero y os vais turnando: uno de A, uno de B, el otro de A, el otro de B.',
+        },
+      ],
     },
   },
 
@@ -341,6 +372,11 @@ export const copy = {
       description:
         'Un pueblo con lobos escondidos. De noche matan; de día se ahorca a un sospechoso.',
       players: 'De 4 a 16 jugadores',
+    },
+    dados: {
+      name: 'A dados',
+      description: 'Coloca dados en tus columnas y rompe los del rival.',
+      players: '2 o 4',
     },
     covers: {
       quote: '¿?',
@@ -992,6 +1028,63 @@ export const copy = {
         wolves_above_recommended: 'Hay más lobos de lo habitual. Lo va a tener difícil el pueblo.',
         no_seer: 'Sin vidente, el pueblo juega a ciegas.',
       },
+    },
+  },
+
+  dados: {
+    pill: (mode: '1v1' | '2v2') => (mode === '1v1' ? 'A dados' : 'A dados · 2 contra 2'),
+    lobby: {
+      mode: 'Modalidad',
+      modes: { '1v1': '1 contra 1', '2v2': '2 contra 2' },
+      who: 'Quién juega',
+      choices: { A: 'A', B: 'B', watch: 'Mira' },
+      choiceLabel: (name: string, choice: 'A' | 'B' | 'watch') =>
+        choice === 'watch' ? `${name} mira` : `${name} juega en el equipo ${choice}`,
+      count: (side: 'A' | 'B', count: number, size: number) =>
+        `${side} · ${String(count)}/${String(size)}`,
+      countLabel: (side: 'A' | 'B', count: number, size: number) =>
+        `Equipo ${side}: ${String(count)} de ${String(size)}`,
+      mismatch: {
+        '1v1': 'En 1 contra 1 va una persona en cada equipo. El resto mira.',
+        '2v2': 'En 2 contra 2 van dos personas en cada equipo. El resto mira.',
+      },
+    },
+    team: (side: 'A' | 'B') => `Equipo ${side}`,
+    you: 'Tú',
+    yourTeam: 'Tu equipo',
+    names: (names: readonly string[]) => joinNames(names),
+    board: (label: string) => `Tablero de ${label}`,
+    teamBoard: (side: 'A' | 'B') => `Tablero del equipo ${side}`,
+    teamScores: (side: 'A' | 'B') => `Puntos por columna del equipo ${side}`,
+    myBoard: { '1v1': 'Tu tablero', '2v2': 'Tablero de tu equipo' },
+    myScores: { '1v1': 'Tus puntos por columna', '2v2': 'Puntos por columna de tu equipo' },
+    total: (label: string, points: number) => `${label}: ${String(points)} puntos`,
+    column: (column: number, points: number) =>
+      `Columna ${String(column)}: ${String(points)} puntos`,
+    place: (column: number) => `Colocar el dado en la columna ${String(column)}`,
+    die: (value: number) => `Dado: ${String(value)}`,
+    empty: 'Hueco libre',
+    myTurn: 'Te toca',
+    myTurnText: (value: number) =>
+      `Te ha salido un ${String(value)}. Toca la columna donde lo quieres.`,
+    waiting: (name: string, value: number) =>
+      `Le toca a ${name}. Decide dónde va el ${String(value)}.`,
+    spectatorWaiting: (name: string) => `Le toca a ${name}`,
+    turnOrder: 'Orden de turnos',
+    arrow: '→',
+    scores: (label: string) => `Puntos por columna de ${label}`,
+    result: {
+      finished: 'Fin de la partida',
+      won: { '1v1': 'Has ganado', '2v2': 'Habéis ganado' },
+      lost: { '1v1': 'Has perdido', '2v2': 'Habéis perdido' },
+      tie: 'Empate',
+      wins: (label: string) => `Gana ${label}`,
+      teamLabel: (side: 'A' | 'B') => `el equipo ${side}`,
+      score: (names: readonly string[], high: number, low: number) =>
+        `${joinNames(names)} se ${names.length === 1 ? 'lleva' : 'llevan'} la mesa: ${String(high)} a ${String(low)}.`,
+      tieScore: (points: number) => `Empate a ${String(points)} puntos.`,
+      forfeit: (name: string, label: string) => `${name} se ha ido. Gana ${label} por abandono.`,
+      winner: 'Ganador',
     },
   },
 

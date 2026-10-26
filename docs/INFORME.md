@@ -1,5 +1,50 @@
 # Informe final
 
+## A dados (fases 37 a 40)
+
+Estado al cerrar `docs/PLAN-7.md` (issue #12), el 26 de octubre de 2026.
+
+### Resumen
+
+A dados, el octavo juego, está hecho de principio a fin. Es un duelo de dados por columnas en 1 contra 1 o 2 contra 2. El servidor tira el dado y quien juega elige columna. Los dados iguales de una columna multiplican y rompen los del mismo valor en la columna rival. La partida acaba cuando un tablero se llena. El resto de la sala mira en directo.
+
+Todo está en la rama `feat/a-dados`, que sale de `develop`, en un commit por tarea. Las tareas que no se pueden separar van juntas y está anotado en `docs/DECISIONES.md`. No se ha subido la rama ni abierto la PR (llevará «Closes #12»).
+
+| Comprobación                               | Resultado                            |
+| ------------------------------------------ | ------------------------------------ |
+| `npm run check` (lint, tipos, unitarios)   | 840 tests en 72 archivos, sin avisos |
+| `npm run test:db` tras `supabase db reset` | 1402 pruebas pgTAP en 57 archivos    |
+| `npm run test:e2e`                         | 39 pruebas                           |
+| `npm run build`                            | Sin avisos                           |
+
+Las tres e2e de A dados pasaron además tres veces seguidas después del último cambio. Hay dos migraciones nuevas, que se aplican con `npx supabase db push` como siempre. No traen contenido que revisar.
+
+### Qué está hecho
+
+- **Plataforma**: `isRoundGame` usa una lista explícita de juegos por rondas, así que A dados no hereda las rondas ni el «entras en la siguiente ronda». La sala y la partida admiten `dados`, con su portada en el selector y «Cómo se juega».
+- **Servidor**: `dados_start` y `dados_place`, con puntuación `v × n²`, ataque, turnos alternos (también dentro del equipo), final, empate, abandono, expulsión, volver a jugar y entrada tardía como espectador. Las pruebas pgTAP simulan partidas enteras con dados reales y comprueban en cada turno que solo coloca quien toca.
+- **Sala de espera**: el anfitrión elige la modalidad y quién juega en cada equipo o mira. No se puede empezar si los equipos no cuadran.
+- **Partida**: los dos tableros con los dados apilados hacia el centro, las parejas en azul y los tríos en verde, los puntos por columna, el orden de turnos y la caja de espera. Quien mira ve los nombres de cada bando.
+- **Resultado**: titular personal o de equipo, marcador, empate y victoria por abandono, con «Volver a jugar».
+- **Extremo a extremo**: 1 contra 1 completa (ataque visto en los dos móviles, columna llena desactivada, recarga a media partida y volver a jugar), 2 contra 2 con un espectador comprobando quién puede colocar en cada turno, y 2 contra 2 con nombres de 14 a 360, 390 y 430 px.
+
+### Qué no está hecho o no se ha podido verificar
+
+- **No se ha jugado con personas ni en móviles reales.** Falta ver si el ritmo de turnos en 2 contra 2 se hace ágil y si los dados se leen bien de un vistazo.
+- **Sin animaciones**, como pide el plan: el ataque quita los dados sin transición.
+
+### Incidencias
+
+- **La e2e de 1 contra 1 podía fallar en falso.** Exige ver un ataque, y con dados reales y la forma de jugar de la prueba, una partida de cada 67 no tenía ninguno. Se cambió cómo elige columna la prueba (0,07 %), sin tocar la aserción (DECISIONES 40).
+- **Los dados se apilaban al revés** desde la 39.3; se corrigió en la 40.2 con una prueba.
+
+### Qué revisar primero
+
+1. **Una partida de 2 contra 2 de verdad**, para ver si se entiende de quién es el turno y si el orden alterno dentro del equipo resulta natural.
+2. **Las pantallas sin maqueta**: la caja de espera con «Echar a…» si a quien le toca se le cae la conexión, y el resultado por abandono.
+3. **Los textos de la partida** («Te ha salido un 5. Toca la columna donde lo quieres.», «Le toca a Marta. Decide dónde va el 3.») leídos en la mesa.
+4. **Subir los cambios**: pull request de `feat/a-dados` a `develop` y `npx supabase db push` antes de publicar.
+
 ## El lobo: composición libre, bruja y asesino (fases 33 a 36)
 
 Estado al cerrar `docs/PLAN-6.md` (issue #13), el 25 de octubre de 2026.

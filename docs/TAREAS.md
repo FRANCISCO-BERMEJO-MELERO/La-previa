@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan 5 (Luna llena) terminado · última actualización 2026-10-11
+Estado: plan 7 (A dados) en curso · última actualización 2026-10-25
 
 ## Fase 0 · Preparación
 
@@ -364,6 +364,41 @@ Aceptación: `npm run check` pasa.
 - [x] 36.1 E2E: sin vidente ni aldeanos, 4 lobos de 5, bruja y asesino hasta el final, recarga de la bruja y secreto en red
 - [x] 36.2 Repaso a 360, 390 y 430 px y de accesibilidad
 - [x] 36.3 `docs/DECISIONES.md`, `docs/INFORME.md` y `README.md`
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
+## Fase 37 · A dados: integración en la plataforma
+
+Plan: `docs/PLAN-7.md` (issue #12).
+
+- [x] 37.1 `isRoundGame` con la lista explícita de juegos por rondas, con test
+- [x] 37.2 Migración: `rooms.game`, `games.game_type` y `games.phase` admiten `dados`; `set_game` acepta `dados`, con pgTAP
+- [x] 37.3 Cliente: `dados` en el selector con su portada, descripción y «2 o 4»
+
+Aceptación: A dados se elige en el selector; los demás juegos funcionan igual.
+
+## Fase 38 · A dados: servidor
+
+- [x] 38.1 Migración: estado, bandos, puntuación, `dados_start`, `dados_place`, final, empate, abandono y foto
+- [x] 38.2 Pruebas pgTAP de puntuación, ataque, turnos, columna llena, final, salidas, volver a jugar y entrada tardía
+
+Aceptación: `npm run test:db` pasa desde cero.
+
+## Fase 39 · A dados: cliente
+
+- [x] 39.1 Esquema `zod` de la variante, acciones, errores y `viewFor`, con tests
+- [x] 39.2 Sala de espera: modalidad, «Quién juega» y validación de equipos
+- [x] 39.3 Partida: dados, tableros, turno propio, espera y espectador
+- [x] 39.4 Resultado y «Volver a jugar»
+- [x] 39.5 «Cómo se juega»
+
+Aceptación: `npm run check` pasa.
+
+## Fase 40 · A dados: validación y cierre
+
+- [x] 40.1 E2E de 1 contra 1 y de 2 contra 2 con espectador
+- [x] 40.2 Repaso a 360, 390 y 430 px y de accesibilidad
+- [x] 40.3 `docs/DECISIONES.md`, `docs/INFORME.md` y `README.md`
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 

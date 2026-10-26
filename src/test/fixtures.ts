@@ -1,4 +1,5 @@
 import type {
+  DadosGameState,
   ImpostorGameState,
   PalabrasProhibidasGameState,
   ProbableGameState,
@@ -360,6 +361,95 @@ export function inLuna(
       joined_at: `2026-10-08T19:0${String(index)}:00+00:00`,
     })),
     game: lunaState(game),
+    ...rest,
+  });
+}
+
+/** Fran (A) contra Lucía (B) en 1 contra 1; le toca a Fran con un 5. Álvaro mira. */
+export function dadosState(overrides: Partial<DadosGameState> = {}): DadosGameState {
+  return {
+    type: 'dados',
+    id: ids.game,
+    phase: 'playing',
+    mode: '1v1',
+    sides: [
+      {
+        side: 'A',
+        members: [{ user_id: ids.fran, name: 'Fran' }],
+        board: [[4], [5, 5, 4], [3]],
+        column_scores: [4, 24, 3],
+        total: 31,
+      },
+      {
+        side: 'B',
+        members: [{ user_id: ids.lucia, name: 'Lucía' }],
+        board: [[6, 6], [2], []],
+        column_scores: [24, 2, 0],
+        total: 26,
+      },
+    ],
+    turn_order: [ids.fran, ids.lucia],
+    turn: { user_id: ids.fran, side: 'A' },
+    pending_die: 5,
+    my: { side: 'A', is_spectator: false, is_my_turn: true },
+    result: null,
+    ...overrides,
+  };
+}
+
+/** Fran (A con Marta) contra Lucía y Álvaro (B) en 2 contra 2; le toca a Marta con un 3. */
+export function dadosTeamsState(overrides: Partial<DadosGameState> = {}): DadosGameState {
+  return dadosState({
+    mode: '2v2',
+    sides: [
+      {
+        side: 'A',
+        members: [
+          { user_id: ids.fran, name: 'Fran' },
+          { user_id: ids.marta, name: 'Marta' },
+        ],
+        board: [[3], [6, 6], [4, 4]],
+        column_scores: [3, 24, 16],
+        total: 43,
+      },
+      {
+        side: 'B',
+        members: [
+          { user_id: ids.lucia, name: 'Lucía' },
+          { user_id: ids.alvaro, name: 'Álvaro' },
+        ],
+        board: [[4, 2, 2], [], [1]],
+        column_scores: [12, 0, 1],
+        total: 13,
+      },
+    ],
+    turn_order: [ids.fran, ids.lucia, ids.marta, ids.alvaro],
+    turn: { user_id: ids.marta, side: 'A' },
+    pending_die: 3,
+    my: { side: 'A', is_spectator: false, is_my_turn: false },
+    ...overrides,
+  });
+}
+
+/** Sala de cuatro con A dados elegido y la partida dada. */
+export function inDados(
+  game: Partial<DadosGameState> = {},
+  rest: Partial<Snapshot> = {},
+): Snapshot {
+  const base = lobbySnapshot();
+  return lobbySnapshot({
+    room: { ...base.room, game: 'dados' },
+    players: [
+      ...base.players,
+      {
+        user_id: ids.marta,
+        name: 'Marta',
+        avatar: null,
+        connected: true,
+        joined_at: '2026-10-08T19:03:00+00:00',
+      },
+    ],
+    game: dadosState(game),
     ...rest,
   });
 }

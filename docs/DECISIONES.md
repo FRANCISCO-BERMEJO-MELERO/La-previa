@@ -1,5 +1,38 @@
 # Decisiones
 
+## 2026-10-26 · 40 · A dados: validación y cierre
+
+- **Un solo commit para 40.1 y 40.2.** La e2e de 2 contra 2 busca los tableros por «Tablero del equipo B», el rótulo que corrige la 40.2, así que ninguna de las dos pasa sin la otra.
+- **Los dados se apilan hacia el centro**, como en la referencia: el primero que coloca el rival queda abajo en su tablero (pegado al mío) y el primero mío queda arriba. Estaba al revés desde la 39.3. Una prueba de `screens.test.tsx` lo comprueba.
+- **La pantalla de partida tiene un `h1` oculto** con el nombre del juego. La cabecera lo muestra como píldora y la revisión de accesibilidad pide un encabezado principal.
+- **En 2 contra 2, quien juega lee «Tablero del equipo B»** (y «Puntos por columna del equipo B») en el tablero rival, en lugar de «Tablero de Equipo B». Quien mira sigue leyendo los nombres de cada bando.
+- **Las e2e juegan con dados reales.** Cada turno leen el dado y eligen columna: atacan si pueden; si no, colocan donde el rival aún tiene hueco, para dejarle ocasión de atacar. Con «la primera columna libre», una simulación de 300 000 partidas daba un 1,5 % sin ningún ataque, y la prueba de 1 contra 1, que exige ver uno, habría fallado en falso una vez de cada 67. Con la regla nueva baja al 0,07 %, a cambio de partidas más largas (mediana de 31 turnos y 72 en el 99,9 %, lejos del tope de 120).
+
+## 2026-10-25 · 37.3 y 39 · A dados en el cliente
+
+- **Un solo commit para 37.3 y 39.1 a 39.5.** En cuanto `dados` entra en `gameIds`, TypeScript exige su portada, sus pasos de «Cómo se juega», su caso al empezar y su pantalla de partida: ninguna parte compila sin las demás.
+- **Sala de espera.** Se conserva la sala de siempre (código, QR y jugadores) y los ajustes de A dados van donde los de los otros juegos, al pie y solo para el anfitrión. La referencia de diseño quita la tarjeta del código, pero sin ella no hay forma de invitar. La modalidad por defecto es 1 contra 1; al cambiarla, las elecciones vuelven al reparto por defecto. Quien entra después juega o mira según su puesto de llegada, salvo que el anfitrión lo cambie. El mínimo para empezar es 2.
+- **Textos sin género.** «Le toca a Marta. Decide dónde va el 3.» en lugar de «Decide ella», como el resto de la app (decisión de 1.6).
+- **El resultado** sigue la referencia: «Fin de la partida», el titular y una línea con el marcador («Fran y Marta se llevan la mesa: 91 a 18.»), «Empate a 18 puntos.» o, por abandono, «Lucía se ha ido. Gana Fran por abandono.». En 2 contra 2, quien mira lee «Gana el equipo A».
+- **Partida esperando a un desconectado.** Si a quien le toca se le cae la conexión, el anfitrión ve «Echar a…» en la caja de espera, con la regla de expulsión de siempre. Así la partida no queda bloqueada.
+- **`Card` admite el tono `tomato`**, para la tarjeta «Te toca» que pide el plan. Es un token que ya existe.
+- **Portada.** Es decorativa (`aria-hidden`), como las demás del selector, porque el botón ya dice el nombre del juego.
+
+Pruebas que cambian:
+
+- `GamePickerScreen.test.tsx`: «lista los siete juegos» pasa a «los ocho», con A dados al final, y comprueba su descripción y su «2 o 4». Añadir un juego al selector cambia por fuerza el número de juegos.
+
+## 2026-10-25 · 38 · A dados en el servidor
+
+`docs/PLAN-7.md` §2 a §5. Donde el código manda sobre los nombres del plan:
+
+- **La columna se llama `column_index` y va de 0 a 2.** `column` es palabra reservada de SQL y obligaría a entrecomillar el parámetro en cada uso. Una columna fuera de rango (o ninguna) da `invalid_column`, código nuevo con su texto en el cliente: no es una columna llena, así que `column_full` diría algo falso.
+- **El bando va en `game_players.side`**, como sugiere el plan, y solo los jugadores tienen fila en `game_players`. Espectador es quien está en la sala y no en la partida, igual que quien entra tarde en los otros juegos. Al irse un jugador, su fila se queda, así que el resultado conserva su nombre.
+- **El estado va en `dados_state`**, con los campos del plan y uno más, `left_user_id`, para el texto del resultado por abandono («Fran se ha ido…»). La foto lo da en `result.left` (`user_id` y `name`, o nulo). La función de la foto se llama `private.dados_game_state` para no confundirla con la tabla.
+- **`turn_order` es la secuencia completa** (`A1, B1, A2, B2` o la que empiece por B) y `turn_index` apunta al turno actual; al terminar no le toca a nadie y no hay dado pendiente.
+- **Volver a jugar es otra llamada a `dados_start`** con los mismos equipos. Si falta alguno, da `invalid_teams` y el cliente vuelve a la sala de espera, como hacen los juegos por rondas con `not_enough_players`.
+- **Pruebas.** La partida de 2 contra 2 se simula entera en la base de datos con dados reales: en cada turno se comprueba que coloca quien toca y que los otros tres y el espectador reciben `not_your_turn`. El sorteo del bando que abre y del orden dentro del equipo se comprueba con 40 partidas (la probabilidad de un falso fallo es de 2⁻³⁹).
+
 ## 2026-10-25 · D.6 · Next 16.4.3 por seguridad
 
 Next 16.4.0 tiene vulnerabilidades conocidas (entre ellas GHSA-2464-fhr4-w9xw, ejecución remota de código en la optimización de imágenes con SVG, crítica, que afecta a `>=16.0.0 <=16.4.0`). `next dev` y `next build` se paraban para recomendar actualizar. Se sube `next` y `eslint-config-next` a la 16.4.3, la última del 16.4, con versiones exactas como el resto. Es un parche de la misma versión menor: no cambia ninguna API que use el proyecto.
