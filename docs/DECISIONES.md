@@ -1,5 +1,13 @@
 # Decisiones
 
+## 2026-10-26 · D.7 · El impostor recibe una pista propia, no la categoría
+
+- **A petición de Fran.** `docs/CONTEXTO.md` §2 dejaba fuera de alcance las «pistas propias por palabra: la pista es la categoría». Con solo la categoría, el impostor casi no tenía con qué disimular. Fran pide una pista real, así que se cambia; `docs/CONTEXTO.md` no se toca (lo prohíbe `CLAUDE.md`) y manda esta decisión.
+- **Una pista por palabra en `words.hint`**, obligatoria y no vacía. Es una palabra relacionada que no delata la respuesta ni la contiene (Paella → Valencia). Las 300 se escriben en `20261026100000_impostor_hints.sql` y se pueden revisar en `docs/PALABRAS.md`. Una prueba pgTAP comprueba que ninguna contiene su palabra ni está dentro de ella.
+- **La pista solo viaja en la foto del impostor**, en la clave `game.hint`. Para los jugadores normales y quien llega tarde vale `null`. Va fuera de `my` para no cambiar la forma de `my`, que las pruebas de `09_game_state` comparan entera.
+- **La categoría sigue en la foto**: la ven los jugadores normales bajo su palabra y sigue siendo la temática que elige el anfitrión. En la tarjeta del impostor, «Tu pista: la categoría» pasa a «Tu pista» con la pista debajo. La referencia (`docs/referencia-pantallas.html`, pantalla 07) aún dibuja el texto antiguo.
+- **Pruebas que cambian.** La prueba 07 de `game-screens.test.tsx` y `e2e/happy-path.spec.ts` buscaban el texto «Tu pista: la categoría»; ahora buscan «Tu pista», porque el comportamiento que comprueban es justo el que se cambia.
+
 ## 2026-10-26 · 40 · A dados: validación y cierre
 
 - **Un solo commit para 40.1 y 40.2.** La e2e de 2 contra 2 busca los tableros por «Tablero del equipo B», el rótulo que corrige la 40.2, así que ninguna de las dos pasa sin la otra.

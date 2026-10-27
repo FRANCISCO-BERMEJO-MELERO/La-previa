@@ -57,6 +57,17 @@ describe('parseSnapshot', () => {
     expect(parseSnapshot(lobbySnapshot({ game }))).not.toBeNull();
   });
 
+  it('acepta la pista del impostor y exige que venga, aunque sea nula', () => {
+    const impostor = gameState({
+      hint: 'Valencia',
+      my: { is_participant: true, alive: true, role: 'impostor', word: null, voted_for: null },
+    });
+    expect(parseSnapshot(inGame(impostor))?.game).toEqual(impostor);
+    const withoutHint: Record<string, unknown> = { ...gameState() };
+    delete withoutHint.hint;
+    expect(parseSnapshot({ ...inGame(), game: withoutHint })).toBeNull();
+  });
+
   it('la partida dice de qué juego es', () => {
     expect(parseSnapshot(inGame())?.game?.type).toBe('impostor');
     const untyped: Record<string, unknown> = { ...gameState() };

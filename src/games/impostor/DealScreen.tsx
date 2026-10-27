@@ -9,15 +9,17 @@ type DealScreenProps = GameScreenProps & {
   role: 'player' | 'impostor';
   word: string | null;
   category: string;
+  hint?: string | null;
   players: AvatarRowItem[];
   connected: number;
 };
 
-/** 06 y 07: el reparto. El jugador normal ve la palabra; el impostor, solo la categoría. */
+/** 06 y 07: el reparto. El jugador normal ve la palabra; el impostor, solo su pista. */
 export function DealScreen({
   role,
   word,
   category,
+  hint = null,
   players,
   connected,
   ...chrome
@@ -33,7 +35,7 @@ export function DealScreen({
           <h1 className="flex flex-1 items-center font-display text-display-md text-ground uppercase">
             {copy.deal.impostorTitle}
           </h1>
-          <CategoryRow label={copy.deal.impostorClue} category={category} onDark />
+          <InfoRow label={copy.deal.impostorClue} value={hint ?? category} onDark />
         </Card>
       ) : (
         <Card variant="hero" tilt="left" grow>
@@ -45,7 +47,7 @@ export function DealScreen({
           >
             {word}
           </h1>
-          <CategoryRow label={copy.deal.category} category={category} />
+          <InfoRow label={copy.deal.category} value={category} />
         </Card>
       )}
       <p className="text-base font-medium">
@@ -56,13 +58,13 @@ export function DealScreen({
   );
 }
 
-function CategoryRow({
+function InfoRow({
   label,
-  category,
+  value,
   onDark = false,
 }: {
   label: string;
-  category: string;
+  value: string;
   onDark?: boolean;
 }) {
   return (
@@ -70,7 +72,7 @@ function CategoryRow({
       className={`flex items-center justify-between gap-3 border-t-3 pt-3.5 ${onDark ? 'border-paper' : 'border-ink'}`}
     >
       <p className="text-sm font-bold">{label}</p>
-      <p className="text-right font-display text-lg uppercase">{category}</p>
+      <p className="text-right font-display text-lg uppercase">{value}</p>
     </div>
   );
 }

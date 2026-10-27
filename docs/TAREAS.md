@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan 7 (A dados) en curso · última actualización 2026-10-25
+Estado: plan 7 (A dados) en curso · última actualización 2026-10-26
 
 ## Fase 0 · Preparación
 
@@ -414,3 +414,4 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 - [x] D.4 (a petición de Fran) Los avatares pasan a ser las 11 imágenes de `public/avatars/` en lugar de los 12 dibujos con formas
 - [x] D.5 (a petición de Fran) README de cierre de la primera versión, con capturas reales de cada juego e ilustraciones de recorrido, arquitectura y secreto
 - [x] D.6 (a petición de Fran) Subir Next a 16.4.3 por las vulnerabilidades de la 16.4.0
+- [x] D.7 (a petición de Fran) El impostor recibe una pista propia de cada palabra en lugar de la categoría
