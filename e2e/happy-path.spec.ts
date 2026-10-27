@@ -23,14 +23,14 @@ test('6.1 · partida feliz con 3 jugadores, y volver a jugar', async ({ browser 
   await expect(fran.getByText('3 de 16')).toBeVisible();
   await expect(lucia.getByRole('status')).toHaveText('Fran empezará la partida');
 
-  // Reparto: los normales ven la misma palabra; el impostor, solo la categoría.
+  // Reparto: los normales ven la misma palabra; el impostor, solo su pista.
   await fran.getByRole('button', { name: 'Empezar partida' }).click();
   const roles = await rolesOf(players);
   const impostor = impostorOf(roles);
   const normals = Object.keys(players).filter((name) => name !== impostor);
   const words = new Set<string>();
   for (const [name, page] of Object.entries(players)) {
-    if (name === impostor) await expect(page.getByText('Tu pista: la categoría')).toBeVisible();
+    if (name === impostor) await expect(page.getByText('Tu pista', { exact: true })).toBeVisible();
     else words.add(await secretWord(page));
   }
   expect(words.size).toBe(1);

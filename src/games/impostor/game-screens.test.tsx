@@ -67,21 +67,40 @@ describe('DealScreen (06 y 07)', () => {
     expect(screen.getByText('Extraterrestre')).toHaveClass('text-xl');
   });
 
-  it('07 · el impostor ve que lo es y solo la categoría como pista', () => {
+  it('07 · el impostor ve que lo es y su pista, no la categoría', () => {
     render(
       <DealScreen
         {...chrome}
         role="impostor"
         word={null}
         category="Comida"
+        hint="Valencia"
         players={avatars}
         connected={1}
       />,
     );
     expect(screen.getByText('Eres el')).toBeInTheDocument();
-    expect(screen.getByText('Tu pista: la categoría')).toBeInTheDocument();
+    expect(screen.getByText('Tu pista')).toBeInTheDocument();
+    expect(screen.getByText('Valencia')).toBeInTheDocument();
+    expect(screen.queryByText('Comida')).not.toBeInTheDocument();
     expect(screen.queryByText('Tu palabra')).not.toBeInTheDocument();
     expect(screen.getByText(/No conoces la palabra/)).toBeInTheDocument();
+  });
+
+  it('06 · el jugador normal no ve la pista del impostor', () => {
+    render(
+      <DealScreen
+        {...chrome}
+        role="player"
+        word="Paella"
+        category="Comida"
+        hint="Valencia"
+        players={avatars}
+        connected={1}
+      />,
+    );
+    expect(screen.queryByText('Valencia')).not.toBeInTheDocument();
+    expect(screen.queryByText('Tu pista')).not.toBeInTheDocument();
   });
 
   it('la fila de avatares nombra a todos para lectores de pantalla', () => {
