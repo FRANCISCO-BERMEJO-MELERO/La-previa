@@ -63,6 +63,7 @@ export function gameState(overrides: Partial<ImpostorGameState> = {}): ImpostorG
     impostor_count: 1,
     impostors_left: 1,
     category: 'Comida',
+    hint: null,
     vote_seconds: null,
     voting_deadline: null,
     participants: [

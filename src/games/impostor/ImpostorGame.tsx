@@ -228,6 +228,7 @@ function GameView({
           role={view === 'deal_impostor' ? 'impostor' : 'player'}
           word={game.my.word}
           category={game.category}
+          hint={game.hint}
           players={roomAvatars}
           connected={connectedCount(snapshot)}
         />

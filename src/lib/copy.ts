@@ -176,7 +176,7 @@ export const copy = {
       impostor: [
         {
           title: 'Una palabra para todos',
-          text: 'Todos reciben la misma palabra menos el impostor, que solo sabe la temática.',
+          text: 'Todos reciben la misma palabra menos el impostor, que solo recibe una pista.',
         },
         {
           title: 'Pistas por turnos',
@@ -456,7 +456,7 @@ export const copy = {
     impostorPill: 'Eres el',
     // Guion blando para que, si no cabe, se parta como en la referencia: IMPOS-TOR.
     impostorTitle: 'Impos­tor',
-    impostorClue: 'Tu pista: la categoría',
+    impostorClue: 'Tu pista',
     impostorHint: 'No conoces la palabra. Escucha, disimula y que no te pillen.',
     connected: (count: number) => `${String(count)} conectados`,
     openVoting: 'Pasar a votación',
