@@ -446,7 +446,7 @@ Aceptación: `npm run check` pasa.
 
 ## Fase 46 · Movimiento: validación y cierre
 
-- [ ] 46.1 E2E con movimiento activado por juego y recarga a mitad de secuencia
+- [x] 46.1 E2E con movimiento activado por juego y recarga a mitad de secuencia
 - [ ] 46.2 Repaso a 360, 390 y 430 px
 - [ ] 46.3 `docs/DECISIONES.md` e `docs/INFORME.md`
 
