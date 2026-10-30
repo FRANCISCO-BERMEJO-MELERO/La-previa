@@ -431,7 +431,7 @@ Aceptación: `check` y `test:e2e` pasan.
 
 ## Fase 44 · Movimiento: El lobo
 
-- [ ] 44.1 Eventos de El lobo con tests de privacidad por rol
+- [x] 44.1 Eventos de El lobo con tests de privacidad por rol
 - [ ] 44.2 Telón de la noche y del amanecer
 - [ ] 44.3 Giro de la carta, amanecer, votaciones, veredicto, cazador y resultado
 
