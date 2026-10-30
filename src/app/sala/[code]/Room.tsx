@@ -202,7 +202,9 @@ export function Room({ initial, fresh }: RoomProps) {
       case 'palabras_prohibidas':
         return withLeaveDialog(<PalabrasProhibidasGame {...shared} game={game} />);
       case 'luna_llena':
-        return withLeaveDialog(<LunaLlenaGame {...shared} game={game} />);
+        return withLeaveDialog(
+          <LunaLlenaGame {...shared} game={game} transition={transition} />,
+        );
       case 'dados':
         return withLeaveDialog(<DadosGame {...shared} game={game} />);
     }
