@@ -201,3 +201,43 @@ test('40.1 · A dados en 2 contra 2 con un espectador: cada turno, solo coloca q
     /^(Habéis ganado|Habéis perdido|Empate)$/,
   );
 });
+
+test('46.1 · A dados: recargar justo después de un ataque pinta la mesa quieta', async ({
+  browser,
+}) => {
+  test.setTimeout(300_000);
+  const players = await roomOf(browser, ['Fran', 'Lucía']);
+  const rivalOf: Record<string, string> = { Fran: 'Lucía', Lucía: 'Fran' };
+  await pageOf(players, 'Fran').getByRole('button', { name: 'Empezar partida' }).click();
+
+  for (let turn = 0; turn < 120; turn++) {
+    const name = await whoseTurn(players);
+    if (name === null) break;
+    const page = pageOf(players, name);
+    const other = pageOf(players, rivalOf[name] ?? '');
+    const value = await myDie(page);
+    const mine = await boardOf(page.getByRole('region', { name: 'Tu tablero' }));
+    const rival = await boardOf(
+      page.getByRole('region', { name: `Tablero de ${rivalOf[name] ?? ''}` }),
+    );
+    const choice = chooseColumn(mine, rival, value);
+    await page
+      .getByRole('button', { name: `Colocar el dado en la columna ${String(choice.column + 1)}` })
+      .click();
+    await expect(
+      other.getByRole('heading', { name: 'Te toca' }).or(other.getByText('Fin de la partida')),
+    ).toBeVisible();
+    if (!choice.attack || (await other.getByText('Fin de la partida').isVisible())) continue;
+
+    // Quien recibe el ataque ve reventar sus dados; recargado, la mesa está quieta y al día.
+    await expect(other.getByTestId('popped')).toBeAttached();
+    const board = await boardOf(other.getByRole('region', { name: 'Tu tablero' }));
+    await other.reload();
+    await expect(other.getByRole('heading', { name: 'Te toca' })).toBeVisible();
+    expect(await boardOf(other.getByRole('region', { name: 'Tu tablero' }))).toEqual(board);
+    await expect(other.getByTestId('popped')).toHaveCount(0);
+    await expect(other.locator('[class*="animate-"]')).toHaveCount(0);
+    return;
+  }
+  throw new Error('La partida acabó sin ningún ataque');
+});

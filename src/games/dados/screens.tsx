@@ -102,7 +102,7 @@ function ColumnDice({
           {SLOTS.map((slot) => {
             const gone = motion.removed.find((die) => die.slot === slot);
             return gone ? (
-              <Die key={slot} value={gone.value} hit motion="animate-pop" />
+              <Die key={slot} value={gone.value} hit decorative motion="animate-pop" />
             ) : (
               <span key={slot} className="size-13 shrink-0" />
             );

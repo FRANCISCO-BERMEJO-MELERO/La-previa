@@ -37,6 +37,8 @@ type DieProps = {
   hit?: boolean;
   /** Clases de movimiento: tirada, subir, bajar o reventar. */
   motion?: string;
+  /** Copia que solo se ve (el dado roto que revienta): no es un dado de la mesa. */
+  decorative?: boolean;
 };
 
 export function Die({
@@ -46,12 +48,14 @@ export function Die({
   face = value,
   hit = false,
   motion = '',
+  decorative = false,
 }: DieProps) {
   const dots = pips[face] ?? [];
   return (
     <span
-      role="img"
-      aria-label={copy.dados.die(value)}
+      {...(decorative
+        ? { 'aria-hidden': true }
+        : { role: 'img', 'aria-label': copy.dados.die(value) })}
       data-tone={tone}
       className={`grid shrink-0 grid-cols-3 grid-rows-3 place-items-center rounded-control border-3 border-ink ${hit ? 'bg-tomato' : toneClasses[tone]} ${sizeClasses[size].box} ${motion}`}
     >

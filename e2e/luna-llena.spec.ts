@@ -498,3 +498,42 @@ test('36.1 · bruja y asesino hasta el final, con recarga y sin secretos en la r
   await expect(pageOf(players, killer).getByRole('heading', { name: 'Has perdido' })).toBeVisible();
   await expect(host.getByText('Gana el pueblo').first()).toBeVisible();
 });
+
+test.describe('con movimiento', () => {
+  test('46.1 · El lobo: el telón cae para todos y recargar el amanecer lo pinta quieto', async ({
+    browser,
+  }) => {
+    const { players, host } = await lunaRoom(browser, six);
+    await host.getByRole('button', { name: 'Empezar partida' }).click();
+    const roles = await rolesOf(players);
+    const [wolf] = withRole(roles, 'wolf');
+    const [seer] = withRole(roles, 'seer');
+    const villagers = withRole(roles, 'villager');
+    const [victim, witness] = villagers;
+    if (!wolf || !seer || !victim || !witness) throw new Error('Reparto inesperado');
+
+    // El mismo telón en todos los móviles, sea cual sea su rol.
+    await narrate(host, 'Que caiga la noche');
+    for (const page of Object.values(players)) {
+      await expect(page.getByTestId('curtain')).toHaveClass(/animate-telon-noche/);
+    }
+    await allSee(players, six, 'Noche 1');
+    await act(pageOf(players, wolf), victim);
+    await act(pageOf(players, seer), wolf);
+    for (const name of villagers) await act(pageOf(players, name), wolf);
+
+    // Amanece: el muerto cae en todos los móviles, vivos y muertos.
+    const alive = six.filter((name) => name !== victim);
+    await allSee(players, alive, 'Amanece');
+    for (const page of Object.values(players)) {
+      await expect(page.getByTestId('curtain')).toHaveClass(/animate-telon-amanecer/);
+    }
+
+    // Recargado a mitad del anuncio, el amanecer aparece en su estado final, sin animar.
+    const page = pageOf(players, witness);
+    await page.reload();
+    await expect(page.getByText('Amanece', { exact: true })).toBeVisible();
+    await expect(page.getByText('Ha muerto', { exact: true })).toBeVisible();
+    await expect(page.locator('[class*="animate-"]')).toHaveCount(0);
+  });
+});
