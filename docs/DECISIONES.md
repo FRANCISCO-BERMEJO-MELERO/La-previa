@@ -1,5 +1,17 @@
 # Decisiones
 
+## 2026-10-30 · 44 · Movimiento: El lobo
+
+- **Un solo commit para 44.2 y 44.3.** El telón y el resto de pantallas se conectan en el mismo sitio (`LunaLlenaGame`) a partir de los mismos eventos; separarlos dejaba un commit con eventos calculados y sin usar.
+- **Solo lo público.** Los eventos de El lobo salen de la fase, de los ids de los muertos del anuncio y de los votos públicos. Nunca de `my`, de las causas reales que ven los muertos ni de quién ha actuado de noche. Un test compara los eventos de los nueve roles en el reparto, la noche y el amanecer.
+- **Telón.** Va en el hueco del aviso, que está en todas las pantallas de la partida (vivos, muertos, quien llegó tarde), pero es fijo y cubre la pantalla entera. No recibe toques, así que no desactiva ningún botón: los tapa menos de un segundo. De noche la tarjeta no entra con el cambio de fase, para que todas las pantallas se muevan igual; al amanecer sí, tras subir el telón.
+- **Giro de la carta.** El reparto de El lobo no tiene dorso: la carta se ve entera desde el principio y cambiar eso sería otra forma de jugar, que el plan solo pide para El impostor. El giro se aplica donde la carta se toca para verla: el botón para volver a verla durante la partida. Es el mismo para todos los roles. En el reparto, la carta entra con el cambio de fase, igual para todos.
+- **Sellos de los muertos.** Cada muerto del amanecer lleva el sello «Ha muerto»; en la horca, el ahorcado lleva «Ahorcado» y la víctima del cazador, «Ha muerto». Se ven siempre; con movimiento, el sello se planta cuando su carta ha caído. La noche tranquila pasa a ser una sola fila en forma de sello `lime` con «Esta noche no ha muerto nadie.».
+- **«Se salva» no se pinta.** Desde D.2 no hay segunda votación: quien llega a la horca muere, así que ningún estado de la partida dice que alguien se salva.
+- **Votaciones.** Al cerrarse, cada fila de votos cae, su número cuenta desde cero y, al final, la del acusado salta. Su color es el `tomato` de siempre, no el `lime` de la fila más votada de El impostor: en El lobo la fila destacada es la del acusado y ya tenía color propio. El alcalde no tiene fila destacada.
+- **Resultado.** Como en El impostor: el titular se sella y, debajo, cada rol cae de uno en uno.
+
+
 ## 2026-10-30 · 43 · Mantener para mirar
 
 - **La tapa es una sola para los dos roles**: tarjeta `sky` con «Mantén pulsado» y «para ver tu palabra», el mismo tamaño, el mismo giro (−1,5°) y la misma sombra. Lo de debajo queda con `visibility: hidden` mientras está tapado: no se ve ni lo leen los lectores de pantalla, pero sigue en el DOM, como pide el plan.

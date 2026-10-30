@@ -60,7 +60,10 @@ export function CardPeek({ role, pack }: CardPeekProps) {
       {open ? (
         // Sin eventos de puntero: el dedo sigue sobre el botón, que es quien la oculta al soltar.
         <div className="pointer-events-none fixed inset-0 z-10 mx-auto flex max-w-md flex-col bg-ground px-6 py-8">
-          <RoleCard role={role} pack={pack} headingLevel={2} />
+          {/* Gira del dorso a la carta, igual para todos los roles (docs/PLAN-8.md §6). */}
+          <div data-testid="card-flip" className="flex flex-1 animate-girar flex-col">
+            <RoleCard role={role} pack={pack} headingLevel={2} />
+          </div>
         </div>
       ) : null}
     </>

@@ -882,6 +882,7 @@ export const copy = {
       pill: 'Amanece',
       quietTitle: 'Noche tranquila',
       quietText: 'Esta noche no ha muerto nadie.',
+      deadStamp: 'Ha muerto',
       deathsTitle: 'Esta noche',
       // Los vivos solo saben que alguien ha muerto de noche; los muertos, por qué.
       causes: {
