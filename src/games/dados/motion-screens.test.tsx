@@ -50,6 +50,8 @@ describe('A dados en movimiento', () => {
     const mine = screen.getByRole('region', { name: 'Tu tablero' });
     const popped = within(mine).getByTestId('popped');
     expect(popped).toHaveAttribute('aria-hidden', 'true');
+    // Las copias que revientan no son dados de la mesa: solo queda el 2.
+    expect(within(mine).getAllByRole('img')).toHaveLength(1);
     const ghosts = popped.querySelectorAll('.animate-pop');
     expect(ghosts).toHaveLength(2);
     for (const ghost of ghosts) expect(ghost).toHaveClass('bg-tomato');
