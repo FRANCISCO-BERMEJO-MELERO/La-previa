@@ -333,6 +333,21 @@
   }
 }
 
+/* La tapa del reparto (docs/PLAN-8.md §8): se levanta mientras se mantiene pulsada. */
+@utility tapa {
+  transition: transform var(--duration-base) var(--ease-golpe);
+}
+
+/* Con movimiento reducido no se mueve: desaparece mientras se mira. */
+@utility tapa-arriba {
+  transform: translateY(-64%) rotate(-6deg);
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+    opacity: 0;
+  }
+}
+
 /* Retraso de un paso de una secuencia, en múltiplos de 20 ms hasta 2,4 s (docs/PLAN-8.md §3). */
 @utility anim-delay-* {
   animation-delay: calc(--value(integer) * 1ms);

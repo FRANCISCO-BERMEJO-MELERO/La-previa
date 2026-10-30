@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-10-30 · 43 · Mantener para mirar
+
+- **La tapa es una sola para los dos roles**: tarjeta `sky` con «Mantén pulsado» y «para ver tu palabra», el mismo tamaño, el mismo giro (−1,5°) y la misma sombra. Lo de debajo queda con `visibility: hidden` mientras está tapado: no se ve ni lo leen los lectores de pantalla, pero sigue en el DOM, como pide el plan.
+- **La frase de ayuda del reparto también va tapada.** Es distinta para el jugador («Hablad las rondas que queráis…») y para el impostor («No conoces la palabra…»): con la tarjeta tapada, esa frase delataba el rol a quien mirase de reojo.
+- **Puntero.** Al pulsar, la tapa captura el puntero, así que soltar fuera de ella (el dedo se queda donde estaba y la tapa sube) también la baja. El menú del toque largo se anula. El clic que sigue a soltar no hace nada; solo el clic sin puntero (`detail === 0`) alterna.
+- **Teclado.** Espacio e Intro levantan mientras se mantienen; se anula su acción por defecto para que no generen además un clic que la dejaría abierta. Perder el foco la baja.
+- **Cambio de fase.** Lo tapado no sale en la copia fantasma que se va al cambiar de fase: saldría destapado. Sale la tapa, que es igual para todos.
+- **«Cómo se juega» no cambia.** Sus pasos de El impostor no dicen cómo se ve la palabra, que es la condición del plan para tocarlos; la tapa lo explica sola.
+- **Pruebas que cambian.** Los ayudantes de `e2e/players.ts` (`rolesOf` y `secretWord`) y las e2e que leen el reparto tras recargar o en una ronda nueva (`long-session`, `reconnect`, `tie`, `probable`) levantan antes la tapa con un clic sin puntero (`peek`), como haría un lector de pantalla. Es justo el comportamiento que cambia el plan: la palabra ya no se ve sin mantener pulsado.
+
 ## 2026-10-30 · 42 · Movimiento: plataforma y El impostor
 
 - **El cierre de la votación de El impostor no se anima como pide el plan.** La foto de El impostor nunca trae a quién ha votado cada uno ni el recuento: ni antes ni después de cerrar (`docs/CONTEXTO.md` lo prohíbe antes de `finished` y la pantalla de revelación solo dice a quién se expulsa). Pintar votos que caen sobre cada fila exigiría cambiar la base de datos, y esta tarea es solo de cliente; además, en la duda sobre dar información de más, no se pone. En su lugar, mientras se vota, la ficha de quien acaba de votar cae y el marcador «2 de 5» cuenta: es lo que todos ya ven.

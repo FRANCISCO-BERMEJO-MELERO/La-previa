@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { Card } from './Card';
+import { HoldToPeek } from './HoldToPeek';
 import { PhaseStage } from './PhaseStage';
 
 function Stage({ stage, entering }: { stage: string; entering: boolean }) {
@@ -69,5 +70,29 @@ describe('PhaseStage', () => {
     rerender(<Stage stage="voting" entering />);
     ghosts().firstElementChild?.dispatchEvent(new Event('animationend'));
     expect(ghosts()).toBeEmptyDOMElement();
+  });
+
+  it('lo tapado no sale como fantasma: sale la tapa', () => {
+    const Deal = ({ stage }: { stage: string }) => (
+      <PhaseStage stageKey={stage} entering={stage !== 'talking'}>
+        {stage === 'talking' ? (
+          <HoldToPeek title="Mantén pulsado" hint="para ver tu palabra">
+            <Card variant="dark" tilt="right">
+              <h1>Impostor</h1>
+            </Card>
+          </HoldToPeek>
+        ) : (
+          <Card variant="hero" tilt="left">
+            <h1>Votación</h1>
+          </Card>
+        )}
+      </PhaseStage>
+    );
+    const { rerender } = render(<Deal stage="talking" />);
+    rerender(<Deal stage="voting" />);
+    const layer = ghosts();
+    expect(layer.children).toHaveLength(1);
+    expect(layer).not.toHaveTextContent('Impostor');
+    expect(layer).toHaveTextContent('Mantén pulsado');
   });
 });

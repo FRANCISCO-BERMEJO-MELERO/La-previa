@@ -424,8 +424,8 @@ Aceptación: `npm run check` pasa.
 
 ## Fase 43 · Mantener para mirar
 
-- [ ] 43.1 Tapa del reparto con puntero, teclado y clic sin puntero, con tests
-- [ ] 43.2 «Cómo se juega» y pruebas e2e del reparto
+- [x] 43.1 Tapa del reparto con puntero, teclado y clic sin puntero, con tests
+- [x] 43.2 «Cómo se juega» y pruebas e2e del reparto
 
 Aceptación: `check` y `test:e2e` pasan.
 

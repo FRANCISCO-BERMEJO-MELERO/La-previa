@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
 import { motionMs } from '@/lib/motion';
-import { STAGE_CARD, StageContext } from './stage-context';
+import { STAGE_CARD, STAGE_HIDDEN, StageContext } from './stage-context';
 
 type Placed = { node: HTMLElement; left: number; top: number; width: number; height: number };
 
@@ -11,15 +11,18 @@ type Placed = { node: HTMLElement; left: number; top: number; width: number; hei
  * fantasma lleva el giro en sus propias clases.
  */
 function measure(root: HTMLElement): Placed[] {
-  return [...root.querySelectorAll<HTMLElement>(`[${STAGE_CARD}]`)].map((node) => {
-    let left = -window.scrollX;
-    let top = -window.scrollY;
-    for (let box: Element | null = node; box instanceof HTMLElement; box = box.offsetParent) {
-      left += box.offsetLeft;
-      top += box.offsetTop;
-    }
-    return { node, left, top, width: node.offsetWidth, height: node.offsetHeight };
-  });
+  const cards = [...root.querySelectorAll<HTMLElement>(`[${STAGE_CARD}]`)];
+  return cards
+    .filter((node) => !node.closest(`[${STAGE_HIDDEN}]`))
+    .map((node) => {
+      let left = -window.scrollX;
+      let top = -window.scrollY;
+      for (let box: Element | null = node; box instanceof HTMLElement; box = box.offsetParent) {
+        left += box.offsetLeft;
+        top += box.offsetTop;
+      }
+      return { node, left, top, width: node.offsetWidth, height: node.offsetHeight };
+    });
 }
 
 /** Copia muda de una tarjeta que ya no existe, en el sitio donde estaba. */
