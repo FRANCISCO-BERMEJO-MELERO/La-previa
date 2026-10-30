@@ -251,6 +251,23 @@ describe('LobbyScreen (04)', () => {
   });
 });
 
+describe('LobbyScreen: movimiento', () => {
+  it('la fila de quien acaba de entrar cae; las demás, quietas', () => {
+    renderLobby({ joined: [ids.alvaro] });
+    const rows = screen
+      .getAllByRole('listitem')
+      .filter((row) => row.textContent.includes('Álvaro'));
+    expect(rows[0]).toHaveClass('animate-caer');
+    const fran = screen.getAllByRole('listitem').find((row) => row.textContent.includes('Fran'));
+    expect(fran).not.toHaveClass('animate-caer');
+  });
+
+  it('el diálogo del QR cae al abrirse', () => {
+    renderLobby({ qrOpen: true });
+    expect(screen.getByRole('dialog', { name: 'Escanea para entrar' })).toHaveClass('animate-caer');
+  });
+});
+
 describe('LobbyScreen: temáticas de El impostor', () => {
   const categories = ['Animales', 'Fútbol', 'Historia'];
 

@@ -17,7 +17,8 @@ const variantClasses: Record<TextFieldVariant, string> = {
 
 export function TextField({ id, label, variant = 'text', error, ...rest }: TextFieldProps) {
   const errorId = `${id}-error`;
-  const background = error ? 'bg-field-error' : 'bg-field';
+  // El campo erróneo tiembla y su mensaje cae (docs/PLAN-8.md §4).
+  const background = error ? 'animate-sacudida bg-field-error' : 'bg-field';
   return (
     <div className="flex flex-col gap-3">
       <label htmlFor={id} className="text-label font-bold uppercase tracking-label">
@@ -31,7 +32,7 @@ export function TextField({ id, label, variant = 'text', error, ...rest }: TextF
         {...rest}
       />
       {error ? (
-        <p id={errorId} className="text-md font-bold">
+        <p id={errorId} className="animate-caer text-md font-bold">
           {error}
         </p>
       ) : null}

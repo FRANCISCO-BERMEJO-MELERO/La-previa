@@ -20,7 +20,7 @@ export function LeaveDialog({ open, busy, error, onCancel, onConfirm }: LeaveDia
     >
       <p className="text-base">{copy.room.leaveText}</p>
       {error ? (
-        <p role="alert" className="text-md font-bold">
+        <p role="alert" className="animate-caer text-md font-bold">
           {error}
         </p>
       ) : null}
