@@ -439,7 +439,7 @@ Aceptación: `npm run check` pasa.
 
 ## Fase 45 · Movimiento: A dados
 
-- [ ] 45.1 Eventos de A dados con tests
+- [x] 45.1 Eventos de A dados con tests
 - [ ] 45.2 Tirada, colocar, pareja o trío, ataque, cambio de turno y final
 
 Aceptación: `npm run check` pasa.
