@@ -79,7 +79,13 @@ describe('El impostor en movimiento', () => {
   });
 
   it('mantener para mirar: la misma tapa para el jugador y para el impostor', () => {
-    const deal = { word: 'Paella', category: 'Comida', hint: 'Valencia', players: [], connected: 3 };
+    const deal = {
+      word: 'Paella',
+      category: 'Comida',
+      hint: 'Valencia',
+      players: [],
+      connected: 3,
+    };
     const { unmount } = render(<DealScreen {...chrome} {...deal} role="player" />);
     const player = screen.getByRole('button', { name: 'Mantén pulsado para ver tu palabra' });
     const playerCover = player.outerHTML;
