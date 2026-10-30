@@ -20,6 +20,8 @@ export default defineConfig({
     hasTouch: true,
     isMobile: true,
     locale: 'es-ES',
+    // Sin animaciones por defecto; las pruebas de movimiento lo activan (docs/PLAN-8.md §10).
+    reducedMotion: 'reduce',
     trace: 'retain-on-failure',
   },
   webServer: {

@@ -402,6 +402,56 @@ Aceptación: `npm run check` pasa.
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
+## Fase 41 · Movimiento: base
+
+Plan: `docs/PLAN-8.md`.
+
+- [x] 41.1 Plan, tareas y decisión de que `docs/CONTEXTO.md` §8 queda ampliado
+- [x] 41.2 Tokens de duración y curva, keyframes, utilidades, Hundir con tokens y movimiento reducido
+- [x] 41.3 La sincronización guarda la foto anterior y olvida la continuidad al cargar, reconectar o volver a la pestaña
+- [x] 41.4 Transiciones, consecutividad, escalonado y cambio de fase genéricos, con tests
+- [x] 41.5 Entrada de la tarjeta protagonista y fantasma de la vieja; Playwright con `reducedMotion: 'reduce'`
+
+Aceptación: `check` y `test:e2e` pasan; un cambio de fase anima la tarjeta y la recarga no.
+
+## Fase 42 · Movimiento: plataforma y El impostor
+
+- [ ] 42.1 Sala de espera, avisos, errores de campo y diálogo del QR
+- [ ] 42.2 Eventos de El impostor con tests
+- [ ] 42.3 Votación, revelación, empate y resultado de El impostor
+
+Aceptación: `npm run check` pasa.
+
+## Fase 43 · Mantener para mirar
+
+- [ ] 43.1 Tapa del reparto con puntero, teclado y clic sin puntero, con tests
+- [ ] 43.2 «Cómo se juega» y pruebas e2e del reparto
+
+Aceptación: `check` y `test:e2e` pasan.
+
+## Fase 44 · Movimiento: El lobo
+
+- [ ] 44.1 Eventos de El lobo con tests de privacidad por rol
+- [ ] 44.2 Telón de la noche y del amanecer
+- [ ] 44.3 Giro de la carta, amanecer, votaciones, veredicto, cazador y resultado
+
+Aceptación: `npm run check` pasa.
+
+## Fase 45 · Movimiento: A dados
+
+- [ ] 45.1 Eventos de A dados con tests
+- [ ] 45.2 Tirada, colocar, pareja o trío, ataque, cambio de turno y final
+
+Aceptación: `npm run check` pasa.
+
+## Fase 46 · Movimiento: validación y cierre
+
+- [ ] 46.1 E2E con movimiento activado por juego y recarga a mitad de secuencia
+- [ ] 46.2 Repaso a 360, 390 y 430 px
+- [ ] 46.3 `docs/DECISIONES.md` e `docs/INFORME.md`
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
 ## Bloqueos
 
 - Ninguno. (Resuelto: Docker Desktop instalado. Su `docker.exe` está en `AppData\Local\Programs\DockerDesktop\resources\bin` y no en el PATH de Git Bash, pero la CLI de Supabase lo encuentra.)

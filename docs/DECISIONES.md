@@ -1,5 +1,23 @@
 # Decisiones
 
+## 2026-10-30 · 41.2 a 41.5 · Movimiento: la base
+
+- **Tokens.** Duraciones, curvas y animaciones van en un bloque `@theme static` de `globals.css`, junto a los de Verbena. `static` porque se usan dentro de otras variables y keyframes, y Tailwind quitaría las que no ve en una clase. Lo que se mueve desde JavaScript (contar, el retraso del fantasma) lee las duraciones de `motionMs` en `src/lib/motion.ts`; un test comprueba que coinciden con las de CSS.
+- **Giros relativos.** Tarjetas, píldoras y sellos llevan su giro en reposo en la propiedad `rotate` (utilidades `tilt-*`), que se suma a `transform`. Por eso los keyframes de `entrar`, `salir` y `sello` se escriben restando el giro en reposo y terminan en `none`: el giro total en cada fotograma es el del plan (8°, −3°, −1,5° al entrar una tarjeta torcida −1,5°) y al acabar no hay salto. Así valen igual para la tarjeta torcida a la izquierda y para la torcida a la derecha.
+- **Hundir.** Pasa a `rapido` y `seco`, y solo se anima el desplazamiento: la sombra desaparece en el acto (principio 4). Con movimiento reducido el botón pierde la sombra sin moverse. Sigue solo en el botón principal, que es el único con sombra; los secundarios no la tienen y desplazarlos parecería un fallo.
+- **Movimiento reducido** se cumple dos veces: una regla global en CSS quita animaciones y transiciones, y `useReducedMotion` hace que no se calcule ningún evento. Sin `matchMedia` (jsdom) cuenta como reducido, así que los tests existentes ven la app quieta.
+- **Escalonado.** 420 ms entre pasos, que se acorta si la secuencia no cabe en 1,6 s contando el retraso inicial y la duración del último paso. Los retrasos son clases `anim-delay-*` en pasos de 20 ms, generadas con `@source inline`, porque `CLAUDE.md` prohíbe estilos en línea.
+- **La foto anterior** la guarda el reductor de sincronización: solo cuando llega una versión nueva y la anterior seguía el hilo. Una respuesta de la misma versión confirma el hilo sin cambiar la anterior, para no cortar una secuencia a medias con el sondeo. Un fallo, la vuelta a la pestaña o la vuelta de la conexión lo rompen; la foto inicial de la sala no se anima hasta que una respuesta la confirma.
+- **Consecutiva.** Una foto sigue a la anterior si la fase nueva puede venir justo después de la vieja (un grafo por juego para El impostor, El lobo y A dados) y no se ha saltado ninguna ronda, noche o día. En A dados, además, ha tenido que jugar justo quien tenía el turno. Para los juegos por rondas, que quedan fuera del catálogo salvo el cambio de fase, basta con no saltarse una ronda.
+- **Cambio de fase sin tocar cada pantalla.** `Card` lee del contexto el momento de la partida: las tarjetas protagonistas (`hero` y `dark`) se montan de nuevo cuando cambia y, si toca animar, entran. `PhaseStage`, en la sala, mide en cada pintado dónde están esas tarjetas; al cambiar de fase clona la vieja y la pinta encima, en una capa `aria-hidden`, `inert` y sin eventos de puntero, con `salir`. Es el único sitio con estilos en línea: la posición medida del clon, que vive fuera de React y no es un valor de diseño. Un temporizador lo quita aunque la animación no llegue a correr.
+- **Sin desborde horizontal.** La tarjeta que entra viene desde fuera por la derecha; el marco de pantalla lleva `overflow-x: clip` para que no aparezca una barra de desplazamiento.
+
+## 2026-10-30 · 41.1 · Movimiento: `docs/CONTEXTO.md` §8 queda ampliado
+
+- **Ampliación de alcance a petición de Fran.** `docs/CONTEXTO.md` §8 dice «Sin más animaciones en esta versión». `docs/PLAN-8.md` lo levanta para lo que describe su catálogo y nada más. `docs/CONTEXTO.md` no se toca (lo prohíbe `CLAUDE.md`): para el movimiento manda `docs/PLAN-8.md`.
+- **Número del plan.** El último plan es `docs/PLAN-7.md` (A dados), así que este es el 8 y sus fases siguen la numeración de `docs/TAREAS.md`: de la 41 a la 46.
+- **Referencia a las pruebas.** La especificación pegada decía «Esto se comprueba con tests (sección 9)», pero las pruebas son la sección 10; en el plan se corrige la referencia, sin cambiar el contenido.
+
 ## 2026-10-26 · D.7 · El impostor recibe una pista propia, no la categoría
 
 - **A petición de Fran.** `docs/CONTEXTO.md` §2 dejaba fuera de alcance las «pistas propias por palabra: la pista es la categoría». Con solo la categoría, el impostor casi no tenía con qué disimular. Fran pide una pista real, así que se cambia; `docs/CONTEXTO.md` no se toca (lo prohíbe `CLAUDE.md`) y manda esta decisión.
