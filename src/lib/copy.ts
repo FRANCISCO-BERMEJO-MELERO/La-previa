@@ -550,9 +550,6 @@ export const copy = {
     noWinner: 'Nadie ha sumado puntos',
     next: 'Siguiente ronda',
     names: (names: readonly string[]) => joinNames(names),
-    /** Lo que va delante del nombre en la posición dada al listarlos uno a uno: «, » o « y ». */
-    nameJoin: (index: number, count: number) =>
-      index === 0 ? '' : index === count - 1 ? ' y ' : ', ',
   },
 
   probable: {
@@ -1063,9 +1060,6 @@ export const copy = {
     you: 'Tú',
     yourTeam: 'Tu equipo',
     names: (names: readonly string[]) => joinNames(names),
-    /** Lo que va delante del nombre en la posición dada al listarlos uno a uno: «, » o « y ». */
-    nameJoin: (index: number, count: number) =>
-      index === 0 ? '' : index === count - 1 ? ' y ' : ', ',
     board: (label: string) => `Tablero de ${label}`,
     teamBoard: (side: 'A' | 'B') => `Tablero del equipo ${side}`,
     teamScores: (side: 'A' | 'B') => `Puntos por columna del equipo ${side}`,
