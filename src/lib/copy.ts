@@ -1070,6 +1070,9 @@ export const copy = {
       `Columna ${String(column)}: ${String(points)} puntos`,
     place: (column: number) => `Colocar el dado en la columna ${String(column)}`,
     die: (value: number) => `Dado: ${String(value)}`,
+    // Sello sobre la columna con pareja o trío, y los puntos que pierde el rival al romperle dados.
+    combo: (count: 2 | 3) => `×${String(count)}`,
+    lost: (points: number) => `−${String(points)}`,
     empty: 'Hueco libre',
     myTurn: 'Te toca',
     myTurnText: (value: number) =>

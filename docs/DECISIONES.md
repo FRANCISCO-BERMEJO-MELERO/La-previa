@@ -1,5 +1,13 @@
 # Decisiones
 
+## 2026-10-30 · 45 · Movimiento: A dados
+
+- **Tirada.** El dado rueda 500 ms cambiando de cara cada 75 ms y cae con `thump`. Las caras que enseña al rodar nunca son la real, para que no parezca que ya ha caído; su nombre accesible es siempre el valor real. Rueda una vez por tirada: se vuelve a montar con cada turno.
+- **Colocar.** El dado nuevo sube a su hueco en el tablero de abajo y baja en el de arriba, sea quien sea quien mire: lo que cambia es dónde está cada tablero en su pantalla.
+- **Ataque.** Los dados rotos ya no están en la foto: se pintan en una capa `aria-hidden` encima de los huecos donde estaban, en `tomato`, y revientan. Encima del marcador de esa columna flota lo que pierde el rival («−24»). Columnas y totales de los dos bandos cuentan desde los de la foto anterior.
+- **Pareja o trío.** El color cambia en el acto; el sello «×2» o «×3» se planta cuando el dado ya ha llegado y se quita a los 1,1 s.
+- **Final.** El resultado entra con el cambio de fase y sus marcadores cuentan desde cero. Si la partida acaba por abandono no hay jugada que animar y se pinta quieto.
+
 ## 2026-10-30 · 44 · Movimiento: El lobo
 
 - **Un solo commit para 44.2 y 44.3.** El telón y el resto de pantallas se conectan en el mismo sitio (`LunaLlenaGame`) a partir de los mismos eventos; separarlos dejaba un commit con eventos calculados y sin usar.
@@ -10,7 +18,6 @@
 - **«Se salva» no se pinta.** Desde D.2 no hay segunda votación: quien llega a la horca muere, así que ningún estado de la partida dice que alguien se salva.
 - **Votaciones.** Al cerrarse, cada fila de votos cae, su número cuenta desde cero y, al final, la del acusado salta. Su color es el `tomato` de siempre, no el `lime` de la fila más votada de El impostor: en El lobo la fila destacada es la del acusado y ya tenía color propio. El alcalde no tiene fila destacada.
 - **Resultado.** Como en El impostor: el titular se sella y, debajo, cada rol cae de uno en uno.
-
 
 ## 2026-10-30 · 43 · Mantener para mirar
 

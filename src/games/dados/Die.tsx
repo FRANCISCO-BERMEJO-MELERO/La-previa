@@ -31,16 +31,29 @@ type DieProps = {
   /** Solo en su columna, en pareja o en trío. */
   tone?: DieTone;
   size?: DieSize;
+  /** La cara que se pinta mientras rueda; el nombre accesible sigue siendo el valor. */
+  face?: number;
+  /** Roto por un ataque, a punto de reventar. */
+  hit?: boolean;
+  /** Clases de movimiento: tirada, subir, bajar o reventar. */
+  motion?: string;
 };
 
-export function Die({ value, tone = 'single', size = 'md' }: DieProps) {
-  const dots = pips[value] ?? [];
+export function Die({
+  value,
+  tone = 'single',
+  size = 'md',
+  face = value,
+  hit = false,
+  motion = '',
+}: DieProps) {
+  const dots = pips[face] ?? [];
   return (
     <span
       role="img"
       aria-label={copy.dados.die(value)}
       data-tone={tone}
-      className={`grid shrink-0 grid-cols-3 grid-rows-3 place-items-center rounded-control border-3 border-ink ${toneClasses[tone]} ${sizeClasses[size].box}`}
+      className={`grid shrink-0 grid-cols-3 grid-rows-3 place-items-center rounded-control border-3 border-ink ${hit ? 'bg-tomato' : toneClasses[tone]} ${sizeClasses[size].box} ${motion}`}
     >
       {CELLS.map((cell) => (
         <span
