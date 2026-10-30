@@ -1,5 +1,13 @@
 # Decisiones
 
+## 2026-10-30 · 46 · Movimiento: validación y cierre
+
+- **Las e2e con movimiento reutilizan las de siempre.** Playwright tiene dos tandas: «quieto», con movimiento reducido, que corre todas las pruebas de antes, y «movimiento», que repite con las animaciones activas una partida corta de cada juego (6.1 de El impostor, 31.7 de El lobo y 40.1 de A dados, que ya actúan en cuanto cada botón está disponible) y corre las nuevas 46.1. Así no se duplican partidas enteras.
+- **Recargas a mitad de secuencia.** Una por juego: El impostor mientras caen los votos, El lobo en el amanecer y A dados justo después de un ataque. Tras recargar no queda ninguna clase de animación ni ningún fantasma, y lo pintado coincide con lo de antes.
+- **El dado roto que revienta no es un dado de la mesa.** La e2e de A dados con movimiento lo contaba como dado: la copia que revienta llevaba el mismo nombre accesible que uno de verdad. Pasa a ser decorativa (`aria-hidden`, sin papel de imagen).
+- **Repaso a 360, 390 y 430 px.** Las e2e de accesibilidad de siempre lo miran con movimiento reducido; con movimiento, la de El impostor mide a 360 px que la tarjeta que entra desde la derecha no desborda. Los sellos de los muertos y el telón no añaden desbordes.
+- **`build` con webpack en las copias de verificación.** Para verificar cada commit sin tocar el árbol de trabajo, el índice se exportaba a otra carpeta con un enlace a `node_modules`. Turbopack no sigue ese enlace, así que allí se compilaba con `next build --webpack`; la compilación oficial (`npm run build`, con Turbopack) se pasó en el árbol principal al cerrar.
+
 ## 2026-10-30 · 45 · Movimiento: A dados
 
 - **Tirada.** El dado rueda 500 ms cambiando de cara cada 75 ms y cae con `thump`. Las caras que enseña al rodar nunca son la real, para que no parezca que ya ha caído; su nombre accesible es siempre el valor real. Rueda una vez por tirada: se vuelve a montar con cada turno.

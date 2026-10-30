@@ -1,5 +1,57 @@
 # Informe final
 
+## Movimiento (fases 41 a 46)
+
+Estado al cerrar `docs/PLAN-8.md`, el 30 de octubre de 2026.
+
+### Resumen
+
+La Previa ya se mueve: un sistema de animaciones pequeño y siempre igual para la plataforma, El impostor, El lobo y A dados. Seis movimientos con nombre (Hundir, Caer, Sello, Sacudida, Contar y Cambio de fase), con sus tokens de duración y curva en Tailwind. Las animaciones salen de comparar la foto anterior con la nueva en una función pura por juego; nunca de pulsar un botón. Así, quien pulsa y quien mira ven lo mismo. Con movimiento reducido no se anima nada.
+
+El reparto de El impostor cambia de forma de jugar: la palabra queda bajo una tapa y se ve solo mientras se mantiene pulsada.
+
+No se ha tocado la base de datos. Todo está en la rama `feat/movimiento`, con un commit por tarea y una pull request por fase hacia `develop`.
+
+| Comprobación                               | Resultado                                       |
+| ------------------------------------------ | ----------------------------------------------- |
+| `npm run check` (lint, tipos, unitarios)   | 959 tests en 84 archivos, sin avisos            |
+| `npm run test:db` tras `supabase db reset` | 1412 pruebas pgTAP en 58 archivos (sin cambios) |
+| `npm run test:e2e`                         | 40 pruebas quietas y 6 con movimiento           |
+| `npm run build`                            | Sin avisos                                      |
+
+### Qué está hecho
+
+- **Base**: tokens, keyframes y utilidades; el botón principal se hunde con los tokens; regla de movimiento reducido. La sincronización guarda la foto anterior y olvida el hilo al cargar, fallar, reconectar o volver a la pestaña. Una función genérica decide si dos fotos son consecutivas y escalona las secuencias sin pasar de 1,6 s.
+- **Cambio de fase en todos los juegos**: la tarjeta protagonista entra desde la derecha y la vieja sale hacia la izquierda como copia fantasma inerte.
+- **Plataforma**: la fila de quien entra en la sala cae; los avisos, los errores de acción y el diálogo del QR caen; el campo con error tiembla.
+- **El impostor**: votos que caen mientras se vota, con el marcador que cuenta; sello en la revelación; empate que cae; resultado con titular sellado e impostores que caen de uno en uno. Mantener para mirar en el reparto, con dedo, teclado y lector de pantalla.
+- **El lobo**: telón al anochecer y al amanecer, igual en todos los móviles; muertos que caen con su sello; votaciones que caen y cuentan; «Ahorcado» en la horca; giro de la carta al volver a mirarla; resultado como el de El impostor.
+- **A dados**: tirada, dado que sube o baja a su hueco, sello «×2» o «×3», ataque con dados que revientan y «−N» que flota, marcadores que cuentan y resultado que cuenta.
+- **Privacidad**: los eventos solo leen lo que ven todos. Un test compara los de los nueve roles de El lobo y los de jugador e impostor en el reparto, la noche y el amanecer.
+- **Pruebas**: unitarias de cada función de eventos (incluida la privacidad y que ninguna secuencia pase de 1,6 s) y de las pantallas en movimiento. En e2e, las pruebas de siempre corren con movimiento reducido y una tanda «movimiento» juega una partida corta de El impostor, El lobo y A dados con las animaciones activas, recarga a mitad de los votos, del amanecer y de un ataque, y mira el desborde a 360 px.
+
+### Qué no está hecho o no se ha podido verificar
+
+- **El cierre de la votación de El impostor no se anima como dice el plan.** La foto nunca trae a quién votó cada uno ni el recuento, y conseguirlo exigiría tocar la base de datos. Se animan en su lugar los votos que llegan mientras se vota (DECISIONES 42).
+- **«Se salva» no existe en El lobo** desde que no hay segunda votación (D.2), así que no hay sello que poner.
+- **La carta de El lobo no tiene dorso en el reparto**: gira al volver a mirarla durante la partida (DECISIONES 44).
+- **No se ha probado en móviles reales.** La fluidez solo se ha visto en el ordenador.
+
+### Incidencias
+
+- **Dos e2e fallaron en falso en la primera tanda** porque `next dev` recargó un archivo a medio editar mientras corrían. A partir de ahí, cada commit se verificó en una copia aparte del índice, compilada para producción.
+- **Un guion de preparación de commits repitió un texto** en tres secciones de `copy.ts` en el commit 42.3; se corrigió en un commit propio.
+- **La e2e de A dados con movimiento encontró un fallo real**: el dado roto que revienta se leía como un dado de la mesa. Se corrigió y se probó.
+- **La e2e de empate (6.4) falló una vez** en la tanda completa y pasó al repetirla sola y en la tanda siguiente; no se ha visto otra vez.
+- **GitHub devolvió errores 502** al fusionar y al abrir pull requests; se reintentó hasta que constaron hechas.
+
+### Qué revisar primero
+
+1. **El telón de la noche con varios móviles a la vez**: que baje a la vez en todos y que nadie pueda deducir nada de cómo se mueve su pantalla.
+2. **Mantener para mirar en el reparto**: que se entienda sin explicarlo, que la tapa no deje ver nada de reojo y que con el dedo se sostenga cómodo.
+3. **Si el rebote resulta excesivo en algún sitio** (`ease-golpe` en las tarjetas que entran, los sellos y los dados).
+4. **En un Android de gama baja**: la votación con 8 personas, el amanecer con dos muertos y el ataque de A dados. Comprobar que van fluidos.
+
 ## A dados (fases 37 a 40)
 
 Estado al cerrar `docs/PLAN-7.md` (issue #12), el 26 de octubre de 2026.
