@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { pageOf, startedGame, vote } from './players';
+import { pageOf, peek, startedGame, vote } from './players';
 
 /** Vota desde la lista de la pregunta y espera a ver la propia elección o el recuento. */
 async function voteFor(page: Page, target: string): Promise<void> {
@@ -81,6 +81,7 @@ test('9.9 · en la misma sala, El impostor, cambio a probable y 5 rondas con 3 j
   await host.getByRole('button', { name: 'Abrir la sala' }).click();
   await expect(host.getByRole('button', { name: 'Más impostores' })).toBeVisible();
   await host.getByRole('button', { name: 'Empezar partida' }).click();
+  await peek(pageOf(players, 'Lucía'));
   await expect(pageOf(players, 'Lucía').getByText(/^(Tu palabra|Eres el)$/)).toBeVisible();
   expect(host.url()).toContain(`/sala/${code}`);
 });

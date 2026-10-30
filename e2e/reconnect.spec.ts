@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { pageOf, secretWord, startedGame, vote } from './players';
+import { pageOf, peek, secretWord, startedGame, vote } from './players';
 
 test('6.2 · quien recarga a media partida sigue viendo su palabra y su voto', async ({
   browser,
@@ -17,6 +17,7 @@ test('6.2 · quien recarga a media partida sigue viendo su palabra y su voto', a
   await expect(normalPage.getByLabel('Tu nombre')).toHaveCount(0);
 
   await impostorPage.reload();
+  await peek(impostorPage);
   await expect(impostorPage.getByText('Eres el')).toBeVisible();
 
   // Votando: tras votar y recargar, sigue en la espera con su voto.
