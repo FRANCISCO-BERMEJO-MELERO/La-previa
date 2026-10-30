@@ -16,12 +16,16 @@ export const motionMs = {
   contarCorto: 400,
 } as const;
 
+/** Lo que tarda en llegar la tarjeta que entra: sellos y secuencias empiezan entonces. */
+export const AFTER_ENTRY_MS = motionMs.lento;
+
 /** Ninguna secuencia dura más (docs/PLAN-8.md §3). */
 export const SEQUENCE_MAX_MS = 1600;
 /** Escalonado entre pasos de una secuencia, dentro de los 350–520 ms del plan. */
 const STAGGER_MS = 420;
-/** Los retrasos van en pasos de 20 ms: son las clases `anim-delay-*` que existen. */
+/** Los retrasos van en pasos de 20 ms hasta 2,4 s: son las clases `anim-delay-*` que existen. */
 const DELAY_STEP_MS = 20;
+const MAX_DELAY_MS = 2400;
 
 /** Dos fotos seguidas que se pueden animar. */
 export type Transition = { previous: Snapshot; next: Snapshot };
@@ -140,9 +144,9 @@ export function phaseEntry(transition: Transition | null): boolean {
   return !(game?.type === 'luna_llena' && game.phase === 'night');
 }
 
-/** Ajusta un retraso a los pasos que existen como clase, sin pasar del máximo de una secuencia. */
+/** Ajusta un retraso a los pasos que existen como clase. */
 function toStep(ms: number): number {
-  const clamped = Math.min(Math.max(ms, 0), SEQUENCE_MAX_MS);
+  const clamped = Math.min(Math.max(ms, 0), MAX_DELAY_MS);
   return clamped - (clamped % DELAY_STEP_MS);
 }
 

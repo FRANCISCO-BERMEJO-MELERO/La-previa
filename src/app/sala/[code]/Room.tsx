@@ -184,7 +184,12 @@ export function Room({ initial, fresh }: RoomProps) {
     switch (game.type) {
       case 'impostor':
         return withLeaveDialog(
-          <ImpostorGame {...shared} game={game} categories={chosenCategories} />,
+          <ImpostorGame
+            {...shared}
+            game={game}
+            categories={chosenCategories}
+            transition={transition}
+          />,
         );
       case 'probable':
         return withLeaveDialog(<ProbableGame {...shared} game={game} />);

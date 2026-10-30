@@ -162,7 +162,7 @@ describe('sequenceDelays', () => {
   it('los retrasos son clases que existen', () => {
     for (const delay of sequenceDelays(16, motionMs.base, 100)) expect(delay % 20).toBe(0);
     expect(delayClass(433)).toBe('anim-delay-420');
-    expect(delayClass(5000)).toBe('anim-delay-1600');
+    expect(delayClass(5000)).toBe('anim-delay-2400');
   });
 });
 

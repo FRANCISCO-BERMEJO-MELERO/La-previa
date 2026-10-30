@@ -2,16 +2,20 @@ import { Fragment } from 'react';
 import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
 import { copy } from '@/lib/copy';
+import { AFTER_ENTRY_MS, delayClass } from '@/lib/motion';
 import type { ParticipantView } from './game-view';
 import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 
 type TieScreenProps = GameScreenProps & {
   /** Empatados en cabeza; vacío si nadie votó. */
   tied: ParticipantView[];
+  /** El texto del empate cae al llegar la tarjeta, sin sello. */
+  falls?: boolean;
 };
 
 /** 11: empate o votación sin votos. No se expulsa a nadie. */
-export function TieScreen({ tied, ...chrome }: TieScreenProps) {
+export function TieScreen({ tied, falls = false, ...chrome }: TieScreenProps) {
+  const fall = falls ? `animate-caer ${delayClass(AFTER_ENTRY_MS)}` : '';
   return (
     <GameScreen {...chrome}>
       <Card variant="hero" tilt="right" grow>
@@ -33,8 +37,8 @@ export function TieScreen({ tied, ...chrome }: TieScreenProps) {
               ))}
             </div>
           ) : null}
-          <h1 className="font-display text-display-md uppercase">{copy.tie.title}</h1>
-          <p className="text-lead font-medium">
+          <h1 className={`font-display text-display-md uppercase ${fall}`}>{copy.tie.title}</h1>
+          <p className={`text-lead font-medium ${fall}`}>
             {tied.length > 0 ? copy.tie.text(tied.map((player) => player.name)) : copy.tie.noVotes}
           </p>
         </div>

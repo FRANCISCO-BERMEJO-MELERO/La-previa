@@ -1,5 +1,14 @@
 # Decisiones
 
+## 2026-10-30 · 42 · Movimiento: plataforma y El impostor
+
+- **El cierre de la votación de El impostor no se anima como pide el plan.** La foto de El impostor nunca trae a quién ha votado cada uno ni el recuento: ni antes ni después de cerrar (`docs/CONTEXTO.md` lo prohíbe antes de `finished` y la pantalla de revelación solo dice a quién se expulsa). Pintar votos que caen sobre cada fila exigiría cambiar la base de datos, y esta tarea es solo de cliente; además, en la duda sobre dar información de más, no se pone. En su lugar, mientras se vota, la ficha de quien acaba de votar cae y el marcador «2 de 5» cuenta: es lo que todos ya ven.
+- **Avisos que caen al aparecer.** El aviso sin conexión, los errores de acción, los avisos de equilibrio de El lobo y el de equipos de A dados caen al montarse, con una clase fija: son de la interfaz, no de la foto, y nada en el plan pide relacionarlos con ella. Lo mismo el campo con error, que tiembla, y su mensaje, que cae.
+- **El diálogo del QR cae** con la misma clase en el `dialog`: el navegador reinicia la animación cada vez que se abre. Los demás diálogos no cambian.
+- **Sellos al llegar la tarjeta.** El sello de la revelación, el texto del empate y el titular del resultado empiezan cuando la tarjeta termina de entrar (`AFTER_ENTRY_MS`, 420 ms). Los impostores del resultado caen después del titular, escalonados.
+- **Cada impostor del resultado va en su sello pequeño**, una píldora `tomato` girada, separados por «, » y « y » como antes. La prueba «con varios impostores los lista a todos» de `game-screens.test.tsx` buscaba el texto «Dani y Marta» en un solo elemento; ahora comprueba que la fila lo dice entero, porque cada nombre es un elemento propio.
+- **Contar** se hace con `requestAnimationFrame` y una cúbica de salida. Mientras cuenta, el número visible es `aria-hidden` y al lado va el valor final para lectores de pantalla; quieto, es el texto de siempre, y los tests que lo buscan no cambian.
+
 ## 2026-10-30 · 41.2 a 41.5 · Movimiento: la base
 
 - **Tokens.** Duraciones, curvas y animaciones van en un bloque `@theme static` de `globals.css`, junto a los de Verbena. `static` porque se usan dentro de otras variables y keyframes, y Tailwind quitaría las que no ve en una clase. Lo que se mueve desde JavaScript (contar, el retraso del fantasma) lee las duraciones de `motionMs` en `src/lib/motion.ts`; un test comprueba que coinciden con las de CSS.

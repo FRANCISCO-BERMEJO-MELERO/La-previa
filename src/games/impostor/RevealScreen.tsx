@@ -1,6 +1,7 @@
 import { Avatar } from '@/components/Avatar';
 import { Card } from '@/components/Card';
 import { copy } from '@/lib/copy';
+import { AFTER_ENTRY_MS, delayClass } from '@/lib/motion';
 import { fitDisplay } from '@/lib/fit-text';
 import type { AvatarId } from '@/lib/avatars';
 import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
@@ -14,6 +15,8 @@ type RevealScreenProps = GameScreenProps & {
   wasImpostor: boolean;
   /** Texto bajo la tarjeta: cómo sigue la partida o que se ha acabado. */
   summary: string;
+  /** El sello se planta al llegar la tarjeta. */
+  stamp?: boolean;
 };
 
 /** 10: revelación de una expulsión o de un abandono. */
@@ -24,6 +27,7 @@ export function RevealScreen({
   avatar = null,
   wasImpostor,
   summary,
+  stamp = false,
   ...chrome
 }: RevealScreenProps) {
   return (
@@ -38,7 +42,7 @@ export function RevealScreen({
             {name}
           </h1>
           <p
-            className={`tilt-pill-right rounded-control border-3 border-ink px-4 py-2 font-display text-xl uppercase ${wasImpostor ? 'bg-tomato' : 'bg-sky'}`}
+            className={`tilt-pill-right rounded-control border-3 border-ink px-4 py-2 font-display text-xl uppercase ${wasImpostor ? 'bg-tomato' : 'bg-sky'} ${stamp ? `animate-sello ${delayClass(AFTER_ENTRY_MS)}` : ''}`}
           >
             {wasImpostor ? copy.reveal.wasImpostor : copy.reveal.wasNotImpostor}
           </p>
