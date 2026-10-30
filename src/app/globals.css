@@ -58,6 +58,48 @@
   --tracking-code: 0.3em;
 }
 
+/* Movimiento (docs/PLAN-8.md §2). `static`: se usan dentro de otras variables y keyframes. */
+@theme static {
+  --duration-rapido: 120ms;
+  --duration-base: 240ms;
+  --duration-lento: 420ms;
+  --duration-contar: 700ms;
+
+  --ease-golpe: cubic-bezier(0.2, 0.8, 0.3, 1.3);
+  --ease-seco: cubic-bezier(0.3, 0, 0.2, 1);
+  --ease-salida: cubic-bezier(0.5, 0, 1, 0.5);
+
+  /*
+   * `backwards`: con retraso, el elemento espera en su primer fotograma (invisible si entra) y, al
+   * acabar, vuelve a sus propios estilos; así no pisa un `transform` que se le ponga después.
+   */
+  --animate-caer: caer var(--duration-base) var(--ease-golpe) backwards;
+  --animate-sello: sello var(--duration-lento) var(--ease-golpe) backwards;
+  --animate-sacudida: sacudida 300ms var(--ease-seco);
+  --animate-salto: salto var(--duration-base) var(--ease-golpe) backwards;
+  --animate-entrar: entrar var(--duration-lento) var(--ease-golpe) backwards;
+  --animate-salir: salir var(--duration-base) var(--ease-salida) forwards;
+  --animate-girar: girar var(--duration-lento) var(--ease-golpe) backwards;
+  /* El telón de la noche baja y, cuando la luna ya ha caído, se aparta. */
+  --animate-telon-noche:
+    telon-bajar var(--duration-lento) var(--ease-golpe) both,
+    desvanecer var(--duration-base) var(--ease-salida)
+      calc(var(--duration-lento) + var(--duration-base)) forwards;
+  --animate-telon-amanecer: telon-subir var(--duration-lento) var(--ease-golpe) both;
+
+  /* A dados (docs/PLAN-8.md §7). */
+  --animate-tumble: tumble 500ms linear;
+  --animate-thump: thump 340ms var(--ease-golpe) backwards;
+  --animate-subir: subir var(--duration-lento) var(--ease-golpe) backwards;
+  --animate-bajar: bajar var(--duration-lento) var(--ease-golpe) backwards;
+  --animate-pop: pop 420ms var(--ease-seco) forwards;
+  --animate-flotar: flotar 900ms var(--ease-seco) forwards;
+  /* El sello «×2» o «×3» se planta y se quita a los 1,1 s. */
+  --animate-sello-breve:
+    sello var(--duration-lento) var(--ease-golpe) backwards,
+    desvanecer var(--duration-base) var(--ease-salida) 1100ms forwards;
+}
+
 @theme inline {
   --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-archivo-black), var(--font-archivo), ui-sans-serif, sans-serif;
@@ -68,7 +110,235 @@
     outline: 3px solid var(--color-ink);
     outline-offset: 3px;
   }
+
+  /* Movimiento reducido: todo aparece ya en su estado final. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
 }
+
+/*
+ * Keyframes de docs/PLAN-8.md §2 y §7. El giro en reposo de tarjetas, píldoras y sellos va en la
+ * propiedad `rotate` (utilidades `tilt-*`), que se suma a `transform`: por eso los giros de aquí
+ * son relativos al de reposo y todos terminan en `none`, sin salto al acabar.
+ */
+@keyframes caer {
+  0% {
+    transform: translateY(-28px) scale(0.85);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(4px) scale(1.04);
+    opacity: 1;
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes sello {
+  0% {
+    transform: scale(2.4) rotate(-10deg);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(0.92);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes sacudida {
+  0%,
+  100% {
+    transform: none;
+  }
+  20% {
+    transform: translateX(-10px);
+  }
+  40% {
+    transform: translateX(9px);
+  }
+  60% {
+    transform: translateX(-6px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes entrar {
+  0% {
+    transform: translateX(115%) rotate(9.5deg);
+  }
+  65% {
+    transform: translateX(-4%) rotate(-1.5deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes salir {
+  from {
+    transform: none;
+  }
+  to {
+    transform: translateX(-125%) rotate(-8.5deg);
+  }
+}
+
+@keyframes salto {
+  0%,
+  100% {
+    transform: none;
+  }
+  40% {
+    transform: scale(1.18);
+  }
+}
+
+@keyframes girar {
+  from {
+    transform: perspective(60rem) rotateY(-90deg);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes telon-bajar {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes telon-subir {
+  from {
+    transform: none;
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes desvanecer {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes tumble {
+  0% {
+    transform: rotate(0) translateY(0);
+  }
+  25% {
+    transform: rotate(-18deg) translateY(-10px);
+  }
+  50% {
+    transform: rotate(0);
+  }
+  75% {
+    transform: rotate(18deg) translateY(-10px);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+
+@keyframes thump {
+  0% {
+    transform: scale(1.35) rotate(-12deg);
+  }
+  60% {
+    transform: scale(0.92) rotate(3deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes subir {
+  0% {
+    transform: translateY(60px) scale(0.6) rotate(-20deg);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(-6px) scale(1.08) rotate(4deg);
+    opacity: 1;
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes bajar {
+  0% {
+    transform: translateY(-60px) scale(0.6) rotate(20deg);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(6px) scale(1.08) rotate(-4deg);
+    opacity: 1;
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: none;
+  }
+  15% {
+    transform: translateX(-5px) rotate(-8deg);
+  }
+  30% {
+    transform: translateX(5px) rotate(8deg);
+  }
+  45% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) rotate(40deg);
+    opacity: 0;
+  }
+}
+
+@keyframes flotar {
+  0% {
+    transform: translate(-50%, 0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -34px);
+    opacity: 0;
+  }
+}
+
+/* Retraso de un paso de una secuencia, en múltiplos de 20 ms hasta 1,6 s (docs/PLAN-8.md §3). */
+@utility anim-delay-* {
+  animation-delay: calc(--value(integer) * 1ms);
+}
+
+@source inline("anim-delay-{0..1600..20}");
 
 /* Giro de las tarjetas protagonistas (±1,5°) y de píldoras y sellos (3°–4°). */
 @utility tilt-left {
@@ -87,10 +357,9 @@
   rotate: 4deg;
 }
 
+/* Hundir: se desplaza y pierde la sombra. La sombra cambia en el acto; solo se anima el desplazamiento. */
 @utility press {
-  transition:
-    translate 80ms ease-out,
-    box-shadow 80ms ease-out;
+  transition: translate var(--duration-rapido) var(--ease-seco);
 
   &:active:not(:disabled) {
     translate: 6px 6px;
@@ -99,5 +368,9 @@
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+
+    &:active:not(:disabled) {
+      translate: none;
+    }
   }
 }
