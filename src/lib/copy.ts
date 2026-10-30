@@ -458,6 +458,9 @@ export const copy = {
     impostorTitle: 'Impos­tor',
     impostorClue: 'Tu pista',
     impostorHint: 'No conoces la palabra. Escucha, disimula y que no te pillen.',
+    // La tapa del reparto: la misma para todos, no dice si debajo hay palabra o impostor.
+    holdTitle: 'Mantén pulsado',
+    holdHint: 'para ver tu palabra',
     connected: (count: number) => `${String(count)} conectados`,
     openVoting: 'Pasar a votación',
     waitingVote: (host: string) => `${host} decide cuándo se vota`,

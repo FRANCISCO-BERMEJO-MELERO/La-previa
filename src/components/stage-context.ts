@@ -11,6 +11,9 @@ export type Stage = {
 /** Atributo con el que se marcan las tarjetas que salen y entran al cambiar de fase. */
 export const STAGE_CARD = 'data-stage-card';
 
+/** Lo que está tapado: sus tarjetas no salen como fantasma, que lo destaparía. */
+export const STAGE_HIDDEN = 'data-stage-hidden';
+
 export const StageContext = createContext<Stage>({ key: 'quieta', entering: false });
 
 export function useStage(): Stage {

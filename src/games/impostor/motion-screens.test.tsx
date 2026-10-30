@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { DealScreen } from './DealScreen';
 import type { ParticipantView } from './game-view';
 import { ResultScreen } from './ResultScreen';
 import { RevealScreen } from './RevealScreen';
@@ -75,5 +76,20 @@ describe('El impostor en movimiento', () => {
     const marta = screen.getByText('Marta');
     expect(dani).toHaveClass('animate-caer', 'anim-delay-840');
     expect(marta).toHaveClass('animate-caer', 'anim-delay-1260');
+  });
+
+  it('mantener para mirar: la misma tapa para el jugador y para el impostor', () => {
+    const deal = { word: 'Paella', category: 'Comida', hint: 'Valencia', players: [], connected: 3 };
+    const { unmount } = render(<DealScreen {...chrome} {...deal} role="player" />);
+    const player = screen.getByRole('button', { name: 'Mantén pulsado para ver tu palabra' });
+    const playerCover = player.outerHTML;
+    // Tapado no se ve ni la palabra ni la frase que distingue al impostor.
+    expect(screen.getByTestId('peek-content')).toHaveClass('invisible');
+    expect(screen.getByTestId('peek-content')).toHaveTextContent('Hablad las rondas');
+    unmount();
+    render(<DealScreen {...chrome} {...deal} role="impostor" />);
+    const impostor = screen.getByRole('button', { name: 'Mantén pulsado para ver tu palabra' });
+    expect(impostor.outerHTML).toBe(playerCover);
+    expect(screen.getByTestId('peek-content')).toHaveTextContent('No conoces la palabra');
   });
 });
