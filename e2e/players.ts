@@ -35,10 +35,22 @@ export async function joinByLink(page: Page, code: string, name: string): Promis
 
 export type Players = Record<string, Page>;
 
+/**
+ * Levanta la tapa del reparto con un clic sin puntero, como haría un lector de pantalla, y la deja
+ * levantada. Si ya lo está, no la toca.
+ */
+export async function peek(page: Page): Promise<void> {
+  const cover = page.getByRole('button', { name: 'Mantén pulsado para ver tu palabra' });
+  await expect(cover).toBeVisible();
+  if ((await cover.getAttribute('aria-pressed')) === 'false') await cover.dispatchEvent('click');
+  await expect(cover).toHaveAttribute('aria-pressed', 'true');
+}
+
 /** Rol de cada jugador, leído de su pantalla de reparto. */
 export async function rolesOf(players: Players): Promise<Record<string, 'player' | 'impostor'>> {
   const roles: Record<string, 'player' | 'impostor'> = {};
   for (const [name, page] of Object.entries(players)) {
+    await peek(page);
     await expect(page.getByText(/^(Tu palabra|Eres el)$/)).toBeVisible();
     roles[name] = (await page.getByText('Eres el').count()) > 0 ? 'impostor' : 'player';
   }
@@ -88,7 +100,8 @@ export function pageOf(players: Players, name: string): Page {
 
 /** La palabra tal cual está en el DOM (la pantalla la muestra en mayúsculas por CSS). */
 export async function secretWord(page: Page): Promise<string> {
-  await expect(page.getByText('Tu palabra')).toBeVisible();
+  await peek(page);
+  await expect(page.getByText('Tu palabra', { exact: true })).toBeVisible();
   const word = await page.getByRole('heading', { level: 1 }).textContent();
   if (!word) throw new Error('No se ve la palabra');
   return word;

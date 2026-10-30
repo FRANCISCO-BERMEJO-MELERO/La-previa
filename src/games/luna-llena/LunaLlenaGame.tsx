@@ -18,9 +18,11 @@ import {
   type ActionResult,
 } from '@/lib/actions';
 import { copy } from '@/lib/copy';
+import { stageOf, type Transition } from '@/lib/motion';
 import type { LunaLlenaGameState, Snapshot } from '@/lib/snapshot';
 import { LateScreen } from '@/screens/LateScreen';
 import { CardPeek } from './CardPeek';
+import { Curtain } from './Curtain';
 import { DawnScreen } from './DawnScreen';
 import { HunterScreen } from './HunterScreen';
 import { DayScreen, DefenseScreen, VoteScreen, WaitScreen } from './DayScreens';
@@ -44,6 +46,7 @@ import {
   type LunaPlayer,
   type NightMode,
 } from './game-view';
+import { closedVote, curtainOf, fallenIds, has, lunaMotion } from './motion';
 import { narrationLines } from './narration';
 import { narratorAction, type NarratorStep } from './narrator';
 import { NarratorBox } from './NarratorBox';
@@ -65,6 +68,8 @@ type LunaLlenaGameProps = {
   /** Ejecuta una acción y aplica la foto que devuelve; resuelve si ha ido bien. */
   run: (action: () => Promise<ActionResult<Snapshot>>) => Promise<boolean>;
   onChangeGame: () => void;
+  /** De qué foto se viene, si hay que animar el paso (docs/PLAN-8.md §3). */
+  transition?: Transition | null;
 };
 
 function stepAction(step: NarratorStep, roomId: string): Promise<ActionResult<Snapshot>> {
@@ -92,7 +97,12 @@ export function LunaLlenaGame({
   error,
   run,
   onChangeGame,
+  transition = null,
 }: LunaLlenaGameProps) {
+  // Solo lo que todos ven igual: el telón, las muertes del anuncio y los votos públicos.
+  const motion = lunaMotion(transition);
+  const curtain = curtainOf(motion);
+  const fallen = fallenIds(motion);
   // Lo elegido vale solo para el momento en que se eligió: al cambiar de fase se olvida.
   const moment = `${game.phase}-${String(game.night)}-${String(game.day)}`;
   // `life` es la poción de vida que la bruja ha marcado y aún no ha enviado.
@@ -154,7 +164,13 @@ export function LunaLlenaGame({
     ) : null;
   const chrome = {
     aside: pill(copy.games.luna_llena.name, 'tomato'),
-    notice,
+    // El telón va con el aviso porque está en todas las pantallas; es fijo y cubre la pantalla entera.
+    notice: (
+      <>
+        {notice}
+        {curtain ? <Curtain key={stageOf(snapshot)} direction={curtain} /> : null}
+      </>
+    ),
     footer: (
       <>
         {peek}
@@ -252,6 +268,8 @@ export function LunaLlenaGame({
       return (
         <DawnScreen
           {...chrome}
+          animate={curtain === 'up'}
+          fallen={fallen}
           deaths={game.announcement?.deaths ?? []}
           secrets={[
             ...(game.night === 1 ? [loverSecret(game, players)] : []).filter(
@@ -301,6 +319,7 @@ export function LunaLlenaGame({
           day={game.day}
           mayor={mayorId ? nameOf(players, mayorId) : null}
           mayorVotes={voteGroups(game, players, 'mayor')}
+          votesClosed={closedVote(motion) === 'mayor'}
         />
       );
     case 'defense':
@@ -311,6 +330,7 @@ export function LunaLlenaGame({
           accusedId={game.accused_id}
           isMe={game.accused_id === myId}
           groups={voteGroups(game, players, 'accuse')}
+          votesClosed={closedVote(motion) === 'accuse'}
         />
       );
     case 'execution':
@@ -320,6 +340,8 @@ export function LunaLlenaGame({
           deaths={game.announcement?.deaths ?? []}
           groups={voteGroups(game, players, 'accuse')}
           left={game.announcement?.kind === 'left'}
+          verdict={has(motion, 'verdict')}
+          fallen={fallen}
         />
       );
     case 'hunter_shoot': {
@@ -377,6 +399,7 @@ export function LunaLlenaGame({
           won={hasWon(game)}
           rows={roleRows(players, result.roles)}
           lovers={pairNames(players, result.lovers)}
+          animate={has(motion, 'result')}
         />
       ) : null;
     }

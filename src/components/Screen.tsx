@@ -13,7 +13,7 @@ type ScreenProps = {
 
 export function Screen({ brand, aside, notice, bare = false, children }: ScreenProps) {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-5 px-6 pt-7 pb-6">
+    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-5 overflow-x-clip px-6 pt-7 pb-6">
       {bare ? null : (
         <header className="flex flex-wrap items-center justify-between gap-3">
           <p className="font-display text-title uppercase">{brand}</p>

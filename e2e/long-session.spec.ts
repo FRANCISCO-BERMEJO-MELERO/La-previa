@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { impostorOf, pageOf, rolesOf, startedGame, vote, type Players } from './players';
+import { impostorOf, pageOf, peek, rolesOf, startedGame, vote, type Players } from './players';
 
 /** La primera página en la que se ve ese botón. */
 async function pageWithButton(players: Players, name: string): Promise<Page> {
@@ -47,6 +47,7 @@ test('12.6 y 17.4 · una sala, los seis juegos seguidos y una recarga a mitad de
   const lucia = pageOf(players, 'Lucía');
   const before = (await lucia.getByText(/^(Tu palabra|Eres el)$/).textContent()) ?? '';
   await lucia.reload();
+  await peek(lucia);
   await expect(lucia.getByText(before, { exact: true })).toBeVisible();
   expect(impostorOf(await rolesOf(players))).toBe(impostor);
   const normals = Object.keys(players).filter((name) => name !== impostor);

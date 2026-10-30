@@ -1,6 +1,7 @@
 import { Card } from '@/components/Card';
 import { Pill } from '@/components/Pill';
 import { copy } from '@/lib/copy';
+import { AFTER_ENTRY_MS, delayClass, motionMs } from '@/lib/motion';
 import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 import type { RoleRow } from './game-view';
 import { RolesList } from './RolesList';
@@ -13,13 +14,22 @@ type ResultScreenProps = GameScreenProps & {
   won: boolean | null;
   rows: readonly RoleRow[];
   lovers: readonly [string, string] | null;
+  /** Al llegar: sello del titular y, después, cada rol cae (como en El impostor). */
+  animate?: boolean;
 };
 
 // Los que juegan solos, en el color de su píldora de bando.
 const winnerTone = { village: 'lime', wolves: 'tomato', jester: 'lilac', killer: 'lilac' } as const;
 
 /** El final: bando ganador, el titular de cada uno y todos los roles. */
-export function ResultScreen({ winner, won, rows, lovers, ...chrome }: ResultScreenProps) {
+export function ResultScreen({
+  winner,
+  won,
+  rows,
+  lovers,
+  animate = false,
+  ...chrome
+}: ResultScreenProps) {
   const texts = copy.lunaLlena.result;
   const headline = won === null ? texts.winner[winner] : won ? copy.result.won : copy.result.lost;
   return (
@@ -28,7 +38,13 @@ export function ResultScreen({ winner, won, rows, lovers, ...chrome }: ResultScr
         <Pill tone={winnerTone[winner]} caps>
           {texts.winner[winner]}
         </Pill>
-        <h1 className="font-display text-display-sm uppercase">{headline}</h1>
+        <h1 className="font-display text-display-sm uppercase">
+          <span
+            className={`inline-block ${animate ? `animate-sello ${delayClass(AFTER_ENTRY_MS)}` : ''}`}
+          >
+            {headline}
+          </span>
+        </h1>
         {lovers ? (
           <p className="text-base font-bold">{texts.lovers(lovers[0], lovers[1])}</p>
         ) : null}
@@ -37,7 +53,7 @@ export function ResultScreen({ winner, won, rows, lovers, ...chrome }: ResultScr
         <h2 id="result-roles" className="font-display text-lg uppercase">
           {texts.rolesTitle}
         </h2>
-        <RolesList rows={rows} />
+        <RolesList rows={rows} start={animate ? AFTER_ENTRY_MS + motionMs.lento : null} />
       </section>
     </GameScreen>
   );

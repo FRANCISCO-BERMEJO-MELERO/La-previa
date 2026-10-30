@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 import { OfflineNotice } from '@/components/OfflineNotice';
 import { HeaderAside, type HeaderTone } from '@/components/HeaderAside';
+import { PhaseStage } from '@/components/PhaseStage';
 import { DadosGame } from '@/games/dados/DadosGame';
 import { choicesFor, teamsFrom, type DadosAssignment } from '@/games/dados/teams';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
@@ -33,10 +34,13 @@ import {
 } from '@/lib/actions';
 import { copy, errorMessage, type ActionError } from '@/lib/copy';
 import { roomPath } from '@/lib/room-code';
+import { joinedPlayers } from '@/lib/lobby-motion';
+import { phaseEntry, stageOf, transitionOf } from '@/lib/motion';
 import { DEFAULT_ROUNDS } from '@/lib/rounds';
 import { shareRoomLink, type ShareOutcome } from '@/lib/share';
 import type { DadosMode, GameId, Snapshot } from '@/lib/snapshot';
 import { useImpostorCategories } from '@/lib/use-impostor-categories';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
 import { useRoomSync } from '@/lib/use-room-sync';
 import { useWakeLock } from '@/lib/use-wake-lock';
 import { GamePickerScreen } from '@/screens/GamePickerScreen';
@@ -76,6 +80,7 @@ export function Room({ initial, fresh }: RoomProps) {
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [leaveError, setLeaveError] = useState<ActionError | null>(null);
   useWakeLock(sync.status !== 'gone');
+  const reduced = useReducedMotion();
   const lobbyGame = sync.snapshot ?? initial;
   const categories = useImpostorCategories(
     lobbyGame.me.is_host && lobbyGame.room.game === 'impostor' && lobbyGame.game === null,
@@ -87,6 +92,8 @@ export function Room({ initial, fresh }: RoomProps) {
   const roomId = snapshot.room.id;
   const code = snapshot.room.code;
   const errorText = error ? errorMessage(error) : undefined;
+  // Lo que se anima sale de comparar la foto anterior con esta (docs/PLAN-8.md §3).
+  const transition = transitionOf(sync.previous, snapshot, reduced);
 
   const run = async (action: () => Promise<ActionResult<Snapshot>>) => {
     setBusy(true);
@@ -128,7 +135,9 @@ export function Room({ initial, fresh }: RoomProps) {
 
   const withLeaveDialog = (screen: ReactNode) => (
     <>
-      {screen}
+      <PhaseStage stageKey={stageOf(snapshot)} entering={phaseEntry(transition)}>
+        {screen}
+      </PhaseStage>
       <KickDialog
         name={kickTarget?.name ?? null}
         busy={busy}
@@ -175,7 +184,12 @@ export function Room({ initial, fresh }: RoomProps) {
     switch (game.type) {
       case 'impostor':
         return withLeaveDialog(
-          <ImpostorGame {...shared} game={game} categories={chosenCategories} />,
+          <ImpostorGame
+            {...shared}
+            game={game}
+            categories={chosenCategories}
+            transition={transition}
+          />,
         );
       case 'probable':
         return withLeaveDialog(<ProbableGame {...shared} game={game} />);
@@ -188,9 +202,9 @@ export function Room({ initial, fresh }: RoomProps) {
       case 'palabras_prohibidas':
         return withLeaveDialog(<PalabrasProhibidasGame {...shared} game={game} />);
       case 'luna_llena':
-        return withLeaveDialog(<LunaLlenaGame {...shared} game={game} />);
+        return withLeaveDialog(<LunaLlenaGame {...shared} game={game} transition={transition} />);
       case 'dados':
-        return withLeaveDialog(<DadosGame {...shared} game={game} />);
+        return withLeaveDialog(<DadosGame {...shared} game={game} transition={transition} />);
     }
   }
 
@@ -224,6 +238,7 @@ export function Room({ initial, fresh }: RoomProps) {
   return withLeaveDialog(
     <LobbyScreen
       snapshot={snapshot}
+      joined={joinedPlayers(transition)}
       impostors={impostorCount}
       busy={busy}
       error={errorText}

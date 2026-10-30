@@ -1,4 +1,7 @@
+'use client';
+
 import type { ReactNode } from 'react';
+import { STAGE_CARD, useStage } from './stage-context';
 
 type CardVariant = 'normal' | 'hero' | 'dark';
 type CardTone = 'paper' | 'lime' | 'tomato';
@@ -39,13 +42,19 @@ export function Card({
   grow = false,
   children,
 }: CardProps) {
+  const stage = useStage();
+  // Solo la protagonista cambia con la fase: se monta de nuevo y, si toca, entra.
+  const lead = variant !== 'normal';
   const background = variant === 'dark' ? '' : toneClasses[tone];
-  const rotation = variant !== 'normal' && tilt ? tiltClasses[tilt] : '';
+  const rotation = lead && tilt ? tiltClasses[tilt] : '';
   const height = grow ? 'flex-1' : '';
+  const entry = lead && stage.entering ? 'animate-entrar' : '';
   return (
     <div
+      key={lead ? stage.key : undefined}
       data-testid="card"
-      className={`flex min-w-0 flex-col border-3 border-ink hyphens-auto wrap-break-word ${variantClasses[variant]} ${background} ${rotation} ${height}`}
+      {...(lead ? { [STAGE_CARD]: '' } : {})}
+      className={`flex min-w-0 flex-col border-3 border-ink hyphens-auto wrap-break-word ${variantClasses[variant]} ${background} ${rotation} ${height} ${entry}`}
     >
       {children}
     </div>

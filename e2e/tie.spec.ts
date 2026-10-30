@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { pageOf, startedGame, vote } from './players';
+import { pageOf, peek, startedGame, vote } from './players';
 
 test('6.4 · empate y segunda votación', async ({ browser }) => {
   const { players, host, impostor } = await startedGame(browser, [
@@ -27,6 +27,7 @@ test('6.4 · empate y segunda votación', async ({ browser }) => {
   // Nadie queda fuera: todos vuelven a hablar en la ronda siguiente.
   await host.getByRole('button', { name: 'Siguiente ronda' }).click();
   for (const page of Object.values(players)) {
+    await peek(page);
     await expect(page.getByText(/^(Tu palabra|Eres el)$/)).toBeVisible();
   }
 

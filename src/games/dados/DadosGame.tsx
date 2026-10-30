@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import type { HeaderTone } from '@/components/HeaderAside';
 import { backToLobby, dadosPlace, dadosStart, type ActionResult } from '@/lib/actions';
 import { copy } from '@/lib/copy';
+import { stageOf, type Transition } from '@/lib/motion';
 import type { DadosGameState, DadosSideState, Snapshot } from '@/lib/snapshot';
 import {
   boardSides,
@@ -15,6 +16,7 @@ import {
   turnName,
   turnSteps,
 } from './game-view';
+import { dadosMotion, sideMotion } from './motion';
 import { MyTurnCard, PlayScreen, ResultControls, ResultScreen, TurnWaitBox } from './screens';
 import { viewFor } from './view';
 
@@ -30,6 +32,8 @@ type DadosGameProps = {
   run: (action: () => Promise<ActionResult<Snapshot>>) => Promise<boolean>;
   onKickRequest: (userId: string) => void;
   onChangeGame: () => void;
+  /** De qué foto se viene, si hay que animar la jugada (docs/PLAN-8.md §3). */
+  transition?: Transition | null;
 };
 
 /** Volver a jugar con los mismos equipos; si falta alguno, a la sala de espera. */
@@ -51,8 +55,13 @@ export function DadosGame({
   run,
   onKickRequest,
   onChangeGame,
+  transition = null,
 }: DadosGameProps) {
   const roomId = snapshot.room.id;
+  const motion = dadosMotion(transition);
+  const previous = transition?.previous.game?.type === 'dados' ? transition.previous.game : null;
+  // Cada tirada rueda una vez: la clave cambia con cada turno.
+  const roll = motion.some((event) => event.type === 'roll') ? stageOf(snapshot) : null;
   const view = viewFor(game);
   const aside = pill(copy.dados.pill(game.mode), 'orange');
   const toView = (side: DadosSideState) => ({
@@ -60,6 +69,7 @@ export function DadosGame({
     regions: sideRegions(game, side),
     members: sideMembers(snapshot, side),
     state: side,
+    motion: sideMotion(motion, side.side, previous),
   });
   const { top, bottom } = boardSides(game);
 
@@ -86,6 +96,7 @@ export function DadosGame({
         title={resultTitle(game)}
         summary={resultSummary(game)}
         sides={ordered.map((side) => ({ side: toView(side), winner: side.side === winner }))}
+        animate={motion.some((event) => event.type === 'result')}
       />
     );
   }
@@ -101,7 +112,7 @@ export function DadosGame({
     : turnUserId;
   const footer =
     view === 'my_turn' && value !== null ? (
-      <MyTurnCard value={value} />
+      <MyTurnCard value={value} roll={roll} />
     ) : (
       <TurnWaitBox
         text={
@@ -110,6 +121,7 @@ export function DadosGame({
             : copy.dados.waiting(turnName(game), value)
         }
         value={value}
+        roll={roll}
         steps={steps}
         kick={
           snapshot.me.is_host && awayTurnId !== null

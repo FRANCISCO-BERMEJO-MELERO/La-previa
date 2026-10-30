@@ -1,5 +1,69 @@
 # Decisiones
 
+## 2026-10-30 · 46 · Movimiento: validación y cierre
+
+- **Las e2e con movimiento reutilizan las de siempre.** Playwright tiene dos tandas: «quieto», con movimiento reducido, que corre todas las pruebas de antes, y «movimiento», que repite con las animaciones activas una partida corta de cada juego (6.1 de El impostor, 31.7 de El lobo y 40.1 de A dados, que ya actúan en cuanto cada botón está disponible) y corre las nuevas 46.1. Así no se duplican partidas enteras.
+- **Recargas a mitad de secuencia.** Una por juego: El impostor mientras caen los votos, El lobo en el amanecer y A dados justo después de un ataque. Tras recargar no queda ninguna clase de animación ni ningún fantasma, y lo pintado coincide con lo de antes.
+- **El dado roto que revienta no es un dado de la mesa.** La e2e de A dados con movimiento lo contaba como dado: la copia que revienta llevaba el mismo nombre accesible que uno de verdad. Pasa a ser decorativa (`aria-hidden`, sin papel de imagen).
+- **Repaso a 360, 390 y 430 px.** Las e2e de accesibilidad de siempre lo miran con movimiento reducido; con movimiento, la de El impostor mide a 360 px que la tarjeta que entra desde la derecha no desborda. Los sellos de los muertos y el telón no añaden desbordes.
+- **`build` con webpack en las copias de verificación.** Para verificar cada commit sin tocar el árbol de trabajo, el índice se exportaba a otra carpeta con un enlace a `node_modules`. Turbopack no sigue ese enlace, así que allí se compilaba con `next build --webpack`; la compilación oficial (`npm run build`, con Turbopack) se pasó en el árbol principal al cerrar.
+
+## 2026-10-30 · 45 · Movimiento: A dados
+
+- **Tirada.** El dado rueda 500 ms cambiando de cara cada 75 ms y cae con `thump`. Las caras que enseña al rodar nunca son la real, para que no parezca que ya ha caído; su nombre accesible es siempre el valor real. Rueda una vez por tirada: se vuelve a montar con cada turno.
+- **Colocar.** El dado nuevo sube a su hueco en el tablero de abajo y baja en el de arriba, sea quien sea quien mire: lo que cambia es dónde está cada tablero en su pantalla.
+- **Ataque.** Los dados rotos ya no están en la foto: se pintan en una capa `aria-hidden` encima de los huecos donde estaban, en `tomato`, y revientan. Encima del marcador de esa columna flota lo que pierde el rival («−24»). Columnas y totales de los dos bandos cuentan desde los de la foto anterior.
+- **Pareja o trío.** El color cambia en el acto; el sello «×2» o «×3» se planta cuando el dado ya ha llegado y se quita a los 1,1 s.
+- **Final.** El resultado entra con el cambio de fase y sus marcadores cuentan desde cero. Si la partida acaba por abandono no hay jugada que animar y se pinta quieto.
+
+## 2026-10-30 · 44 · Movimiento: El lobo
+
+- **Un solo commit para 44.2 y 44.3.** El telón y el resto de pantallas se conectan en el mismo sitio (`LunaLlenaGame`) a partir de los mismos eventos; separarlos dejaba un commit con eventos calculados y sin usar.
+- **Solo lo público.** Los eventos de El lobo salen de la fase, de los ids de los muertos del anuncio y de los votos públicos. Nunca de `my`, de las causas reales que ven los muertos ni de quién ha actuado de noche. Un test compara los eventos de los nueve roles en el reparto, la noche y el amanecer.
+- **Telón.** Va en el hueco del aviso, que está en todas las pantallas de la partida (vivos, muertos, quien llegó tarde), pero es fijo y cubre la pantalla entera. No recibe toques, así que no desactiva ningún botón: los tapa menos de un segundo. De noche la tarjeta no entra con el cambio de fase, para que todas las pantallas se muevan igual; al amanecer sí, tras subir el telón.
+- **Giro de la carta.** El reparto de El lobo no tiene dorso: la carta se ve entera desde el principio y cambiar eso sería otra forma de jugar, que el plan solo pide para El impostor. El giro se aplica donde la carta se toca para verla: el botón para volver a verla durante la partida. Es el mismo para todos los roles. En el reparto, la carta entra con el cambio de fase, igual para todos.
+- **Sellos de los muertos.** Cada muerto del amanecer lleva el sello «Ha muerto»; en la horca, el ahorcado lleva «Ahorcado» y la víctima del cazador, «Ha muerto». Se ven siempre; con movimiento, el sello se planta cuando su carta ha caído. La noche tranquila pasa a ser una sola fila en forma de sello `lime` con «Esta noche no ha muerto nadie.».
+- **«Se salva» no se pinta.** Desde D.2 no hay segunda votación: quien llega a la horca muere, así que ningún estado de la partida dice que alguien se salva.
+- **Votaciones.** Al cerrarse, cada fila de votos cae, su número cuenta desde cero y, al final, la del acusado salta. Su color es el `tomato` de siempre, no el `lime` de la fila más votada de El impostor: en El lobo la fila destacada es la del acusado y ya tenía color propio. El alcalde no tiene fila destacada.
+- **Resultado.** Como en El impostor: el titular se sella y, debajo, cada rol cae de uno en uno.
+
+## 2026-10-30 · 43 · Mantener para mirar
+
+- **La tapa es una sola para los dos roles**: tarjeta `sky` con «Mantén pulsado» y «para ver tu palabra», el mismo tamaño, el mismo giro (−1,5°) y la misma sombra. Lo de debajo queda con `visibility: hidden` mientras está tapado: no se ve ni lo leen los lectores de pantalla, pero sigue en el DOM, como pide el plan.
+- **La frase de ayuda del reparto también va tapada.** Es distinta para el jugador («Hablad las rondas que queráis…») y para el impostor («No conoces la palabra…»): con la tarjeta tapada, esa frase delataba el rol a quien mirase de reojo.
+- **Puntero.** Al pulsar, la tapa captura el puntero, así que soltar fuera de ella (el dedo se queda donde estaba y la tapa sube) también la baja. El menú del toque largo se anula. El clic que sigue a soltar no hace nada; solo el clic sin puntero (`detail === 0`) alterna.
+- **Teclado.** Espacio e Intro levantan mientras se mantienen; se anula su acción por defecto para que no generen además un clic que la dejaría abierta. Perder el foco la baja.
+- **Cambio de fase.** Lo tapado no sale en la copia fantasma que se va al cambiar de fase: saldría destapado. Sale la tapa, que es igual para todos.
+- **«Cómo se juega» no cambia.** Sus pasos de El impostor no dicen cómo se ve la palabra, que es la condición del plan para tocarlos; la tapa lo explica sola.
+- **Pruebas que cambian.** Los ayudantes de `e2e/players.ts` (`rolesOf` y `secretWord`) y las e2e que leen el reparto tras recargar o en una ronda nueva (`long-session`, `reconnect`, `tie`, `probable`) levantan antes la tapa con un clic sin puntero (`peek`), como haría un lector de pantalla. Es justo el comportamiento que cambia el plan: la palabra ya no se ve sin mantener pulsado.
+
+## 2026-10-30 · 42 · Movimiento: plataforma y El impostor
+
+- **El cierre de la votación de El impostor no se anima como pide el plan.** La foto de El impostor nunca trae a quién ha votado cada uno ni el recuento: ni antes ni después de cerrar (`docs/CONTEXTO.md` lo prohíbe antes de `finished` y la pantalla de revelación solo dice a quién se expulsa). Pintar votos que caen sobre cada fila exigiría cambiar la base de datos, y esta tarea es solo de cliente; además, en la duda sobre dar información de más, no se pone. En su lugar, mientras se vota, la ficha de quien acaba de votar cae y el marcador «2 de 5» cuenta: es lo que todos ya ven.
+- **Avisos que caen al aparecer.** El aviso sin conexión, los errores de acción, los avisos de equilibrio de El lobo y el de equipos de A dados caen al montarse, con una clase fija: son de la interfaz, no de la foto, y nada en el plan pide relacionarlos con ella. Lo mismo el campo con error, que tiembla, y su mensaje, que cae.
+- **El diálogo del QR cae** con la misma clase en el `dialog`: el navegador reinicia la animación cada vez que se abre. Los demás diálogos no cambian.
+- **Sellos al llegar la tarjeta.** El sello de la revelación, el texto del empate y el titular del resultado empiezan cuando la tarjeta termina de entrar (`AFTER_ENTRY_MS`, 420 ms). Los impostores del resultado caen después del titular, escalonados.
+- **Cada impostor del resultado va en su sello pequeño**, una píldora `tomato` girada, separados por «, » y « y » como antes. La prueba «con varios impostores los lista a todos» de `game-screens.test.tsx` buscaba el texto «Dani y Marta» en un solo elemento; ahora comprueba que la fila lo dice entero, porque cada nombre es un elemento propio.
+- **Contar** se hace con `requestAnimationFrame` y una cúbica de salida. Mientras cuenta, el número visible es `aria-hidden` y al lado va el valor final para lectores de pantalla; quieto, es el texto de siempre, y los tests que lo buscan no cambian.
+
+## 2026-10-30 · 41.2 a 41.5 · Movimiento: la base
+
+- **Tokens.** Duraciones, curvas y animaciones van en un bloque `@theme static` de `globals.css`, junto a los de Verbena. `static` porque se usan dentro de otras variables y keyframes, y Tailwind quitaría las que no ve en una clase. Lo que se mueve desde JavaScript (contar, el retraso del fantasma) lee las duraciones de `motionMs` en `src/lib/motion.ts`; un test comprueba que coinciden con las de CSS.
+- **Giros relativos.** Tarjetas, píldoras y sellos llevan su giro en reposo en la propiedad `rotate` (utilidades `tilt-*`), que se suma a `transform`. Por eso los keyframes de `entrar`, `salir` y `sello` se escriben restando el giro en reposo y terminan en `none`: el giro total en cada fotograma es el del plan (8°, −3°, −1,5° al entrar una tarjeta torcida −1,5°) y al acabar no hay salto. Así valen igual para la tarjeta torcida a la izquierda y para la torcida a la derecha.
+- **Hundir.** Pasa a `rapido` y `seco`, y solo se anima el desplazamiento: la sombra desaparece en el acto (principio 4). Con movimiento reducido el botón pierde la sombra sin moverse. Sigue solo en el botón principal, que es el único con sombra; los secundarios no la tienen y desplazarlos parecería un fallo.
+- **Movimiento reducido** se cumple dos veces: una regla global en CSS quita animaciones y transiciones, y `useReducedMotion` hace que no se calcule ningún evento. Sin `matchMedia` (jsdom) cuenta como reducido, así que los tests existentes ven la app quieta.
+- **Escalonado.** 420 ms entre pasos, que se acorta si la secuencia no cabe en 1,6 s contando el retraso inicial y la duración del último paso. Los retrasos son clases `anim-delay-*` en pasos de 20 ms, generadas con `@source inline`, porque `CLAUDE.md` prohíbe estilos en línea.
+- **La foto anterior** la guarda el reductor de sincronización: solo cuando llega una versión nueva y la anterior seguía el hilo. Una respuesta de la misma versión confirma el hilo sin cambiar la anterior, para no cortar una secuencia a medias con el sondeo. Un fallo, la vuelta a la pestaña o la vuelta de la conexión lo rompen; la foto inicial de la sala no se anima hasta que una respuesta la confirma.
+- **Consecutiva.** Una foto sigue a la anterior si la fase nueva puede venir justo después de la vieja (un grafo por juego para El impostor, El lobo y A dados) y no se ha saltado ninguna ronda, noche o día. En A dados, además, ha tenido que jugar justo quien tenía el turno. Para los juegos por rondas, que quedan fuera del catálogo salvo el cambio de fase, basta con no saltarse una ronda.
+- **Cambio de fase sin tocar cada pantalla.** `Card` lee del contexto el momento de la partida: las tarjetas protagonistas (`hero` y `dark`) se montan de nuevo cuando cambia y, si toca animar, entran. `PhaseStage`, en la sala, mide en cada pintado dónde están esas tarjetas; al cambiar de fase clona la vieja y la pinta encima, en una capa `aria-hidden`, `inert` y sin eventos de puntero, con `salir`. Es el único sitio con estilos en línea: la posición medida del clon, que vive fuera de React y no es un valor de diseño. Un temporizador lo quita aunque la animación no llegue a correr.
+- **Sin desborde horizontal.** La tarjeta que entra viene desde fuera por la derecha; el marco de pantalla lleva `overflow-x: clip` para que no aparezca una barra de desplazamiento.
+
+## 2026-10-30 · 41.1 · Movimiento: `docs/CONTEXTO.md` §8 queda ampliado
+
+- **Ampliación de alcance a petición de Fran.** `docs/CONTEXTO.md` §8 dice «Sin más animaciones en esta versión». `docs/PLAN-8.md` lo levanta para lo que describe su catálogo y nada más. `docs/CONTEXTO.md` no se toca (lo prohíbe `CLAUDE.md`): para el movimiento manda `docs/PLAN-8.md`.
+- **Número del plan.** El último plan es `docs/PLAN-7.md` (A dados), así que este es el 8 y sus fases siguen la numeración de `docs/TAREAS.md`: de la 41 a la 46.
+- **Referencia a las pruebas.** La especificación pegada decía «Esto se comprueba con tests (sección 9)», pero las pruebas son la sección 10; en el plan se corrige la referencia, sin cambiar el contenido.
+
 ## 2026-10-26 · D.7 · El impostor recibe una pista propia, no la categoría
 
 - **A petición de Fran.** `docs/CONTEXTO.md` §2 dejaba fuera de alcance las «pistas propias por palabra: la pista es la categoría». Con solo la categoría, el impostor casi no tenía con qué disimular. Fran pide una pista real, así que se cambia; `docs/CONTEXTO.md` no se toca (lo prohíbe `CLAUDE.md`) y manda esta decisión.

@@ -1,5 +1,6 @@
 import { AvatarRow, type AvatarRowItem } from '@/components/AvatarRow';
 import { Card } from '@/components/Card';
+import { HoldToPeek } from '@/components/HoldToPeek';
 import { Pill } from '@/components/Pill';
 import { copy } from '@/lib/copy';
 import { fitDisplay } from '@/lib/fit-text';
@@ -14,7 +15,10 @@ type DealScreenProps = GameScreenProps & {
   connected: number;
 };
 
-/** 06 y 07: el reparto. El jugador normal ve la palabra; el impostor, solo su pista. */
+/**
+ * 06 y 07: el reparto. El jugador normal ve la palabra; el impostor, solo su pista. Las dos quedan
+ * bajo la misma tapa, que se levanta mientras se mantiene pulsada (docs/PLAN-8.md §8).
+ */
 export function DealScreen({
   role,
   word,
@@ -27,32 +31,35 @@ export function DealScreen({
   const impostor = role === 'impostor';
   return (
     <GameScreen {...chrome}>
-      {impostor ? (
-        <Card variant="dark" tilt="right" grow>
-          <Pill tone="tomato" caps onDark>
-            {copy.deal.impostorPill}
-          </Pill>
-          <h1 className="flex flex-1 items-center font-display text-display-md text-ground uppercase">
-            {copy.deal.impostorTitle}
-          </h1>
-          <InfoRow label={copy.deal.impostorClue} value={hint ?? category} onDark />
-        </Card>
-      ) : (
-        <Card variant="hero" tilt="left" grow>
-          <Pill tone="sky" caps>
-            {copy.deal.wordPill}
-          </Pill>
-          <h1
-            className={`flex flex-1 items-center font-display uppercase ${fitDisplay(word ?? '')}`}
-          >
-            {word}
-          </h1>
-          <InfoRow label={copy.deal.category} value={category} />
-        </Card>
-      )}
-      <p className="text-base font-medium">
-        {impostor ? copy.deal.impostorHint : copy.deal.playerHint}
-      </p>
+      <HoldToPeek title={copy.deal.holdTitle} hint={copy.deal.holdHint}>
+        {impostor ? (
+          <Card variant="dark" tilt="right" grow>
+            <Pill tone="tomato" caps onDark>
+              {copy.deal.impostorPill}
+            </Pill>
+            <h1 className="flex flex-1 items-center font-display text-display-md text-ground uppercase">
+              {copy.deal.impostorTitle}
+            </h1>
+            <InfoRow label={copy.deal.impostorClue} value={hint ?? category} onDark />
+          </Card>
+        ) : (
+          <Card variant="hero" tilt="left" grow>
+            <Pill tone="sky" caps>
+              {copy.deal.wordPill}
+            </Pill>
+            <h1
+              className={`flex flex-1 items-center font-display uppercase ${fitDisplay(word ?? '')}`}
+            >
+              {word}
+            </h1>
+            <InfoRow label={copy.deal.category} value={category} />
+          </Card>
+        )}
+        {/* También tapada: es distinta para el impostor y lo delataría. */}
+        <p className="pt-5 text-base font-medium">
+          {impostor ? copy.deal.impostorHint : copy.deal.playerHint}
+        </p>
+      </HoldToPeek>
       <AvatarRow players={players} summary={copy.deal.connected(connected)} />
     </GameScreen>
   );

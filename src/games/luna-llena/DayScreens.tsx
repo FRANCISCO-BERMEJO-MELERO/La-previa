@@ -1,8 +1,10 @@
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
+import { Count } from '@/components/Count';
 import { Pill } from '@/components/Pill';
 import { WaitingBox } from '@/components/WaitingBox';
 import { copy } from '@/lib/copy';
+import { delayClass, motionMs, sequenceDelays } from '@/lib/motion';
 import { GameScreen, type GameScreenProps } from '@/screens/GameScreen';
 import type { VoteGroup, LunaPlayer } from './game-view';
 import { PlayerList } from './PlayerList';
@@ -63,7 +65,7 @@ export function VoteScreen({
         )}
       </Card>
       {error ? (
-        <p role="alert" className="text-md font-bold">
+        <p role="alert" className="animate-caer text-md font-bold">
           {error}
         </p>
       ) : null}
@@ -82,10 +84,18 @@ type DayScreenProps = GameScreenProps & {
   mayor: string | null;
   /** El día en que se elige alcalde, cómo se votó. */
   mayorVotes: readonly VoteGroup[];
+  /** La votación de alcalde acaba de cerrarse. */
+  votesClosed?: boolean;
 };
 
 /** El debate: pantalla casi vacía para que el móvil se quede boca abajo. */
-export function DayScreen({ day, mayor, mayorVotes, ...chrome }: DayScreenProps) {
+export function DayScreen({
+  day,
+  mayor,
+  mayorVotes,
+  votesClosed = false,
+  ...chrome
+}: DayScreenProps) {
   return (
     <GameScreen {...chrome}>
       <Card variant="dark" tilt="right" grow>
@@ -105,7 +115,7 @@ export function DayScreen({ day, mayor, mayorVotes, ...chrome }: DayScreenProps)
           <h2 id="mayor-votes" className="font-display text-lg uppercase">
             {texts.day.mayorVotesTitle}
           </h2>
-          <VoteGroupList groups={mayorVotes} highlightId={null} />
+          <VoteGroupList groups={mayorVotes} highlightId={null} animate={votesClosed} />
         </section>
       ) : null}
     </GameScreen>
@@ -118,10 +128,19 @@ type DefenseScreenProps = GameScreenProps & {
   accusedId: string | null;
   isMe: boolean;
   groups: readonly VoteGroup[];
+  /** La votación de acusación acaba de cerrarse. */
+  votesClosed?: boolean;
 };
 
 /** La defensa: quién votó a quién, con el acusado destacado. */
-export function DefenseScreen({ accused, accusedId, isMe, groups, ...chrome }: DefenseScreenProps) {
+export function DefenseScreen({
+  accused,
+  accusedId,
+  isMe,
+  groups,
+  votesClosed = false,
+  ...chrome
+}: DefenseScreenProps) {
   return (
     <GameScreen {...chrome}>
       <Card variant="hero" tilt="left">
@@ -146,41 +165,61 @@ export function DefenseScreen({ accused, accusedId, isMe, groups, ...chrome }: D
         {groups.length === 0 ? (
           <p className="text-md font-bold">{texts.defense.noVotes}</p>
         ) : (
-          <VoteGroupList groups={groups} highlightId={accusedId} />
+          <VoteGroupList groups={groups} highlightId={accusedId} animate={votesClosed} />
         )}
       </section>
     </GameScreen>
   );
 }
 
-/** Quién votó a quién, agrupado por votado; el destacado, en `tomato`. */
+/**
+ * Quién votó a quién, agrupado por votado; el destacado, en `tomato`. Al cerrarse la votación,
+ * cada fila cae, su recuento cuenta y, al final, la destacada salta (docs/PLAN-8.md §5 y §6).
+ */
 export function VoteGroupList({
   groups,
   highlightId,
+  animate = false,
 }: {
   groups: readonly VoteGroup[];
   highlightId: string | null;
+  animate?: boolean;
 }) {
+  // Cada paso: la fila cae y su número cuenta; al final, el salto de la destacada.
+  const delays = sequenceDelays(groups.length, motionMs.base + motionMs.contar + motionMs.base);
+  const end = (delays.at(-1) ?? 0) + motionMs.base + motionMs.contar;
   return (
     <ul className="flex flex-col gap-2.5">
-      {groups.map((group) => (
-        <li
-          key={group.targetId}
-          className={`flex flex-col gap-1 rounded-chip border-3 border-ink p-3 ${group.targetId === highlightId ? 'bg-tomato' : 'bg-paper'}`}
-        >
-          <span className="flex items-baseline justify-between gap-3">
-            <span className="truncate font-display text-title uppercase">{group.name}</span>
-            <span className="shrink-0 text-md font-bold">{texts.defense.votes(group.weight)}</span>
-          </span>
-          <span className="text-sm font-medium">
-            {copy.result.names(
-              group.voters.map((voter) =>
-                voter.double ? `${voter.name} ${texts.defense.double}` : voter.name,
-              ),
-            )}
-          </span>
-        </li>
-      ))}
+      {groups.map((group, index) => {
+        const delay = delays[index] ?? 0;
+        const highlighted = group.targetId === highlightId;
+        return (
+          <li key={group.targetId} className={animate ? `animate-caer ${delayClass(delay)}` : ''}>
+            <div
+              className={`flex flex-col gap-1 rounded-chip border-3 border-ink p-3 ${highlighted ? 'bg-tomato' : 'bg-paper'} ${animate && highlighted ? `animate-salto ${delayClass(end)}` : ''}`}
+            >
+              <span className="flex items-baseline justify-between gap-3">
+                <span className="truncate font-display text-title uppercase">{group.name}</span>
+                <span className="shrink-0 text-md font-bold">
+                  <Count
+                    value={group.weight}
+                    from={animate ? 0 : null}
+                    delay={delay + motionMs.base}
+                    format={texts.defense.votes}
+                  />
+                </span>
+              </span>
+              <span className="text-sm font-medium">
+                {copy.result.names(
+                  group.voters.map((voter) =>
+                    voter.double ? `${voter.name} ${texts.defense.double}` : voter.name,
+                  ),
+                )}
+              </span>
+            </div>
+          </li>
+        );
+      })}
     </ul>
   );
 }

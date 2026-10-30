@@ -458,6 +458,9 @@ export const copy = {
     impostorTitle: 'Impos­tor',
     impostorClue: 'Tu pista',
     impostorHint: 'No conoces la palabra. Escucha, disimula y que no te pillen.',
+    // La tapa del reparto: la misma para todos, no dice si debajo hay palabra o impostor.
+    holdTitle: 'Mantén pulsado',
+    holdHint: 'para ver tu palabra',
     connected: (count: number) => `${String(count)} conectados`,
     openVoting: 'Pasar a votación',
     waitingVote: (host: string) => `${host} decide cuándo se vota`,
@@ -526,6 +529,9 @@ export const copy = {
           : 'Ganan los impostores',
     impostorsLabel: (count: number) => (count === 1 ? 'El impostor era' : 'Los impostores eran'),
     names: (names: readonly string[]) => joinNames(names),
+    /** Lo que va delante del nombre en la posición dada al listarlos uno a uno: «, » o « y ». */
+    nameJoin: (index: number, count: number) =>
+      index === 0 ? '' : index === count - 1 ? ' y ' : ', ',
     won: '¡Has ganado!',
     lost: 'Has perdido',
     finished: 'Fin de la partida',
@@ -873,6 +879,7 @@ export const copy = {
       pill: 'Amanece',
       quietTitle: 'Noche tranquila',
       quietText: 'Esta noche no ha muerto nadie.',
+      deadStamp: 'Ha muerto',
       deathsTitle: 'Esta noche',
       // Los vivos solo saben que alguien ha muerto de noche; los muertos, por qué.
       causes: {
@@ -1063,6 +1070,9 @@ export const copy = {
       `Columna ${String(column)}: ${String(points)} puntos`,
     place: (column: number) => `Colocar el dado en la columna ${String(column)}`,
     die: (value: number) => `Dado: ${String(value)}`,
+    // Sello sobre la columna con pareja o trío, y los puntos que pierde el rival al romperle dados.
+    combo: (count: 2 | 3) => `×${String(count)}`,
+    lost: (points: number) => `−${String(points)}`,
     empty: 'Hueco libre',
     myTurn: 'Te toca',
     myTurnText: (value: number) =>

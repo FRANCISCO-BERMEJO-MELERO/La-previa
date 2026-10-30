@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { lobbySnapshot } from '@/test/fixtures';
-import { POLL_INTERVAL_MS, initialSyncState, isNewer, nextPollDelay, syncReducer } from './sync';
+import {
+  POLL_INTERVAL_MS,
+  initialSyncState,
+  isNewer,
+  nextPollDelay,
+  syncReducer,
+  type SyncState,
+} from './sync';
 
 function withVersion(version: number, serverTime = '2026-10-08T19:30:00+00:00') {
   const base = lobbySnapshot();
@@ -64,6 +71,61 @@ describe('syncReducer', () => {
       status: 'gone',
       snapshot: null,
     });
+  });
+});
+
+describe('syncReducer: foto anterior para animar', () => {
+  const snapshotOf = (version: number, serverTime?: string) =>
+    ({ type: 'snapshot', snapshot: withVersion(version, serverTime) }) as const;
+
+  it('la primera foto no tiene anterior', () => {
+    expect(syncReducer(initialSyncState, snapshotOf(1)).previous).toBeNull();
+  });
+
+  it('una versión nueva tras seguir el hilo guarda la anterior', () => {
+    let state = syncReducer(initialSyncState, snapshotOf(3));
+    state = syncReducer(state, snapshotOf(4));
+    expect(state.previous?.room.version).toBe(3);
+    expect(state.snapshot?.room.version).toBe(4);
+  });
+
+  it('la foto inicial confirmada por una respuesta de la misma versión ya sigue el hilo', () => {
+    let state: SyncState = { ...initialSyncState, snapshot: withVersion(3), status: 'ready' };
+    state = syncReducer(state, snapshotOf(3));
+    expect(state.previous).toBeNull();
+    state = syncReducer(state, snapshotOf(4));
+    expect(state.previous?.room.version).toBe(3);
+  });
+
+  it('la foto inicial sin confirmar no se anima al llegar otra versión', () => {
+    const state = { ...initialSyncState, snapshot: withVersion(3), status: 'ready' as const };
+    expect(syncReducer(state, snapshotOf(5)).previous).toBeNull();
+  });
+
+  it('la misma versión más reciente no cambia la anterior', () => {
+    let state = syncReducer(initialSyncState, snapshotOf(3));
+    state = syncReducer(state, snapshotOf(4));
+    state = syncReducer(state, snapshotOf(4, '2026-10-08T19:30:10+00:00'));
+    expect(state.previous?.room.version).toBe(3);
+    expect(state.snapshot?.server_time).toBe('2026-10-08T19:30:10+00:00');
+  });
+
+  it('tras un fallo la siguiente versión llega sin anterior', () => {
+    let state = syncReducer(initialSyncState, snapshotOf(3));
+    state = syncReducer(state, snapshotOf(4));
+    state = syncReducer(state, { type: 'failed', error: 'offline' });
+    expect(state.previous).toBeNull();
+    state = syncReducer(state, snapshotOf(5));
+    expect(state.previous).toBeNull();
+  });
+
+  it('al volver a la pestaña se olvida la anterior y no cuenta como respuesta', () => {
+    let state = syncReducer(initialSyncState, snapshotOf(3));
+    state = syncReducer(state, snapshotOf(4));
+    const resynced = syncReducer(state, { type: 'resync' });
+    expect(resynced.previous).toBeNull();
+    expect(resynced.responses).toBe(state.responses);
+    expect(syncReducer(resynced, snapshotOf(6)).previous).toBeNull();
   });
 });
 

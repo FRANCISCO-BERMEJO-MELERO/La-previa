@@ -71,14 +71,18 @@ export function useRoomSync(roomId: string, initial: Snapshot | null = null): Ro
   // Vuelta a primer plano y vuelta de la conexión.
   useEffect(() => {
     if (gone) return;
+    const resync = () => {
+      dispatch({ type: 'resync' });
+      refresh();
+    };
     const onVisible = () => {
-      if (document.visibilityState === 'visible') refresh();
+      if (document.visibilityState === 'visible') resync();
     };
     document.addEventListener('visibilitychange', onVisible);
-    window.addEventListener('online', refresh);
+    window.addEventListener('online', resync);
     return () => {
       document.removeEventListener('visibilitychange', onVisible);
-      window.removeEventListener('online', refresh);
+      window.removeEventListener('online', resync);
     };
   }, [refresh, gone]);
 
