@@ -410,7 +410,7 @@ Plan: `docs/PLAN-8.md`.
 - [x] 41.2 Tokens de duración y curva, keyframes, utilidades, Hundir con tokens y movimiento reducido
 - [x] 41.3 La sincronización guarda la foto anterior y olvida la continuidad al cargar, reconectar o volver a la pestaña
 - [x] 41.4 Transiciones, consecutividad, escalonado y cambio de fase genéricos, con tests
-- [ ] 41.5 Entrada de la tarjeta protagonista y fantasma de la vieja; Playwright con `reducedMotion: 'reduce'`
+- [x] 41.5 Entrada de la tarjeta protagonista y fantasma de la vieja; Playwright con `reducedMotion: 'reduce'`
 
 Aceptación: `check` y `test:e2e` pasan; un cambio de fase anima la tarjeta y la recarga no.
 
