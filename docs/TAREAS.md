@@ -416,9 +416,9 @@ Aceptación: `check` y `test:e2e` pasan; un cambio de fase anima la tarjeta y la
 
 ## Fase 42 · Movimiento: plataforma y El impostor
 
-- [ ] 42.1 Sala de espera, avisos, errores de campo y diálogo del QR
-- [ ] 42.2 Eventos de El impostor con tests
-- [ ] 42.3 Votación, revelación, empate y resultado de El impostor
+- [x] 42.1 Sala de espera, avisos, errores de campo y diálogo del QR
+- [x] 42.2 Eventos de El impostor con tests
+- [x] 42.3 Votación, revelación, empate y resultado de El impostor
 
 Aceptación: `npm run check` pasa.
 

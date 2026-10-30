@@ -34,6 +34,7 @@ import {
 } from '@/lib/actions';
 import { copy, errorMessage, type ActionError } from '@/lib/copy';
 import { roomPath } from '@/lib/room-code';
+import { joinedPlayers } from '@/lib/lobby-motion';
 import { phaseEntry, stageOf, transitionOf } from '@/lib/motion';
 import { DEFAULT_ROUNDS } from '@/lib/rounds';
 import { shareRoomLink, type ShareOutcome } from '@/lib/share';
@@ -183,7 +184,12 @@ export function Room({ initial, fresh }: RoomProps) {
     switch (game.type) {
       case 'impostor':
         return withLeaveDialog(
-          <ImpostorGame {...shared} game={game} categories={chosenCategories} />,
+          <ImpostorGame
+            {...shared}
+            game={game}
+            categories={chosenCategories}
+            transition={transition}
+          />,
         );
       case 'probable':
         return withLeaveDialog(<ProbableGame {...shared} game={game} />);
@@ -232,6 +238,7 @@ export function Room({ initial, fresh }: RoomProps) {
   return withLeaveDialog(
     <LobbyScreen
       snapshot={snapshot}
+      joined={joinedPlayers(transition)}
       impostors={impostorCount}
       busy={busy}
       error={errorText}

@@ -35,6 +35,8 @@ export const MIN_PLAYERS = 3;
 
 type LobbyScreenProps = {
   snapshot: Snapshot;
+  /** Quienes acaban de entrar: su fila cae al final de la lista. */
+  joined?: readonly string[];
   impostors: number;
   busy: boolean;
   error?: string;
@@ -84,6 +86,7 @@ type LobbyScreenProps = {
 
 export function LobbyScreen({
   snapshot,
+  joined = [],
   impostors,
   busy,
   error,
@@ -176,7 +179,7 @@ export function LobbyScreen({
           </div>
         </div>
         {shareOutcome === 'failed' ? (
-          <p role="alert" className="text-md font-bold">
+          <p role="alert" className="animate-caer text-md font-bold">
             {copy.lobby.copyFailed(room.code)}
           </p>
         ) : null}
@@ -202,7 +205,10 @@ export function LobbyScreen({
           );
           const kickable = me.is_host && player.user_id !== me.user_id;
           return (
-            <li key={player.user_id} className="min-w-0">
+            <li
+              key={player.user_id}
+              className={`min-w-0 ${joined.includes(player.user_id) ? 'animate-caer' : ''}`}
+            >
               {kickable ? (
                 <KickableChip
                   name={player.name}
@@ -233,7 +239,7 @@ export function LobbyScreen({
       </ul>
 
       {error ? (
-        <p role="alert" className="text-md font-bold">
+        <p role="alert" className="animate-caer text-md font-bold">
           {error}
         </p>
       ) : null}
@@ -273,7 +279,7 @@ export function LobbyScreen({
             {startHint ? (
               <p
                 id="start-hint"
-                className={`text-md font-bold ${dadosProblem && missing === 0 ? 'rounded-chip border-3 border-ink bg-orange px-3.5 py-2.5' : ''}`}
+                className={`text-md font-bold ${dadosProblem && missing === 0 ? 'animate-caer rounded-chip border-3 border-ink bg-orange px-3.5 py-2.5' : ''}`}
               >
                 {startHint}
               </p>
@@ -324,6 +330,7 @@ export function LobbyScreen({
 
       <Dialog
         open={qrOpen}
+        falls
         title={copy.lobby.qrTitle}
         closeLabel={copy.lobby.close}
         onClose={onCloseQr}

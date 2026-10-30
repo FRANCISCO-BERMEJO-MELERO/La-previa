@@ -86,7 +86,7 @@ export function LunaSettings({ players, config, onChange }: LunaSettingsProps) {
           {warnings.map((warning) => (
             <li
               key={warning}
-              className="rounded-chip border-3 border-dashed border-ink bg-orange px-3.5 py-2 text-sm font-bold"
+              className="animate-caer rounded-chip border-3 border-dashed border-ink bg-orange px-3.5 py-2 text-sm font-bold"
             >
               {warningText(warning, players, config)}
             </li>

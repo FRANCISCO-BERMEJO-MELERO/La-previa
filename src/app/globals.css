@@ -333,12 +333,12 @@
   }
 }
 
-/* Retraso de un paso de una secuencia, en múltiplos de 20 ms hasta 1,6 s (docs/PLAN-8.md §3). */
+/* Retraso de un paso de una secuencia, en múltiplos de 20 ms hasta 2,4 s (docs/PLAN-8.md §3). */
 @utility anim-delay-* {
   animation-delay: calc(--value(integer) * 1ms);
 }
 
-@source inline("anim-delay-{0..1600..20}");
+@source inline("anim-delay-{0..2400..20}");
 
 /* Giro de las tarjetas protagonistas (±1,5°) y de píldoras y sellos (3°–4°). */
 @utility tilt-left {

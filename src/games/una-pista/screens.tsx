@@ -227,7 +227,7 @@ export function MarkControls({ isArbiter, waiting, busy, error, onMark }: MarkCo
     <>
       <p className="text-md font-medium">{copy.unaPista.markHint}</p>
       {error ? (
-        <p role="alert" className="text-md font-bold">
+        <p role="alert" className="animate-caer text-md font-bold">
           {error}
         </p>
       ) : null}

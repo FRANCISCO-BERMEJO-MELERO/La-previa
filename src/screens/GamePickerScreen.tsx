@@ -60,7 +60,7 @@ export function GamePickerScreen({
         ))}
       </ul>
       {error ? (
-        <p role="alert" className="text-md font-bold">
+        <p role="alert" className="animate-caer text-md font-bold">
           {error}
         </p>
       ) : null}

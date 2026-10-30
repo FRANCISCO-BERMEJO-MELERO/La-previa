@@ -7,10 +7,12 @@ type DialogProps = {
   title: string;
   closeLabel: string;
   onClose: () => void;
+  /** Al abrirse, cae (docs/PLAN-8.md §4). */
+  falls?: boolean;
   children: ReactNode;
 };
 
-export function Dialog({ open, title, closeLabel, onClose, children }: DialogProps) {
+export function Dialog({ open, title, closeLabel, onClose, falls = false, children }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -35,7 +37,7 @@ export function Dialog({ open, title, closeLabel, onClose, children }: DialogPro
     <dialog
       ref={ref}
       aria-labelledby={titleId}
-      className="m-auto w-11/12 max-w-sm rounded-card border-3 border-ink bg-paper p-5 text-ink shadow-hard backdrop:bg-ink/60"
+      className={`m-auto w-11/12 max-w-sm rounded-card border-3 border-ink bg-paper p-5 text-ink shadow-hard backdrop:bg-ink/60 ${falls ? 'animate-caer' : ''}`}
     >
       <div className="flex flex-col gap-4">
         <h2 id={titleId} className="font-display text-title uppercase">

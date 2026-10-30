@@ -40,7 +40,7 @@ export function VoteScreen({
       <PromptCard prompt={prompt} />
       <CandidateList candidates={candidates} selected={selected} onSelect={onSelect} />
       {error ? (
-        <p role="alert" className="text-md font-bold">
+        <p role="alert" className="animate-caer text-md font-bold">
           {error}
         </p>
       ) : null}

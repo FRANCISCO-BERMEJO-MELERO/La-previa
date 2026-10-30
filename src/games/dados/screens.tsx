@@ -225,7 +225,7 @@ export function PlayScreen({ top, bottom, onPlace, busy, error, ...chrome }: Pla
         <SideRow side={bottom} />
       </div>
       {error ? (
-        <p role="alert" className="text-md font-bold">
+        <p role="alert" className="animate-caer text-md font-bold">
           {error}
         </p>
       ) : null}
@@ -306,7 +306,7 @@ export function ResultControls({
   return (
     <>
       {error ? (
-        <p role="alert" className="text-md font-bold">
+        <p role="alert" className="animate-caer text-md font-bold">
           {error}
         </p>
       ) : null}

@@ -13,6 +13,7 @@ import {
   type ActionResult,
 } from '@/lib/actions';
 import { copy } from '@/lib/copy';
+import type { Transition } from '@/lib/motion';
 import { useCountdown } from '@/lib/use-countdown';
 import type { ImpostorGameState, Snapshot } from '@/lib/snapshot';
 import { DealScreen } from './DealScreen';
@@ -26,6 +27,7 @@ import {
   voteCandidates,
 } from './game-view';
 import { HostControls } from './HostControls';
+import { has, impostorMotion, justVoted, type ImpostorMotion } from './motion';
 import { LateScreen } from '@/screens/LateScreen';
 import { OutScreen } from './OutScreen';
 import { ResultScreen } from './ResultScreen';
@@ -52,6 +54,8 @@ type ImpostorGameProps = {
   onChangeGame: () => void;
   /** Temáticas elegidas en la sala de espera, para volver a jugar con las mismas. */
   categories: readonly string[];
+  /** De qué foto se viene, si hay que animar el paso (docs/PLAN-8.md §3). */
+  transition?: Transition | null;
 };
 
 /** Partida de El impostor: acciones del juego y pantalla que toca según la foto. */
@@ -62,6 +66,7 @@ export function ImpostorGame({
   run,
   onChangeGame,
   categories,
+  transition = null,
   ...rest
 }: ImpostorGameProps) {
   const [voteTarget, setVoteTarget] = useState<string | null>(null);
@@ -101,6 +106,8 @@ export function ImpostorGame({
       snapshot={snapshot}
       game={game}
       view={view}
+      motion={impostorMotion(transition)}
+      votedBefore={votedIn(transition)}
       roomPill={pill(
         // A partir de la segunda ronda se dice, para que no parezca una partida nueva.
         game.phase === 'finished'
@@ -151,6 +158,8 @@ type GameViewProps = {
   snapshot: Snapshot;
   game: ImpostorGameState;
   view: Exclude<ReturnType<typeof viewFor>, 'lobby'>;
+  motion: readonly ImpostorMotion[];
+  votedBefore: number | null;
   roomPill: ReactNode;
   votePill: ReactNode;
   outPill: ReactNode;
@@ -173,6 +182,8 @@ function GameView({
   snapshot,
   game,
   view,
+  motion,
+  votedBefore,
   roomPill,
   votePill,
   outPill,
@@ -259,6 +270,8 @@ function GameView({
           hint={isHost ? copy.vote.closeHint : undefined}
           busy={busy}
           onKickRequest={isHost ? onKickRequest : undefined}
+          justVoted={justVoted(motion)}
+          votedBefore={justVoted(motion).length > 0 ? votedBefore : null}
         />
       );
     }
@@ -281,6 +294,7 @@ function GameView({
               ? copy.reveal.gameOver
               : copy.reveal.continues(aliveCount(game), game.impostors_left)
           }
+          stamp={has(motion, 'reveal')}
         />
       );
     }
@@ -292,6 +306,7 @@ function GameView({
           notice={notice}
           footer={controls}
           tied={all.filter((p) => tiedIds.includes(p.userId))}
+          falls={has(motion, 'tie')}
         />
       );
     }
@@ -327,8 +342,16 @@ function GameView({
           winner={result.winner}
           impostorNames={namesOf(snapshot, game, result.impostor_ids)}
           word={result.word}
+          animate={has(motion, 'result')}
         />
       );
     }
   }
+}
+
+/** Cuántos habían votado en la foto anterior: desde ahí cuenta el marcador. */
+function votedIn(transition: Transition | null): number | null {
+  const game = transition?.previous.game;
+  if (game?.type !== 'impostor') return null;
+  return game.participants.filter((p) => p.alive && p.has_voted).length;
 }

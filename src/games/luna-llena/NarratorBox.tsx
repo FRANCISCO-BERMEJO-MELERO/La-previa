@@ -28,7 +28,7 @@ export function NarratorBox({ lines, actionLabel, busy, error, onAction }: Narra
         </p>
       ))}
       {error ? (
-        <p role="alert" className="text-md font-bold">
+        <p role="alert" className="animate-caer text-md font-bold">
           {error}
         </p>
       ) : null}

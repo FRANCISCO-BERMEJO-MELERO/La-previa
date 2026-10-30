@@ -382,7 +382,10 @@ describe('ResultScreen (13 y 14)', () => {
     );
     expect(screen.getByText('Ganan los impostores')).toBeInTheDocument();
     expect(screen.getByText('Los impostores eran')).toBeInTheDocument();
-    expect(screen.getByText('Dani y Marta')).toBeInTheDocument();
+    // Cada nombre va en su sello pequeño; juntos se leen igual que antes.
+    expect(screen.getByText('Los impostores eran').nextElementSibling).toHaveTextContent(
+      'Dani y Marta',
+    );
   });
 
   it('quien llegó tarde ve una tarjeta neutra', () => {
