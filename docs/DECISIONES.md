@@ -1,5 +1,15 @@
 # Decisiones
 
+## 2026-11-02 · 51 · Cuela la mentira: validación y cierre
+
+- **La e2e juega cinco rondas, no dos.** El selector solo admite 5, 10 o 15. Las dos primeras se juegan enteras (verdad rechazada, mentiras iguales fundidas, engaño, recarga a mitad de la votación y acierto de todos) y las tres últimas las cierra el anfitrión tras escribir y votar él, como en ¿Quién lo dijo?, que solo enseña «Cerrar» en la espera.
+- **La e2e saca la verdad de `docs/MENTIRAS.md`.** La pregunta sale al azar; la prueba lee el listado y busca la verdad por el texto de la pregunta. Si el listado y la migración se separan, la prueba falla.
+- **Secreto en red.** Mientras se escribe, quien no ha escrito no recibe ni la mentira ajena ni la verdad; durante la votación nadie recibe `kind`, `author_ids`, `voter_ids` ni la explicación. La e2e lo mira en las respuestas de la API y en Realtime.
+- **La e2e entra también en la tanda «movimiento»**, como la partida corta de cada juego de `docs/PLAN-8.md`.
+- **Votar con 10 opciones largas a 360 px no tiene e2e propia**: harían falta 10 navegadores a la vez. La e2e de accesibilidad lo comprueba con 3 mentiras de 80 caracteres (una con una palabra larguísima) a 360, 390 y 430 px; con 10 queda para que Fran lo pruebe en el móvil.
+- **Se modifica la e2e 7.1 de accesibilidad.** Busca «Abrir la sala» pulsando Tab como mucho 10 veces. Con la novena portada del selector, el botón queda más lejos y la prueba fallaba en la tanda completa. El límite pasa a 12, el mismo que ya usa `e2e/accessibility-games.spec.ts`. Lo que comprueba la prueba no cambia: se llega con el teclado y el foco se ve.
+- **Un commit salió con el lint en rojo** (49.3): la cadena de órdenes miraba la salida de `grep` en vez del código de salida de `check`. Se arregló en el commit siguiente y desde entonces se comprueba el código de salida.
+
 ## 2026-11-02 · 50 · Cuela la mentira: contenido
 
 - **Las 40 preguntas están comprobadas en la web**, cada una con la URL en `source`; ninguna lleva la marca «Sin comprobar en la web». Las fuentes son de calidad desigual (de diccionarios y museos a divulgación); se eligió la mejor de cada búsqueda y las explicaciones solo dicen lo que coincidía en varias.

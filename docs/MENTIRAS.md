@@ -2,7 +2,7 @@
 
 > **Revisadlas antes de jugar en serio.** Si una «verdad» está mal, el grupo acierta y la app le dice que se equivoca. Cada dato se ha comprobado en la fuente que aparece, pero conviene una segunda mirada. Para quitar una pregunta no se toca esta lista ni la migración: se escribe una migración nueva que la desactive (`update public.cuela_questions set active = false where text = '…';`) y se anota aquí.
 
-Lo dice `supabase/migrations/20261102130000_cuela_la_mentira_questions.sql`, generada desde la misma lista que este documento. Todas están comprobadas en la web; ninguna va marcada como «Sin comprobar en la web».
+Las preguntas están en `supabase/migrations/20261102130000_cuela_la_mentira_questions.sql`, generada desde la misma lista que este documento. Todas están comprobadas en la web; ninguna va marcada como «Sin comprobar en la web».
 
 - **Verdad:** lo que sale como respuesta real.
 - **También vale:** otras formas de escribirla. Quien escriba una de ellas recibe «¡Has dado con la verdad!» y tiene que inventarse otra cosa. Las mayúsculas, tildes, signos y un artículo al principio no cuentan.
