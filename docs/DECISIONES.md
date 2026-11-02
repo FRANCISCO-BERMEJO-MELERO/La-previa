@@ -1,5 +1,12 @@
 # Decisiones
 
+## 2026-11-02 · 50 · Cuela la mentira: contenido
+
+- **Las 40 preguntas están comprobadas en la web**, cada una con la URL en `source`; ninguna lleva la marca «Sin comprobar en la web». Las fuentes son de calidad desigual (de diccionarios y museos a divulgación); se eligió la mejor de cada búsqueda y las explicaciones solo dicen lo que coincidía en varias.
+- **Se quedaron fuera por dudosas:** la fregona (la autoría de Manuel Jalón se discute), el origen de «Venezuela» (la «pequeña Venecia» no tiene consenso), las cajas negras naranjas (rozan los accidentes), las huellas del koala y qué planeta tiene el día más largo que el año (dependen de cómo se mida).
+- **Matices que van en la explicación:** «dinosaurio» es lagarto terrible por sus raíces, aunque Owen quería decir temible por lo grande; Babia está en León, y lo de los reyes que descansaban allí se cuenta como «la explicación más extendida»; el Telekino está «entre los primeros» mandos a distancia por radio, no «el primero».
+- **Migración y listado salen de la misma lista.** Un script fuera del repositorio genera `20261102130000_cuela_la_mentira_questions.sql` y `docs/MENTIRAS.md` desde un único archivo de datos y comprueba la forma: verdad de 1 a 6 palabras, variantes que no repiten la verdad, al menos 2 distractores sin repetir y ninguno igual a la verdad en forma normalizada. pgTAP lo vuelve a comprobar sobre la base de datos.
+
 ## 2026-11-02 · 49 · Cuela la mentira: cliente
 
 - **Votar es marcar y confirmar**, como en ¿Quién lo dijo?: tocar una opción la marca (`aria-pressed`) y el botón «Es esta» envía el voto. Así un toque sin querer no gasta el voto, que no se puede cambiar. Tras votar sale la espera común con «Has votado» y la opción elegida.

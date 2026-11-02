@@ -479,7 +479,7 @@ Aceptación: `npm run check` pasa.
 
 ## Fase 50 · Cuela la mentira: contenido
 
-- [ ] 50.1 Las 40 preguntas, su migración de datos y `docs/MENTIRAS.md`, con pgTAP del contenido
+- [x] 50.1 Las 40 preguntas, su migración de datos y `docs/MENTIRAS.md`, con pgTAP del contenido
 
 Aceptación: `test:db` pasa.
 
