@@ -1,5 +1,11 @@
 # Decisiones
 
+## 2026-11-02 · 47 · Cuela la mentira: plan
+
+- **`docs/PLAN-9.md` amplía `docs/JUEGOS.md` con un juego nuevo.** Cuela la mentira (issue #30) es un juego por rondas más, con lo común de `docs/JUEGOS.md` §2. La especificación aprobada por Fran está copiada en el plan y manda sobre la issue, que estaba en `proposed`. Deja sin efecto, solo para este juego, el «Más juegos que los cuatro descritos» de `docs/CONTEXTO.md` (como ya hizo `docs/JUEGOS-2.md`).
+- **La rama sale de `feat/movimiento`, no de `develop`.** `develop` todavía no tiene el movimiento (`docs/PLAN-8.md`, 18 commits sin integrar) y la especificación pide aplicarlo en la revelación. Partir de `develop` obligaría a rehacerlo o a dejarlo fuera. Cuando `feat/movimiento` entre en `develop`, esta rama se integra detrás sin conflictos de historia.
+- **Fases 47 a 51**, siguiendo la numeración de `docs/TAREAS.md`. La copia local `docs/TAREAS.local.md` lleva desde el plan 5 sin actualizarse y no se toca.
+
 ## 2026-10-30 · 46 · Movimiento: validación y cierre
 
 - **Las e2e con movimiento reutilizan las de siempre.** Playwright tiene dos tandas: «quieto», con movimiento reducido, que corre todas las pruebas de antes, y «movimiento», que repite con las animaciones activas una partida corta de cada juego (6.1 de El impostor, 31.7 de El lobo y 40.1 de A dados, que ya actúan en cuanto cada botón está disponible) y corre las nuevas 46.1. Así no se duplican partidas enteras.

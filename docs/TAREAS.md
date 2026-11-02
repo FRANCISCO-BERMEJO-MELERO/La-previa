@@ -1,6 +1,6 @@
 # Tareas
 
-Estado: plan 7 (A dados) en curso · última actualización 2026-10-26
+Estado: plan 9 (Cuela la mentira) en curso · última actualización 2026-11-02
 
 ## Fase 0 · Preparación
 
@@ -449,6 +449,45 @@ Aceptación: `npm run check` pasa.
 - [x] 46.1 E2E con movimiento activado por juego y recarga a mitad de secuencia
 - [x] 46.2 Repaso a 360, 390 y 430 px
 - [x] 46.3 `docs/DECISIONES.md` e `docs/INFORME.md`
+
+Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
+
+## Fase 47 · Cuela la mentira: integración
+
+Plan: `docs/PLAN-9.md` (issue #30).
+
+- [x] 47.1 Plan, tareas y decisión de que `docs/PLAN-9.md` amplía `docs/JUEGOS.md` con un juego nuevo
+- [ ] 47.2 `rooms.game`, fases y `set_game` admiten `cuela_la_mentira`, con pgTAP
+- [ ] 47.3 Rondas por defecto por juego; el juego en el selector con su portada, en la sala de espera con el límite de 3 a 10 y en «Cómo se juega»
+
+Aceptación: `check` y `test:db` pasan; las pruebas de los otros juegos, sin tocarlas.
+
+## Fase 48 · Cuela la mentira: servidor
+
+- [ ] 48.1 Tablas, `normalize_answer`, elección de pregunta y las seis acciones, con salidas, entradas tardías y pgTAP
+- [ ] 48.2 Variante de la foto y pruebas de secreto
+
+Aceptación: `test:db` pasa partiendo de `supabase db reset`.
+
+## Fase 49 · Cuela la mentira: cliente
+
+- [ ] 49.1 Esquema, acciones, errores y `viewFor`, con tests
+- [ ] 49.2 Pantallas de escribir, votar, revelación y resultado
+- [ ] 49.3 Movimiento de la revelación
+
+Aceptación: `npm run check` pasa.
+
+## Fase 50 · Cuela la mentira: contenido
+
+- [ ] 50.1 Las 40 preguntas, su migración de datos y `docs/MENTIRAS.md`, con pgTAP del contenido
+
+Aceptación: `test:db` pasa.
+
+## Fase 51 · Cuela la mentira: validación y cierre
+
+- [ ] 51.1 E2E de una partida de dos rondas y del secreto en red
+- [ ] 51.2 Repaso a 360, 390 y 430 px y accesibilidad
+- [ ] 51.3 `docs/DECISIONES.md` e `docs/INFORME.md`
 
 Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 
