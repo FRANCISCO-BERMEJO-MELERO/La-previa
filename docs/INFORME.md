@@ -1,5 +1,51 @@
 # Informe final
 
+## Cuela la mentira (fases 47 a 51)
+
+Estado al cerrar `docs/PLAN-9.md`, el 2 de noviembre de 2026.
+
+### Resumen
+
+Hay un juego nuevo, Cuela la mentira, para 3 a 10 personas y 5 rondas por defecto. Sale una pregunta con una respuesta real sorprendente y cada uno escribe una mentira que suene a verdad. Después todos votan cuál es la buena entre la verdad, las mentiras y, si hacen falta, las de «la casa». Se gana acertando (2 puntos) y colando la mentira propia (1 punto por cada voto).
+
+Todas las reglas están en Postgres: escribir, fundir mentiras iguales, completar hasta 3 opciones, barajar, votar, puntuar y gestionar quien se va o llega tarde. La foto no trae la verdad, los autores ni los votos ajenos hasta la revelación. El banco tiene 40 preguntas comprobadas en la web, listadas en `docs/MENTIRAS.md`.
+
+La rama `feat/cuela-la-mentira` sale de `feat/movimiento`, que entonces aún no estaba en `develop`, y lleva un commit por tarea.
+
+| Comprobación                               | Resultado                             |
+| ------------------------------------------ | ------------------------------------- |
+| `npm run check` (lint, tipos, unitarios)   | 1030 tests en 90 archivos, sin avisos |
+| `npm run test:db` tras `supabase db reset` | 1545 pruebas pgTAP en 62 archivos     |
+| `npm run test:e2e`                         | 42 pruebas quietas y 7 con movimiento |
+| `npm run build`                            | Sin avisos                            |
+
+### Qué está hecho
+
+- **Plataforma**: el juego aparece en el selector con su portada y su color, y tiene 4 pasos de «Cómo se juega». Las rondas por defecto dependen del juego: 5 en Cuela la mentira y 10 en los demás. Con más de 10 personas en la sala no se puede empezar, y el vestíbulo lo explica.
+- **Base de datos**: tablas de preguntas, opciones, autores y votos, con RLS y sin políticas, y seis RPC. Al escribir la verdad o una variante aceptada, se avisa y el envío no se gasta; mayúsculas, tildes, signos y un artículo inicial no cuentan. Las mentiras iguales se funden en una opción con varios autores. Las opciones llevan identificador opaco y orden barajado. No se puede votar la mentira propia.
+- **Salidas y llegadas**: quien se va mientras se escribe pierde su mentira. Si se va durante la votación, su opción se queda y su voto se borra. Con menos de 3 activos, la partida termina. Quien llega tarde mira la partida y entra en la ronda siguiente si hay sitio.
+- **Pantallas**: escribir (con contador de 80 y aviso naranja de la verdad), votar (elegir y confirmar con «Es esta»; la mentira propia, deshabilitada), revelación (sello «La verdad», explicación, «La coló…», «La casa», «(se ha ido)» y puntos que cuentan) y resultado. El movimiento sigue `docs/PLAN-8.md`.
+- **Pruebas**: pgTAP de cada función con sus rechazos, unitarias de vista, pantallas y movimiento, una e2e con tres jugadores (verdad rechazada, mentiras fundidas, engaño, secreto en red, recarga a mitad de la votación, cinco rondas y «Volver a jugar») y una e2e de desborde y accesibilidad a 360, 390 y 430 px.
+
+### Qué no está hecho o no se ha podido verificar
+
+- **La votación con 10 opciones largas no tiene e2e**: harían falta 10 navegadores a la vez. Se ha comprobado con 3 mentiras de 80 caracteres a los tres anchos (DECISIONES 51).
+- **No se ha jugado en móviles reales ni con un grupo.**
+- **Cada pregunta del banco cita una sola fuente**, y la calidad de las fuentes es desigual: van de diccionarios y museos a webs de divulgación (DECISIONES 50).
+
+### Incidencias
+
+- **Un commit salió con el lint en rojo** (49.3). Se arregló en el commit siguiente (DECISIONES 51).
+- **La primera tanda completa de e2e se cortó por falta de memoria** en el equipo, con 4 pruebas hechas y el servidor de desarrollo caído. Se repitió entera con el equipo más libre.
+- **La repetición encontró un fallo real en la e2e 7.1**: con la novena portada, «Abrir la sala» quedaba a más de 10 pulsaciones de Tab. Se subió el límite a 12 y la tanda completa se pasó otra vez (DECISIONES 51).
+- **En la tanda previa a empezar, la e2e de secreto 6.5 agotó el tiempo una vez** por carga y pasó al repetirla sola.
+
+### Qué revisar primero
+
+1. **Leer `docs/MENTIRAS.md` antes de jugar.** Ninguna pregunta va marcada como «Sin comprobar en la web», pero una verdad equivocada estropea la ronda: el grupo acierta y la app dice que no.
+2. **La votación a 360 px con 10 opciones largas**: que se lea, que no haya que hacer mucho desplazamiento y que «Es esta» se encuentre.
+3. **Si se entiende «La casa» en la revelación**: que el grupo sepa que esas opciones no las escribió nadie de la mesa.
+
 ## Movimiento (fases 41 a 46)
 
 Estado al cerrar `docs/PLAN-8.md`, el 30 de octubre de 2026.

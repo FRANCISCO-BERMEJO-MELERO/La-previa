@@ -249,6 +249,33 @@ export const howToIllustrations: Record<GameId, readonly ReactNode[]> = {
       ))}
     </>,
   ],
+  cuela_la_mentira: [
+    <>
+      <Bubble>{art.unknown}</Bubble>
+      <Tag tone="lime" tilt="rotate-3">
+        {art.real}
+      </Tag>
+    </>,
+    <Column key="lie">
+      <Bubble>{art.lie}</Bubble>
+      <Face tone="sky" />
+    </Column>,
+    <Column key="vote">
+      <Tag>{art.optionA}</Tag>
+      <Tag tone="sky">{art.optionB}</Tag>
+      <Tag>{art.optionC}</Tag>
+    </Column>,
+    <>
+      <Column>
+        <Tag tone="lime">{art.truthPoints}</Tag>
+        <Face tone="lime" />
+      </Column>
+      <Column>
+        <Point />
+        <Face tone="sky" />
+      </Column>
+    </>,
+  ],
 };
 
 /** El dibujo de un rol de Luna llena en pequeño, sobre el color de su carta. */

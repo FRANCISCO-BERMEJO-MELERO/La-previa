@@ -504,3 +504,39 @@ describe('LobbyScreen con A dados', () => {
     expect(screen.getByRole('status')).toHaveTextContent('empezará la partida');
   });
 });
+
+describe('LobbyScreen con Cuela la mentira', () => {
+  function cuela(count: number): Snapshot {
+    const snapshot = withPlayers(count);
+    return lobbySnapshot({ ...snapshot, room: { ...snapshot.room, game: 'cuela_la_mentira' } });
+  }
+
+  it('lleva el selector de rondas', () => {
+    renderLobby({ snapshot: cuela(3), rounds: 5 });
+    expect(screen.getByRole('group', { name: 'Rondas' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '5 rondas' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
+  it('con 10 se puede empezar', () => {
+    const props = renderLobby({ snapshot: cuela(10) });
+    fireEvent.click(screen.getByRole('button', { name: 'Empezar partida' }));
+    expect(props.onStart).toHaveBeenCalledTimes(1);
+  });
+
+  it('con 11 avisa de que sobra gente y no deja empezar', () => {
+    renderLobby({ snapshot: cuela(11) });
+    const start = screen.getByRole('button', { name: 'Empezar partida' });
+    expect(start).toBeDisabled();
+    expect(start).toHaveAccessibleDescription(
+      'Cuela la mentira es para 3 a 10 personas. Ahora sois 11.',
+    );
+  });
+
+  it('con 2 faltan jugadores, como en el resto', () => {
+    renderLobby({ snapshot: cuela(2) });
+    expect(screen.getByText(/Hacen falta al menos 3 jugadores: falta 1/)).toBeInTheDocument();
+  });
+});

@@ -14,6 +14,12 @@ import {
   openVoting,
   probableClose,
   probableNext,
+  cuelaAnswer,
+  cuelaCloseVoting,
+  cuelaCloseWriting,
+  cuelaNext,
+  cuelaStart,
+  cuelaVote,
   probableStart,
   probableVote,
   lunaLlenaCloseNight,
@@ -142,6 +148,24 @@ describe('acciones', () => {
       ['close_voting', { room_id: 'sala' }],
       ['continue_game', { room_id: 'sala' }],
       ['back_to_lobby', { room_id: 'sala' }],
+    ]);
+  });
+
+  it('cada acción de Cuela la mentira llama a su RPC con sus argumentos', async () => {
+    const d = deps({ data: lobbySnapshot(), error: null });
+    await cuelaStart('sala', 5, d);
+    await cuelaAnswer('sala', 'Para medir la lluvia', d);
+    await cuelaCloseWriting('sala', d);
+    await cuelaVote('sala', 'o1', d);
+    await cuelaCloseVoting('sala', d);
+    await cuelaNext('sala', d);
+    expect(d.rpc.mock.calls).toEqual([
+      ['cuela_start', { room_id: 'sala', rounds: 5 }],
+      ['cuela_answer', { room_id: 'sala', text: 'Para medir la lluvia' }],
+      ['cuela_close_writing', { room_id: 'sala' }],
+      ['cuela_vote', { room_id: 'sala', option_id: 'o1' }],
+      ['cuela_close_voting', { room_id: 'sala' }],
+      ['cuela_next', { room_id: 'sala' }],
     ]);
   });
 
