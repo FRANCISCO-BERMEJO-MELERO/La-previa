@@ -161,6 +161,40 @@ const palabrasProhibidasGameSchema = z.object({
     .nullable(),
 });
 
+export const cuelaOptionKinds = ['truth', 'lie', 'house'] as const;
+
+/**
+ * Cuela la mentira (docs/PLAN-9.md §5). En la votación cada opción trae solo su texto y si es tuya;
+ * el tipo, los autores y los votos llegan en la revelación.
+ */
+const cuelaGameSchema = z.object({
+  ...roundGameShape,
+  type: z.literal('cuela_la_mentira'),
+  phase: z.enum(['writing', 'voting', 'reveal', 'finished']),
+  question: z.string(),
+  my: z.object({
+    is_participant: z.boolean(),
+    alive: z.boolean(),
+    answer: z.string().nullable(),
+    voted_option_id: id.nullable(),
+  }),
+  options: z
+    .array(
+      z.object({
+        id,
+        text: z.string(),
+        is_mine: z.boolean().optional(),
+        kind: z.enum(cuelaOptionKinds).optional(),
+        author_ids: z.array(id).optional(),
+        left_author_ids: z.array(id).optional(),
+        voter_ids: z.array(id).optional(),
+      }),
+    )
+    .nullable(),
+  explanation: z.string().nullable(),
+  round_points: z.array(z.object({ user_id: id, points: z.int().nonnegative() })).nullable(),
+});
+
 const lunaRole = z.enum(lunaRoles);
 
 export const lunaNarrationKeys = [
@@ -356,6 +390,7 @@ const gameSchema = z.discriminatedUnion('type', [
   palabrasProhibidasGameSchema,
   lunaLlenaGameSchema,
   dadosGameSchema,
+  cuelaGameSchema,
 ]);
 
 export const gameIds = [
@@ -404,6 +439,8 @@ export type QuePrefieresOption = z.infer<typeof option>;
 export type PalabrasProhibidasGameState = z.infer<typeof palabrasProhibidasGameSchema>;
 export type LunaLlenaGameState = z.infer<typeof lunaLlenaGameSchema>;
 export type DadosGameState = z.infer<typeof dadosGameSchema>;
+export type CuelaGameState = z.infer<typeof cuelaGameSchema>;
+export type CuelaOption = NonNullable<CuelaGameState['options']>[number];
 export type DadosSide = (typeof dadosSides)[number];
 export type DadosMode = DadosGameState['mode'];
 export type DadosSideState = DadosGameState['sides'][number];

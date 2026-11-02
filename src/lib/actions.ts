@@ -264,6 +264,26 @@ export function cuelaStart(roomId: string, rounds: number, deps = defaultDeps) {
   return callForSnapshot(deps, 'cuela_start', { room_id: roomId, rounds });
 }
 
+export function cuelaAnswer(roomId: string, text: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'cuela_answer', { room_id: roomId, text });
+}
+
+export function cuelaCloseWriting(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'cuela_close_writing', { room_id: roomId });
+}
+
+export function cuelaVote(roomId: string, optionId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'cuela_vote', { room_id: roomId, option_id: optionId });
+}
+
+export function cuelaCloseVoting(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'cuela_close_voting', { room_id: roomId });
+}
+
+export function cuelaNext(roomId: string, deps = defaultDeps) {
+  return callForSnapshot(deps, 'cuela_next', { room_id: roomId });
+}
+
 export function openVoting(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'open_voting', { room_id: roomId });
 }
