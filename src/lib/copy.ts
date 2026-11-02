@@ -44,6 +44,9 @@ export const errorCodes = [
   'not_your_turn',
   'column_full',
   'invalid_column',
+  'is_truth',
+  'own_option',
+  'too_many_players',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -76,7 +79,11 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
     'La pista tiene que ser una sola palabra de hasta 20 letras, y no puede ser la palabra secreta ni contenerla. Prueba con otra.',
   not_arbiter: 'Eso lo decide quien arbitra la ronda. Pídeselo a quien arbitra.',
   is_guesser: 'Esta ronda te toca adivinar, así que no das pista. Espera a ver las de los demás.',
-  invalid_option: 'Esa opción no existe. Elige una de las dos.',
+  invalid_option: 'Esa opción no existe. Elige una de las que hay en pantalla.',
+  is_truth: '¡Has dado con la verdad! Así no cuela. Invéntate otra cosa.',
+  own_option: 'Esa mentira es tuya, así que no puedes votarla. Elige otra.',
+  too_many_players:
+    'Cuela la mentira es para 3 a 10 personas. Que salga alguien de la sala para empezar.',
   not_describer: 'Eso lo decide quien describe esta ronda. Tú adivina en voz alta.',
   invalid_avatar: 'Ese avatar no está en la galería. Elige otro.',
   already_acted: 'Ya has hecho lo tuyo esta noche. Espera al amanecer.',
@@ -171,6 +178,10 @@ export const copy = {
       double: '×2',
       dadosScore: '24',
       dadosOrder: ['A1', 'B1', 'A2', 'B2'],
+      real: 'Real',
+      lie: 'Trola',
+      optionC: 'C',
+      truthPoints: '+2',
     },
     steps: {
       impostor: [
@@ -290,6 +301,18 @@ export const copy = {
           text: 'Se acaba cuando un tablero se llena, y gana quien tenga más puntos. En 2 contra 2 cada equipo comparte tablero y os vais turnando: uno de A, uno de B, el otro de A, el otro de B.',
         },
       ],
+      cuela_la_mentira: [
+        { title: 'Una pregunta rara', text: 'Sale una pregunta rara con una respuesta real.' },
+        {
+          title: 'Inventa una mentira',
+          text: 'Invéntate una respuesta falsa que suene a verdad.',
+        },
+        { title: 'Busca la verdad', text: 'Vota cuál crees que es la de verdad.' },
+        {
+          title: 'Puntos',
+          text: 'Ganas 2 puntos por acertar y 1 por cada uno que se trague tu mentira.',
+        },
+      ],
     },
   },
 
@@ -378,6 +401,11 @@ export const copy = {
       description: 'Coloca dados en tus columnas y rompe los del rival.',
       players: '2 o 4',
     },
+    cuela_la_mentira: {
+      name: 'Cuela la mentira',
+      description: 'Inventa una respuesta falsa y cuélasela al resto.',
+      players: 'De 3 a 10 jugadores',
+    },
     covers: {
       quote: '¿?',
       banned: 'Palabra',
@@ -436,6 +464,8 @@ export const copy = {
       missing === 1
         ? `Hacen falta al menos ${String(min)} jugadores: falta 1. Comparte el código para que entre alguien más.`
         : `Hacen falta al menos ${String(min)} jugadores: faltan ${String(missing)}. Comparte el código para que entren.`,
+    tooMany: (count: number) =>
+      `Cuela la mentira es para 3 a 10 personas. Ahora sois ${String(count)}.`,
     waitingHost: (host: string) => `${host} empezará la partida`,
   },
 
@@ -591,6 +621,43 @@ export const copy = {
     answers: 'Las respuestas',
     quoted: (text: string) => `«${text}»`,
     resultPill: 'Gana la partida',
+  },
+
+  cuela: {
+    question: 'La pregunta',
+    answerLabel: 'Tu mentira',
+    answerHint: 'Que suene a verdad. Nadie sabrá que es tuya hasta el final.',
+    count: (length: number, max: number) => `${String(length)}/${String(max)}`,
+    send: 'Colar mentira',
+    yourLie: 'Tu mentira',
+    responded: 'Han escrito',
+    respondedDetail: 'Ha escrito',
+    closeWriting: 'Cerrar mentiras',
+    closeWritingHint: 'Puedes cerrar con las mentiras que haya.',
+    waitingWriting: (host: string) => `${host} cerrará las mentiras`,
+    voteTitle: '¿Cuál es la de verdad?',
+    voteHint: 'Si aciertas, sumas 2 puntos. La tuya no se puede votar.',
+    choose: 'Elige una respuesta',
+    submit: 'Es esta',
+    yourVote: 'Tu voto',
+    voted: 'Han votado',
+    myVote: 'Has votado',
+    truth: 'La verdad',
+    guessed: (names: readonly string[]) => `La acertaron: ${joinNames(names)}`,
+    nobodyGuessed: 'Nadie dio con la verdad',
+    lies: 'Las mentiras',
+    sneaked: (names: readonly string[]) => `La coló ${joinNames(names)}`,
+    left: (name: string) => `${name} (se ha ido)`,
+    house: 'La casa',
+    swallowed: 'Se la tragaron',
+    nobodySwallowed: 'No se la tragó nadie',
+    points: 'Puntos de la ronda',
+    plus: (points: number) => `+${String(points)}`,
+    resultPill: 'Gana la partida',
+    quoted: (text: string) => `«${text}»`,
+    lateFull:
+      'Ya estás en la sala, pero ya juegan 10, que es el máximo. Entras en cuanto quede un sitio libre.',
+    waitingSeat: 'Esperando a que quede sitio',
   },
 
   unaPista: {

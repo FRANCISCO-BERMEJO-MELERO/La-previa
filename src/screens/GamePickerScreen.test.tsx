@@ -51,7 +51,7 @@ describe('GamePickerScreen (03)', () => {
     expect(screen.queryByText('Próximamente')).not.toBeInTheDocument();
   });
 
-  it('lista los ocho juegos, El lobo el primero, cada uno con su descripción', () => {
+  it('lista los nueve juegos, El lobo el primero, cada uno con su descripción', () => {
     renderPicker();
     const games = screen
       .getAllByRole('button')
@@ -65,6 +65,7 @@ describe('GamePickerScreen (03)', () => {
       '¿Qué prefieres?',
       'Palabras prohibidas',
       'A dados',
+      'Cuela la mentira',
     ];
     expect(games).toHaveLength(names.length);
     names.forEach((name, index) => {
@@ -77,6 +78,10 @@ describe('GamePickerScreen (03)', () => {
       screen.getByText('Coloca dados en tus columnas y rompe los del rival.'),
     ).toBeInTheDocument();
     expect(screen.getByText('2 o 4')).toBeInTheDocument();
+    expect(
+      screen.getByText('Inventa una respuesta falsa y cuélasela al resto.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('De 3 a 10 jugadores')).toBeInTheDocument();
   });
 
   it('elegir otro juego avisa de cuál', () => {

@@ -1,4 +1,5 @@
 import type {
+  CuelaGameState,
   DadosGameState,
   ImpostorGameState,
   PalabrasProhibidasGameState,
@@ -451,6 +452,85 @@ export function inDados(
       },
     ],
     game: dadosState(game),
+    ...rest,
+  });
+}
+
+export const cuelaIds = {
+  truth: '7c1d2e3f-2222-4bbb-9ccc-000000000001',
+  mine: '7c1d2e3f-2222-4bbb-9ccc-000000000002',
+  other: '7c1d2e3f-2222-4bbb-9ccc-000000000003',
+  house: '7c1d2e3f-2222-4bbb-9ccc-000000000004',
+} as const;
+
+export const cuelaQuestion = '¿Para qué se inventó el plástico de burbujas?';
+
+/** Las opciones de la votación tal como las ve Fran, autor de «Para envolver lámparas». */
+export const cuelaVotingOptions: CuelaGameState['options'] = [
+  { id: cuelaIds.other, text: 'Para aislar cables', is_mine: false },
+  { id: cuelaIds.truth, text: 'Como papel pintado', is_mine: false },
+  { id: cuelaIds.mine, text: 'Para envolver lámparas', is_mine: true },
+];
+
+/** La revelación de la misma ronda: Lucía votó la verdad y Álvaro se tragó la mentira de Fran. */
+export const cuelaRevealOptions: CuelaGameState['options'] = [
+  {
+    id: cuelaIds.other,
+    text: 'Para aislar cables',
+    kind: 'lie',
+    author_ids: [ids.lucia],
+    left_author_ids: [],
+    voter_ids: [],
+  },
+  {
+    id: cuelaIds.truth,
+    text: 'Como papel pintado',
+    kind: 'truth',
+    author_ids: [],
+    left_author_ids: [],
+    voter_ids: [ids.lucia],
+  },
+  {
+    id: cuelaIds.mine,
+    text: 'Para envolver lámparas',
+    kind: 'lie',
+    author_ids: [ids.fran],
+    left_author_ids: [],
+    voter_ids: [ids.alvaro],
+  },
+];
+
+export function cuelaState(overrides: Partial<CuelaGameState> = {}): CuelaGameState {
+  return {
+    type: 'cuela_la_mentira',
+    id: ids.game,
+    phase: 'writing',
+    round: 2,
+    total_rounds: 5,
+    question: cuelaQuestion,
+    participants: [
+      { user_id: ids.fran, name: 'Fran', alive: true, score: 1, has_responded: false },
+      { user_id: ids.lucia, name: 'Lucía', alive: true, score: 2, has_responded: true },
+      { user_id: ids.alvaro, name: 'Álvaro', alive: true, score: 0, has_responded: false },
+    ],
+    my: { is_participant: true, alive: true, answer: null, voted_option_id: null },
+    options: null,
+    explanation: null,
+    round_points: null,
+    ranking: null,
+    ...overrides,
+  };
+}
+
+/** Sala con `cuela_la_mentira` elegido y la partida dada. */
+export function inCuela(
+  game: Partial<CuelaGameState> = {},
+  rest: Partial<Snapshot> = {},
+): Snapshot {
+  const base = lobbySnapshot();
+  return lobbySnapshot({
+    room: { ...base.room, game: 'cuela_la_mentira' },
+    game: cuelaState(game),
     ...rest,
   });
 }
