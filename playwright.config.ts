@@ -36,6 +36,7 @@ export default defineConfig({
         /6\.1 · partida feliz/,
         /31\.7 · partida completa con la composición recomendada/,
         /40\.1 · A dados en 1 contra 1/,
+        /51\.1 · Cuela la mentira/,
         /46\.1/,
       ],
     },

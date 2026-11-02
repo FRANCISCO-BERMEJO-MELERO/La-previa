@@ -485,7 +485,7 @@ Aceptación: `test:db` pasa.
 
 ## Fase 51 · Cuela la mentira: validación y cierre
 
-- [ ] 51.1 E2E de una partida de dos rondas y del secreto en red
+- [x] 51.1 E2E de una partida de dos rondas y del secreto en red
 - [ ] 51.2 Repaso a 360, 390 y 430 px y accesibilidad
 - [ ] 51.3 `docs/DECISIONES.md` e `docs/INFORME.md`
 
