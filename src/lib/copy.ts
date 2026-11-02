@@ -44,6 +44,9 @@ export const errorCodes = [
   'not_your_turn',
   'column_full',
   'invalid_column',
+  'is_truth',
+  'own_option',
+  'too_many_players',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
@@ -76,7 +79,11 @@ const errors: Record<ErrorCode | 'unknown' | 'offline', string> = {
     'La pista tiene que ser una sola palabra de hasta 20 letras, y no puede ser la palabra secreta ni contenerla. Prueba con otra.',
   not_arbiter: 'Eso lo decide quien arbitra la ronda. Pídeselo a quien arbitra.',
   is_guesser: 'Esta ronda te toca adivinar, así que no das pista. Espera a ver las de los demás.',
-  invalid_option: 'Esa opción no existe. Elige una de las dos.',
+  invalid_option: 'Esa opción no existe. Elige una de las que hay en pantalla.',
+  is_truth: '¡Has dado con la verdad! Así no cuela. Invéntate otra cosa.',
+  own_option: 'Esa mentira es tuya, así que no puedes votarla. Elige otra.',
+  too_many_players:
+    'Cuela la mentira es para 3 a 10 personas. Que salga alguien de la sala para empezar.',
   not_describer: 'Eso lo decide quien describe esta ronda. Tú adivina en voz alta.',
   invalid_avatar: 'Ese avatar no está en la galería. Elige otro.',
   already_acted: 'Ya has hecho lo tuyo esta noche. Espera al amanecer.',

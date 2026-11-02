@@ -464,7 +464,7 @@ Aceptación: `check` y `test:db` pasan; las pruebas de los otros juegos, sin toc
 
 ## Fase 48 · Cuela la mentira: servidor
 
-- [ ] 48.1 Tablas, `normalize_answer`, elección de pregunta y las seis acciones, con salidas, entradas tardías y pgTAP
+- [x] 48.1 Tablas, `normalize_answer`, elección de pregunta y las seis acciones, con salidas, entradas tardías y pgTAP
 - [ ] 48.2 Variante de la foto y pruebas de secreto
 
 Aceptación: `test:db` pasa partiendo de `supabase db reset`.
