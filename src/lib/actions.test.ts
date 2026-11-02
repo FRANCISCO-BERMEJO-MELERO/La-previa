@@ -14,6 +14,7 @@ import {
   openVoting,
   probableClose,
   probableNext,
+  cuelaStart,
   probableStart,
   probableVote,
   lunaLlenaCloseNight,
@@ -143,6 +144,12 @@ describe('acciones', () => {
       ['continue_game', { room_id: 'sala' }],
       ['back_to_lobby', { room_id: 'sala' }],
     ]);
+  });
+
+  it('cada acción de Cuela la mentira llama a su RPC con sus argumentos', async () => {
+    const d = deps({ data: lobbySnapshot(), error: null });
+    await cuelaStart('sala', 5, d);
+    expect(d.rpc.mock.calls).toEqual([['cuela_start', { room_id: 'sala', rounds: 5 }]]);
   });
 
   it('cada acción de Luna llena llama a su RPC con sus argumentos', async () => {

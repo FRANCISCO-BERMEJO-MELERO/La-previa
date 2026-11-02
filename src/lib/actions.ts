@@ -260,6 +260,10 @@ export function dadosPlace(roomId: string, columnIndex: number, deps = defaultDe
   return callForSnapshot(deps, 'dados_place', { room_id: roomId, column_index: columnIndex });
 }
 
+export function cuelaStart(roomId: string, rounds: number, deps = defaultDeps) {
+  return callForSnapshot(deps, 'cuela_start', { room_id: roomId, rounds });
+}
+
 export function openVoting(roomId: string, deps = defaultDeps) {
   return callForSnapshot(deps, 'open_voting', { room_id: roomId });
 }

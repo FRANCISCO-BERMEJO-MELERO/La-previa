@@ -171,6 +171,10 @@ export const copy = {
       double: '×2',
       dadosScore: '24',
       dadosOrder: ['A1', 'B1', 'A2', 'B2'],
+      real: 'Real',
+      lie: 'Trola',
+      optionC: 'C',
+      truthPoints: '+2',
     },
     steps: {
       impostor: [
@@ -290,6 +294,18 @@ export const copy = {
           text: 'Se acaba cuando un tablero se llena, y gana quien tenga más puntos. En 2 contra 2 cada equipo comparte tablero y os vais turnando: uno de A, uno de B, el otro de A, el otro de B.',
         },
       ],
+      cuela_la_mentira: [
+        { title: 'Una pregunta rara', text: 'Sale una pregunta rara con una respuesta real.' },
+        {
+          title: 'Inventa una mentira',
+          text: 'Invéntate una respuesta falsa que suene a verdad.',
+        },
+        { title: 'Busca la verdad', text: 'Vota cuál crees que es la de verdad.' },
+        {
+          title: 'Puntos',
+          text: 'Ganas 2 puntos por acertar y 1 por cada uno que se trague tu mentira.',
+        },
+      ],
     },
   },
 
@@ -378,6 +394,11 @@ export const copy = {
       description: 'Coloca dados en tus columnas y rompe los del rival.',
       players: '2 o 4',
     },
+    cuela_la_mentira: {
+      name: 'Cuela la mentira',
+      description: 'Inventa una respuesta falsa y cuélasela al resto.',
+      players: 'De 3 a 10 jugadores',
+    },
     covers: {
       quote: '¿?',
       banned: 'Palabra',
@@ -436,6 +457,8 @@ export const copy = {
       missing === 1
         ? `Hacen falta al menos ${String(min)} jugadores: falta 1. Comparte el código para que entre alguien más.`
         : `Hacen falta al menos ${String(min)} jugadores: faltan ${String(missing)}. Comparte el código para que entren.`,
+    tooMany: (count: number) =>
+      `Cuela la mentira es para 3 a 10 personas. Ahora sois ${String(count)}.`,
     waitingHost: (host: string) => `${host} empezará la partida`,
   },
 

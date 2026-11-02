@@ -367,6 +367,7 @@ export const gameIds = [
   'que_prefieres',
   'palabras_prohibidas',
   'dados',
+  'cuela_la_mentira',
 ] as const;
 
 export const snapshotSchema = z.object({

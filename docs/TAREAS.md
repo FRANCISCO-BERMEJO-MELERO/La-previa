@@ -458,7 +458,7 @@ Plan: `docs/PLAN-9.md` (issue #30).
 
 - [x] 47.1 Plan, tareas y decisión de que `docs/PLAN-9.md` amplía `docs/JUEGOS.md` con un juego nuevo
 - [x] 47.2 `rooms.game`, fases y `set_game` admiten `cuela_la_mentira`, con pgTAP
-- [ ] 47.3 Rondas por defecto por juego; el juego en el selector con su portada, en la sala de espera con el límite de 3 a 10 y en «Cómo se juega»
+- [x] 47.3 Rondas por defecto por juego; el juego en el selector con su portada, en la sala de espera con el límite de 3 a 10 y en «Cómo se juega»
 
 Aceptación: `check` y `test:db` pasan; las pruebas de los otros juegos, sin tocarlas.
 

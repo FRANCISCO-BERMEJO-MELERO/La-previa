@@ -8,6 +8,7 @@ import { QrCode } from '@/components/QrCode';
 import { Screen } from '@/components/Screen';
 import { Stepper } from '@/components/Stepper';
 import { WaitingBox } from '@/components/WaitingBox';
+import { MAX_CUELA_PLAYERS } from '@/games/cuela-la-mentira/limits';
 import { configProblem, MIN_LUNA_PLAYERS, type LunaConfig } from '@/games/luna-llena/composition';
 import { LunaSettings } from '@/games/luna-llena/LunaSettings';
 import { DadosSettings } from '@/games/dados/DadosSettings';
@@ -135,6 +136,7 @@ export function LobbyScreen({
         ? MIN_DADOS_PLAYERS
         : MIN_PLAYERS;
   const missing = Math.max(0, minPlayers - players.length);
+  const tooMany = room.game === 'cuela_la_mentira' && players.length > MAX_CUELA_PLAYERS;
   const lunaProblem = room.game === 'luna_llena' ? configProblem(players.length, lunaConfig) : null;
   const dadosChoices = choicesFor(players, dadosMode, dadosAssignment);
   const dadosProblem =
@@ -143,11 +145,13 @@ export function LobbyScreen({
   const startHint =
     missing > 0
       ? copy.lobby.needPlayers(minPlayers, missing)
-      : lunaProblem
-        ? copy.lunaLlena.lobby.problems[lunaProblem]
-        : dadosProblem
-          ? copy.dados.lobby.mismatch[dadosMode]
-          : null;
+      : tooMany
+        ? copy.lobby.tooMany(players.length)
+        : lunaProblem
+          ? copy.lunaLlena.lobby.problems[lunaProblem]
+          : dadosProblem
+            ? copy.dados.lobby.mismatch[dadosMode]
+            : null;
 
   return (
     <Screen

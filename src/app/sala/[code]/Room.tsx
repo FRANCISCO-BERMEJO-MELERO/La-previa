@@ -18,6 +18,7 @@ import { QuienLoDijoGame } from '@/games/quien-lo-dijo/QuienLoDijoGame';
 import { UnaPistaGame } from '@/games/una-pista/UnaPistaGame';
 import {
   backToLobby,
+  cuelaStart,
   dadosStart,
   kickPlayer,
   leaveRoom,
@@ -36,7 +37,7 @@ import { copy, errorMessage, type ActionError } from '@/lib/copy';
 import { roomPath } from '@/lib/room-code';
 import { joinedPlayers } from '@/lib/lobby-motion';
 import { phaseEntry, stageOf, transitionOf } from '@/lib/motion';
-import { DEFAULT_ROUNDS } from '@/lib/rounds';
+import { defaultRounds } from '@/lib/rounds';
 import { shareRoomLink, type ShareOutcome } from '@/lib/share';
 import type { DadosMode, GameId, Snapshot } from '@/lib/snapshot';
 import { useImpostorCategories } from '@/lib/use-impostor-categories';
@@ -60,7 +61,8 @@ export function Room({ initial, fresh }: RoomProps) {
   const sync = useRoomSync(initial.room.id, initial);
   const [picking, setPicking] = useState(fresh);
   const [impostors, setImpostors] = useState(1);
-  const [rounds, setRounds] = useState(DEFAULT_ROUNDS);
+  // Sin elegir, las rondas por defecto del juego de la sala; al cambiar de juego se vuelve a ellas.
+  const [chosenRounds, setRounds] = useState<number | null>(null);
   // Composición de Luna llena elegida a mano; sin elegir, sigue a la recomendada.
   const [lunaConfig, setLunaConfig] = useState<LunaConfig | null>(null);
   // A dados: modalidad y equipos que monta el anfitrión; sin tocar, el reparto por defecto.
@@ -92,6 +94,7 @@ export function Room({ initial, fresh }: RoomProps) {
   const roomId = snapshot.room.id;
   const code = snapshot.room.code;
   const errorText = error ? errorMessage(error) : undefined;
+  const rounds = chosenRounds ?? defaultRounds(snapshot.room.game);
   // Lo que se anima sale de comparar la foto anterior con esta (docs/PLAN-8.md §3).
   const transition = transitionOf(sync.previous, snapshot, reduced);
 
@@ -223,6 +226,7 @@ export function Room({ initial, fresh }: RoomProps) {
             if (!ok) return;
             setPicking(false);
             setPickedGame(null);
+            setRounds(null);
             // Quita el ?nueva=1 para que recargar no vuelva a abrir el selector.
             window.history.replaceState(null, '', roomPath(code));
           });
@@ -320,6 +324,8 @@ export function Room({ initial, fresh }: RoomProps) {
               return palabrasProhibidasStart(roomId, rounds);
             case 'luna_llena':
               return lunaLlenaStart(roomId, lunaConfig);
+            case 'cuela_la_mentira':
+              return cuelaStart(roomId, rounds);
             case 'dados':
               return dadosStart(
                 roomId,

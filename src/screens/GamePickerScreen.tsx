@@ -3,6 +3,7 @@ import { Button } from '@/components/Button';
 import { OfflineNotice } from '@/components/OfflineNotice';
 import { HeaderAside } from '@/components/HeaderAside';
 import { Screen } from '@/components/Screen';
+import { CuelaArt } from '@/games/cuela-la-mentira/CuelaArt';
 import { DiceArt } from '@/games/dados/DiceArt';
 import { RoleArt } from '@/games/luna-llena/RoleArt';
 import { copy } from '@/lib/copy';
@@ -100,6 +101,7 @@ const coverBackgrounds: Record<GameId, string> = {
   palabras_prohibidas: 'bg-lilac',
   luna_llena: 'bg-ink',
   dados: 'bg-orange',
+  cuela_la_mentira: 'bg-lime',
 };
 
 function ImpostorFaces() {
@@ -199,6 +201,15 @@ function ThreeDice() {
   );
 }
 
+/** El bocadillo con la respuesta tachada. */
+function LieBubble() {
+  return (
+    <span className="w-48">
+      <CuelaArt />
+    </span>
+  );
+}
+
 const covers: Record<GameId, ReactNode> = {
   impostor: <ImpostorFaces />,
   probable: <ProbableFaces />,
@@ -208,6 +219,7 @@ const covers: Record<GameId, ReactNode> = {
   palabras_prohibidas: <BannedWord />,
   luna_llena: <WolfMoon />,
   dados: <ThreeDice />,
+  cuela_la_mentira: <LieBubble />,
 };
 
 function Face() {
