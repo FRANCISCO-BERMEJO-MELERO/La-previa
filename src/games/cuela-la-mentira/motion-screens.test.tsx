@@ -60,7 +60,7 @@ describe('RevealScreen: movimiento', () => {
     renderReveal(true);
     const items = screen
       .getAllByRole('listitem')
-      .filter((item) => item.textContent?.includes('Mentira'));
+      .filter((item) => item.textContent.includes('Mentira'));
     expect(items[0]).toHaveClass('animate-caer', 'anim-delay-840');
     expect(items[1]).toHaveClass('animate-caer', 'anim-delay-1260');
   });
@@ -69,7 +69,7 @@ describe('RevealScreen: movimiento', () => {
     renderReveal(true, 9);
     const items = screen
       .getAllByRole('listitem')
-      .filter((item) => item.textContent?.includes('Mentira'));
+      .filter((item) => item.textContent.includes('Mentira'));
     const last = items.at(-1);
     if (!last) throw new Error('sin mentiras');
     expect(delayOf(last) + motionMs.base).toBeLessThanOrEqual(SEQUENCE_MAX_MS);

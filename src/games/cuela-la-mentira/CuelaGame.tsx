@@ -64,7 +64,7 @@ export function CuelaGame({
   onChangeGame,
   transition = null,
 }: CuelaGameProps) {
-  const revealing = cuelaMotion(transition).some((event) => event.type === 'reveal');
+  const revealing = cuelaMotion(transition).length > 0;
   const [lie, setLie] = useState('');
   const [voteTarget, setVoteTarget] = useState<string | null>(null);
   const roomId = snapshot.room.id;
