@@ -24,10 +24,12 @@ import {
   type ActionResult,
 } from '@/lib/actions';
 import { copy } from '@/lib/copy';
+import type { Transition } from '@/lib/motion';
 import type { CuelaGameState, Snapshot } from '@/lib/snapshot';
 import { LateScreen } from '@/screens/LateScreen';
 import { MineChip } from './cards';
 import { revealData } from './game-view';
+import { cuelaMotion } from './motion';
 import { RevealScreen } from './RevealScreen';
 import { viewFor } from './view';
 import { VoteScreen } from './VoteScreen';
@@ -45,8 +47,8 @@ type CuelaGameProps = {
   run: (action: () => Promise<ActionResult<Snapshot>>) => Promise<boolean>;
   onKickRequest: (userId: string) => void;
   onChangeGame: () => void;
-  /** Recién llegada a la revelación: se anima (docs/PLAN-9.md §7). */
-  revealing?: boolean;
+  /** Lo que ha cambiado desde la foto anterior, si se anima (docs/PLAN-8.md §3). */
+  transition?: Transition | null;
 };
 
 /** Partida de Cuela la mentira: acciones del juego y pantalla según la foto. */
@@ -60,8 +62,9 @@ export function CuelaGame({
   run,
   onKickRequest,
   onChangeGame,
-  revealing = false,
+  transition = null,
 }: CuelaGameProps) {
+  const revealing = cuelaMotion(transition).some((event) => event.type === 'reveal');
   const [lie, setLie] = useState('');
   const [voteTarget, setVoteTarget] = useState<string | null>(null);
   const roomId = snapshot.room.id;

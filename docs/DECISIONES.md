@@ -1,5 +1,12 @@
 # Decisiones
 
+## 2026-11-02 · 49 · Cuela la mentira: cliente
+
+- **Votar es marcar y confirmar**, como en ¿Quién lo dijo?: tocar una opción la marca (`aria-pressed`) y el botón «Es esta» envía el voto. Así un toque sin querer no gasta el voto, que no se puede cambiar. Tras votar sale la espera común con «Has votado» y la opción elegida.
+- **El aviso de haber escrito la verdad** se reconoce comparando el texto del error con el de `is_truth`: el juego recibe el error ya traducido, como el resto. Sale en una caja `orange` bajo el campo, sin marcar el campo como erróneo, y no se repite abajo junto al botón del anfitrión.
+- **Movimiento.** Solo la llegada a la revelación (de `voting` a `reveal` en la misma ronda): la tarjeta entra con el cambio de fase de siempre, el sello «La verdad» se planta al llegar (420 ms), las mentiras caen de una en una después del sello y los puntos de la ronda cuentan desde 0. El escalonado se acorta para que la secuencia no pase de 1,6 s con 10 opciones. Escribir y votar no animan nada.
+- **Espectador con 10 jugando:** pantalla de entrar tarde con su texto («entras en cuanto quede un sitio libre») y la caja «Esperando a que quede sitio».
+
 ## 2026-11-02 · 48 · Cuela la mentira: servidor
 
 - **Normalización (`private.normalize_answer`).** En este orden: minúsculas; fuera tildes y diéresis (á, à, â, ä → a, y lo mismo con el resto de vocales; la ñ se queda); fuera todo lo que no sea letra a–z, ñ, cifra o espacio (puntuación, comillas, guiones, signos de apertura); espacios colapsados y recortados; y fuera **un** artículo inicial (`el`, `la`, `los`, `las`, `un`, `una`, `unos`, `unas`) seguido de espacio. «¡La Vela!» y «vela» son iguales; «gato» y «gatos», no; «Elefante» no pierde su «el». Los guiones desaparecen sin dejar espacio, así que «Barcelona-Mataró» se compara como «barcelonamataro»: las variantes aceptadas cubren las dos formas. Se usa para comparar mentiras entre sí, con la verdad y sus variantes, y para no repetir distractores. Es otra función que `normalize_clue` de Una sola pista, que quita los espacios y no la puntuación.

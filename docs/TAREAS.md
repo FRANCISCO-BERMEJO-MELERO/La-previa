@@ -473,7 +473,7 @@ Aceptación: `test:db` pasa partiendo de `supabase db reset`.
 
 - [x] 49.1 Esquema, acciones, errores y `viewFor`, con tests
 - [x] 49.2 Pantallas de escribir, votar, revelación y resultado
-- [ ] 49.3 Movimiento de la revelación
+- [x] 49.3 Movimiento de la revelación
 
 Aceptación: `npm run check` pasa.
 
