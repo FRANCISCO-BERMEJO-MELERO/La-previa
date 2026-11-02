@@ -5,6 +5,7 @@ import { useState, type ReactNode } from 'react';
 import { OfflineNotice } from '@/components/OfflineNotice';
 import { HeaderAside, type HeaderTone } from '@/components/HeaderAside';
 import { PhaseStage } from '@/components/PhaseStage';
+import { CuelaGame } from '@/games/cuela-la-mentira/CuelaGame';
 import { DadosGame } from '@/games/dados/DadosGame';
 import { choicesFor, teamsFrom, type DadosAssignment } from '@/games/dados/teams';
 import { ImpostorGame } from '@/games/impostor/ImpostorGame';
@@ -204,6 +205,8 @@ export function Room({ initial, fresh }: RoomProps) {
         return withLeaveDialog(<QuePrefieresGame {...shared} game={game} />);
       case 'palabras_prohibidas':
         return withLeaveDialog(<PalabrasProhibidasGame {...shared} game={game} />);
+      case 'cuela_la_mentira':
+        return withLeaveDialog(<CuelaGame {...shared} game={game} />);
       case 'luna_llena':
         return withLeaveDialog(<LunaLlenaGame {...shared} game={game} transition={transition} />);
       case 'dados':

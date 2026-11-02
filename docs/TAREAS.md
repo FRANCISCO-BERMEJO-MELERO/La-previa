@@ -472,7 +472,7 @@ Aceptación: `test:db` pasa partiendo de `supabase db reset`.
 ## Fase 49 · Cuela la mentira: cliente
 
 - [x] 49.1 Esquema, acciones, errores y `viewFor`, con tests
-- [ ] 49.2 Pantallas de escribir, votar, revelación y resultado
+- [x] 49.2 Pantallas de escribir, votar, revelación y resultado
 - [ ] 49.3 Movimiento de la revelación
 
 Aceptación: `npm run check` pasa.
