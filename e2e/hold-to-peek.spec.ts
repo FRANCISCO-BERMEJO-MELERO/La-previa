@@ -35,3 +35,29 @@ test('43.2 · en el reparto, la palabra no se ve sin mantener pulsado', async ({
     await expect(page.getByText(ROLE_TEXT)).toBeHidden();
   }
 });
+
+test('43.3 · con el dedo, la tapa sigue levantada aunque el dedo se mueva', async ({ browser }) => {
+  const { players } = await startedGame(browser, ['Fran', 'Lucía', 'Álvaro']);
+  const page = pageOf(players, 'Lucía');
+  await page.reload();
+  const box = await cover(page).boundingBox();
+  if (!box) throw new Error('La tapa no tiene caja');
+  // Toques de verdad, como en un móvil: el ratón no da pie a que el navegador desplace la página.
+  const touch = await page.context().newCDPSession(page);
+  const x = box.x + box.width / 2;
+  const y = box.y + box.height / 2;
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+  await expect(page.getByText(ROLE_TEXT)).toBeVisible();
+  for (let step = 1; step <= 6; step += 1) {
+    await touch.send('Input.dispatchTouchEvent', {
+      type: 'touchMove',
+      touchPoints: [{ x: x + step, y: y + step * 4 }],
+    });
+  }
+  // Lo que se comprueba es que sigue levantada: se deja pasar lo que dura la tapa en moverse.
+  await page.waitForTimeout(500);
+  await expect(page.getByText(ROLE_TEXT)).toBeVisible();
+  await expect(cover(page)).toHaveAttribute('aria-pressed', 'true');
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await expect(page.getByText(ROLE_TEXT)).toBeHidden();
+});

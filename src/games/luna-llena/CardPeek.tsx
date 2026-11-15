@@ -53,7 +53,8 @@ export function CardPeek({ role, pack }: CardPeekProps) {
           // Sin puntero (teclado o lector de pantalla), el clic abre la carta un rato.
           if (event.detail === 0) setOpen(true);
         }}
-        className="h-11 self-center rounded-full border-3 border-dashed border-ink px-4 text-md font-bold select-none"
+        // Sin gestos del navegador: si el dedo se mueve, la pulsación no se cancela.
+        className="h-11 self-center rounded-full border-3 border-dashed border-ink px-4 text-md font-bold select-none touch-none"
       >
         {open ? copy.lunaLlena.deal.peekOpen : copy.lunaLlena.deal.peek}
       </button>

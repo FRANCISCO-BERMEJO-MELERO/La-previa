@@ -72,6 +72,23 @@ describe('PhaseStage', () => {
     expect(ghosts()).toBeEmptyDOMElement();
   });
 
+  it('el fantasma sale quieto por dentro: no repite el sello ni la entrada', () => {
+    const Reveal = ({ stage }: { stage: string }) => (
+      <PhaseStage stageKey={stage} entering>
+        <Card variant="hero" tilt="left">
+          <p className={stage === 'reveal' ? 'animate-sello anim-delay-420' : ''}>{stage}</p>
+        </Card>
+      </PhaseStage>
+    );
+    const { rerender } = render(<Reveal stage="reveal" />);
+    rerender(<Reveal stage="finished" />);
+    const ghost = ghosts().firstElementChild;
+    expect(ghost).toHaveClass('animate-salir');
+    expect(ghost).not.toHaveClass('animate-entrar');
+    expect(ghost).toHaveTextContent('reveal');
+    expect(ghost?.querySelector('[class*="anim"]')).toBeNull();
+  });
+
   it('lo tapado no sale como fantasma: sale la tapa', () => {
     const Deal = ({ stage }: { stage: string }) => (
       <PhaseStage stageKey={stage} entering={stage !== 'talking'}>

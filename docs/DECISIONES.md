@@ -1,5 +1,12 @@
 # Decisiones
 
+## 2026-11-15 · D.8 · Animaciones que fallan en el móvil
+
+- **La tapa del reparto y «Ver mi carta» llevan `touch-action: none`.** Con el dedo puesto, al moverlo unos píxeles el navegador se quedaba el gesto (desplazar o tirar para recargar), lanzaba `pointercancel` y la tapa caía: en un móvil no se podía ver la palabra. Las e2e no lo veían porque pulsaban con el ratón o con un clic sin puntero. Se añade la 43.3 con toques reales que mueven el dedo. Contrapartida: la página no se desplaza arrastrando sobre la tapa; sí desde la cabecera, los avatares o el pie.
+- **El fantasma de «Cambio de fase» sale quieto por dentro.** Era un clon con las clases `animate-*` y `anim-delay-*` de la tarjeta vieja, y el navegador las arrancaba de nuevo al insertarlo: el sello de la revelación desaparecía de la tarjeta que sale y el dado de A dados volvía a rodar. Se le quitan antes de añadir `salir`.
+- **Animaciones cortadas al llegar otra foto.** Si llega una foto nueva antes de que acabe una animación, su clase se quita y el elemento salta a su estado final. Solo pasa jugando sin pausa (como las e2e) y es lo que pide el principio 3 de `docs/PLAN-8.md` (el estado manda). Se deja así.
+- **La altura de la tapa no cambia.** Levantada al −64 % de `docs/PLAN-8.md` §8, al impostor le tapa «Eres el»; se lee «impostor» y su pista. Queda para que Fran lo valore en el móvil.
+
 ## 2026-11-02 · 51 · Cuela la mentira: validación y cierre
 
 - **La e2e juega cinco rondas, no dos.** El selector solo admite 5, 10 o 15. Las dos primeras se juegan enteras (verdad rechazada, mentiras iguales fundidas, engaño, recarga a mitad de la votación y acierto de todos) y las tres últimas las cierra el anfitrión tras escribir y votar él, como en ¿Quién lo dijo?, que solo enseña «Cerrar» en la espera.

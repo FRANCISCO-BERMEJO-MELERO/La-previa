@@ -504,3 +504,4 @@ Aceptación: `check`, `test:db`, `test:e2e` y `build` pasan sin avisos.
 - [x] D.5 (a petición de Fran) README de cierre de la primera versión, con capturas reales de cada juego e ilustraciones de recorrido, arquitectura y secreto
 - [x] D.6 (a petición de Fran) Subir Next a 16.4.3 por las vulnerabilidades de la 16.4.0
 - [x] D.7 (a petición de Fran) El impostor recibe una pista propia de cada palabra en lugar de la categoría
+- [x] D.8 (a petición de Fran) Arreglar las animaciones que fallan en el móvil: la tapa del reparto y la carta de El lobo se cerraban al mover el dedo, y la tarjeta que sale al cambiar de fase repetía sus animaciones

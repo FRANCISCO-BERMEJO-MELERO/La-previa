@@ -73,7 +73,9 @@ export function HoldToPeek({ title, hint, children }: HoldToPeekProps) {
         onContextMenu={(event) => {
           event.preventDefault();
         }}
-        className={`tapa absolute inset-0 mx-1 flex flex-col items-center justify-center gap-2 rounded-hero border-3 border-ink bg-sky p-6 text-center shadow-hard-lg select-none tilt-left ${open ? 'tapa-arriba' : ''} ${stage.entering ? 'animate-entrar' : ''}`}
+        // `touch-none`: si el dedo se mueve un poco, el navegador no lo toma como desplazamiento ni
+        // cancela la pulsación, que dejaría caer la tapa.
+        className={`tapa absolute inset-0 mx-1 flex flex-col items-center justify-center gap-2 rounded-hero border-3 border-ink bg-sky p-6 text-center shadow-hard-lg select-none touch-none tilt-left ${open ? 'tapa-arriba' : ''} ${stage.entering ? 'animate-entrar' : ''}`}
       >
         <span className="font-display text-display-xs uppercase">{title}</span>{' '}
         <span className="text-lead font-bold">{hint}</span>
