@@ -25,6 +25,14 @@ function measure(root: HTMLElement): Placed[] {
     });
 }
 
+const MOTION_CLASS = /^anim(ate)?-/;
+
+/** Quita a un elemento sus animaciones y retrasos: queda como se veía, quieto. */
+function stillOf(box: Element): void {
+  const moving = [...box.classList].filter((name) => MOTION_CLASS.test(name));
+  box.classList.remove(...moving);
+}
+
 /** Copia muda de una tarjeta que ya no existe, en el sitio donde estaba. */
 function ghostOf({ node, left, top, width, height }: Placed): HTMLElement {
   const ghost = node.cloneNode(true);
@@ -32,6 +40,8 @@ function ghostOf({ node, left, top, width, height }: Placed): HTMLElement {
   ghost.removeAttribute('id');
   ghost.removeAttribute(STAGE_CARD);
   for (const child of ghost.querySelectorAll('[id]')) child.removeAttribute('id');
+  // Insertar el clon arrancaría de nuevo sus animaciones: el sello se esfumaría y el dado rodaría.
+  for (const box of [ghost, ...ghost.querySelectorAll('[class]')]) stillOf(box);
   // Posición medida, no un valor de diseño: el fantasma vive fuera de React.
   Object.assign(ghost.style, {
     position: 'absolute',

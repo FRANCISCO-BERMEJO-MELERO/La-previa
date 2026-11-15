@@ -51,6 +51,11 @@ describe('CardPeek', () => {
     expect(screen.queryByText('Vidente')).not.toBeInTheDocument();
   });
 
+  it('no cede el gesto al navegador: mover el dedo no cancela la pulsación', () => {
+    render(<CardPeek role="seer" pack={[]} />);
+    expect(screen.getByRole('button', { name: texts.peek })).toHaveClass('touch-none');
+  });
+
   it('también se oculta si el dedo se va del botón', () => {
     render(<CardPeek role="seer" pack={[]} />);
     const button = screen.getByRole('button', { name: texts.peek });

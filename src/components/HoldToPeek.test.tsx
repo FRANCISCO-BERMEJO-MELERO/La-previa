@@ -69,6 +69,10 @@ describe('HoldToPeek', () => {
     expect(shown()).toBe(false);
   });
 
+  it('no cede el gesto al navegador: mover el dedo no cancela la pulsación', () => {
+    expect(renderPeek()).toHaveClass('touch-none');
+  });
+
   it('tapada, lo de debajo no sale en la copia del cambio de fase; la tapa sí', () => {
     const cover = renderPeek();
     expect(screen.getByTestId('peek-content')).toHaveAttribute('data-stage-hidden');
